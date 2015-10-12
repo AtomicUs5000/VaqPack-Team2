@@ -1,0 +1,118 @@
+CodingStandards: This file is subject to change throughout the course of the project. If there needs to be a change or something added, contact the project manager so that we can discuss it.
+
+###################################################################################
+
+JDK: Java: 1.8.0_60
+
+If VP_GUIEvents.java does not recognize
+	import javafx.scene.control.Alert;
+	import javafx.scene.control.Alert.AlertType;
+then you have to update your runtime envirnoment and set Netbeans to use it.
+
+###################################################################################
+
+FORMATTING:
+We originally discussed the way to handle brackets with if statements. However, this will cause a mess in Netbeans since be default, braces begin to the right of the predicate and close below the statement.
+
+To avoid any problems, before saving and especially before commits in Git, do Ctrl+A to select all of the code in the .java file and then do Alt+Shift+F
+
+This will not only place brackets where they should be according to Netbeans, it will format just about everything such as spaces on each side of an operator.
+
+###################################################################################
+
+UNARY OPERATORS:
+We have agreed to avoid using pre increment and pre decrement operators
+DO NOT DO
+++i
+DO
+i++
+This should be avoided in for loops as well.
+
+###################################################################################
+
+COMMENTS:
+We have not discussed this together yet... but let's agree to always place a "flower box" above every subclass and function with the following formats:
+
+/*------------------------------------------------------------------------*
+ * functionName()
+ * - Description.
+ * - parameter 1 description.
+ * - parameter 2 description.
+ * - What it returns, if anything, and why
+ *------------------------------------------------------------------------*/
+
+The () will indicate that it is a function. Since we will describe the parameters, there is no need to indicate them along with the name. It is one less thing to update if the parameters change.
+
+The following is a flower box for a subclass
+
+/*------------------------------------------------------------------------*
+ * Name Subclass
+ * - Description
+ *------------------------------------------------------------------------*/
+
+Most of our subclasses will be the action events with an overrided handle() function. 
+
+Unless the code is complex, we should not have to comment with a description of every variable... provided that every variable has a meaningful name. The exception to this will be the variables representing objects of each .java file. Because we will be using them so much, we should be able to recognize them right away:
+
+VP_DatabaseManager DB;
+VP_DataManager     DM;
+VP_DataToHtml      D2H;
+VP_FileManager     FM;
+VP_GUIBuild        GB;
+VP_GUIEvents       GE;
+VP_HtmlToPdf       H2P;
+VP_NetworkManager  NM;
+VP_TemplateManager TM;
+
+Again, these are the only variables that should be like this. The variables in caps should also indicate that it is one of our major class objects.
+
+###################################################################################
+
+ERROR HANDLING:
+Also, let's agree to never let a possible exception go uncaught.
+If it is something that the user should know, or if it is an error that is critical and will cause the program to fail, an alert should be displayed first.
+Example from VP_GUIEvents.java:
+int test = 0;
+try {
+	int test = Integer.parseInt("not an integer");
+} catch (Exception e) {
+	errorAlert(1100, e.toString());
+}
+
+If the error comes from a different class file, such as the database manager class, then an example would be:
+int test = 0;
+try {
+	int test = Integer.parseInt("not an integer");
+} catch (Exception e) {
+	GE.errorAlert(1200, e.toString());
+}
+
+errorAlert() is a function in the VP_GUIEvents class. It initializes a VP_ErrorHandler object with an error code and the exception as a string. VP_ErrorHandler maintains a switch for the 4-digit error codes and sets the content for the alert box and decides whether it is critical or not. For debugging purposes, the first two digits of the code should correspond to a .java class file:
+	11xx from VP_GUIEvents
+	12xx from VP_DatabaseManager
+	13xx from VP_DataManager
+	14xx from VP_DataToHTML
+	15xx from VP_HTMLToPDF
+	16xx from VP_FileManager
+	17xx from VP_TemplateManager
+	18xx from VP_NetworkManager
+There are no codes 10xx handled by the error handler because this would be from VP_GUIBuild. The error handler cannot handle exceptions that might come before the GUI is constructed. If there is something that should be reported before the GUI is completely built, the error should print to the console with error code 10xx.
+
+If there is an error that should just be ignored, catch the exception and print it to the console, but allow the program to continue execution. This is needed sometimes. An example is when you traverse directories. In windows, some directories visible by java are actually junctions. isHidden() will return false, isDirectory() will return true, and canRead() will return true... however, when you have java attempt to list the files within the directory, it will cause an exception. Since a try and catch is the only way to test for junctions, the exception must simply be ignored so that the program can continue on.
+
+###################################################################################
+
+INSTANTIATION AND INITIALIZATION
+
+All instantiation and initialization should be at the top of functions. An exception to this is when you need to create only temporary variables and objects used within an inner block of code, such as a loop.
+
+###################################################################################
+
+CLASS FILE ORGANIZATION
+
+members
+constructors
+protected functions
+private functions
+subclasses
+setters and getters
