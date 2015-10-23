@@ -12,7 +12,6 @@
 package vaqpack;
 
 public class VP_TemplateManager {
-    private final VP_DatabaseManager DB;
     private final VP_DataManager     DM;
     private final VP_GUIBuild        GB;
     private final VP_GUIEvents       GE;
@@ -24,7 +23,6 @@ public class VP_TemplateManager {
     protected VP_TemplateManager(VP_GUIEvents GE) {
         this.GE = GE;
         GB = GE.getGB();
-        DB = GE.getDB();
         DM = GE.getDM();
     }
     

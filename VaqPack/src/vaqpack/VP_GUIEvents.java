@@ -22,7 +22,6 @@ public class VP_GUIEvents {
 
     private final Scene primaryScene;
     private final Stage primaryStage;
-    private final VP_DatabaseManager DB;
     private final VP_DataManager DM;
     private final VP_DataToHtml D2H;
     private final VP_FileManager FM;
@@ -43,7 +42,6 @@ public class VP_GUIEvents {
         primaryScene = new Scene(GB.getMainLayout(),
                 GB.getSceneWidth(),
                 GB.getSceneHeight());
-        DB = new VP_DatabaseManager(this);
         DM = new VP_DataManager();
         D2H = new VP_DataToHtml();
         H2P = new VP_HtmlToPdf();
@@ -105,9 +103,6 @@ public class VP_GUIEvents {
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
-    protected VP_DatabaseManager getDB() {
-        return DB;
-    }
 
     protected VP_DataManager getDM() {
         return DM;
