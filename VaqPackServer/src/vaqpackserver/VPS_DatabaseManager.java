@@ -17,11 +17,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class VPS_DatabaseManager {
+
     private Connection con = null;
-    private final int
-            port = 3306;
-    private final String
-            dbName = "vaqpack_db",
+    private final int port = 3306;
+    private final String dbName = "vaqpack_db",
             url = "jdbc:mysql://localhost:" + port + "/",
             adminUserName = "vpAdmin",
             adminPassword = "vpTeam2Pa$$";
@@ -34,11 +33,12 @@ public class VPS_DatabaseManager {
      *------------------------------------------------------------------------*/
     protected VPS_DatabaseManager() {
         System.out.println("######### DATABASE INITIALIZATION START ########\n");
-        if (checkDatabase())
+        if (checkDatabase()) {
             checkTables();
+        }
         System.out.println("########## DATABASE INITIALIZATION END #########\n");
     }
-    
+
     /*------------------------------------------------------------------------*
      * checkDatabase()
      * - Checks for a MySQL server at the location and port. Checks
@@ -55,7 +55,7 @@ public class VPS_DatabaseManager {
             createDB = con.prepareStatement("CREATE DATABASE " + dbName);
             createDB.executeUpdate();
             System.out.println("MySQL server is running on port " + port + ".");
-            System.out.println("User " + adminUserName 
+            System.out.println("User " + adminUserName
                     + " has correct credentials.");
             System.out.println("Database " + dbName + " created.");
             con.close();
@@ -66,37 +66,35 @@ public class VPS_DatabaseManager {
                 // MySQL server is not running
                 System.out.println("ERROR: The MySQL server is not currently "
                         + "running on port " + port);
-            }
-            else {
+            } else {
                 System.out.println("The MySQL server is currently running "
                         + "on port " + port + ".");
                 if (eCode == 1045) {
                     // incorrect username or password
                     System.out.println("ERROR: Incorrect admin user credentials "
                             + "for " + adminUserName);
-                }
-                else {
+                } else {
                     System.out.println("User " + adminUserName
                             + " has correct credentials.");
                     if (eCode == 1044) {
-                    // user does not have the privelege
-                    System.out.println("ERROR: User " + adminUserName + " does "
-                            + "not have the privelege to create the database");
-                    }
-                    else if (eCode == 1007) {
+                        // user does not have the privelege
+                        System.out.println("ERROR: User " + adminUserName + " does "
+                                + "not have the privelege to create the database");
+                    } else if (eCode == 1007) {
                         // Database already exists
                         System.out.println("Database " + dbName + " exists.");
                         dbCheck = true;
                     }
                 }
             }
-            if (!dbCheck)
+            if (!dbCheck) {
                 System.out.println(eCode + ":" + ex.toString());
+            }
         }
         System.out.println("************** CHECK DATABASE END **************\n");
         return dbCheck;
     }
-    
+
     /*------------------------------------------------------------------------*
      * checkTables()
      * - Calls the various functions to check each database table.
@@ -117,7 +115,7 @@ public class VPS_DatabaseManager {
         System.out.println("*************** CHECK TABLES END ***************\n");
         return tablesCheck;
     }
-    
+
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
