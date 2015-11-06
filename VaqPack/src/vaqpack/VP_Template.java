@@ -1,7 +1,6 @@
 /*-----------------------------------------------------------------------------*
-* VP_NetworkManager.java
-* - Controls connections such as sending email.
-*   Might need to work with VP_DatabaseManager (unknown at this time)
+* VP_Template.java
+* - Contains the default templates and stores custom templates
 * Authors:
 * - Team-02
 * -- William Dewald (Project Manager)
@@ -12,17 +11,13 @@
 *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-public class VP_NetworkManager {
-    private final VP_GUIEvents   GE;
-    private final VP_FileManager FM;
+public class VP_Template {
     
     /*------------------------------------------------------------------------*
-     * VP_NetworkManager()
+     * VP_Template()
      * - Constructor.
      *------------------------------------------------------------------------*/
-    protected VP_NetworkManager(VP_GUIEvents GE) {
-        this.GE = GE;
-        FM = GE.getFM();
+    protected VP_Template() {
     }
     
     /*------------------------------------------------------------------------*

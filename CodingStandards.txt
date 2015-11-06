@@ -7,7 +7,7 @@ JDK: Java: 1.8.0_60
 If VP_GUIEvents.java does not recognize
 	import javafx.scene.control.Alert;
 	import javafx.scene.control.Alert.AlertType;
-then you have to update your runtime envirnoment and set Netbeans to use it.
+then you have to update your runtime environment and set NetBeans to use it.
 
 ###################################################################################
 
@@ -50,21 +50,10 @@ The following is a flower box for a subclass
  * - Description
  *------------------------------------------------------------------------*/
 
-Most of our subclasses will be the action events with an overrided handle() function. 
+Most of our subclasses will be the action events with an overrided handle() function.
+Others might be classes inheriting from some abstract super or interface.
 
-Unless the code is complex, we should not have to comment with a description of every variable... provided that every variable has a meaningful name. The exception to this will be the variables representing objects of each .java file. Because we will be using them so much, we should be able to recognize them right away:
-
-VP_DatabaseManager DB;
-VP_DataManager     DM;
-VP_DataToHtml      D2H;
-VP_FileManager     FM;
-VP_GUIBuild        GB;
-VP_GUIEvents       GE;
-VP_HtmlToPdf       H2P;
-VP_NetworkManager  NM;
-VP_TemplateManager TM;
-
-Again, these are the only variables that should be like this. The variables in caps should also indicate that it is one of our major class objects.
+Unless the code is complex, we should not have to comment with a description of every variable... provided that every variable has a meaningful name.
 
 ###################################################################################
 
@@ -87,7 +76,7 @@ try {
 	GE.errorAlert(1200, e.toString());
 }
 
-errorAlert() is a function in the VP_GUIEvents class. It initializes a VP_ErrorHandler object with an error code and the exception as a string. VP_ErrorHandler maintains a switch for the 4-digit error codes and sets the content for the alert box and decides whether it is critical or not. For debugging purposes, the first two digits of the code should correspond to a .java class file:
+errorAlert() is a function in the VP_GUIEvents class. It initializes a VP_ErrorHandler object with an error code and the exception as a string. VP_ErrorHandler maintains a switch for the 4-digit error codes and sets the content for the alert box and decides whether it is critical or not. For debugging purposes, the first two digits of the code should correspond to a .java class file. As an example (not necessarily the classes we are using):
 	11xx from VP_GUIEvents
 	12xx from VP_DatabaseManager
 	13xx from VP_DataManager

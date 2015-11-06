@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------*
- * VPS_DatabaseManager.java
+ * VP_DatabaseManager.java
  * - Handles connection and queries to a database
  * Authors:
  * - Team-02
@@ -9,14 +9,14 @@
  * -- Erik Lopez
  * -- Raul Saavedra
  *-----------------------------------------------------------------------------*/
-package vaqpackserver;
+package vaqpack;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class VPS_DatabaseManager {
+public class VP_DatabaseManager {
     private Connection con = null;
     private final int
             port = 3306;
@@ -25,14 +25,15 @@ public class VPS_DatabaseManager {
             url = "jdbc:mysql://localhost:" + port + "/",
             adminUserName = "vpAdmin",
             adminPassword = "vpTeam2Pa$$";
-    private PreparedStatement createDB = null;
+    private PreparedStatement
+            createDB = null;
 
     /*------------------------------------------------------------------------*
-     * VPS_DatabaseManager()
+     * VP_DatabaseManager()
      * - Constructor. Calls checkDatabase() and checkTables()
      * - No paramaters
      *------------------------------------------------------------------------*/
-    protected VPS_DatabaseManager() {
+    protected VP_DatabaseManager() {
         System.out.println("######### DATABASE INITIALIZATION START ########\n");
         if (checkDatabase())
             checkTables();

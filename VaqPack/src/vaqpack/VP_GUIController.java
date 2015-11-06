@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------*
- * VP_GUIEvents.java
+ * VP_GUIController.java
  * - Events triggered by or altering the VaqPak GUI
  * Authors:
  * - Team-02
@@ -18,37 +18,28 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class VP_GUIEvents {
+public class VP_GUIController {
 
-    private final Scene primaryScene;
-    private final Stage primaryStage;
-    private final VP_DataManager DM;
-    private final VP_DataToHtml D2H;
-    private final VP_FileManager FM;
-    private final VP_GUIBuild GB;
-    private final VP_HtmlToPdf H2P;
-    private final VP_NetworkManager NM;
-    private final VP_TemplateManager TM;
+    private final Scene
+            primaryScene;
+    private final Stage
+            primaryStage;
+    private final VP_DataManager dataM;
+    private final VP_GUIBuilder builder;
 
     /*------------------------------------------------------------------------*
-     * VP_GUIEvents
+     * VP_GUIController
      * - Constructor. Stores primaryStage and creates the scene for it
      * by creating a new VP_GUIBuiler object and applying its mainLayout.
      * - parameter primaryStage stored for window control
      *------------------------------------------------------------------------*/
-    protected VP_GUIEvents(Stage primaryStage) {
+    protected VP_GUIController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        GB = new VP_GUIBuild(this);
-        primaryScene = new Scene(GB.getMainLayout(),
-                GB.getSceneWidth(),
-                GB.getSceneHeight());
-        DM = new VP_DataManager();
-        D2H = new VP_DataToHtml();
-        H2P = new VP_HtmlToPdf();
-        FM = new VP_FileManager();
-        NM = new VP_NetworkManager(this);
-        TM = new VP_TemplateManager(this);
-        
+        builder = new VP_GUIBuilder(this);
+        primaryScene = new Scene(builder.getMainLayout(),
+                builder.getSceneWidth(),
+                builder.getSceneHeight());
+        dataM = new VP_DataManager(this);
         primaryStage.setScene(primaryScene);
     }
 
@@ -103,16 +94,4 @@ public class VP_GUIEvents {
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
-
-    protected VP_DataManager getDM() {
-        return DM;
-    }
-
-    protected VP_FileManager getFM() {
-        return FM;
-    }
-
-    protected VP_GUIBuild getGB() {
-        return GB;
-    }
 }

@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------*
- * VaqPackServer.java
- * - Main class for VaqPack Server project
+ * VP_Center.java
+ * - Everything involving the center view of the GUI (wizard)
  * Authors:
  * - Team-02
  * -- William Dewald (Project Manager)
@@ -9,11 +9,8 @@
  * -- Erik Lopez
  * -- Raul Saavedra
  *-----------------------------------------------------------------------------*/
-package vaqpackserver;
+package vaqpack;
 
-public class VaqPackServer {
-    public static void main(String[] args) {
-       VPS_DatabaseManager DB = new VPS_DatabaseManager();
-    }
+public class VP_Center {
     
 }

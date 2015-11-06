@@ -13,10 +13,12 @@ package vaqpack;
 
 public class VP_ErrorHandler {
 
-    private String header, // the header text of the error message box
+    private String
+            header,             // the header text of the error message box
             content;            // the content of the error message box
-    private boolean critical;   // true = program should not continue
-
+    private boolean
+            critical;           // true = program should not continue
+    
     /*------------------------------------------------------------------------*
      * VP_ErrorHandler()
      * - Constructor.

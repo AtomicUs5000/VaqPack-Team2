@@ -18,7 +18,7 @@ public class VaqPack extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        VP_GUIEvents GE = new VP_GUIEvents(primaryStage);
+        VP_GUIController controller = new VP_GUIController(primaryStage);
         
         primaryStage.setTitle("VaqPack");
         primaryStage.show();
