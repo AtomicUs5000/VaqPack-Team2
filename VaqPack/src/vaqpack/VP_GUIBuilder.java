@@ -8,72 +8,60 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
+ * FILE ID 1600
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 
 public class VP_GUIBuilder {
-
-    private final StackPane
-            mainLayout;
-    private final VP_GUIController
-            controller;
-    private final int
-            sceneWidth = 800,           // width is temporary
-            sceneHeight = 600;          // height is temporary
-
+    private final VP_Header header = new VP_Header();
+    private final VP_Tree leftTree = new VP_Tree();
+    private final VP_Center center = new VP_Center();
+    
     /*------------------------------------------------------------------------*
-     * VP_GUIBuilder()
-     * - Constructor. Creates the mainLayout, calls functions to create all
-     * layout subsections, and registers all event handlers for components.
-     * - parameter VP_GUIController stored to access events
+     * createShell
+     * - Creates an empty BorderPane and its children to be built after the
+     *   stage is showing and while the dtatabase is being checked.
      *------------------------------------------------------------------------*/
-    protected VP_GUIBuilder(VP_GUIController controller) {
-        this.controller = controller;
-        mainLayout = new StackPane();
-        buildTestLayer();
-        // buildLoadLayer();
-        // buiildContentLayer();
+    protected BorderPane createShell() {
+        BorderPane guiShell = new BorderPane();
+        guiShell.setTop(header);
+        guiShell.setLeft(leftTree);
+        guiShell.setCenter(center);
+        return guiShell;
     }
-
+    
     /*------------------------------------------------------------------------*
-     * buildTestLayer()
-     * - Creates a temporary layer in the mainLyout stackpane.
-     * - no parameters
-     * - no return
+     * buildTop
+     * - Builds the header. Called in task, to build in the background
      *------------------------------------------------------------------------*/
-    private void buildTestLayer() {
-        VBox testVBox = new VBox();
-        testVBox.setPrefSize(sceneWidth, sceneHeight);
-        testVBox.setAlignment(Pos.CENTER);
-        testVBox.setSpacing(40);
-        Label testLabel = new Label("Testing Alert Boxes and Error Handler");
-        Button testButton1 = new Button("NON-CRITICAL ERROR");
-        testButton1.setOnAction(controller.new TestEvent(1100));
-        Button testButton2 = new Button("CRITICAL ERROR");
-        testButton2.setOnAction(controller.new TestEvent(1101));
-        testVBox.getChildren().addAll(testLabel, testButton1, testButton2);
-        mainLayout.getChildren().add(testVBox);
+    protected void buildTop() {
+        Label testLabel = new Label("TOP");
+        header.getChildren().addAll(testLabel);
     }
-
+    
+    /*------------------------------------------------------------------------*
+     * buildLeft
+     * - Builds the left side. Called in task, to build in the background
+     *------------------------------------------------------------------------*/
+    protected void buildLeft() {
+        Label testLabel = new Label("Left");
+        leftTree.getChildren().addAll(testLabel);
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildCenter
+     * - Builds the gui center. Called in task, to build in the background
+     *------------------------------------------------------------------------*/
+    protected void buildCenter() {
+        Label testLabel = new Label("CENTER");
+        center.getChildren().addAll(testLabel);
+    }
+    
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
-    protected StackPane getMainLayout() {
-        return mainLayout;
-    }
-
-    protected int getSceneWidth() {
-        return sceneWidth;
-    }
-
-    protected int getSceneHeight() {
-        return sceneHeight;
-    }
 
 }

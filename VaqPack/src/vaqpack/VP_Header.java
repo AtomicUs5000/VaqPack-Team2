@@ -8,9 +8,12 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
+ * FILE ID 1700
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-public class VP_Header {
+import javafx.scene.layout.VBox;
+
+public class VP_Header extends VBox{
     
 }

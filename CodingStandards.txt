@@ -99,6 +99,9 @@ All instantiation and initialization should be at the top of functions. An excep
 
 CLASS FILE ORGANIZATION
 
+file information
+package
+imports
 members
 constructors
 protected functions

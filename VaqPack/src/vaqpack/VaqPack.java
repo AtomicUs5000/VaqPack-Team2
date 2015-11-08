@@ -8,6 +8,7 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
+ * FILE ID 1000
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
@@ -15,12 +16,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class VaqPack extends Application {
-
     @Override
     public void start(Stage primaryStage) {
         VP_GUIController controller = new VP_GUIController(primaryStage);
-        
-        primaryStage.setTitle("VaqPack");
         primaryStage.show();
     }
 

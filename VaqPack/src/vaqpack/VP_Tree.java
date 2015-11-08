@@ -8,8 +8,12 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
+ * FILE ID 1800
  *-----------------------------------------------------------------------------*/
 package vaqpack;
-public class VP_Tree {
+
+import javafx.scene.layout.VBox;
+
+public class VP_Tree extends VBox{
     
 }

@@ -12,7 +12,6 @@
 package vaqpack;
 
 public class VP_ErrorHandler {
-
     private String
             header,             // the header text of the error message box
             content;            // the content of the error message box
@@ -23,27 +22,84 @@ public class VP_ErrorHandler {
      * VP_ErrorHandler()
      * - Constructor.
      * - parameter errorCode used to determine the properties
-     *   Error codes should be grouped by class:
-     *      11xx from VP_GUIEvents
-     *      12xx from VP_DatabaseManager
-     *      13xx from VP_DataManager
-     *      14xx from VP_DataToHTML
-     *      15xx from VP_HTMLToPDF
-     *      16xx from VP_FileManager
-     *      17xx from VP_TemplateManager
-     *      18xx from VP_NetworkManager
+     *   Error codes should be grouped by each class's File ID
      * - parameter exceptionString used for additional information
      *------------------------------------------------------------------------*/
     protected VP_ErrorHandler(int errorCode, String exceptionString) {
         switch (errorCode) {
-            case 1100:
-                header = "This is just a test error";
+            case 1301:
+                header = "VaqPack is not able to read the configiuration file "
+                        + "that is necessary to connect to the MySQL database.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1302:
+                header = "VaqPack is not able to store the configiuration file "
+                        + "that is necessary to connect to the MySQL database.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1303:
+                header = "An unexpected error occurred while encrypting or decrypting "
+                        + "credentials.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1304:
+                header = "VaqPack is not able to read the credentials file "
+                        + "that is necessary to connect to the MySQL database.\n"
+                        + "The file may be corrupt.\n"
+                        + "VaqPack will attempt to recover from this error.\n"
+                        + "The database administrator must reenter credentials.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
-            case 1101:
-                header = "This is just a test critical error";
-                content = "CRITICAL ERROR " + errorCode + ": " + exceptionString;
+            case 1305:
+                header = "VaqPack is not able to store the credentials file "
+                        + "that is necessary to connect to the MySQL database.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1306:
+                header = "An unexpected error occurred while encrypting "
+                        + "VaqPack admin credentials.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1307:
+                header = "An unexpected error occurred while searching for "
+                        + "VaqPack admin credentials.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1308:
+                header = "An unexpected error occurred while storing "
+                        + "VaqPack admin credentials.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1401:
+                header = "VaqPack has encountered a critical MySQL error \n"
+                        + "while checking for connectivity.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1402:
+                header = "VaqPack has encountered a critical MySQL error \n"
+                        + "while checking admin credentials.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1403:
+                header = "VaqPack has encountered a critical MySQL error \n"
+                        + "while checking database tables.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1404:
+                header = "VaqPack has encountered a critical MySQL error \n"
+                        + "while verifying user access levels.";
+                content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
             default:
