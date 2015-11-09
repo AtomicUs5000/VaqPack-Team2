@@ -13,7 +13,11 @@
 package vaqpack;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.Node;
 
 public class VP_GUIBuilder {
     private final VP_Header header = new VP_Header();
@@ -39,7 +43,34 @@ public class VP_GUIBuilder {
      *------------------------------------------------------------------------*/
     protected void buildTop() {
         Label testLabel = new Label("TOP");
-        header.getChildren().addAll(testLabel);
+        header.getChildren().addAll(generateMenuBar(),testLabel);
+    }
+    
+     /*------------------------------------------------------------------------*
+     * generateMenuBar()
+     * - Builds the MenuBar. Called in buildTop. 
+     *------------------------------------------------------------------------*/
+    protected Node generateMenuBar(){
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("Home");
+        Menu helpMenu = new Menu("Help");
+        MenuItem userLogin = new MenuItem("Login"),
+                userLogout = new MenuItem("Logout"),
+                exitVP = new MenuItem("Exit"),
+                gettingStarted = new MenuItem("Getting Started with VaqPack"),
+                aboutHelp = new MenuItem("About");
+        fileMenu.getItems().addAll(
+                userLogin,
+                userLogout,
+                exitVP);
+        //userLogin.setOnAction(...);
+        //userLogout.setOnAction(...);
+        //exitVP.setOnAction(...);
+        //gettingStarted.setOnAction(...);
+        //aboutHelp.setOnAction(...);
+        helpMenu.getItems().addAll(gettingStarted, aboutHelp);
+        menuBar.getMenus().addAll(fileMenu, helpMenu);
+        return menuBar;
     }
     
     /*------------------------------------------------------------------------*
