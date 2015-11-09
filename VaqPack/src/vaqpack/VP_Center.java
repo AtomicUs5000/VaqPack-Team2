@@ -14,6 +14,17 @@ package vaqpack;
 
 import javafx.scene.layout.VBox;
 
-public class VP_Center extends VBox{
-    
+public class VP_Center extends VBox {
+
+    /*------------------------------------------------------------------------*
+     * VP_Center()
+     * - Constructor.
+     *------------------------------------------------------------------------*/
+    protected VP_Center() {
+
+    }
+
+    /*------------------------------------------------------------------------*
+     * Setters and Getters
+     *------------------------------------------------------------------------*/
 }
