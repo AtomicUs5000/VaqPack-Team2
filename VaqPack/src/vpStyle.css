@@ -1,0 +1,150 @@
+// UTRGV Navy rgb(0, 38, 73)
+// UTRGV Kelly Green rgb(0, 135, 81)
+// UTRGV Orange rgb(249, 86, 2)
+// UTRGV Light Orange rgb(252, 163, 17)
+
+#loader {
+    -fx-background-color:
+        linear-gradient(rgb(252, 163, 17) 0%, rgb(255, 234, 200) 70%, rgb(200, 242, 230) 100%),
+        radial-gradient(focus-distance 0% ,center 50% 50% , radius 90% , rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 20%, rgba(255, 255, 255, 0.05) 50%, rgba(0, 0, 0, .99) 90%);
+}
+#loadLogo {
+    -fx-background-image: url("loadLogo.png");
+    -fx-background-size: 300, 300;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+.loadText {
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.dialog-pane {
+    -fx-background-color:
+        linear-gradient(rgb(252, 163, 17) 0%, rgb(255, 234, 200) 70%, rgb(200, 242, 230) 100%),
+        radial-gradient(focus-distance 40% ,center 70% 30% , radius 90% , rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(0, 135, 81, 0.5) 100%);
+    -fx-padding: 12 12 12 12;
+}
+.dialog-pane.errorAlert {
+    -fx-background-color:
+        linear-gradient(rgb(0, 0, 0) 0%, rgb(255, 0, 0) 50%, rgb(249, 86, 2) 100%),
+        radial-gradient(focus-distance 40% ,center 20% 70% , radius 100% , rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 100%);
+    -fx-padding: 12 12 12 12;
+}
+.dialog-pane .label {
+    -fx-text-fill: rgb(0, 38, 73);
+}
+
+.dialog-pane.errorAlert .content {
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .header-panel {
+    -fx-border-color: rgb(249, 86, 2);
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 12 12 12 12;
+    -fx-background-color:linear-gradient(rgb(255, 234, 200) 0%, rgb(255, 255, 255) 100%);
+    -fx-effect: dropshadow(one-pass-box, #666, 20, 0.1, 0, 6);
+    -fx-padding: 16 16 16 16;
+}
+.dialog-pane .header-panel .label {
+    -fx-font-style: italic;
+}
+.dialog-pane .text-field {
+    -fx-focus-color: rgb(249, 86, 2);
+}
+
+.dialog-pane .button {
+    -fx-background-color:
+        linear-gradient(rgb(200, 242, 230) 0%, rgb(0, 38, 73) 100%),
+        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(0, 135, 81, 0.1) 45%, rgba(0, 135, 81, 0.5) 50%);
+    -fx-background-radius: 10, 10, 10, 10;
+    -fx-border-radius: 8, 8, 8, 8;
+    -fx-background-insets: 0, 1;
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
+    -fx-border-color: rgb(0, 38, 73);
+}
+
+.dialog-pane.errorAlert .button {
+    -fx-background-color:
+        linear-gradient(rgb(249, 86, 2) 0%, rgb(255, 0, 0) 100%),
+        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(252, 163, 17, 0.1) 45%, rgba(252, 163, 17, 0.5) 50%);
+    -fx-background-radius: 10, 10, 10, 10;
+    -fx-border-radius: 8, 8, 8, 8;
+    -fx-background-insets: 0, 1;
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
+    -fx-border-color: rgb(0, 38, 73);
+}
+
+.dialog-pane .button:hover {
+    -fx-background-color:
+        linear-gradient(rgb(250, 246, 240) 0%, rgb(50, 185, 131) 100%),
+        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(255, 255, 255, 0.3) 45%, rgba(0, 135, 81, 0.1) 50%);
+    -fx-background-radius: 10, 10, 10, 10;
+    -fx-border-radius: 8, 8, 8, 8;
+    -fx-background-insets: 0, 1;
+    -fx-text-fill: rgb(0, 135, 81);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
+    -fx-border-color: rgb(0, 38, 73);
+    -fx-cursor: hand;
+}
+
+.dialog-pane.errorAlert .button:hover {
+    -fx-background-color:
+        linear-gradient(rgb(255, 255, 255)0%, rgb(255, 234, 200)  100%),
+        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(252, 163, 17, 0.1) 45%, rgba(252, 163, 17, 0.5) 50%);
+    -fx-background-radius: 10, 10, 10, 10;
+    -fx-border-radius: 8, 8, 8, 8;
+    -fx-background-insets: 0, 1;
+    -fx-text-fill: rgb(0, 0, 0);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
+    -fx-border-color: rgb(0, 38, 73);
+    -fx-cursor: hand;
+}
+
+.dialog-pane .button:focused {
+    -fx-background-color:
+        linear-gradient(rgb(200, 242, 230) 0%, rgb(0, 135, 81) 100%),
+        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(255, 255, 255, 0.1) 45%, rgba(0, 135, 81, 0.5) 50%);
+    -fx-background-radius: 10, 10, 10, 10;
+    -fx-border-radius: 8, 8, 8, 8;
+    -fx-background-insets: 0, 1;
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
+    -fx-border-color: rgb(0, 38, 73);
+}
+
+.dialog-pane .button:focused:hover {
+    -fx-background-color:
+        linear-gradient(rgb(250, 246, 240) 0%, rgb(50, 185, 131) 100%),
+        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(255, 255, 255, 0.3) 45%, rgba(0, 135, 81, 0.1) 50%);
+    -fx-background-radius: 10, 10, 10, 10;
+    -fx-border-radius: 8, 8, 8, 8;
+    -fx-background-insets: 0, 1;
+    -fx-text-fill: rgb(0, 135, 81);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
+    -fx-border-color: rgb(0, 38, 73);
+    -fx-cursor: hand;
+}
+
+.dialogGrid {
+    -fx-border-color: rgb(249, 86, 2);
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 12 12 12 12;
+    -fx-background-color:linear-gradient(rgb(255, 234, 200) 0%, rgb(255, 255, 255) 100%);
+    -fx-effect: dropshadow(one-pass-box, #555, 20, 0.1, 0, 6);
+    -fx-padding: 12 22 12 22;
+}
+.dialogPad {
+    -fx-padding: 30 0 20 0;
+}

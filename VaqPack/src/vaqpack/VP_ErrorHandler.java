@@ -12,12 +12,11 @@
 package vaqpack;
 
 public class VP_ErrorHandler {
-    private String
-            header,             // the header text of the error message box
+
+    private String header, // the header text of the error message box
             content;            // the content of the error message box
-    private boolean
-            critical;           // true = program should not continue
-    
+    private boolean critical;   // true = program should not continue
+
     /*------------------------------------------------------------------------*
      * VP_ErrorHandler()
      * - Constructor.
@@ -27,6 +26,15 @@ public class VP_ErrorHandler {
      *------------------------------------------------------------------------*/
     protected VP_ErrorHandler(int errorCode, String exceptionString) {
         switch (errorCode) {
+            // ID 1100 VP_GUIController
+            case 1101:
+                header = "An error has occurred while attempting to delay a thread.\n"
+                        + "VaqPack will attempt to continue.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            // ID 1200 VP_DataManger
+            // ID 1300 VP_FileManager
             case 1301:
                 header = "VaqPack is not able to read the configiuration file "
                         + "that is necessary to connect to the MySQL database.";
@@ -78,6 +86,7 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
+            // ID 1400 VP_DatabaseManager
             case 1401:
                 header = "VaqPack has encountered a critical MySQL error \n"
                         + "while checking for connectivity.";
@@ -102,12 +111,20 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
+            // ID 1500 VP_Loader
+            // ID 1600 VP_GUIBuilder
+            // ID 1700 VP_Header
+            // ID 1800 VP_Tree
+            // ID 1900 VP_Center
+            // ID 2000 VP_Mail
+            // General Error, perhaps invalid code in constructor
             default:
                 header = "An unknown error has occured.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
         }
+        content = "\n" + content;
         if (critical) {
             content += "\nVaqPack WILL NOW EXIT.";
         }
@@ -116,10 +133,10 @@ public class VP_ErrorHandler {
     /*------------------------------------------------------------------------*
      * clearError()
      * - Clears the values of all properties. This is unnecessary, but helps to
-     * avoid potential problems that can occur if an error code is not assigned
-     * properly in loadError()
-     * - No parameters
-     * - No return
+     *   avoid potential problems that can occur if an error code is not
+     *   assigned properly in loadError().
+     * - No parameters.
+     * - No return.
      *------------------------------------------------------------------------*/
     protected void clearError() {
         header = "";
