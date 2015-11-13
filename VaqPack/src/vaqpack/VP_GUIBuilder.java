@@ -15,6 +15,7 @@ package vaqpack;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 
 public class VP_GUIBuilder {
@@ -59,22 +60,27 @@ public class VP_GUIBuilder {
     protected void buildTop() {
         Menu homeMenu = new Menu("Home");
         Menu helpMenu = new Menu("Help");
+        Menu optionsMenu = new Menu("Options");
         MenuItem userLogin = new MenuItem("Login"),
                 userLogout = new MenuItem("Logout"),
                 exitVP = new MenuItem("Exit"),
+                fullScreen = new MenuItem("Toggle Full Screen"),
                 gettingStarted = new MenuItem("Getting Started with VaqPack"),
                 aboutHelp = new MenuItem("About");
         homeMenu.getItems().addAll(
                 userLogin,
                 userLogout,
+                new SeparatorMenuItem(),
                 exitVP);
         //userLogin.setOnAction(...);
         //userLogout.setOnAction(...);
         //exitVP.setOnAction(...);
         //gettingStarted.setOnAction(...);
         //aboutHelp.setOnAction(...);
+        //fullScreen.setOnAction(...fullScreenToggle());
         helpMenu.getItems().addAll(gettingStarted, aboutHelp);
-        header.getMenuBar().getMenus().addAll(homeMenu, helpMenu);
+        optionsMenu.getItems().add(fullScreen);
+        header.getMenuBar().getMenus().addAll(homeMenu,optionsMenu,helpMenu);
     }
 
     /*------------------------------------------------------------------------*

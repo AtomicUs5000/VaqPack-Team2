@@ -148,3 +148,29 @@
 .dialogPad {
     -fx-padding: 30 0 20 0;
 }
+.menu-bar { /* The menu bar itself */ 
+	-fx-background-color:rgb(0, 135, 81); /*Kelly Green*/
+}
+.menu-button { /* The menu buttons */ 
+	-fx-background-color:rgb(0, 135, 81); /*Kelly Green*/
+}
+.menu-button:showing{
+	-fx-background-color:rgb(0, 135, 81); /*Kelly Green*/    
+}
+.menu .label { /* Styles the text on the Menu Bar */ 
+	-fx-text-fill: white;
+}
+.menu:showing .label { 
+	-fx-text-fill: rgb(252, 163, 17);      /*Light Orange*/
+	-fx-font-weight: bold;
+}
+.menu-item:focused { 
+     -fx-background-color: rgb(0, 135, 81);/*Kelly Green*/     
+}
+.menu-item:focused .label { 
+    -fx-text-fill: white; 	   
+}
+.context-menu {
+    -fx-background-color: rgb(0, 38, 73); /*Navy*/
+}
+
