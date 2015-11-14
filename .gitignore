@@ -1,5 +1,5 @@
 /VaqPack/mysqla.properties
 /VaqPack/mysqll.properties
-/VaqPack/build/*
-/VaqPack/nbproject/private/*
-/VaqPack/dist/*
+/VaqPack/build/**
+/VaqPack/nbproject/private/**
+/VaqPack/dist/**

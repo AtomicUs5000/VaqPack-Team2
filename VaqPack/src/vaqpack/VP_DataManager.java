@@ -252,7 +252,7 @@ public class VP_DataManager {
      * - Returns a boolean value indicating if the string parameter is a
      *   well-formed address.
      *------------------------------------------------------------------------*/
-    protected static boolean checkEmail(String email) {
+    protected boolean checkEmail(String email) {
         if (email.length() >= 3) {
             String regex
                     = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*"

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -54,11 +53,9 @@ public class VP_GUIController {
     private final VP_Loader loader;
     private final VP_DataManager dataM;
     private final VP_GUIBuilder guiBuilder;
-    private ArrayList<Runnable>
-            guiTasks,
+    private ArrayList<Runnable> guiTasks,
             dbTasks;
-    private ArrayList<String>
-            guiTaskLabels,
+    private ArrayList<String> guiTaskLabels,
             dbTaskLabels;
     private final int sceneWidth = 1000, // width is temporary
             sceneHeight = 600;           // height is temporary
@@ -184,9 +181,14 @@ public class VP_GUIController {
         } else if (type == 1) {
             requestLoc.setHeaderText("Either the provided MySQL url or port is invalid, \n"
                     + "or the MySQL server is offline.");
+            urlField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+            portField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
         }
         urlField.setText(loc[0]);
         urlField.setPrefColumnCount(50);
+        urlField.setOnKeyTyped(new TextFieldLimiter(urlField, 0));
+        urlField.setOnKeyPressed(new TextFieldLimiter(urlField, 0));
+        urlField.setOnKeyReleased(new TextFieldLimiter(urlField, 0));
         urlLabel.setPrefWidth(50);
         portField.setText(loc[1]);
         portField.setPrefColumnCount(5);
@@ -233,6 +235,8 @@ public class VP_GUIController {
             requestCred.setHeaderText("Either the provided MySQL amdin username or password is invalid.\n"
                     + "Please reenter the correct admin username and password.\n"
                     + headerString);
+            userField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+            passField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
         }
         userField.setPrefColumnCount(16);
         userField.setOnKeyTyped(new TextFieldLimiter(userField, 16));
@@ -240,9 +244,9 @@ public class VP_GUIController {
         userField.setOnKeyReleased(new TextFieldLimiter(userField, 16));
         userLabel.setPrefWidth(120);
         passField.setPrefColumnCount(32);
-        passField.setOnKeyTyped(new TextFieldLimiter(userField, 32));
-        passField.setOnKeyPressed(new TextFieldLimiter(userField, 32));
-        passField.setOnKeyReleased(new TextFieldLimiter(userField, 32));
+        passField.setOnKeyTyped(new TextFieldLimiter(passField, 32));
+        passField.setOnKeyPressed(new TextFieldLimiter(passField, 32));
+        passField.setOnKeyReleased(new TextFieldLimiter(passField, 32));
         passLabel.setPrefWidth(120);
         requestCred.dialogShell.add(userLabel, 0, 0);
         requestCred.dialogShell.add(userField, 1, 0);
@@ -271,6 +275,7 @@ public class VP_GUIController {
      *------------------------------------------------------------------------*/
     private String[] requestVPAdmin(int type) {
         boolean passwordsOK = false;
+        boolean emailOK = false;
         VPDialog requestCred = new VPDialog("VaqPack Admin User Setup");
         Optional result;
         TextField userField = new TextField(),
@@ -295,6 +300,8 @@ public class VP_GUIController {
         } else {
             requestCred.setHeaderText("The provided database admin credentials "
                     + "were incorrect.\nPlease try again.\n\n" + headerString);
+            userField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+            passField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
         }
         userField.setPrefColumnCount(16);
         userField.setOnKeyTyped(new TextFieldLimiter(userField, 16));
@@ -302,24 +309,24 @@ public class VP_GUIController {
         userField.setOnKeyReleased(new TextFieldLimiter(userField, 16));
         userLabel.setPrefWidth(160);
         passField.setPrefColumnCount(32);
-        passField.setOnKeyTyped(new TextFieldLimiter(userField, 32));
-        passField.setOnKeyPressed(new TextFieldLimiter(userField, 32));
-        passField.setOnKeyReleased(new TextFieldLimiter(userField, 32));
+        passField.setOnKeyTyped(new TextFieldLimiter(passField, 32));
+        passField.setOnKeyPressed(new TextFieldLimiter(passField, 32));
+        passField.setOnKeyReleased(new TextFieldLimiter(passField, 32));
         passLabel.setPrefWidth(160);
         emailField.setPrefColumnCount(32);
-        emailField.setOnKeyTyped(new TextFieldLimiter(userField, 254));
-        emailField.setOnKeyPressed(new TextFieldLimiter(userField, 254));
-        emailField.setOnKeyReleased(new TextFieldLimiter(userField, 254));
+        emailField.setOnKeyTyped(new TextFieldLimiter(emailField, 254));
+        emailField.setOnKeyPressed(new TextFieldLimiter(emailField, 254));
+        emailField.setOnKeyReleased(new TextFieldLimiter(emailField, 254));
         emailLabel.setPrefWidth(160);
         passField2.setPrefColumnCount(32);
-        passField2.setOnKeyTyped(new TextFieldLimiter(userField, 32));
-        passField2.setOnKeyPressed(new TextFieldLimiter(userField, 32));
-        passField2.setOnKeyReleased(new TextFieldLimiter(userField, 32));
+        passField2.setOnKeyTyped(new TextFieldLimiter(passField2, 32));
+        passField2.setOnKeyPressed(new TextFieldLimiter(passField2, 32));
+        passField2.setOnKeyReleased(new TextFieldLimiter(passField2, 32));
         passLabel2.setPrefWidth(160);
         passField3.setPrefColumnCount(32);
-        passField3.setOnKeyTyped(new TextFieldLimiter(userField, 32));
-        passField3.setOnKeyPressed(new TextFieldLimiter(userField, 32));
-        passField3.setOnKeyReleased(new TextFieldLimiter(userField, 32));
+        passField3.setOnKeyTyped(new TextFieldLimiter(passField3, 32));
+        passField3.setOnKeyPressed(new TextFieldLimiter(passField3, 32));
+        passField3.setOnKeyReleased(new TextFieldLimiter(passField3, 32));
         passLabel3.setPrefWidth(160);
         requestCred.dialogShell.add(userLabel, 0, 0);
         requestCred.dialogShell.add(userField, 1, 0);
@@ -332,7 +339,7 @@ public class VP_GUIController {
         requestCred.dialogShell.add(passLabel3, 0, 4);
         requestCred.dialogShell.add(passField3, 1, 4);
         requestCred.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        while (!passwordsOK) {
+        while (!passwordsOK || !emailOK) {
             result = requestCred.showAndWait();
             if (result.get() == ButtonType.OK) {
                 cred[0] = userField.getText();
@@ -345,11 +352,19 @@ public class VP_GUIController {
             }
             if (cred[3].equals(cred4)) {
                 passwordsOK = true;
+                emailOK = dataM.checkEmail(cred[2]);
+                if (!emailOK) {
+                    requestCred.setHeaderText("The entered VaqPack admin email address "
+                            + "is not in valid email form.\nPlease try again.\n\n" + headerString);
+                    emailField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+                }
             } else {
                 passField2.setText("");
                 passField3.setText("");
                 requestCred.setHeaderText("The VaqPack admin user passwords do "
                         + "not match.\nPlease try again.\n\n" + headerString);
+                passField2.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+                passField3.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
             }
         }
         return cred;
@@ -405,8 +420,10 @@ public class VP_GUIController {
                                 try {
                                     if (stage == 0) {
                                         dataM.storeDBLocation(requestDBLocation(0));
+                                        latch.countDown();
                                     } else if (stage == 1) {
                                         dataM.storeAdminCred(requestAdminCred(0));
+                                        latch.countDown();
                                     }
                                 } catch (IOException ex2) {
                                     Platform.runLater(() -> errorAlert(1302 + (3 * stage), ex2.getMessage()));
@@ -414,8 +431,6 @@ public class VP_GUIController {
                                         InvalidKeyException | InvalidAlgorithmParameterException |
                                         IllegalBlockSizeException | BadPaddingException ex2) {
                                     Platform.runLater(() -> errorAlert(1303 + (3 * stage), ex2.getMessage()));
-                                } finally {
-                                    latch.countDown();
                                 }
                             });
                             try {
@@ -448,8 +463,10 @@ public class VP_GUIController {
                                 try {
                                     if (stage == 0) {
                                         dataM.storeDBLocation(requestDBLocation(1));
+                                        latch.countDown();
                                     } else if (stage == 1) {
                                         dataM.storeAdminCred(requestAdminCred(1));
+                                        latch.countDown();
                                     }
                                 } catch (IOException ex2) {
                                     Platform.runLater(() -> errorAlert(1302 + (3 * stage), ex2.getMessage()));
@@ -496,7 +513,6 @@ public class VP_GUIController {
                     adminlatch = new CountDownLatch(1);
                     try {
                         adminExists = dataM.searchForVPAdmin();
-                        adminlatch.countDown();
                     } catch (SQLException ex) {
                         Platform.runLater(() -> errorAlert(1307, ex.getMessage()));
                     }
@@ -504,20 +520,18 @@ public class VP_GUIController {
                         Platform.runLater(() -> {
                             try {
                                 adminCheck = dataM.createVPAdmin(requestVPAdmin(0));
+                                adminlatch.countDown();
                             } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                                 Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
-                            } finally {
-                                adminlatch.countDown();
                             }
-
                         });
+                    } else {
+                        adminlatch.countDown();
                     }
                     try {
                         adminlatch.await();
                     } catch (InterruptedException ex) {
                         errorAlert(1102, ex.getMessage());
-                    } finally {
-                        adminlatch.countDown();
                     }
                     if (!adminExists && !adminCheck) {
                         while (!adminCheck) {
@@ -525,10 +539,9 @@ public class VP_GUIController {
                             Platform.runLater(() -> {
                                 try {
                                     adminCheck = dataM.createVPAdmin(requestVPAdmin(1));
+                                    adminlatch.countDown();
                                 } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                                     Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
-                                } finally {
-                                    adminlatch.countDown();
                                 }
                             });
                             try {
@@ -669,6 +682,7 @@ public class VP_GUIController {
          * - Constructor.
          * - Parameter thisNode is the TextField using this EventHandler
          * - Parameter limit is the allowed character limit for this TextField.
+         *   A limit of 0 or less means to not limit the text.
          *---------------------------------------------------------------------*/
 
         public TextFieldLimiter(TextField thisNode, int limit) {
@@ -681,10 +695,13 @@ public class VP_GUIController {
             if (event.getEventType() == KeyEvent.KEY_PRESSED
                     || event.getEventType() == KeyEvent.KEY_RELEASED
                     || event.getEventType() == KeyEvent.KEY_TYPED) {
-                String text = thisNode.getText();
-                if (text.length() > limit) {
-                    thisNode.setText(text.substring(0, limit));
-                    thisNode.positionCaret(limit);
+                thisNode.setStyle("-fx-control-inner-background: white");
+                if (limit > 0) {
+                    String text = thisNode.getText();
+                    if (text.length() > limit) {
+                        thisNode.setText(text.substring(0, limit));
+                        thisNode.positionCaret(limit);
+                    }
                 }
             }
         }
