@@ -19,6 +19,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -242,6 +244,27 @@ public class VP_DataManager {
     protected boolean createVPAdmin(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         return dbManager.createVaqPackAdmin(cred);
+    }
+
+    /*------------------------------------------------------------------------*
+     * checkEmail()
+     * - Compares the string parameter against a REGEX pattern to
+     *   determinine if an email address is well-formed.
+     * - Parameter email is a string of a potential email address.
+     * - Returns a boolean value indicating if the string parameter is a
+     *   well-formed address.
+     *------------------------------------------------------------------------*/
+    protected static boolean checkEmail(String email) {
+        if (email.length() >= 3) {
+            String regex
+                    = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*"
+                    + "@(?:[A-Z0-9-]+\\.)+[A-Z]{2,63}$";
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(email);
+            return matcher.matches();
+        } else {
+            return false;
+        }
     }
 
     /*------------------------------------------------------------------------*
