@@ -83,6 +83,7 @@ public class VP_GUIBuilder {
         //exitVP.setOnAction(...);
         //gettingStarted.setOnAction(...);
         //aboutHelp.setOnAction(...);
+        //fullScreen.setOnAction(...fullScreenToggle());
         optionsMenu.getItems().addAll(toggleTree, toggleFull);
         helpMenu.getItems().addAll(gettingStarted, aboutHelp);
         
