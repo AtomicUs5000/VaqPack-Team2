@@ -21,10 +21,9 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -55,10 +54,12 @@ public class VP_GUIController {
     private final VP_Loader loader;
     private final VP_DataManager dataM;
     private final VP_GUIBuilder guiBuilder;
-    private ArrayList<Service> dbservices,
-            guiservices;
-    private ArrayList<String> dbserviceLabels,
-            guiserviceLabels;
+    private ArrayList<Runnable>
+            guiTasks,
+            dbTasks;
+    private ArrayList<String>
+            guiTaskLabels,
+            dbTaskLabels;
     private final int sceneWidth = 1000, // width is temporary
             sceneHeight = 600;           // height is temporary
 
@@ -75,7 +76,7 @@ public class VP_GUIController {
         mainLayout = new StackPane();
         guiBuilder = new VP_GUIBuilder();
         loader = new VP_Loader(sceneWidth, sceneHeight);
-        dataM = new VP_DataManager(this, loader);
+        dataM = new VP_DataManager(this);
         guiLayout = guiBuilder.createShell();
         mainLayout.getChildren().addAll(loader, guiLayout);
         mainLayout.getChildren().get(1).setVisible(false);
@@ -116,57 +117,50 @@ public class VP_GUIController {
      * - No return.
      *------------------------------------------------------------------------*/
     private void load() {
-        dbserviceLabels = new ArrayList();
-        guiserviceLabels = new ArrayList();
-        dbserviceLabels.add("Retrieving MySQL Location");
-        dbserviceLabels.add("Checking MySQL Connectivity");
-        dbserviceLabels.add("Retrieving MySQL Admin Credentials");
-        dbserviceLabels.add("Checking MySQL Admin Credentials");
-        dbserviceLabels.add("Checking User Table");
-        dbserviceLabels.add("Checking Access Level Table");
-        dbserviceLabels.add("Checking Business Card Table");
-        dbserviceLabels.add("Checking Contact Table");
-        dbserviceLabels.add("Checking Cover Letter Table");
-        dbserviceLabels.add("Checking Resume Table");
-        dbserviceLabels.add("Checking User Data Table");
-        dbserviceLabels.add("Checking Custom Theme Table");
-        dbserviceLabels.add("Checking Default Theme Table");
-        dbserviceLabels.add("Checking Business Card Has Custom Theme Table");
-        dbserviceLabels.add("Checking Business Card Has Default Theme Table");
-        dbserviceLabels.add("Checking Business Card PDF Table");
-        dbserviceLabels.add("Checking Cover Letter Has Custom Theme Table");
-        dbserviceLabels.add("Checking Cover Letter Has Default Theme Table");
-        dbserviceLabels.add("Checking Cover Letter PDF Table");
-        dbserviceLabels.add("Checking Resume Has Custom Theme Table");
-        dbserviceLabels.add("Checking Resume Has Default Theme Table");
-        dbserviceLabels.add("Checking Resume PDF Table");
-        dbserviceLabels.add("Checking Resume HTML Table");
-        dbserviceLabels.add("Checking User Access Levels");
-        dbserviceLabels.add("Checking VaqPack Admin User");
-        guiserviceLabels.add("Building Menu and Header");
-        guiserviceLabels.add("Building Tree Viewer");
-        guiserviceLabels.add("Building Center Panes");
-        dbservices = new ArrayList();
-        guiservices = new ArrayList();
-        dbservices.add(new DBFileService(1));
-        dbservices.add(new DBService(1, 0));
-        dbservices.add(new DBFileService(2));
-        dbservices.add(new DBService(2, 0));
-        for (int i = 0; i < 19; i++) {
-            dbservices.add(new DBService(3, i));
+        dbTasks = new ArrayList();
+        guiTasks = new ArrayList();
+        dbTaskLabels = new ArrayList();
+        guiTaskLabels = new ArrayList();
+        dbTaskLabels.add("Retrieving MySQL Location");
+        dbTaskLabels.add("Retrieving MySQL Admin Credentials");
+        dbTaskLabels.add("Checking User Table");
+        dbTaskLabels.add("Checking Access Level Table");
+        dbTaskLabels.add("Checking Business Card Table");
+        dbTaskLabels.add("Checking Contact Table");
+        dbTaskLabels.add("Checking Cover Letter Table");
+        dbTaskLabels.add("Checking Resume Table");
+        dbTaskLabels.add("Checking User Data Table");
+        dbTaskLabels.add("Checking Custom Theme Table");
+        dbTaskLabels.add("Checking Default Theme Table");
+        dbTaskLabels.add("Checking Business Card Has Custom Theme Table");
+        dbTaskLabels.add("Checking Business Card Has Default Theme Table");
+        dbTaskLabels.add("Checking Business Card PDF Table");
+        dbTaskLabels.add("Checking Cover Letter Has Custom Theme Table");
+        dbTaskLabels.add("Checking Cover Letter Has Default Theme Table");
+        dbTaskLabels.add("Checking Cover Letter PDF Table");
+        dbTaskLabels.add("Checking Resume Has Custom Theme Table");
+        dbTaskLabels.add("Checking Resume Has Default Theme Table");
+        dbTaskLabels.add("Checking Resume PDF Table");
+        dbTaskLabels.add("Checking Resume HTML Table");
+        dbTaskLabels.add("Verifying User Access Levels");
+        dbTaskLabels.add("Verifying VaqPack Admin User Existence");
+        dbTaskLabels.add("Database Initialization Complete");
+        guiTaskLabels.add("Building Menu and Header");
+        guiTaskLabels.add("Building Tree Viewer");
+        guiTaskLabels.add("Building Center Panes");
+        guiTaskLabels.add("Building Footer");
+        guiTaskLabels.add("Application Build Complete");
+        for (int i = 0; i < guiTaskLabels.size(); i++) {
+            guiTasks.add(new LoadGUITask(i));
         }
-        dbservices.add(new DBService(4, 0));
-        dbservices.add(new DBService(5, 0));
-        dbservices.add(new DBService(6, 0));
-        dbservices.add(new DBService(7, 0));
-        for (int i = 0; i < 3; i++) {
-            guiservices.add(new GUIService(i));
+        for (int i = 0; i < dbTaskLabels.size(); i++) {
+            dbTasks.add(new LoadDBTask(i));
         }
-        loader.setTotalTasks(dbservices.size() + guiservices.size() - 2);
-        loader.setActivity1(dbserviceLabels.get(0));
-        loader.setActivity2(guiserviceLabels.get(0));
-        dbservices.get(0).start();
-        guiservices.get(0).start();
+        LoadingThread loadDB = new LoadingThread(dbTasks);
+        LoadingThread loadGUI = new LoadingThread(guiTasks);
+        loader.setTotalTasks(dbTaskLabels.size() + guiTaskLabels.size());
+        loadDB.start();
+        loadGUI.start();
     }
 
     /*------------------------------------------------------------------------*
@@ -375,318 +369,250 @@ public class VP_GUIController {
     /*------------------------------------------------------------------------*
      * Subclasses
      *------------------------------------------------------------------------*/
+
     /*------------------------------------------------------------------------*
-     * Subclass DBFileService
-     * - Defines the tasks that involve the File Manager.
+     * Subclass LoadDBTasks
+     * - Defines the runnablw wrappers for the datatbase tasks.
      *------------------------------------------------------------------------*/
-    private class DBFileService extends Service<Void> {
+    private class LoadDBTask implements Runnable {
 
         private final int stage;
+        private boolean adminCheck;
+        private CountDownLatch adminlatch;
 
-        public DBFileService(int stage) {
+        public LoadDBTask(int stage) {
             this.stage = stage;
-            // checking stored connectivity properties
-            if (stage == 1) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    loader.incrementCompletedTasks();
-                    loader.setActivity1(dbserviceLabels.get(1));
-                    dbservices.get(1).reset();
-                    dbservices.get(1).start();
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    if (this.exceptionProperty().getValue().toString().contains("FileNotFoundException")) {
-                        try {
-                            dataM.storeDBLocation(requestDBLocation(0));
-                            loader.incrementCompletedTasks();
-                            loader.setActivity1(dbserviceLabels.get(1));
-                            dbservices.get(1).reset();
-                            dbservices.get(1).start();
-                        } catch (IOException ex) {
-                            errorAlert(1302, ex.getMessage());
-                        }
-                    } else {
-                        errorAlert(1301, this.getException().getMessage());
-                    }
-                });
-            } // checking encrypted stored mysql admin credentials
-            else if (stage == 2) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    loader.incrementCompletedTasks();
-                    loader.setActivity1(dbserviceLabels.get(3));
-                    dbservices.get(3).reset();
-                    dbservices.get(3).start();
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    if (!this.exceptionProperty().getValue().toString().contains("FileNotFoundException")) {
-                        errorAlert(1304, this.getException().getMessage());
-                    }
-                    try {
-                        dataM.storeAdminCred(requestAdminCred(0));
-                        loader.incrementCompletedTasks();
-                        loader.setActivity1(dbserviceLabels.get(3));
-                        dbservices.get(3).reset();
-                        dbservices.get(3).start();
-                    } catch (IOException ex) {
-                        errorAlert(1305, ex.getMessage());
-                    } catch (NoSuchAlgorithmException | NoSuchPaddingException |
-                            InvalidKeyException | InvalidAlgorithmParameterException |
-                            IllegalBlockSizeException | BadPaddingException ex) {
-                        errorAlert(1303, ex.getMessage());
-                    }
-                });
-            }
-            this.setOnScheduled((WorkerStateEvent event) -> {
-                try {
-                    Thread.sleep(180);
-                } catch (InterruptedException ex) {
-                    errorAlert(1101, ex.getMessage());
-                }
-            });
         }
 
         @Override
-        protected Task<Void> createTask() {
-            return new Task<Void>() {
-                @Override
-                public Void call() throws FileNotFoundException,
-                        IOException, NoSuchAlgorithmException,
-                        IllegalBlockSizeException, BadPaddingException,
-                        NoSuchPaddingException, InvalidKeyException,
-                        InvalidAlgorithmParameterException, InterruptedException {
-                    if (stage == 1) {
-                        dataM.retrieveDBLocation();
-                    } else if (stage == 2) {
-                        dataM.retrieveAdmin();
-                    }
-                    Thread.sleep(250);
-                    return null;
-                }
-            };
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass DBService
-     * - Defines the tasks that involve the Database Manager.
-     *------------------------------------------------------------------------*/
-    private class DBService extends Service<Void> {
-
-        private final int stage, subStage;
-        private int vpAdminType = 0;
-        private boolean adminCheck = false,
-                adminExists = false;
-
-        public DBService(int stage, int subStage) {
-            this.stage = stage;
-            this.subStage = subStage;
-            // connectivity checking
-            if (stage == 1) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    loader.incrementCompletedTasks();
-                    loader.setActivity1(dbserviceLabels.get(2));
-                    dbservices.get(2).reset();
-                    dbservices.get(2).start();
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    if (((SQLException) (this.getException())).getErrorCode() == 0) {
+        public void run() {
+            Platform.runLater(() -> (loader.setActivity1(dbTaskLabels.get(stage))));
+            if (stage == 0 || stage == 1) {
+                boolean complete = false;
+                while (!complete) {
+                    boolean retrieveComplete = false;
+                    while (!retrieveComplete) {
                         try {
-                            dataM.storeDBLocation(requestDBLocation(1));
-                            loader.setActivity1(dbserviceLabels.get(0));
-                            dbservices.get(0).reset();
-                            dbservices.get(0).start();
+                            if (stage == 0) {
+                                dataM.retrieveDBLocation();
+                            } else if (stage == 1) {
+                                dataM.retrieveAdmin();
+                            }
+                            retrieveComplete = true;
+                        } catch (FileNotFoundException ex) {
+                            CountDownLatch latch = new CountDownLatch(1);
+                            Platform.runLater(() -> {
+                                try {
+                                    if (stage == 0) {
+                                        dataM.storeDBLocation(requestDBLocation(0));
+                                    } else if (stage == 1) {
+                                        dataM.storeAdminCred(requestAdminCred(0));
+                                    }
+                                } catch (IOException ex2) {
+                                    Platform.runLater(() -> errorAlert(1302 + (3 * stage), ex2.getMessage()));
+                                } catch (NoSuchAlgorithmException | NoSuchPaddingException |
+                                        InvalidKeyException | InvalidAlgorithmParameterException |
+                                        IllegalBlockSizeException | BadPaddingException ex2) {
+                                    Platform.runLater(() -> errorAlert(1303 + (3 * stage), ex2.getMessage()));
+                                } finally {
+                                    latch.countDown();
+                                }
+                            });
+                            try {
+                                latch.await();
+                            } catch (InterruptedException ex1) {
+                                Platform.runLater(() -> errorAlert(1101, ex1.getMessage()));
+                            } finally {
+                                latch.countDown();
+                            }
                         } catch (IOException ex) {
-                            errorAlert(1302, ex.getMessage());
+                            Platform.runLater(() -> errorAlert(1301 + (3 * stage), ex.getMessage()));
+                        } catch (NoSuchAlgorithmException | NoSuchPaddingException |
+                                InvalidKeyException | InvalidAlgorithmParameterException |
+                                IllegalBlockSizeException | BadPaddingException ex) {
+                            Platform.runLater(() -> errorAlert(1303 + (3 * stage), ex.getMessage()));
                         }
-                    } else {
-                        errorAlert(1401, ((SQLException) (this.getException())).getMessage());
                     }
-                });
-            } // mysql admin checking and main databse schema
-            else if (stage == 2) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    loader.incrementCompletedTasks();
-                    loader.setActivity1(dbserviceLabels.get(4));
-                    dbservices.get(4).reset();
-                    dbservices.get(4).start();
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    // The database already exists, this is fine
-                    if (((SQLException) (this.getException())).getErrorCode() == 1007) {
-                        loader.incrementCompletedTasks();
-                        loader.setActivity1(dbserviceLabels.get(4));
-                        dbservices.get(4).reset();
-                        dbservices.get(4).start();
-                    } // The admin username or password is incorrect
-                    else if (((SQLException) (this.getException())).getErrorCode() == 1045) {
-                        try {
-                            dataM.storeAdminCred(requestAdminCred(0));
-                            loader.setActivity1(dbserviceLabels.get(2));
-                            dbservices.get(2).reset();
-                            dbservices.get(2).start();
-                        } catch (IOException ex) {
-                            errorAlert(1305, ex.getMessage());
-                        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
-                            errorAlert(1303, ex.getMessage());
-                        }
-                    } else {
-                        errorAlert(1402, ((SQLException) (this.getException())).getMessage());
-                    }
-                });
-            } // database table checking
-            else if (stage == 3) {
-                int temp = 5 + subStage;
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    loader.incrementCompletedTasks();
-                    loader.setActivity1(dbserviceLabels.get(temp));
-                    dbservices.get(temp).reset();
-                    dbservices.get(temp).start();
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    if (((SQLException) (this.getException())).getErrorCode() == 1050) {
-                        loader.incrementCompletedTasks();
-                        loader.setActivity1(dbserviceLabels.get(temp));
-                        dbservices.get(temp).reset();
-                        dbservices.get(temp).start();
-                    } else {
-                        errorAlert(1403, ((SQLException) (this.getException())).getMessage());
-                    }
-                });
-            } // vaqpack user level definitions
-            else if (stage == 4) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    loader.incrementCompletedTasks();
-                    loader.setActivity1(dbserviceLabels.get(24));
-                    dbservices.get(24).reset();
-                    dbservices.get(24).start();
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    errorAlert(1404, ((SQLException) (this.getException())).getMessage());
-                });
-            } // check if vaqpack admin user exists
-            else if (stage == 5) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    if (!adminExists) {
-                        try {
-                            adminCheck = dataM.createVPAdmin(requestVPAdmin(vpAdminType));
-                        } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                            errorAlert(1306, ex.getMessage());
-                        }
-                        dbservices.get(25).reset();
-                        dbservices.get(25).start();
-                    } else {
-                        loader.incrementCompletedTasks();
-                        loader.setActivity2("Database Initialization Complete");
-                        dbservices.get(26).reset();
-                        dbservices.get(26).start();
-                    }
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    errorAlert(1307, this.getException().getMessage());
-                });
-            } // try to store the data
-            else if (stage == 6) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
-                    if (!adminCheck) {
-                        ((DBService) (dbservices.get(24))).setVPAdminType(1);
-                        dbservices.get(24).reset();
-                        dbservices.get(24).start();
-                    }
-                });
-                this.setOnFailed((WorkerStateEvent event) -> {
-                    errorAlert(1308, this.getException().getMessage());
-                });
-            } else if (stage == 7) {
-                this.setOnSucceeded((WorkerStateEvent event) -> {
                     try {
-                        Thread.sleep(360);
-                    } catch (InterruptedException ex) {
-                        errorAlert(1101, ex.getMessage());
-                    }
-                });
-            }
-            this.setOnScheduled((WorkerStateEvent event) -> {
-                try {
-                    Thread.sleep(180);
-                } catch (InterruptedException ex) {
-                    errorAlert(1101, ex.getMessage());
-                }
-            });
-        }
+                        if (stage == 0) {
+                            dataM.checkDBLocation();
+                            complete = true;
+                        } else if (stage == 1) {
+                            dataM.checkDBSchemaExists();
+                        }
 
-        @Override
-        protected Task<Void> createTask() {
-            return new Task<Void>() {
-                @Override
-                public Void call() throws SQLException, InterruptedException,
-                        NoSuchAlgorithmException, UnsupportedEncodingException {
-                    if (stage == 1) {
-                        dataM.checkDBLocation();
-                    } else if (stage == 2) {
-                        dataM.checkDBSchemaExists();
-                    } else if (stage == 3) {
-                        dataM.checkDBTable(subStage);
-                    } else if (stage == 4) {
+                    } catch (SQLException ex) {
+                        if ((ex.getErrorCode() == 0 && stage == 0) || (ex.getErrorCode() == 1045 && stage == 1)) {
+                            CountDownLatch latch = new CountDownLatch(1);
+                            Platform.runLater(() -> {
+                                try {
+                                    if (stage == 0) {
+                                        dataM.storeDBLocation(requestDBLocation(1));
+                                    } else if (stage == 1) {
+                                        dataM.storeAdminCred(requestAdminCred(1));
+                                    }
+                                } catch (IOException ex2) {
+                                    Platform.runLater(() -> errorAlert(1302 + (3 * stage), ex2.getMessage()));
+                                } catch (NoSuchAlgorithmException | NoSuchPaddingException |
+                                        InvalidKeyException | InvalidAlgorithmParameterException |
+                                        IllegalBlockSizeException | BadPaddingException ex2) {
+                                    Platform.runLater(() -> errorAlert(1303 + (3 * stage), ex2.getMessage()));
+                                } finally {
+                                    latch.countDown();
+                                }
+                            });
+                            try {
+                                latch.await();
+                            } catch (InterruptedException ex1) {
+                                errorAlert(1102, ex.getMessage());
+                            } finally {
+                                latch.countDown();
+                            }
+                        } else if (stage == 1 && ex.getErrorCode() == 1007) {
+                            complete = true;
+                        } else {
+                            Platform.runLater(() -> errorAlert(1401 + stage, ex.getMessage()));
+                        }
+                    }
+                }
+            } else if (stage > 1 && stage < 22) {
+                try {
+                    if (stage < 21) {
+                        dataM.checkDBTable(stage - 2);
+                    } else if (stage == 21) {
                         dataM.contructUserAccess();
-                    } else if (stage == 5) {
-                        adminExists = dataM.searchForVPAdmin();
-                    } else if (stage == 7) {
-                        Platform.runLater(() -> exposeGUI());
                     }
-                    return null;
+                } catch (SQLException ex) {
+                    if (ex.getErrorCode() != 1050 && stage < 21) {
+                        Platform.runLater(() -> errorAlert(1403, ex.getMessage()));
+                    } else if (stage == 21) {
+                        Platform.runLater(() -> errorAlert(1404, ex.getMessage()));
+                    }
                 }
-            };
-        }
+            } else if (stage == 22) {
+                boolean adminExists = false;
+                while (!adminExists && !adminCheck) {
+                    adminCheck = false;
+                    adminlatch = new CountDownLatch(1);
+                    try {
+                        adminExists = dataM.searchForVPAdmin();
+                        adminlatch.countDown();
+                    } catch (SQLException ex) {
+                        Platform.runLater(() -> errorAlert(1307, ex.getMessage()));
+                    }
+                    if (!adminExists) {
+                        Platform.runLater(() -> {
+                            try {
+                                adminCheck = dataM.createVPAdmin(requestVPAdmin(0));
+                            } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                                Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
+                            } finally {
+                                adminlatch.countDown();
+                            }
 
-        public void setVPAdminType(int type) {
-            this.vpAdminType = type;
+                        });
+                    }
+                    try {
+                        adminlatch.await();
+                    } catch (InterruptedException ex) {
+                        errorAlert(1102, ex.getMessage());
+                    } finally {
+                        adminlatch.countDown();
+                    }
+                    if (!adminExists && !adminCheck) {
+                        while (!adminCheck) {
+                            adminlatch = new CountDownLatch(1);
+                            Platform.runLater(() -> {
+                                try {
+                                    adminCheck = dataM.createVPAdmin(requestVPAdmin(1));
+                                } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                                    Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
+                                } finally {
+                                    adminlatch.countDown();
+                                }
+                            });
+                            try {
+                                adminlatch.await();
+                            } catch (InterruptedException ex) {
+                                errorAlert(1102, ex.getMessage());
+                            } finally {
+                                adminlatch.countDown();
+                            }
+                        }
+                    }
+                }
+            } else {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> {
+                    loader.incrementCompletedTasks();
+                    latch.countDown();
+                });
+                try {
+                    latch.await();
+                    Thread.sleep(500);
+                    exposeGUI();
+                } catch (InterruptedException ex) {
+                    errorAlert(1102, ex.getMessage());
+                }
+            }
+            if (stage != dbTaskLabels.size() - 1) {
+                Platform.runLater(() -> loader.incrementCompletedTasks());
+            }
         }
     }
 
     /*------------------------------------------------------------------------*
-     * Subclass GUIService
-     * - Defines the tasks that involve building the GUI.
+     * Subclass LoadGUITask
+     * - Defines the runnable wrappers for the gui tasks.
      *------------------------------------------------------------------------*/
-    private class GUIService extends Service<Void> {
+    private class LoadGUITask implements Runnable {
 
         private final int stage;
 
-        public GUIService(int stage) {
+        public LoadGUITask(int stage) {
             this.stage = stage;
-            this.setOnSucceeded((WorkerStateEvent event) -> {
-                loader.incrementCompletedTasks();
-                if (this.stage == guiservices.size() - 1) {
-                    loader.setActivity2("Application Build Complete");
-                } else {
-                    loader.setActivity2(guiserviceLabels.get(stage + 1));
-                    guiservices.get(this.stage + 1).reset();
-                    guiservices.get(this.stage + 1).start();
-                }
-            });
-            this.setOnFailed((WorkerStateEvent event) -> {
-                errorAlert(1101, this.getException().getMessage());
-                loader.incrementCompletedTasks();
-            });
         }
 
         @Override
-        protected Task<Void> createTask() {
-            return new Task<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    Thread.sleep((int) (4000 / guiservices.size()));
-                    if (stage == 0) {
-                        Platform.runLater(() -> guiBuilder.buildTop());
-                    } else if (stage == 1) {
-                        Platform.runLater(() -> guiBuilder.buildLeft());
-                    } else if (stage == 2) {
-                        Platform.runLater(() -> guiBuilder.buildCenter());
-                    }
-                    return null;
-                }
-            };
+        public void run() {
+            Platform.runLater(() -> (loader.setActivity2(guiTaskLabels.get(stage))));
+            if (stage == 0) {
+                Platform.runLater(() -> guiBuilder.buildTop());
+            } else if (stage == 1) {
+                Platform.runLater(() -> guiBuilder.buildLeft());
+            } else if (stage == 2) {
+                Platform.runLater(() -> guiBuilder.buildCenter());
+            } else if (stage == 3) {
+                Platform.runLater(() -> guiBuilder.buildBottom());
+            }
+            Platform.runLater(() -> loader.incrementCompletedTasks());
         }
     }
 
+    /*------------------------------------------------------------------------*
+     * Subclass LoadingThread
+     * - Runs the tasks during loading.
+     *------------------------------------------------------------------------*/
+    private class LoadingThread extends Thread {
+
+        private final ArrayList<Runnable> tasks;
+
+        public LoadingThread(ArrayList<Runnable> tasks) {
+            this.tasks = tasks;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < tasks.size(); i++) {
+                try {
+                    tasks.get(i).run();
+                    LoadingThread.sleep(4000 / tasks.size());
+                } catch (InterruptedException ex) {
+                    errorAlert(1101, ex.getMessage());
+                }
+            }
+        }
+    }
 
     /*------------------------------------------------------------------------*
      * Subclass VPDialog

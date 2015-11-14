@@ -3,7 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/home/erik/VaqPack-Team2/VaqPack/src/vaqpack/VP_DataManager.java</file>
+=======
+            <file>file:/C:/Users/atomi_000/Desktop/school/011_FALL_2015/CSCI_3340_02_SEI/GitProjects/VaqPack/src/vpStyle.css</file>
+            <file>file:/C:/Users/atomi_000/Desktop/school/011_FALL_2015/CSCI_3340_02_SEI/GitProjects/VaqPack/src/vaqpack/VP_GUIBuilder.java</file>
+>>>>>>> f069b480f502947f456e336ebe642aa5abb56ac3
         </group>
     </open-files>
 </project-private>

@@ -12,21 +12,34 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class VP_Header extends VBox {
 
-    private MenuBar menuBar;
+    private final MenuBar menuBar;
+    private final HBox headerBar;
+    private final Pane headerLogo;
+    private final Label headerCaption;
 
     /*------------------------------------------------------------------------*
      * VP_Header()
-     * - Constructor. Adds an empty menubar to itself.
+     * - Constructor. Adds an empty menubar and header section to itself.
      * - No parameters.
      *------------------------------------------------------------------------*/
     protected VP_Header() {
         menuBar = new MenuBar();
-        this.getChildren().addAll(menuBar);
+        headerBar = new HBox();
+        headerLogo = new Pane();
+        headerCaption = new Label();
+        menuBar.setId("menuBar");
+        headerBar.setId("headerBar");
+        headerLogo.setId("headerLogo");
+        headerCaption.setId("headerCaption");
+        this.getChildren().addAll(menuBar, headerBar);
     }
 
     /*------------------------------------------------------------------------*
@@ -36,8 +49,16 @@ public class VP_Header extends VBox {
         return menuBar;
     }
 
-    protected void setMenuBar(MenuBar menuBar) {
-        this.menuBar = menuBar;
+    protected HBox getHeaderBar() {
+        return headerBar;
+    }
+
+    protected Pane getHeaderLogo() {
+        return headerLogo;
+    }
+
+    protected Label getHeaderCaption() {
+        return headerCaption;
     }
 
 }

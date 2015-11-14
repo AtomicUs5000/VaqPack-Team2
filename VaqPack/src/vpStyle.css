@@ -3,6 +3,7 @@
 // UTRGV Orange rgb(249, 86, 2)
 // UTRGV Light Orange rgb(252, 163, 17)
 
+// loader
 #loader {
     -fx-background-color:
         linear-gradient(rgb(252, 163, 17) 0%, rgb(255, 234, 200) 70%, rgb(200, 242, 230) 100%),
@@ -19,7 +20,96 @@
     -fx-font-weight: bold;
     -fx-font-size: 16px;
 }
+// header
+#menuBar {
+    -fx-background-color: rgb(0, 135, 81),
+        linear-gradient(rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0) 10%, rgba(255, 255, 255, 0.0) 90%, rgba(255, 255, 255, 0.5) 100%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.5) 0px, rgba(0, 0, 0, 0.0) 20px, rgba(255, 255, 255, 0.0) 50%, rgba(255, 255, 255, 0.3) 99%);
+    -fx-accent: 
+        linear-gradient(rgba(50, 200, 170, 0.0) 0%, rgba(50, 200, 170, 0.5) 10%, rgba(50, 200, 170, 0.5) 90%, rgba(50, 200, 170, 0.0) 100%);
+    -fx-border-width: 1px;
+    -fx-border-color: rgb(0, 38, 73);
+}
+#menuBar .menu .label {
+    -fx-font-size: 12;
+    -fx-text-fill: rgb(220, 255, 220);
+    -fx-padding: 4 8 4 8;
+    -fx-font-weight: bold;
+}
+#menuBar .menu-item .label {
+    -fx-font-size: 11;
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-padding: 4 8 4 8;
+    -fx-font-weight: normal;
+}
+#menuBar .menu:hover, .menu-item:hover{
+    -fx-cursor: hand;
+}
+#menuBar .context-menu {
+    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-background-color:
+        linear-gradient(rgb(180, 180, 180) 0%, rgb(230, 230, 230) 5%, rgb(255, 255, 255) 100%);
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 0 6 6, 0 0 5 5, 0 0 4 4;
+    -fx-padding: 4 1 8 1;
+    -fx-effect: dropshadow(one-pass-box, rgb(0, 0, 0), 20, 0.1, 0, 6);
+}
+#headerBar {
+    -fx-background-color: 
+        linear-gradient(rgb(0, 10, 30) 0%, rgb(0, 38, 73) 15%, rgb(0, 38, 73) 85%, rgb(20, 60, 100) 100%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.5) 0px, rgba(0, 0, 0, 0.0) 20px, rgba(255, 255, 255, 0.0) 50%, rgba(255, 255, 255, 0.3) 99%);
+}
+#headerLogo {
+    -fx-background-image: url("headerLogo.png");
+    -fx-background-size: 175 50;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+#headerCaption {
+    -fx-text-fill:
+        linear-gradient(rgb(200, 230, 230) 0%, rgb(255, 255, 255) 100%);
+    -fx-font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    -fx-font-size: 17px;
+    -fx-font-smoothing-type: lcd;
+}
 
+// left side
+#treeContainer {
+    -fx-border-width: 1px 0 1px 1px;
+    -fx-border-color: rgb(0, 38, 73);
+    -fx-background-color:
+        linear-gradient(rgb(180, 180, 180) 0%, rgb(230, 230, 230) 5%, rgb(255, 255, 255) 100%);
+}
+
+//center
+#center {
+    -fx-border-width: 1px;
+    -fx-border-color: rgb(0, 38, 73);
+    -fx-background-color:
+        linear-gradient(rgb(200, 200, 200) 0%, rgb(240, 240, 240) 5%, rgb(255, 255, 255) 100%);
+}
+
+//footer
+#footer {
+    -fx-background-color: 
+        linear-gradient(rgb(0, 10, 30) 0%, rgb(0, 38, 73) 15%, rgb(0, 38, 73) 85%, rgb(20, 60, 100) 100%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.5) 0px, rgba(0, 0, 0, 0.0) 20px, rgba(255, 255, 255, 0.0) 50%, rgba(255, 255, 255, 0.3) 99%);
+}
+#footerCaption {
+    -fx-text-fill:
+        linear-gradient(rgb(200, 230, 230) 0%, rgb(255, 255, 255) 100%);
+    -fx-font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    -fx-font-size: 14px;
+    -fx-font-smoothing-type: lcd;
+}
+#footerLogo {
+    -fx-background-image: url("footerLogo.png");
+    -fx-background-size: 100 30;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+
+// popups
 .dialog-pane {
     -fx-background-color:
         linear-gradient(rgb(252, 163, 17) 0%, rgb(255, 234, 200) 70%, rgb(200, 242, 230) 100%),
@@ -35,12 +125,10 @@
 .dialog-pane .label {
     -fx-text-fill: rgb(0, 38, 73);
 }
-
 .dialog-pane.errorAlert .content {
     -fx-text-fill: rgb(0, 38, 73);
     -fx-font-weight: bold;
 }
-
 .dialog-pane .header-panel {
     -fx-border-color: rgb(249, 86, 2);
     -fx-border-radius: 10 10 10 10;
@@ -55,7 +143,6 @@
 .dialog-pane .text-field {
     -fx-focus-color: rgb(249, 86, 2);
 }
-
 .dialog-pane .button {
     -fx-background-color:
         linear-gradient(rgb(200, 242, 230) 0%, rgb(0, 38, 73) 100%),
@@ -68,7 +155,6 @@
     -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
     -fx-border-color: rgb(0, 38, 73);
 }
-
 .dialog-pane.errorAlert .button {
     -fx-background-color:
         linear-gradient(rgb(249, 86, 2) 0%, rgb(255, 0, 0) 100%),
@@ -81,7 +167,6 @@
     -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
     -fx-border-color: rgb(0, 38, 73);
 }
-
 .dialog-pane .button:hover {
     -fx-background-color:
         linear-gradient(rgb(250, 246, 240) 0%, rgb(50, 185, 131) 100%),
@@ -95,7 +180,6 @@
     -fx-border-color: rgb(0, 38, 73);
     -fx-cursor: hand;
 }
-
 .dialog-pane.errorAlert .button:hover {
     -fx-background-color:
         linear-gradient(rgb(255, 255, 255)0%, rgb(255, 234, 200)  100%),
@@ -109,7 +193,6 @@
     -fx-border-color: rgb(0, 38, 73);
     -fx-cursor: hand;
 }
-
 .dialog-pane .button:focused {
     -fx-background-color:
         linear-gradient(rgb(200, 242, 230) 0%, rgb(0, 135, 81) 100%),
@@ -122,7 +205,6 @@
     -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
     -fx-border-color: rgb(0, 38, 73);
 }
-
 .dialog-pane .button:focused:hover {
     -fx-background-color:
         linear-gradient(rgb(250, 246, 240) 0%, rgb(50, 185, 131) 100%),
@@ -136,7 +218,6 @@
     -fx-border-color: rgb(0, 38, 73);
     -fx-cursor: hand;
 }
-
 .dialogGrid {
     -fx-border-color: rgb(249, 86, 2);
     -fx-border-radius: 10 10 10 10;
@@ -148,3 +229,4 @@
 .dialogPad {
     -fx-padding: 30 0 20 0;
 }
+
