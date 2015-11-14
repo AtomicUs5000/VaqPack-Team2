@@ -30,7 +30,6 @@ public class VP_DataManager {
     private final VP_DataToHtml data2html;
     private final VP_HtmlToPdf html2pdf;
     private final VP_FileManager fileM;
-    private final VP_Loader loader;
 
     /*------------------------------------------------------------------------*
      * VP_DataManager()
@@ -40,9 +39,8 @@ public class VP_DataManager {
      * - Creates a Database Manager, a File Manager, a data-to-html convertor,
      *   and a html-to-pdf convertor.
      *------------------------------------------------------------------------*/
-    protected VP_DataManager(VP_GUIController controller, VP_Loader loader) {
+    protected VP_DataManager(VP_GUIController controller) {
         this.controller = controller;
-        this.loader = loader;
         dbManager = new VP_DatabaseManager();
         data2html = new VP_DataToHtml();
         html2pdf = new VP_HtmlToPdf();

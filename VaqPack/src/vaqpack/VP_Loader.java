@@ -61,7 +61,7 @@ public class VP_Loader extends VBox {
         completedTasks++;
         double percentDouble = (((double)completedTasks / (double)totalTasks) * 100);
         int percent = (int)percentDouble;
-        loadPercentProp.set("Loading percent: " + percent + "%");
+        loadPercentProp.set("Loading : " + percent + "%");
     }
 
     /*------------------------------------------------------------------------*

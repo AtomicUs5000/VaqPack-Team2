@@ -12,9 +12,12 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 
 public class VP_GUIBuilder {
@@ -22,6 +25,7 @@ public class VP_GUIBuilder {
     private final VP_Header header;
     private final VP_Tree leftTree;
     private final VP_Center center;
+    private final VP_Footer footer;
 
     /*------------------------------------------------------------------------*
      * VP_GUIBuilder()
@@ -32,6 +36,7 @@ public class VP_GUIBuilder {
         header = new VP_Header();
         leftTree = new VP_Tree();
         center = new VP_Center();
+        footer = new VP_Footer();
     }
 
     /*------------------------------------------------------------------------*
@@ -46,6 +51,7 @@ public class VP_GUIBuilder {
         guiShell.setTop(header);
         guiShell.setLeft(leftTree);
         guiShell.setCenter(center);
+        guiShell.setBottom(footer);
         return guiShell;
     }
 
@@ -57,24 +63,37 @@ public class VP_GUIBuilder {
      * - No Return
      *------------------------------------------------------------------------*/
     protected void buildTop() {
-        Menu homeMenu = new Menu("Home");
-        Menu helpMenu = new Menu("Help");
+        Menu    homeMenu = new Menu("Home"),
+                optionsMenu = new Menu("Options"),
+                helpMenu = new Menu("Help");
         MenuItem userLogin = new MenuItem("Login"),
                 userLogout = new MenuItem("Logout"),
                 exitVP = new MenuItem("Exit"),
+                toggleTree = new MenuItem("Toggle Tree View"),
+                toggleFull = new MenuItem("Toggle Full Screen"),
                 gettingStarted = new MenuItem("Getting Started with VaqPack"),
                 aboutHelp = new MenuItem("About");
         homeMenu.getItems().addAll(
                 userLogin,
                 userLogout,
+                new SeparatorMenuItem(),
                 exitVP);
         //userLogin.setOnAction(...);
         //userLogout.setOnAction(...);
         //exitVP.setOnAction(...);
         //gettingStarted.setOnAction(...);
         //aboutHelp.setOnAction(...);
+        optionsMenu.getItems().addAll(toggleTree, toggleFull);
         helpMenu.getItems().addAll(gettingStarted, aboutHelp);
-        header.getMenuBar().getMenus().addAll(homeMenu, helpMenu);
+        
+        header.getMenuBar().getMenus().addAll(homeMenu, optionsMenu, helpMenu);
+        header.getHeaderBar().setPrefHeight(50);
+        header.getHeaderBar().setAlignment(Pos.CENTER_LEFT);
+        header.getHeaderBar().setFillHeight(true);
+        header.getHeaderBar().setSpacing(20);
+        header.getHeaderBar().getChildren().addAll(header.getHeaderLogo(), header.getHeaderCaption());
+        header.getHeaderLogo().setPrefSize(200, 50);
+        header.getHeaderCaption().setText("Graduate-to-Professional Aid Pack");
     }
 
     /*------------------------------------------------------------------------*
@@ -84,6 +103,8 @@ public class VP_GUIBuilder {
     protected void buildLeft() {
         Label testLabel = new Label("Left");
         leftTree.getChildren().addAll(testLabel);
+        leftTree.setPrefWidth(200);
+        leftTree.setPadding(new Insets(10, 10, 10, 10));
     }
 
     /*------------------------------------------------------------------------*
@@ -93,6 +114,22 @@ public class VP_GUIBuilder {
     protected void buildCenter() {
         Label testLabel = new Label("CENTER");
         center.getChildren().addAll(testLabel);
+        center.setPadding(new Insets(10, 10, 10, 10));
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildCenter
+     * - Builds the gui center. Called in task, to build in the background
+     *------------------------------------------------------------------------*/
+    protected void buildBottom() {
+        footer.setAlignment(Pos.CENTER_RIGHT);
+        footer.setPrefHeight(40);
+        footer.setFillHeight(true);
+        footer.setSpacing(20);
+        footer.setPadding(new Insets(0, 20, 0, 20));
+        footer.getFooterCaption().setText("The University of Texas Rio Grande Valley");
+        footer.getFooterLogo().setPrefSize(100, 20);
+        footer.getChildren().addAll(footer.getFooterLogo(), footer.getFooterCaption());
     }
 
     /*------------------------------------------------------------------------*

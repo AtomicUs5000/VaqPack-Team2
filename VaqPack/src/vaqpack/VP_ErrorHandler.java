@@ -33,16 +33,22 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 1102:
+                header = "A thread was unexpectedly interrupted.\n"
+                        + "VaqPack will attempt to continue.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
             // ID 1200 VP_DataManger
             // ID 1300 VP_FileManager
             case 1301:
-                header = "VaqPack is not able to read the configiuration file "
+                header = "VaqPack is not able to read the configuration file "
                         + "that is necessary to connect to the MySQL database.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
             case 1302:
-                header = "VaqPack is not able to store the configiuration file "
+                header = "VaqPack is not able to store the configuration file "
                         + "that is necessary to connect to the MySQL database.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
