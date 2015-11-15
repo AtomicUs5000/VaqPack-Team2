@@ -18,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 
 public class VP_GUIBuilder {
@@ -102,10 +104,37 @@ public class VP_GUIBuilder {
      * - Builds the left side. Called in task, to build in the background
      *------------------------------------------------------------------------*/
     protected void buildLeft() {
-        Label testLabel = new Label("Left");
-        leftTree.getChildren().addAll(testLabel);
         leftTree.setPrefWidth(200);
         leftTree.setPadding(new Insets(10, 10, 10, 10));
+        
+        TreeItem<String> coverLetterRoot = new TreeItem("Cover Letter");
+        coverLetterRoot.setExpanded(true);
+        TreeItem<String> covLetHeading = new TreeItem("Heading");
+        covLetHeading.setExpanded(true);
+        TreeItem<String> insideAddy = new TreeItem("Inside Address");   
+        insideAddy.setExpanded(true);     
+        coverLetterRoot.getChildren().addAll(covLetHeading, insideAddy);
+        
+        TreeItem<String> resumeRoot = new TreeItem("Resume");
+        resumeRoot.setExpanded(true);
+        TreeItem<String> resHeading = new TreeItem("Heading");
+        resHeading.setExpanded(true);
+        TreeItem<String> objective = new TreeItem("Objective");
+        objective.setExpanded(true);
+        resumeRoot.getChildren().addAll(resHeading, objective);
+        
+        TreeItem<String> bcardRoot = new TreeItem("Business Card");
+        bcardRoot.setExpanded(true);
+        TreeItem<String> bcName = new TreeItem("Name");
+        bcName.setExpanded(true);
+        bcName.setExpanded(true);     
+        bcardRoot.getChildren().addAll(bcName);
+        
+        TreeView<String> tree1 = new TreeView (coverLetterRoot);
+        TreeView<String> tree2 = new TreeView (resumeRoot);
+        TreeView<String> tree3 = new TreeView (bcardRoot);
+        leftTree.getChildren().addAll(tree1, tree2, tree3);
+        
     }
 
     /*------------------------------------------------------------------------*
