@@ -65,13 +65,13 @@ public class VP_GUIController {
      * - Constructor. Stores primaryStage and creates the empty scene and sets 
      *   the title for it. Creates a VP_Loader and sets it as visible, while the
      *   empty GUI is not visible. Creates the Data Manager.
-     * - Calls load().
      * - Parameter primaryStage stored for window control.
+     * - Calls load().
      *------------------------------------------------------------------------*/
     protected VP_GUIController(Stage primaryStage) {
         this.primaryStage = primaryStage;
         mainLayout = new StackPane();
-        guiBuilder = new VP_GUIBuilder();
+        guiBuilder = new VP_GUIBuilder(this);
         loader = new VP_Loader(sceneWidth, sceneHeight);
         dataM = new VP_DataManager(this);
         guiLayout = guiBuilder.createShell();
@@ -621,7 +621,7 @@ public class VP_GUIController {
                     tasks.get(i).run();
                     LoadingThread.sleep(4000 / tasks.size());
                 } catch (InterruptedException ex) {
-                    errorAlert(1101, ex.getMessage());
+                    Platform.runLater(() -> errorAlert(1101, ex.getMessage()));
                 }
             }
         }

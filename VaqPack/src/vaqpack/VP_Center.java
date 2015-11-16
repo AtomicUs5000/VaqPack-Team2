@@ -23,7 +23,6 @@ public class VP_Center extends VBox {
     protected VP_Center() {
         this.setId("center");
     }
-
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/

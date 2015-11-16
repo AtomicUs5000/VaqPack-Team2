@@ -12,9 +12,10 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -23,7 +24,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 
 public class VP_GUIBuilder {
-
+    private final VP_GUIController controller;
     private final VP_Header header;
     private final VP_Tree leftTree;
     private final VP_Center center;
@@ -34,7 +35,8 @@ public class VP_GUIBuilder {
      * - Constructor. Initialiazes the header, leftTree, and center of the GUI.
      * No Parameters.
      *------------------------------------------------------------------------*/
-    protected VP_GUIBuilder() {
+    protected VP_GUIBuilder(VP_GUIController controller) {
+        this.controller = controller;
         header = new VP_Header();
         leftTree = new VP_Tree();
         center = new VP_Center();
@@ -142,8 +144,28 @@ public class VP_GUIBuilder {
      * - Builds the gui center. Called in task, to build in the background
      *------------------------------------------------------------------------*/
     protected void buildCenter() {
-        Label testLabel = new Label("CENTER");
-        center.getChildren().addAll(testLabel);
+        Button btnEmail = new Button("Send the test email!");
+        btnEmail.setOnAction((ActionEvent event) -> {
+            String[] ccMail = {
+                "shiro_aurion@yahoo.com",
+                "atomicus@gmail.com",
+                "shiro_aurion@yahoo.com",
+                "mr.fernandob3@gmail.com",
+                "erik.a.lopez01@utrgv.edu",
+                "scorpioncarr1@gmail.com"
+            };
+            String msg =  "Test number 2. Trying to send to all recipients at "
+                    + "the same time.\n\n"
+                    + "This is a test email from the VaqPack software.\n"
+                    + "This is the email that will include a randomly generated "
+                    + "code that the new user must enter to verify the email "
+                    + "address that they entered in when registering.\n"
+                    + "If this is a success, I can finish the user login "
+                    + "system and we can move forward to the wizard.";
+            VP_Mail testEmail = new VP_Mail(controller, "william.dewald01@utrgv.edu", ccMail, "VaqPack Test Email", msg);
+            testEmail.start();
+        });
+        center.getChildren().addAll(btnEmail);
         center.setPadding(new Insets(10, 10, 10, 10));
     }
     

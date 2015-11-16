@@ -123,6 +123,12 @@ public class VP_ErrorHandler {
             // ID 1800 VP_Tree
             // ID 1900 VP_Center
             // ID 2000 VP_Mail
+            case 2001:
+                header = "VaqPack could not send the email due to \n"
+                        + "malformed parameters passed to the VP_Mail object.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
             // General Error, perhaps invalid code in constructor
             default:
                 header = "An unknown error has occured.";
