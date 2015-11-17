@@ -20,6 +20,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import javax.xml.bind.DatatypeConverter;
 
 public class VP_DatabaseManager {
@@ -103,7 +104,7 @@ public class VP_DatabaseManager {
                 + "  email varchar(254) NOT NULL,"
                 + "  password char(64) NOT NULL,"
                 + "  access_level int(1) unsigned NOT NULL DEFAULT 0,"
-                + "  last_access datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                + "  last_access datetime NOT NULL,"
                 + "  PRIMARY KEY (id, email),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY email_UNIQUE (email)"
@@ -502,7 +503,22 @@ public class VP_DatabaseManager {
         rts = stm.executeQuery(sql);
         if (rts.next()) {
             adminExists = true;
+            close();
+        } 
+        /*
+        else {
+            
+            connect(dbName);
+            sql = "SELECT * FROM registering_user WHERE access_level = 1";
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                // Timestamp regTime = rts.findColumn("reg_time");
+                adminExists = true;
+                close();
+                
+            }
         }
+        */
         close();
         return adminExists;
     }
