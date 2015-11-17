@@ -25,12 +25,17 @@ import java.util.Date;
 import java.util.Random;
 import javax.xml.bind.DatatypeConverter;
 
-public class VP_DatabaseManager {
+// NEED TO ADD MECHANISM TO TRANSFER USERS FROM REGISTERING_USER TABLE TO USER TABLE
+// ONCE A VALID ACCESS CODE HAS BEEN ENTEERED
 
+public class VP_DatabaseManager {
     private Connection con;
     private Statement stm;
     private ResultSet rts;
-    private final String dbName = "vaqpack_db";
+    // url, port, dbadmin user and pass kept here just for refernce. These values
+    // may or not be used. These were the original values before the program
+    // allowed the entry of different values.
+    private final String dbName = "vaqpack_db"; 
     private String port = "3306",
             url = "localhost",
             fullURL = "jdbc:mysql://" + url + ":" + port + "/",

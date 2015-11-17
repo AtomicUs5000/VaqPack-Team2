@@ -83,7 +83,6 @@ public class VP_GUIBuilder {
                 new SeparatorMenuItem(),
                 exitVP);
         //userLogin.setOnAction(...);
-        //userLogout.setOnAction(...);
         //exitVP.setOnAction(...);
         //gettingStarted.setOnAction(...);
         //aboutHelp.setOnAction(...);

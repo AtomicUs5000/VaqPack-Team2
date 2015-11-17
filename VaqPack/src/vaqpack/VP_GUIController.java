@@ -738,6 +738,11 @@ public class VP_GUIController {
          * - Parameter thisNode is the TextField using this EventHandler
          * - Parameter limit is the allowed character limit for this TextField.
          *   A limit of 0 or less means to not limit the text.
+         * - Parameter minimum is the minimum required characters.
+         *   A minimum of 0 or less means no minimum requirement and no strength
+         *   checking for this text field.
+         * - Parameter lebelLabel is the label that notes the strength if this
+         *   label is not null,
          *---------------------------------------------------------------------*/
         public PassFieldLimiter(TextField thisNode, int minimum, int limit, Label levelLabel) {
             this.thisNode = thisNode;
@@ -745,7 +750,6 @@ public class VP_GUIController {
             this.minimum = minimum;
             this.levelLabel = levelLabel;
         }
-
         @Override
         public void handle(KeyEvent event) {
             if (event.getEventType() == KeyEvent.KEY_PRESSED

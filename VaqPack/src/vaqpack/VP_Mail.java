@@ -54,6 +54,7 @@ public class VP_Mail extends Thread{
     @Override
     public void run() {
         try {
+            // need to figure out how to work in attachments
             int ccLength = ccEmails.length;
             Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
             String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -76,10 +77,10 @@ public class VP_Mail extends Thread{
             msg.setSubject(subject);
             msg.setText(message, "utf-8");
             msg.setSentDate(new Date());
-            SMTPTransport t = (SMTPTransport)session.getTransport("smtps");
-            t.connect("smtp.gmail.com", userName, password);
-            t.sendMessage(msg, msg.getAllRecipients());
-            t.close();
+            SMTPTransport transPort = (SMTPTransport)session.getTransport("smtps");
+            transPort.connect("smtp.gmail.com", userName, password);
+            transPort.sendMessage(msg, msg.getAllRecipients());
+            transPort.close();
         } catch (MessagingException ex) {
             Platform.runLater(() -> controller.errorAlert(2001, ex.getMessage()));
         }
