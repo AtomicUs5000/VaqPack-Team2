@@ -155,54 +155,57 @@ public class VP_DataManager {
                 dbManager.checkAcessLevelTable();
                 break;
             case 2:
-                dbManager.checkBusinessCardTable();
+                dbManager.checkRegisteringUserTable();
                 break;
             case 3:
-                dbManager.checkContactTable();
+                dbManager.checkBusinessCardTable();
                 break;
             case 4:
-                dbManager.checkCoverLetterTable();
+                dbManager.checkContactTable();
                 break;
             case 5:
-                dbManager.checkResumeTable();
+                dbManager.checkCoverLetterTable();
                 break;
             case 6:
-                dbManager.checkUserDataTable();
+                dbManager.checkResumeTable();
                 break;
             case 7:
-                dbManager.checkCustomThemeTable();
+                dbManager.checkUserDataTable();
                 break;
             case 8:
-                dbManager.checkDefaultThemeTable();
+                dbManager.checkCustomThemeTable();
                 break;
             case 9:
-                dbManager.checkBCHasCustomThemeTable();
+                dbManager.checkDefaultThemeTable();
                 break;
             case 10:
-                dbManager.checkBCHasDefaultThemeTable();
+                dbManager.checkBCHasCustomThemeTable();
                 break;
             case 11:
-                dbManager.checkBusinessCardPDFTable();
+                dbManager.checkBCHasDefaultThemeTable();
                 break;
             case 12:
-                dbManager.checkCLHasCustomThemeTable();
+                dbManager.checkBusinessCardPDFTable();
                 break;
             case 13:
-                dbManager.checkCLHasDefaultThemeTable();
+                dbManager.checkCLHasCustomThemeTable();
                 break;
             case 14:
-                dbManager.checkCoverLetterPDFTable();
+                dbManager.checkCLHasDefaultThemeTable();
                 break;
             case 15:
-                dbManager.checkResHasCustomThemeTable();
+                dbManager.checkCoverLetterPDFTable();
                 break;
             case 16:
-                dbManager.checkResHasDefaultThemeTable();
+                dbManager.checkResHasCustomThemeTable();
                 break;
             case 17:
-                dbManager.checkResPDFTable();
+                dbManager.checkResHasDefaultThemeTable();
                 break;
             case 18:
+                dbManager.checkResPDFTable();
+                break;
+            case 19:
                 dbManager.checkResHTMLTable();
                 break;
         }

@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Random;
 import javax.xml.bind.DatatypeConverter;
 
 public class VP_DatabaseManager {
@@ -69,28 +71,7 @@ public class VP_DatabaseManager {
         stm.executeUpdate(sql);
         close();
     }
-
-    /*------------------------------------------------------------------------*
-     * checkAcessLevelTable()
-     * - Defines the SQL statement to create the 'access_level' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkAcessLevelTable() throws SQLException {
-        String sql = "CREATE TABLE access_level ("
-                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  level int(1) unsigned NOT NULL,"
-                + "  change_credentials bit(1) NOT NULL DEFAULT 0,"
-                + "  create_admin bit(1) NOT NULL DEFAULT 0,"
-                + "  move_db bit(1) NOT NULL DEFAULT 0,"
-                + "  PRIMARY KEY (id, level),"
-                + "  UNIQUE KEY id_UNIQUE (id),"
-                + "  UNIQUE KEY level_UNIQUE (level)"
-                + ")";
-        checkTable(sql);
-    }
-
+    
     /*------------------------------------------------------------------------*
      * checkUserTable()
      * - Defines the SQL statement to create the 'user' table and then
@@ -105,6 +86,49 @@ public class VP_DatabaseManager {
                 + "  password char(64) NOT NULL,"
                 + "  access_level int(1) unsigned NOT NULL DEFAULT 0,"
                 + "  last_access datetime NOT NULL,"
+                + "  PRIMARY KEY (id, email),"
+                + "  UNIQUE KEY id_UNIQUE (id),"
+                + "  UNIQUE KEY email_UNIQUE (email)"
+                + ")";
+        checkTable(sql);
+    }
+
+    /*------------------------------------------------------------------------*
+     * checkAcessLevelTable()
+     * - Defines the SQL statement to create the 'access_level' table and then
+     *   calls checkTable().
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void checkAcessLevelTable() throws SQLException {
+        String sql = "CREATE TABLE access_level ("
+                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
+                + "  level int(1) unsigned NOT NULL,"
+                + "  change_credentials bit(1) NOT NULL DEFAULT 0,"
+                + "  create_manager bit(1) NOT NULL DEFAULT 0,"
+                + "  move_db bit(1) NOT NULL DEFAULT 0,"
+                + "  PRIMARY KEY (id, level),"
+                + "  UNIQUE KEY id_UNIQUE (id),"
+                + "  UNIQUE KEY level_UNIQUE (level)"
+                + ")";
+        checkTable(sql);
+    }
+    
+    /*------------------------------------------------------------------------*
+     * RegisteringUserTable()
+     * - Defines the SQL statement to create the 'registering_user' table and 
+     *   then calls checkTable().
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void checkRegisteringUserTable() throws SQLException {
+        String sql = "CREATE TABLE registering_user ("
+                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
+                + "  email varchar(254) NOT NULL,"
+                + "  password char(64) NOT NULL,"
+                + "  access_level int(1) unsigned NOT NULL DEFAULT 0,"
+                + "  reg_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                + "  access_code varchar(16) NOT NULL,"
                 + "  PRIMARY KEY (id, email),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY email_UNIQUE (email)"
@@ -490,6 +514,7 @@ public class VP_DatabaseManager {
     /*------------------------------------------------------------------------*
      * findAdminUser()
      * - Attempts to locate at least one VaqPack admin user account.
+     * - Also cleans the dead registration codes.
      * - No parameters.
      * - Returns a boolean value indicating whether or not a VaqPack admin user
      *   has been created and exists in the database user table. This is
@@ -498,27 +523,56 @@ public class VP_DatabaseManager {
      *------------------------------------------------------------------------*/
     protected boolean findAdminUser() throws SQLException {
         boolean adminExists = false;
-        connect(dbName);
+        Date dt = new java.util.Date();
         String sql = "SELECT * FROM user WHERE access_level = 1";
+        Timestamp regTime;
+        int remId;
+        long difference;
+        connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
             adminExists = true;
-            close();
-        } 
-        /*
+        }
         else {
-            
-            connect(dbName);
             sql = "SELECT * FROM registering_user WHERE access_level = 1";
             rts = stm.executeQuery(sql);
             if (rts.next()) {
-                // Timestamp regTime = rts.findColumn("reg_time");
-                adminExists = true;
-                close();
-                
+                regTime = rts.getTimestamp("reg_time");
+                difference = dt.getTime() - regTime.getTime();
+                System.out.println("time difference is " + difference);
+                if (difference < 3600000)
+                    adminExists = true;
+                else {
+                    remId = rts.getInt("id");
+                    sql = "DELETE FROM registering_user WHERE id = " + remId;
+                    stm.executeUpdate(sql);
+                }
+            }
+            sql = "SELECT * FROM registering_user WHERE access_level = 2";
+            rts = stm.executeQuery(sql);
+            while (rts.next()) {
+                regTime = rts.getTimestamp("reg_time");
+                difference = dt.getTime() - regTime.getTime();
+                System.out.println("time difference is " + difference);
+                if (difference >= 3600000) {
+                    remId = rts.getInt("id");
+                    sql = "DELETE FROM registering_user WHERE id = " + remId;
+                    stm.executeUpdate(sql);
+                }
+            }
+            sql = "SELECT * FROM registering_user WHERE access_level = 0";
+            rts = stm.executeQuery(sql);
+            while (rts.next()) {
+                regTime = rts.getTimestamp("reg_time");
+                difference = dt.getTime() - regTime.getTime();
+                System.out.println("time difference is " + difference);
+                if (difference >= 3600000) {
+                    remId = rts.getInt("id");
+                    sql = "DELETE FROM registering_user WHERE id = " + remId;
+                    stm.executeUpdate(sql);
+                }
             }
         }
-        */
         close();
         return adminExists;
     }
@@ -537,8 +591,8 @@ public class VP_DatabaseManager {
         if (cred[0].equals(adminUserName) && cred[1].equals(adminPassword)) {
             adminCredChecked = true;
             connect(dbName);
-            String sql = "INSERT INTO user (email, password, access_level)"
-                    + " VALUES ('" + cred[2] + "', '" + hashPassword(cred[3]) + "', 1)";
+            String sql = "INSERT INTO registering_user (email, password, access_level, access_code)"
+                    + " VALUES ('" + cred[2] + "', '" + hashPassword(cred[3]) + "', 1, '" + generatAccessCode() + "')";
             stm.executeUpdate(sql);
             close();
         }
@@ -559,16 +613,21 @@ public class VP_DatabaseManager {
         rts = stm.executeQuery(sql);
         rts.next();
         int count = rts.getInt(1);
-        if (count != 2) {
+        if (count != 3) {
             if (count != 0) {
                 sql = "TRUNCATE access_level";
                 stm.executeUpdate(sql);
             }
-            sql = "INSERT INTO access_level (level, change_credentials, create_admin, move_db)"
+            // regular user
+            sql = "INSERT INTO access_level (level, change_credentials, create_manager, move_db)"
                     + " VALUES (0, 0, 0, 0)";
             stm.executeUpdate(sql);
-            sql = "INSERT INTO access_level (level, change_credentials, create_admin, move_db)"
+            // admin user, can create managers
+            sql = "INSERT INTO access_level (level, change_credentials, create_manager, move_db)"
                     + " VALUES (1, 1, 1, 1);";
+            // manager user
+            sql = "INSERT INTO access_level (level, change_credentials, create_manager, move_db)"
+                    + " VALUES (2, 1, 0, 1);";
             stm.executeUpdate(sql);
         }
         close();
@@ -618,13 +677,33 @@ public class VP_DatabaseManager {
      * hashPassword()
      * - Hashes a password.
      * - Parameter pass is the string to be hashed.
-     * - Return a string of the hashed password.
+     * - Returns a string of the hashed password.
      *------------------------------------------------------------------------*/
     private String hashPassword(String pass) throws NoSuchAlgorithmException,
             UnsupportedEncodingException {
         MessageDigest mDig = MessageDigest.getInstance("SHA-256");
         byte[] passHash = mDig.digest(pass.getBytes("UTF-8"));
         return DatatypeConverter.printHexBinary(passHash);
+    }
+    
+    /*------------------------------------------------------------------------*
+     * generatAccessCode()
+     * - Generates a 16-character string used an an access code for verifying
+     *   that a user has enetered a valid email address.
+     * - Returns a random string of 16 characters.
+     *------------------------------------------------------------------------*/
+    private String generatAccessCode() {
+        String code = "";
+        Random rand = new Random();
+        for (int i = 0; i < 16; i++) {
+            int thisChar = 48 + rand.nextInt(74);
+            if (thisChar > 90 && thisChar < 97) {
+                i--;
+            } else {
+                code += ((char)(thisChar));
+            }
+        }
+        return code;
     }
     
     /*------------------------------------------------------------------------*
