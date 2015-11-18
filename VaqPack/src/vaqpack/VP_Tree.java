@@ -12,9 +12,9 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 
-public class VP_Tree extends VBox {
+public class VP_Tree extends Pane {
 
     /*------------------------------------------------------------------------*
      * VP_Tree()
@@ -23,7 +23,6 @@ public class VP_Tree extends VBox {
     protected VP_Tree() {
         this.setId("treeContainer");
     }
-
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
