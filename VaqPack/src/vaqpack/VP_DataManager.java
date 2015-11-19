@@ -19,6 +19,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.BadPaddingException;
@@ -43,7 +44,7 @@ public class VP_DataManager {
      *------------------------------------------------------------------------*/
     protected VP_DataManager(VP_GUIController controller) {
         this.controller = controller;
-        dbManager = new VP_DatabaseManager(controller);
+        dbManager = new VP_DatabaseManager();
         data2html = new VP_DataToHtml();
         html2pdf = new VP_HtmlToPdf();
         fileM = new VP_FileManager();
@@ -247,7 +248,20 @@ public class VP_DataManager {
      *------------------------------------------------------------------------*/
     protected boolean createVPAdmin(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
-        return dbManager.createVaqPackAdmin(cred);
+        String[] ccMail = {};
+        String code = generatAccessCode();
+        boolean adminChecked = dbManager.createVaqPackAdmin(cred, code);
+        String msg = "A VaqPack administrator account has been created associated with this email address.\n"
+                + "Please log into VaqPack and enter the following code:\n\n"
+                + code + "\n\n"
+                + "The code will expire in 1 hour. If you do not enter the code within this timeframe, "
+                + "the system administrator will have to set up your account again.\n"
+                + "The code only needs to be entered once to activate your account.\n\n"
+                + "This is an automated message from the VaqPack software. Please do not reply.";
+        VP_Mail regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg);
+        regEmail.setDaemon(true);
+        regEmail.start();
+        return adminChecked;
     }
 
     /*------------------------------------------------------------------------*
@@ -283,16 +297,64 @@ public class VP_DataManager {
 
     protected void resendAccess(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
-        dbManager.resendUserAccessCode(cred);
+        String msg,
+                code = generatAccessCode();
+        String[] ccMail = {};
+        VP_Mail regEmail;
+        if (dbManager.resendUserAccessCode(cred, code)) {
+            msg = "Please log into VaqPack and enter the following code:\n\n"
+                    + code + "\n\n"
+                    + "The code will expire in 1 hour. If you do not enter the code within this timeframe, "
+                    + "you will have to register your account again.\n"
+                    + "The code only needs to be entered once to activate your account.\n\n"
+                    + "This is an automated message from the VaqPack software. Please do not reply.";
+            regEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg);
+            regEmail.setDaemon(true);
+            regEmail.start();
+        }
     }
 
     protected int findUser(String email) throws SQLException {
-        return dbManager.findUserOrRegUser(email);
+        String msg,
+                code = generatAccessCode();
+        String[] ccMail = {};
+        VP_Mail resetEmail;
+        int userStatus = dbManager.findUserOrRegUser(email, code);
+        if (userStatus == 2) {
+            msg = "Please enter the following code to reset your password:\n\n"
+                    + code + "\n\n"
+                    + "The code will expire in 1 hour.\n\n"
+                    + "This is an automated message from the VaqPack software. Please do not reply.";
+            resetEmail = new VP_Mail(controller, email, ccMail, "VaqPack Password Reset", msg);
+            resetEmail.setDaemon(true);
+            resetEmail.start();
+        }
+        return userStatus;
     }
 
     protected int resetPass(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         return dbManager.resetPassword(cred);
+    }
+
+    /*------------------------------------------------------------------------*
+     * generatAccessCode()
+     * - Generates a 16-character string used an an access code for verifying
+     *   that a user has enetered a valid email address.
+     * - Returns a random string of 16 characters.
+     *------------------------------------------------------------------------*/
+    private String generatAccessCode() {
+        String code = "";
+        Random rand = new Random();
+        for (int i = 0; i < 16; i++) {
+            int thisChar = 48 + rand.nextInt(74);
+            if (thisChar > 90 && thisChar < 97) {
+                i--;
+            } else {
+                code += ((char) (thisChar));
+            }
+        }
+        return code;
     }
 
     /*------------------------------------------------------------------------*

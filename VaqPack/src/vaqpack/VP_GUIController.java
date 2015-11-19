@@ -45,12 +45,13 @@ public class VP_GUIController {
 
     private final String title = "VaqPack";
     private final Scene primaryScene;
-    private final Stage primaryStage;
     private final StackPane mainLayout;
-    private final BorderPane guiLayout;
     private final VP_Loader loader;
     private final VP_DataManager dataM;
-    private final VP_GUIBuilder guiBuilder;
+    private final VP_Header header;
+    private final VP_Tree leftTree;
+    private final VP_Center center;
+    private final VP_Footer footer;
     private ArrayList<Runnable> guiTasks,
             dbTasks;
     private ArrayList<String> guiTaskLabels,
@@ -68,13 +69,14 @@ public class VP_GUIController {
      * - Calls load().
      *------------------------------------------------------------------------*/
     protected VP_GUIController(Stage primaryStage) {
-        this.primaryStage = primaryStage;
         mainLayout = new StackPane();
-        guiBuilder = new VP_GUIBuilder(this);
         loader = new VP_Loader(sceneWidth, sceneHeight);
         dataM = new VP_DataManager(this);
-        guiLayout = guiBuilder.createShell();
-        mainLayout.getChildren().addAll(loader, guiLayout);
+        header = new VP_Header(this, primaryStage);
+        leftTree = new VP_Tree();
+        center = new VP_Center(this);
+        footer = new VP_Footer();
+        mainLayout.getChildren().addAll(loader, createShell());
         mainLayout.getChildren().get(1).setVisible(false);
         mainLayout.getChildren().get(0).setVisible(true);
         mainLayout.setAlignment(Pos.TOP_LEFT);
@@ -105,6 +107,22 @@ public class VP_GUIController {
         if (eh.isCritical()) {
             System.exit(-1);
         }
+    }
+
+    /*------------------------------------------------------------------------*
+     * createShell()
+     * - Creates an empty BorderPane and its children to be built after the
+     *   stage is showing and while the dtatabase is being checked.
+     * - No paramters.
+     * - Returns the empty GUI BorderPane.
+     *------------------------------------------------------------------------*/
+    private BorderPane createShell() {
+        BorderPane guiShell = new BorderPane();
+        guiShell.setTop(header);
+        guiShell.setLeft(leftTree);
+        guiShell.setCenter(center);
+        guiShell.setBottom(footer);
+        return guiShell;
     }
 
     /*------------------------------------------------------------------------*
@@ -151,7 +169,7 @@ public class VP_GUIController {
         guiTaskLabels.add("Building Footer");
         guiTaskLabels.add("Application Build Complete");
         for (int i = 0; i < guiTaskLabels.size(); i++) {
-            guiTasks.add(new LoadGUITask(i));
+            guiTasks.add(new LoadGUITask(i, this));
         }
         for (int i = 0; i < dbTaskLabels.size(); i++) {
             dbTasks.add(new LoadDBTask(i));
@@ -551,23 +569,25 @@ public class VP_GUIController {
      *------------------------------------------------------------------------*/
     private class LoadGUITask implements Runnable {
 
+        private final VP_GUIController controller;
         private final int stage;
 
-        public LoadGUITask(int stage) {
+        public LoadGUITask(int stage, VP_GUIController controller) {
             this.stage = stage;
+            this.controller = controller;
         }
 
         @Override
         public void run() {
             Platform.runLater(() -> (loader.setActivity2(guiTaskLabels.get(stage))));
             if (stage == 0) {
-                Platform.runLater(() -> guiBuilder.buildTop());
+                Platform.runLater(() -> header.build());
             } else if (stage == 1) {
-                Platform.runLater(() -> guiBuilder.buildLeft());
+                Platform.runLater(() -> leftTree.build());
             } else if (stage == 2) {
-                Platform.runLater(() -> guiBuilder.buildCenter());
+                Platform.runLater(() -> center.build());
             } else if (stage == 3) {
-                Platform.runLater(() -> guiBuilder.buildBottom());
+                Platform.runLater(() -> footer.build());
             }
             Platform.runLater(() -> loader.incrementCompletedTasks());
         }
@@ -590,7 +610,7 @@ public class VP_GUIController {
             for (int i = 0; i < tasks.size(); i++) {
                 try {
                     tasks.get(i).run();
-                    LoadingThread.sleep(4000 / tasks.size());
+                    LoadingThread.sleep(3000 / tasks.size());
                 } catch (InterruptedException ex) {
                     Platform.runLater(() -> errorAlert(1101, ex.getMessage()));
                 }
@@ -661,10 +681,6 @@ public class VP_GUIController {
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
-    protected Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
     protected int getUSER_PASSWORD_MINIMUM() {
         return USER_PASSWORD_MINIMUM;
     }

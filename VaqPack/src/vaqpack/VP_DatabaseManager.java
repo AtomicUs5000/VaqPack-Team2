@@ -22,12 +22,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Random;
 import javax.xml.bind.DatatypeConverter;
 
 public class VP_DatabaseManager {
 
-    private final VP_GUIController controller;
     private Connection con;
     private Statement stm;
     private ResultSet rts;
@@ -46,8 +44,7 @@ public class VP_DatabaseManager {
      * - Constructor. Initialiazes the connection, statement, and result set.
      * No Parameters.
      *------------------------------------------------------------------------*/
-    protected VP_DatabaseManager(VP_GUIController controller) {
-        this.controller = controller;
+    protected VP_DatabaseManager() {
         con = null;
         stm = null;
         rts = null;
@@ -621,29 +618,16 @@ public class VP_DatabaseManager {
      * - Returns a boolean value indicating if that the database admin user is
      *   valid, allowing the creation of this VP admin user account.
      *------------------------------------------------------------------------*/
-    protected boolean createVaqPackAdmin(String[] cred) throws SQLException,
+    protected boolean createVaqPackAdmin(String[] cred, String code) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         boolean adminCredChecked = false;
-        String sql, msg, code;
-        String[] ccMail = {};
-        VP_Mail regEmail;
+        String sql;
         if (cred[0].equals(adminUserName) && cred[1].equals(adminPassword)) {
             adminCredChecked = true;
             connect(dbName);
-            code = generatAccessCode();
             sql = "INSERT INTO registering_user (email, password, access_level, access_code)"
                     + " VALUES ('" + cred[2] + "', '" + hashPassword(cred[3]) + "', 1, '" + code + "')";
             stm.executeUpdate(sql);
-            msg = "A VaqPack administrator account has been created associated with this email address.\n"
-                    + "Please log into VaqPack and enter the following code:\n\n"
-                    + code + "\n\n"
-                    + "The code will expire in 1 hour. If you do not enter the code within this timeframe, "
-                    + "the system administrator will have to set up your account again.\n"
-                    + "The code only needs to be entered once to activate your account.\n\n"
-                    + "This is an automated message from the VaqPack software. Please do not reply.";
-            regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg);
-            regEmail.setDaemon(true);
-            regEmail.start();
         }
         close();
         return adminCredChecked;
@@ -766,18 +750,14 @@ public class VP_DatabaseManager {
         return resetStatus;
     }
 
-    protected int findUserOrRegUser(String email) throws SQLException {
+    protected int findUserOrRegUser(String email, String code) throws SQLException {
         Timestamp sentTime,
                 confirmTime;
         Date dt;
         int userStatus = 0,
                 remID;
         long difference;
-        String[] ccMail = {};
-        VP_Mail resetEmail;
-        String msg,
-                code,
-                sql = "SELECT * FROM user WHERE email = '" + email + "'";
+        String sql = "SELECT * FROM user WHERE email = '" + email + "'";
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -804,52 +784,33 @@ public class VP_DatabaseManager {
         }
         if (userStatus == 2) {
             dt = new java.util.Date();
-            code = generatAccessCode();
             sql = "INSERT INTO reset_code (email, access_code, sent_time) "
                     + "VALUES ('" + email + "', '" + code + "', '" + new Timestamp(dt.getTime()) + "')";
             stm.executeUpdate(sql);
-            msg = "Please enter the following code to reset your password:\n\n"
-                    + code + "\n\n"
-                    + "The code will expire in 1 hour.\n\n"
-                    + "This is an automated message from the VaqPack software. Please do not reply.";
-            resetEmail = new VP_Mail(controller, email, ccMail, "VaqPack Password Reset", msg);
-            resetEmail.setDaemon(true);
-            resetEmail.start();
         }
         close();
         return userStatus;
     }
 
-    protected void resendUserAccessCode(String[] cred) throws SQLException,
+    protected boolean resendUserAccessCode(String[] cred, String code) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
-        String code,
-                msg,
-                sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
+        boolean userExists = false;
+        String sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
                 + "password = '" + hashPassword(cred[1]) + "'";
-        String[] ccMail = {};
-        VP_Mail regEmail;
         int id;
         Date dt;
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
+            userExists = true;
             dt = new java.util.Date();
-            code = generatAccessCode();
             id = rts.getInt("id");
             sql = "UPDATE registering_user SET reg_time = '" + new Timestamp(dt.getTime()) + "', "
                     + "access_code = '" + code + "' WHERE id = " + id;
             stm.executeUpdate(sql);
-            msg = "Please log into VaqPack and enter the following code:\n\n"
-                    + code + "\n\n"
-                    + "The code will expire in 1 hour. If you do not enter the code within this timeframe, "
-                    + "you will have to register your account again.\n"
-                    + "The code only needs to be entered once to activate your account.\n\n"
-                    + "This is an automated message from the VaqPack software. Please do not reply.";
-            regEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg);
-            regEmail.setDaemon(true);
-            regEmail.start();
         }
         close();
+        return userExists;
     }
 
     /*------------------------------------------------------------------------*
@@ -903,26 +864,6 @@ public class VP_DatabaseManager {
         MessageDigest mDig = MessageDigest.getInstance("SHA-256");
         byte[] passHash = mDig.digest(pass.getBytes("UTF-8"));
         return DatatypeConverter.printHexBinary(passHash);
-    }
-
-    /*------------------------------------------------------------------------*
-     * generatAccessCode()
-     * - Generates a 16-character string used an an access code for verifying
-     *   that a user has enetered a valid email address.
-     * - Returns a random string of 16 characters.
-     *------------------------------------------------------------------------*/
-    private String generatAccessCode() {
-        String code = "";
-        Random rand = new Random();
-        for (int i = 0; i < 16; i++) {
-            int thisChar = 48 + rand.nextInt(74);
-            if (thisChar > 90 && thisChar < 97) {
-                i--;
-            } else {
-                code += ((char) (thisChar));
-            }
-        }
-        return code;
     }
 
     /*------------------------------------------------------------------------*

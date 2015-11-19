@@ -14,15 +14,21 @@ package vaqpack;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class VP_Header extends VBox {
 
     private final VP_GUIController controller;
+    private final Stage primaryStage;
     private final MenuBar menuBar;
     private final HBox headerBar;
     private final Pane headerLogo;
@@ -31,10 +37,11 @@ public class VP_Header extends VBox {
     /*------------------------------------------------------------------------*
      * VP_Header()
      * - Constructor. Adds an empty menubar and header section to itself.
-     * - No parameters.
+     * - Parameter 
      *------------------------------------------------------------------------*/
-    protected VP_Header(VP_GUIController controller) {
+    protected VP_Header(VP_GUIController controller, Stage primaryStage) {
         this.controller = controller;
+        this.primaryStage = primaryStage;
         menuBar = new MenuBar();
         headerBar = new HBox();
         headerLogo = new Pane();
@@ -44,6 +51,53 @@ public class VP_Header extends VBox {
         headerLogo.setId("headerLogo");
         headerCaption.setId("headerCaption");
         this.getChildren().addAll(menuBar, headerBar);
+    }
+
+    /*------------------------------------------------------------------------*
+     * build()
+     * - Builds the gui header, including the menu.
+     *   Called in a task, to build in the background
+     * - No Paramters
+     * - No Return
+     *------------------------------------------------------------------------*/
+    protected void build() {
+        // Menu initialization
+        Menu homeMenu = new Menu("Home"),
+                optionsMenu = new Menu("Options"),
+                helpMenu = new Menu("Help");
+        MenuItem userLogin = new MenuItem("Login"),
+                userLogout = new MenuItem("Logout"),
+                exitVP = new MenuItem("Exit"),
+                toggleTree = new MenuItem("Toggle Tree View"),
+                toggleFull = new MenuItem("Toggle Full Screen"),
+                gettingStarted = new MenuItem("Getting Started with VaqPack"),
+                aboutHelp = new MenuItem("About");
+
+        // Menu actions
+        exitVP.setOnAction(controller.new ClosingSequence());
+        toggleFull.setOnAction(new FullScreenToggle());
+        //userLogin.setOnAction(...);
+        //exitVP.setOnAction(...);
+        //gettingStarted.setOnAction(...);
+        //aboutHelp.setOnAction(...);
+        //fullScreen.setOnAction(...fullScreenToggle());
+
+        // Menu building
+        homeMenu.getItems().addAll(userLogin, userLogout,
+                new SeparatorMenuItem(), exitVP);
+        optionsMenu.getItems().addAll(toggleTree, toggleFull);
+        helpMenu.getItems().addAll(gettingStarted, aboutHelp);
+        menuBar.getMenus().addAll(homeMenu, optionsMenu, helpMenu);
+
+        // Logo header construction
+        headerBar.setPrefHeight(50);
+        headerBar.setAlignment(Pos.CENTER_LEFT);
+        headerBar.setFillHeight(true);
+        headerBar.setSpacing(20);
+        headerBar.getChildren().addAll(headerLogo, headerCaption);
+        headerLogo.setPrefSize(200, 50);
+        headerLogo.setMinSize(200, 50);
+        headerCaption.setText("Graduate-to-Professional Aid Pack");
     }
 
     /*------------------------------------------------------------------------*
@@ -57,27 +111,11 @@ public class VP_Header extends VBox {
 
         @Override
         public void handle(Event event) {
-            controller.getPrimaryStage().setFullScreen(!controller.getPrimaryStage().isFullScreen());
+            primaryStage.setFullScreen(primaryStage.isFullScreen());
         }
     }
 
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
-    protected MenuBar getMenuBar() {
-        return menuBar;
-    }
-
-    protected HBox getHeaderBar() {
-        return headerBar;
-    }
-
-    protected Pane getHeaderLogo() {
-        return headerLogo;
-    }
-
-    protected Label getHeaderCaption() {
-        return headerCaption;
-    }
-
 }

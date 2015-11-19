@@ -19,14 +19,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 public class VP_Center extends StackPane {
-
     private final VP_GUIController controller;
     private final VP_TextField loginEmail,
             resetEmail,
@@ -79,6 +82,23 @@ public class VP_Center extends StackPane {
     }
 
     /*------------------------------------------------------------------------*
+     * build()
+     * - Builds the GUI center which holds most of the content.
+     *   Called in a task, to build in the background.
+     *   The center is a stackpane, where each layer is an individual page
+     *   Layer 0 = Login Screen
+     *   Layer 1 = Reset Password Screen
+     *   Layer 2 = Temporary Testing grounds
+     * - No Paramters
+     * - No Return
+     *------------------------------------------------------------------------*/
+    protected void build() {
+        getChildren().addAll(buildLoginScreen(),
+                buildResetPasswordScreen(), buildTestScreen());
+        showScreen(0);
+    }
+
+    /*------------------------------------------------------------------------*
      * showScreen()
      * - Makes all center stackpane levels invisible except for the desired one.
      * - Parameter screenNumber is the desired stackpane level to show.
@@ -89,6 +109,213 @@ public class VP_Center extends StackPane {
             getChildren().get(i).setVisible(false);
         }
         getChildren().get(screenNumber).setVisible(true);
+    }
+
+    /*------------------------------------------------------------------------*
+     * buildLoginScreen()
+     * - Creates the user login screen. Called by buildCenter().
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildLoginScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        Label loginLabel = new Label("LOGIN"),
+                loginEmailLabel = new Label("email:"),
+                loginPassLabel = new Label("password:"),
+                passForgotLabel = new Label("forgot your password?"),
+                regCodeLabel = new Label("code:");
+        Button loginBtn = new Button("Login"),
+                enterAccessBtn = new Button("Submit"),
+                accessCancelBtn = new Button("Cancel"),
+                accessResendBtn = new Button("Resend Code");
+        VBox loginBox = new VBox();
+        loginBox.setSpacing(10);
+        loginBox.getStyleClass().add("formDivision");
+        loginBox.setPadding(new Insets(10, 10, 10, 10));
+        loginLabel.getStyleClass().add("pageHeader");
+        HBox emailLine = new HBox();
+        emailLine.setAlignment(Pos.CENTER_LEFT);
+        emailLine.setSpacing(10);
+        loginEmailLabel.getStyleClass().add("inputLabel");
+        loginEmailLabel.setPrefWidth(80);
+        loginEmailLabel.setAlignment(Pos.CENTER_RIGHT);
+        loginEmail.setAlignment(Pos.CENTER_LEFT);
+        emailLine.getChildren().addAll(loginEmailLabel, loginEmail);
+        HBox passLine = new HBox();
+        passLine.setAlignment(Pos.CENTER_LEFT);
+        passLine.setSpacing(10);
+        loginPassLabel.getStyleClass().add("inputLabel");
+        loginPassLabel.setPrefWidth(80);
+        loginPassLabel.setAlignment(Pos.CENTER_RIGHT);
+        loginPass.setAlignment(Pos.CENTER_LEFT);
+        passLine.getChildren().addAll(loginPassLabel, loginPass);
+        loginError.setWrapText(true);
+        loginError.getStyleClass().add("errorLabel");
+        loginError.setAlignment(Pos.CENTER);
+        loginError.prefWidthProperty().bind(loginBox.prefWidthProperty());
+        loginError.setVisible(false);
+        loginError.setManaged(false);
+        loginButtonLine.setPadding(new Insets(0, 0, 0, 32));
+        loginButtonLine.setAlignment(Pos.CENTER_LEFT);
+        loginButtonLine.setSpacing(50);
+        loginBtn.getStyleClass().add("genButton");
+        loginBtn.setOnAction(new LoginAction());
+        passForgotLabel.getStyleClass().add("clickable");
+        passForgotLabel.setOnMouseClicked(new ForgotPassAction());
+        loginButtonLine.getChildren().addAll(loginBtn, passForgotLabel);
+        accessInstructions.setText("Enter the access code that was "
+                + "emailed to you when you registered below.");
+        accessInstructions.setWrapText(true);
+        accessInstructions.getStyleClass().add("inputLabel");
+        accessInstructions.setAlignment(Pos.CENTER);
+        accessInstructions.prefWidthProperty().bind(loginBox.prefWidthProperty());
+        accessInstructions.setVisible(false);
+        accessInstructions.setManaged(false);
+        accessLine.setAlignment(Pos.CENTER_LEFT);
+        accessLine.setSpacing(20);
+        regCodeLabel.getStyleClass().add("inputLabel");
+        enterAccessBtn.getStyleClass().add("genButton");
+        enterAccessBtn.setOnAction(new SubmitAccessAction());
+        accessCancelBtn.getStyleClass().add("genButton");
+        accessCancelBtn.setOnAction(new CancelAccessAction());
+        accessResendBtn.getStyleClass().add("genButton");
+        accessResendBtn.setOnAction(new ResendAccessAction());
+        accessLine.getChildren().addAll(regCodeLabel, regLoginAccess,
+                enterAccessBtn, accessCancelBtn, accessResendBtn);
+        accessLine.setVisible(false);
+        accessLine.setManaged(false);
+        loginBox.getChildren().addAll(loginLabel, emailLine, passLine, loginError,
+                loginButtonLine, accessInstructions, accessLine);
+        screenContent.getChildren().addAll(loginBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+
+    /*------------------------------------------------------------------------*
+     * buildResetPasswordScreen()
+     * - Creates the reset password screen. Called by buildCenter().
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildResetPasswordScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox(),
+                forgotPassBox = new VBox();
+        Label resetLabel = new Label("RESET PASSWORD"),
+                resetEmailLabel = new Label("email:"),
+                resetNewPassLabel = new Label("new password:"),
+                resetNewPassConfirmLabel = new Label("confirm\nnew password:"),
+                resetCodeLabel = new Label("code:");
+        Button cancelResetBtn1 = new Button("Cancel"),
+                submitResetPassCodeBtn = new Button("Submit"),
+                cancelResetBtn2 = new Button("Cancel");
+        forgotPassBox.getStyleClass().add("formDivision");
+        forgotPassBox.setSpacing(10);
+        forgotPassBox.setPadding(new Insets(10, 10, 10, 10));
+        resetLabel.getStyleClass().add("pageHeader");
+        resetInstructions1.setText("Enter your email and submit. "
+                + "An access code will be sent to your email.");
+        resetInstructions1.setWrapText(true);
+        resetInstructions1.getStyleClass().add("inputLabel");
+        resetInstructions1.setAlignment(Pos.CENTER);
+        resetInstructions1.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
+        HBox emailLine = new HBox();
+        emailLine.setAlignment(Pos.CENTER_LEFT);
+        emailLine.setSpacing(10);
+        resetEmailLabel.getStyleClass().add("inputLabel");
+        resetEmailLabel.setPrefWidth(120);
+        resetEmailLabel.setAlignment(Pos.CENTER_RIGHT);
+        submitResetBtn.setText("Submit");
+        submitResetBtn.getStyleClass().add("genButton");
+        submitResetBtn.setOnAction(new SubmitResetAction());
+        cancelResetBtn1.getStyleClass().add("genButton");
+        cancelResetBtn1.setOnAction(new CancelResetAction());
+        emailLine.getChildren().addAll(resetEmailLabel, resetEmail,
+                submitResetBtn, cancelResetBtn1);
+        resetError.setWrapText(true);
+        resetError.getStyleClass().add("errorLabel");
+        resetError.setAlignment(Pos.CENTER);
+        resetError.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
+        resetError.setVisible(false);
+        resetError.setManaged(false);
+        resetInstructions2.setText("Enter your new password, confirm it, "
+                + "and enter the access code that was sent to you.");
+        resetInstructions2.setWrapText(true);
+        resetInstructions2.getStyleClass().add("inputLabel");
+        resetInstructions2.setAlignment(Pos.CENTER);
+        resetInstructions2.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
+        resetInstructions2.setVisible(false);
+        resetInstructions2.setManaged(false);
+        resetNewPassLine.setAlignment(Pos.CENTER_LEFT);
+        resetNewPassLine.setSpacing(10);
+        resetNewPassLabel.getStyleClass().add("inputLabel");
+        resetNewPassLabel.setPrefWidth(120);
+        resetNewPassLabel.setAlignment(Pos.CENTER_RIGHT);
+        resetNewPassLine.getChildren().addAll(resetNewPassLabel, resetNewPass);
+        resetNewPassLine.setVisible(false);
+        resetNewPassLine.setManaged(false);
+        resetNewPassConfirmLine.setAlignment(Pos.CENTER_LEFT);
+        resetNewPassConfirmLine.setSpacing(10);
+        resetPassStrengthLabel.setAlignment(Pos.CENTER_LEFT);
+        resetPassStrengthLabel.getStyleClass().add("inputLabel");
+        resetPassStrengthLabel.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
+        resetPassStrengthLabel.setVisible(false);
+        resetPassStrengthLabel.setManaged(false);
+        resetNewPassConfirmLabel.getStyleClass().add("inputLabel");
+        resetNewPassConfirmLabel.setPrefWidth(120);
+        resetNewPassConfirmLabel.setAlignment(Pos.CENTER_RIGHT);
+        resetNewPassConfirmLine.getChildren().addAll(resetNewPassConfirmLabel,
+                resetNewPassConfirm);
+        resetNewPassConfirmLine.setVisible(false);
+        resetNewPassConfirmLine.setManaged(false);
+        resetCodeLine.setAlignment(Pos.CENTER_LEFT);
+        resetCodeLine.setSpacing(10);
+        resetCodeLabel.getStyleClass().add("inputLabel");
+        resetCodeLabel.setPrefWidth(120);
+        resetCodeLabel.setAlignment(Pos.CENTER_RIGHT);
+        resetCodeLine.getChildren().addAll(resetCodeLabel, resetCode);
+        resetCodeLine.setVisible(false);
+        resetCodeLine.setManaged(false);
+        resetButLine.setPadding(new Insets(0, 0, 0, 32));
+        resetButLine.setAlignment(Pos.CENTER_LEFT);
+        resetButLine.setSpacing(100);
+        submitResetPassCodeBtn.getStyleClass().add("genButton");
+        submitResetPassCodeBtn.setOnAction(new SubmitResetPassCode());
+        cancelResetBtn2.getStyleClass().add("genButton");
+        cancelResetBtn2.setOnAction(new CancelResetAction());
+        resetButLine.getChildren().addAll(submitResetPassCodeBtn, cancelResetBtn2);
+        resetButLine.setVisible(false);
+        resetButLine.setManaged(false);
+        forgotPassBox.getChildren().addAll(resetLabel, resetInstructions1,
+                emailLine, resetError, resetInstructions2,
+                resetNewPassLine, resetPassStrengthLabel,
+                resetNewPassConfirmLine, resetCodeLine, resetButLine);
+        screenContent.getChildren().addAll(forgotPassBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+
+    /*------------------------------------------------------------------------*
+     * buildTestScreen()
+     * - TEMPORARY
+     * - Testing grounds
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildTestScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
     }
 
     private void resetLoginRegForms() {
@@ -103,7 +330,8 @@ public class VP_Center extends StackPane {
         loginError.setText("");
         loginError.setVisible(false);
         loginError.setManaged(false);
-        accessInstructions.setText("Enter the access code that was emailed to you when you registered below.");
+        accessInstructions.setText("Enter the access code that was emailed to "
+                + "you when you registered below.");
         accessInstructions.setVisible(false);
         accessInstructions.setManaged(false);
         accessLine.setVisible(false);
@@ -159,12 +387,14 @@ public class VP_Center extends StackPane {
         public void handle(ActionEvent event) {
             String cred[] = new String[]{loginEmail.getText().toLowerCase(),
                 loginPass.getText()};
-            accessInstructions.setText("Enter the access code that was emailed to you when you registered below.");
+            accessInstructions.setText("Enter the access code that was emailed "
+                    + "to you when you registered below.");
             try {
                 int loginStatus = controller.getDataM().userLogin(cred);
                 if (loginStatus == 0) {
                     // user does not exist in database
-                    loginError.setText("The email address and/or password is incorrect. Please try again.");
+                    loginError.setText("The email address and/or password is "
+                            + "incorrect. Please try again.");
                     loginError.setManaged(true);
                     loginError.setVisible(true);
                     loginEmail.showInvalid();
@@ -382,84 +612,4 @@ public class VP_Center extends StackPane {
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
-    protected VP_TextField getLoginEmail() {
-        return loginEmail;
-    }
-
-    protected VP_PasswordField getLoginPass() {
-        return loginPass;
-    }
-
-    protected VP_TextField getRegLoginAccess() {
-        return regLoginAccess;
-    }
-
-    protected Label getAccessInstructions() {
-        return accessInstructions;
-    }
-
-    protected Label getLoginError() {
-        return loginError;
-    }
-
-    protected HBox getAccessLine() {
-        return accessLine;
-    }
-
-    protected HBox getLoginButtonLine() {
-        return loginButtonLine;
-    }
-
-    protected VP_TextField getResetEmail() {
-        return resetEmail;
-    }
-
-    protected Button getSubmitResetBtn() {
-        return submitResetBtn;
-    }
-
-    protected Label getResetError() {
-        return resetError;
-    }
-
-    protected Label getResetInstructions1() {
-        return resetInstructions1;
-    }
-
-    protected Label getResetInstructions2() {
-        return resetInstructions2;
-    }
-
-    protected VP_TextField getResetCode() {
-        return resetCode;
-    }
-
-    protected VP_PasswordField getResetNewPass() {
-        return resetNewPass;
-    }
-
-    protected VP_PasswordField getResetNewPassConfirm() {
-        return resetNewPassConfirm;
-    }
-
-    protected HBox getResetNewPassLine() {
-        return resetNewPassLine;
-    }
-
-    protected HBox getResetNewPassConfirmLine() {
-        return resetNewPassConfirmLine;
-    }
-
-    protected HBox getResetCodeLine() {
-        return resetCodeLine;
-    }
-
-    protected HBox getResetButLine() {
-        return resetButLine;
-    }
-
-    protected Label getResetPassStrengthLabel() {
-        return resetPassStrengthLabel;
-    }
-
 }
