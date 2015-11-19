@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -31,9 +32,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -57,7 +55,8 @@ public class VP_GUIController {
             dbTasks;
     private ArrayList<String> guiTaskLabels,
             dbTaskLabels;
-    private final int sceneWidth = 1000, // width is temporary
+    private final int USER_PASSWORD_MINIMUM = 12,
+            sceneWidth = 1000, // width is temporary
             sceneHeight = 600;           // height is temporary
 
     /*------------------------------------------------------------------------*
@@ -78,10 +77,12 @@ public class VP_GUIController {
         mainLayout.getChildren().addAll(loader, guiLayout);
         mainLayout.getChildren().get(1).setVisible(false);
         mainLayout.getChildren().get(0).setVisible(true);
+        mainLayout.setAlignment(Pos.TOP_LEFT);
         primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
         primaryScene.getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
         primaryStage.setTitle(title);
         primaryStage.setScene(primaryScene);
+        primaryStage.setOnCloseRequest(new ClosingSequence());
         load();
     }
 
@@ -123,6 +124,7 @@ public class VP_GUIController {
         dbTaskLabels.add("Checking User Table");
         dbTaskLabels.add("Checking Access Level Table");
         dbTaskLabels.add("Checking Registering User Table");
+        dbTaskLabels.add("Checking Reset Code Table");
         dbTaskLabels.add("Checking Business Card Table");
         dbTaskLabels.add("Checking Contact Table");
         dbTaskLabels.add("Checking Cover Letter Table");
@@ -154,9 +156,10 @@ public class VP_GUIController {
         for (int i = 0; i < dbTaskLabels.size(); i++) {
             dbTasks.add(new LoadDBTask(i));
         }
+        loader.setTotalTasks(dbTaskLabels.size() + guiTaskLabels.size());
         LoadingThread loadDB = new LoadingThread(dbTasks);
         LoadingThread loadGUI = new LoadingThread(guiTasks);
-        loader.setTotalTasks(dbTaskLabels.size() + guiTaskLabels.size());
+        loadGUI.setDaemon(true);
         loadDB.start();
         loadGUI.start();
     }
@@ -170,10 +173,10 @@ public class VP_GUIController {
      * - Returns a string array of the database server url and port.
      *------------------------------------------------------------------------*/
     private String[] requestDBLocation(int type) {
-        VPDialog requestLoc = new VPDialog("MySQL Database Server Location");
+        VP_Dialog requestLoc = new VP_Dialog("MySQL Database Server Location");
         Optional result;
-        TextField urlField = new TextField(),
-                portField = new TextField();
+        VP_TextField urlField = new VP_TextField(50, 0),
+                portField = new VP_TextField(5, 5);
         String[] loc = dataM.getCurrentLocation();
         Label urlLabel = new Label("URL: "),
                 portLabel = new Label("PORT: ");
@@ -182,21 +185,11 @@ public class VP_GUIController {
         } else if (type == 1) {
             requestLoc.setHeaderText("Either the provided MySQL url or port is invalid, \n"
                     + "or the MySQL server is offline.");
-            urlField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
-            portField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+            urlField.showInvalid();
+            portField.showInvalid();
         }
         urlField.setText(loc[0]);
-        urlField.setPrefColumnCount(50);
-        urlField.setOnKeyTyped(new TextFieldLimiter(urlField, 0));
-        urlField.setOnKeyPressed(new TextFieldLimiter(urlField, 0));
-        urlField.setOnKeyReleased(new TextFieldLimiter(urlField, 0));
-        urlLabel.setPrefWidth(50);
         portField.setText(loc[1]);
-        portField.setPrefColumnCount(5);
-        portField.setOnKeyTyped(new TextFieldLimiter(portField, 5));
-        portField.setOnKeyPressed(new TextFieldLimiter(portField, 5));
-        portField.setOnKeyReleased(new TextFieldLimiter(portField, 5));
-        portLabel.setPrefWidth(50);
         requestLoc.dialogShell.add(urlLabel, 0, 0);
         requestLoc.dialogShell.add(urlField, 1, 0);
         requestLoc.dialogShell.add(portLabel, 0, 1);
@@ -221,10 +214,10 @@ public class VP_GUIController {
      * - Returns a string array of the database admin username and password.
      *------------------------------------------------------------------------*/
     private String[] requestAdminCred(int type) {
-        VPDialog requestCred = new VPDialog("MySQL Database Admin Credentials");
+        VP_Dialog requestCred = new VP_Dialog("MySQL Database Admin Credentials");
         Optional result;
-        TextField userField = new TextField();
-        PasswordField passField = new PasswordField();
+        VP_TextField userField = new VP_TextField(16, 16);
+        VP_PasswordField passField = new VP_PasswordField(32, 32, 0, null);
         String[] cred = {"", ""};
         Label userLabel = new Label("ADMIN USER: "),
                 passLabel = new Label("ADMIN PASSWORD: ");
@@ -236,19 +229,9 @@ public class VP_GUIController {
             requestCred.setHeaderText("Either the provided MySQL amdin username or password is invalid.\n"
                     + "Please reenter the correct admin username and password.\n"
                     + headerString);
-            userField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
-            passField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+            userField.showInvalid();
+            passField.showInvalid();
         }
-        userField.setPrefColumnCount(16);
-        userField.setOnKeyTyped(new TextFieldLimiter(userField, 16));
-        userField.setOnKeyPressed(new TextFieldLimiter(userField, 16));
-        userField.setOnKeyReleased(new TextFieldLimiter(userField, 16));
-        userLabel.setPrefWidth(120);
-        passField.setPrefColumnCount(32);
-        passField.setOnKeyTyped(new PassFieldLimiter(passField, 0, 32, null));
-        passField.setOnKeyPressed(new PassFieldLimiter(passField, 0, 32, null));
-        passField.setOnKeyReleased(new PassFieldLimiter(passField, 0, 32, null));
-        passLabel.setPrefWidth(120);
         requestCred.dialogShell.add(userLabel, 0, 0);
         requestCred.dialogShell.add(userField, 1, 0);
         requestCred.dialogShell.add(passLabel, 0, 1);
@@ -278,22 +261,21 @@ public class VP_GUIController {
         boolean passwordsOK = false,
                 emailOK = false,
                 lengthOK = false;
-        int minimum = 16;
-        VPDialog requestCred = new VPDialog("VaqPack Admin User Setup");
+        VP_Dialog requestCred = new VP_Dialog("VaqPack Admin User Setup");
         Optional result;
-        TextField userField = new TextField(),
-                emailField = new TextField();
-        PasswordField passField = new PasswordField(),
-                passField2 = new PasswordField(),
-                passField3 = new PasswordField();
+        VP_TextField userField = new VP_TextField(16, USER_PASSWORD_MINIMUM),
+                emailField = new VP_TextField(32, 254);
         String[] cred = {"", "", "", ""};
         Label userLabel = new Label("MySQL Admin User: "),
                 passLabel = new Label("MySQL Admin Password: "),
                 emailLabel = new Label("VaqPack Admin Email: "),
                 passLabel2 = new Label("VaqPack Admin Password: "),
                 passLabel3 = new Label("Reenter VP Admin Password:"),
-                passStrengthLabel = new Label("(Password must be at least 16 characters in length)"),
+                passStrengthLabel = new Label("(Password must be at least " + USER_PASSWORD_MINIMUM + " characters in length)"),
                 passStrengthLevel = new Label("Srength: Unacceptable");
+        VP_PasswordField passField = new VP_PasswordField(32, 32, 0, null),
+                passField2 = new VP_PasswordField(32, 32, USER_PASSWORD_MINIMUM, passStrengthLevel),
+                passField3 = new VP_PasswordField(32, 32, 0, null);
         String cred4 = "",
                 headerString = "VaqPack requires at least one admin user "
                 + "of the application.\nThis prompt will appear whenever an "
@@ -305,34 +287,9 @@ public class VP_GUIController {
         } else {
             requestCred.setHeaderText(headerString + "\n\nThe provided database admin credentials "
                     + "were incorrect.\nPlease try again.");
-            userField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
-            passField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+            userField.showInvalid();
+            passField.showInvalid();
         }
-        userField.setPrefColumnCount(16);
-        userField.setOnKeyTyped(new TextFieldLimiter(userField, minimum));
-        userField.setOnKeyPressed(new TextFieldLimiter(userField, minimum));
-        userField.setOnKeyReleased(new TextFieldLimiter(userField, minimum));
-        userLabel.setPrefWidth(160);
-        passField.setPrefColumnCount(32);
-        passField.setOnKeyTyped(new TextFieldLimiter(passField, 32));
-        passField.setOnKeyPressed(new TextFieldLimiter(passField, 32));
-        passField.setOnKeyReleased(new TextFieldLimiter(passField, 32));
-        passLabel.setPrefWidth(160);
-        emailField.setPrefColumnCount(32);
-        emailField.setOnKeyTyped(new TextFieldLimiter(emailField, 254));
-        emailField.setOnKeyPressed(new TextFieldLimiter(emailField, 254));
-        emailField.setOnKeyReleased(new TextFieldLimiter(emailField, 254));
-        emailLabel.setPrefWidth(160);
-        passField2.setPrefColumnCount(32);
-        passField2.setOnKeyTyped(new PassFieldLimiter(passField2, minimum, 32, passStrengthLevel));
-        passField2.setOnKeyPressed(new PassFieldLimiter(passField2, minimum, 32, passStrengthLevel));
-        passField2.setOnKeyReleased(new PassFieldLimiter(passField2, minimum, 32, passStrengthLevel));
-        passLabel2.setPrefWidth(160);
-        passField3.setPrefColumnCount(32);
-        passField3.setOnKeyTyped(new PassFieldLimiter(passField3, minimum, 32, passStrengthLevel));
-        passField3.setOnKeyPressed(new PassFieldLimiter(passField3, minimum, 32, passStrengthLevel));
-        passField3.setOnKeyReleased(new PassFieldLimiter(passField3, minimum, 32, passStrengthLevel));
-        passLabel3.setPrefWidth(160);
         requestCred.dialogShell.add(userLabel, 0, 0);
         requestCred.dialogShell.add(userField, 1, 0);
         requestCred.dialogShell.add(passLabel, 0, 1);
@@ -351,7 +308,7 @@ public class VP_GUIController {
             if (result.get() == ButtonType.OK) {
                 cred[0] = userField.getText();
                 cred[1] = passField.getText();
-                cred[2] = emailField.getText();
+                cred[2] = emailField.getText().toLowerCase();
                 cred[3] = passField2.getText();
                 cred4 = passField3.getText();
             } else {
@@ -364,22 +321,21 @@ public class VP_GUIController {
                 if (!emailOK) {
                     requestCred.setHeaderText(headerString + "\n\nThe entered VaqPack admin email address "
                             + "is not in valid email form.\nPlease try again.");
-                    emailField.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
-                }
-                else if (cred[3].length() < minimum){
+                    emailField.showInvalid();
+                } else if (cred[3].length() < USER_PASSWORD_MINIMUM) {
                     lengthOK = false;
                     requestCred.setHeaderText(headerString + "\n\nThe VaqPack admin user password is "
-                        + "not long enough.\nPlease try again.");
-                    passField2.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
-                    passField3.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+                            + "not long enough.\nPlease try again.");
+                    passField2.showInvalid();
+                    passField3.showInvalid();
                 }
             } else {
                 passField2.setText("");
                 passField3.setText("");
                 requestCred.setHeaderText(headerString + "\n\nThe VaqPack admin user passwords do "
                         + "not match.\nPlease try again.");
-                passField2.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
-                passField3.setStyle("-fx-control-inner-background: rgb(255, 210 , 210);");
+                passField2.showInvalid();
+                passField3.showInvalid();
             }
         }
         return cred;
@@ -424,9 +380,9 @@ public class VP_GUIController {
                     while (!retrieveComplete) {
                         try {
                             if (stage == 0) {
-                                dataM.retrieveDBLocation();
+                                getDataM().retrieveDBLocation();
                             } else if (stage == 1) {
-                                dataM.retrieveAdmin();
+                                getDataM().retrieveAdmin();
                             }
                             retrieveComplete = true;
                         } catch (FileNotFoundException ex) {
@@ -434,10 +390,10 @@ public class VP_GUIController {
                             Platform.runLater(() -> {
                                 try {
                                     if (stage == 0) {
-                                        dataM.storeDBLocation(requestDBLocation(0));
+                                        getDataM().storeDBLocation(requestDBLocation(0));
                                         latch.countDown();
                                     } else if (stage == 1) {
-                                        dataM.storeAdminCred(requestAdminCred(0));
+                                        getDataM().storeAdminCred(requestAdminCred(0));
                                         latch.countDown();
                                     }
                                 } catch (IOException ex2) {
@@ -465,10 +421,10 @@ public class VP_GUIController {
                     }
                     try {
                         if (stage == 0) {
-                            dataM.checkDBLocation();
+                            getDataM().checkDBLocation();
                             complete = true;
                         } else if (stage == 1) {
-                            dataM.checkDBSchemaExists();
+                            getDataM().checkDBSchemaExists();
                         }
 
                     } catch (SQLException ex) {
@@ -477,10 +433,10 @@ public class VP_GUIController {
                             Platform.runLater(() -> {
                                 try {
                                     if (stage == 0) {
-                                        dataM.storeDBLocation(requestDBLocation(1));
+                                        getDataM().storeDBLocation(requestDBLocation(1));
                                         latch.countDown();
                                     } else if (stage == 1) {
-                                        dataM.storeAdminCred(requestAdminCred(1));
+                                        getDataM().storeAdminCred(requestAdminCred(1));
                                         latch.countDown();
                                     }
                                 } catch (IOException ex2) {
@@ -507,34 +463,34 @@ public class VP_GUIController {
                         }
                     }
                 }
-            } else if (stage > 1 && stage < 23) {
+            } else if (stage > 1 && stage < 24) {
                 try {
-                    if (stage < 22) {
-                        dataM.checkDBTable(stage - 2);
-                    } else if (stage == 22) {
-                        dataM.contructUserAccess();
+                    if (stage < 23) {
+                        getDataM().checkDBTable(stage - 2);
+                    } else if (stage == 23) {
+                        getDataM().contructUserAccess();
                     }
                 } catch (SQLException ex) {
-                    if (ex.getErrorCode() != 1050 && stage < 22) {
+                    if (ex.getErrorCode() != 1050 && stage < 23) {
                         Platform.runLater(() -> errorAlert(1403, ex.getMessage()));
-                    } else if (stage == 22) {
+                    } else if (stage == 23) {
                         Platform.runLater(() -> errorAlert(1404, ex.getMessage()));
                     }
                 }
-            } else if (stage == 23) {
+            } else if (stage == 24) {
                 boolean adminExists = false;
                 while (!adminExists && !adminCheck) {
                     adminCheck = false;
                     adminlatch = new CountDownLatch(1);
                     try {
-                        adminExists = dataM.searchForVPAdmin();
+                        adminExists = getDataM().searchForVPAdmin();
                     } catch (SQLException ex) {
                         Platform.runLater(() -> errorAlert(1307, ex.getMessage()));
                     }
                     if (!adminExists) {
                         Platform.runLater(() -> {
                             try {
-                                adminCheck = dataM.createVPAdmin(requestVPAdmin(0));
+                                adminCheck = getDataM().createVPAdmin(requestVPAdmin(0));
                                 adminlatch.countDown();
                             } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                                 Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
@@ -553,7 +509,7 @@ public class VP_GUIController {
                             adminlatch = new CountDownLatch(1);
                             Platform.runLater(() -> {
                                 try {
-                                    adminCheck = dataM.createVPAdmin(requestVPAdmin(1));
+                                    adminCheck = getDataM().createVPAdmin(requestVPAdmin(1));
                                     adminlatch.countDown();
                                 } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                                     Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
@@ -643,17 +599,19 @@ public class VP_GUIController {
     }
 
     /*------------------------------------------------------------------------*
-     * Subclass VPDialog
+     * Subclass VP_Dialog
      * - Custom-styled JavaFX Dialog.
      *------------------------------------------------------------------------*/
-    private class VPDialog extends Dialog {
+    private class VP_Dialog extends Dialog {
+
         private final GridPane dialogShell;
         /*---------------------------------------------------------------------*
          * VPDialog()
          * - Constructor.
          * - Parameter title is the string title of the window.
          *---------------------------------------------------------------------*/
-        public VPDialog(String title) {
+
+        public VP_Dialog(String title) {
             this.getDialogPane().getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
             this.setTitle(title);
             VBox shellPad = new VBox();
@@ -682,133 +640,20 @@ public class VP_GUIController {
     }
 
     /*------------------------------------------------------------------------*
-     * Subclass TextFieldLimiter
-     * - Prevents the user from adding characters into a textfield component
-     *   beyond a specific character count.
+     * Subclass ClosingSequence
+     * - Prevents the window from closing before the user saves things.
      *------------------------------------------------------------------------*/
-    private class TextFieldLimiter implements EventHandler<KeyEvent> {
-        private final int limit;
-        private final TextField thisNode;
-        
-        /*---------------------------------------------------------------------*
-         * TextFieldLimiter()
-         * - Constructor.
-         * - Parameter thisNode is the TextField using this EventHandler
-         * - Parameter limit is the allowed character limit for this TextField.
-         *   A limit of 0 or less means to not limit the text.
-         *---------------------------------------------------------------------*/
-        public TextFieldLimiter(TextField thisNode, int limit) {
-            this.limit = limit;
-            this.thisNode = thisNode;
-        }
+    protected class ClosingSequence implements EventHandler {
 
         @Override
-        public void handle(KeyEvent event) {
-            if (event.getEventType() == KeyEvent.KEY_PRESSED
-                    || event.getEventType() == KeyEvent.KEY_RELEASED
-                    || event.getEventType() == KeyEvent.KEY_TYPED) {
-                thisNode.setStyle("-fx-control-inner-background: white");
-                if (limit > 0) {
-                    String text = thisNode.getText();
-                    if (text.length() > limit) {
-                        thisNode.setText(text.substring(0, limit));
-                        thisNode.positionCaret(limit);
-                    }
-                }
-            }
-        }
-    }
-    
-    /*------------------------------------------------------------------------*
-     * Subclass PassFieldLimiter
-     * - Prevents the user from adding characters into a textfield component
-     *   beyond a specific character count. Calculates the strength of a
-     *   password and updates a label with the strength level.
-     *------------------------------------------------------------------------*/
-    private class PassFieldLimiter implements EventHandler<KeyEvent> {
-        private final int
-                limit,
-                minimum;
-        private final TextField thisNode;
-        private final Label levelLabel;
-        
-        /*---------------------------------------------------------------------*
-         * PassFieldLimiter()
-         * - Constructor.
-         * - Parameter thisNode is the TextField using this EventHandler
-         * - Parameter limit is the allowed character limit for this TextField.
-         *   A limit of 0 or less means to not limit the text.
-         * - Parameter minimum is the minimum required characters.
-         *   A minimum of 0 or less means no minimum requirement and no strength
-         *   checking for this text field.
-         * - Parameter lebelLabel is the label that notes the strength if this
-         *   label is not null,
-         *---------------------------------------------------------------------*/
-        public PassFieldLimiter(TextField thisNode, int minimum, int limit, Label levelLabel) {
-            this.thisNode = thisNode;
-            this.limit = limit;
-            this.minimum = minimum;
-            this.levelLabel = levelLabel;
-        }
-        @Override
-        public void handle(KeyEvent event) {
-            if (event.getEventType() == KeyEvent.KEY_PRESSED
-                    || event.getEventType() == KeyEvent.KEY_RELEASED
-                    || event.getEventType() == KeyEvent.KEY_TYPED) {
-                thisNode.setStyle("-fx-control-inner-background: white");
-                String  text = thisNode.getText();
-                int     strength = 0,
-                        length = text.length();
-                boolean hasUpper = false,
-                        hasLower = false,
-                        hasAlpha = false,
-                        hasNumb = false,
-                        hasSpecial = false;
-                if (limit > 0) {
-                    if (length > limit) {
-                        thisNode.setText(text.substring(0, limit));
-                        thisNode.positionCaret(limit);
-                    }
-                }
-                if (minimum > 0 && levelLabel != null) {
-                    if (length >= minimum) {
-                        for (int i = 0; i < length; i++) {
-                            char thisChar = text.charAt(i);
-                            if (Character.isUpperCase(thisChar)) {
-                                hasUpper = true;
-                            }
-                            else if (Character.isLowerCase(thisChar)) {
-                                hasLower = true;
-                            }
-                            else if (Character.isDigit(thisChar)) {
-                                hasNumb = true;
-                            }
-                            else if (Character.isLetter(thisChar)) {
-                                hasAlpha = true;
-                            }
-                            else {
-                                hasSpecial = true;
-                            }
-                        }
-                        strength += 1;
-                        if (hasUpper && hasLower)
-                            strength += 1;
-                        if (hasNumb && hasAlpha)
-                            strength += 1;
-                        if (hasSpecial)
-                            strength += 1;
-                        if (length > 24)
-                            strength += 1;
-                    }
-                    switch (strength) {
-                        case 0: levelLabel.setText("Srength: Unacceptable"); break;
-                        case 1: levelLabel.setText("Srength: Weak"); break;
-                        case 2: levelLabel.setText("Srength: Mediocre"); break;
-                        case 3: levelLabel.setText("Srength: Good"); break;
-                        case 4: levelLabel.setText("Srength: Strong"); break;
-                        case 5: levelLabel.setText("Srength: Very Strong"); break;
-                    }
-                }
+        public void handle(Event event) {
+            event.consume();
+            boolean exitCancelled = false;
+            // insert code alert user to save things. if necessary
+            // let the alert return a value
+            // exitCancelled = blahblahblah
+            if (!exitCancelled) {
+                System.exit(0);
             }
         }
     }
@@ -816,4 +661,15 @@ public class VP_GUIController {
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/
+    protected Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    protected int getUSER_PASSWORD_MINIMUM() {
+        return USER_PASSWORD_MINIMUM;
+    }
+
+    protected VP_DataManager getDataM() {
+        return dataM;
+    }
 }

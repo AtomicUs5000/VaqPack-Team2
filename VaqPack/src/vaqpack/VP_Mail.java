@@ -23,10 +23,10 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class VP_Mail extends Thread{
+public class VP_Mail extends Thread {
+
     private final VP_GUIController controller;
-    private final String
-            port = "465",
+    private final String port = "465",
             host = "smtp.gamil.com",
             userName = "vaqpackt2",
             password = "!vpMaiL3340?",
@@ -43,14 +43,14 @@ public class VP_Mail extends Thread{
      * - Paramater string subject is the subject or title of the email.
      * - Parameter string message is the email's message body.
      *------------------------------------------------------------------------*/
-    protected VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message){
+    protected VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message) {
         this.controller = controller;
         this.recipient = recipient;
         this.ccEmails = ccEmails;
         this.subject = subject;
         this.message = message;
     }
-    
+
     @Override
     public void run() {
         try {
@@ -72,12 +72,13 @@ public class VP_Mail extends Thread{
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(userName + "@gmail.com"));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
-            for (int i = 0; i < ccLength; i++)
+            for (int i = 0; i < ccLength; i++) {
                 msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmails[i], false));
+            }
             msg.setSubject(subject);
             msg.setText(message, "utf-8");
             msg.setSentDate(new Date());
-            SMTPTransport transPort = (SMTPTransport)session.getTransport("smtps");
+            SMTPTransport transPort = (SMTPTransport) session.getTransport("smtps");
             transPort.connect("smtp.gmail.com", userName, password);
             transPort.sendMessage(msg, msg.getAllRecipients());
             transPort.close();

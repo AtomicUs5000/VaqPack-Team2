@@ -25,17 +25,16 @@ import java.util.Date;
 import java.util.Random;
 import javax.xml.bind.DatatypeConverter;
 
-// NEED TO ADD MECHANISM TO TRANSFER USERS FROM REGISTERING_USER TABLE TO USER TABLE
-// ONCE A VALID ACCESS CODE HAS BEEN ENTEERED
-
 public class VP_DatabaseManager {
+
+    private final VP_GUIController controller;
     private Connection con;
     private Statement stm;
     private ResultSet rts;
     // url, port, dbadmin user and pass kept here just for refernce. These values
     // may or not be used. These were the original values before the program
     // allowed the entry of different values.
-    private final String dbName = "vaqpack_db"; 
+    private final String dbName = "vaqpack_db";
     private String port = "3306",
             url = "localhost",
             fullURL = "jdbc:mysql://" + url + ":" + port + "/",
@@ -47,7 +46,8 @@ public class VP_DatabaseManager {
      * - Constructor. Initialiazes the connection, statement, and result set.
      * No Parameters.
      *------------------------------------------------------------------------*/
-    protected VP_DatabaseManager() {
+    protected VP_DatabaseManager(VP_GUIController controller) {
+        this.controller = controller;
         con = null;
         stm = null;
         rts = null;
@@ -76,7 +76,7 @@ public class VP_DatabaseManager {
         stm.executeUpdate(sql);
         close();
     }
-    
+
     /*------------------------------------------------------------------------*
      * checkUserTable()
      * - Defines the SQL statement to create the 'user' table and then
@@ -90,7 +90,7 @@ public class VP_DatabaseManager {
                 + "  email varchar(254) NOT NULL,"
                 + "  password char(64) NOT NULL,"
                 + "  access_level int(1) unsigned NOT NULL DEFAULT 0,"
-                + "  last_access datetime NOT NULL,"
+                + "  last_access datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "  PRIMARY KEY (id, email),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY email_UNIQUE (email)"
@@ -118,9 +118,9 @@ public class VP_DatabaseManager {
                 + ")";
         checkTable(sql);
     }
-    
+
     /*------------------------------------------------------------------------*
-     * RegisteringUserTable()
+     * checkRegisteringUserTable()
      * - Defines the SQL statement to create the 'registering_user' table and 
      *   then calls checkTable().
      * - No parameters.
@@ -133,6 +133,27 @@ public class VP_DatabaseManager {
                 + "  password char(64) NOT NULL,"
                 + "  access_level int(1) unsigned NOT NULL DEFAULT 0,"
                 + "  reg_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                + "  access_code varchar(16) NOT NULL,"
+                + "  PRIMARY KEY (id, email),"
+                + "  UNIQUE KEY id_UNIQUE (id),"
+                + "  UNIQUE KEY email_UNIQUE (email)"
+                + ")";
+        checkTable(sql);
+    }
+
+    /*------------------------------------------------------------------------*
+     * checkResetCodeTable()
+     * - Defines the SQL statement to create the 'reset_code' table and 
+     *   then calls checkTable().
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void checkResetCodeTable() throws SQLException {
+        String sql = "CREATE TABLE reset_code ("
+                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
+                + "  email varchar(254) NOT NULL,"
+                + "  sent_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                + "  confirm_time datetime,"
                 + "  access_code varchar(16) NOT NULL,"
                 + "  PRIMARY KEY (id, email),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
@@ -520,6 +541,7 @@ public class VP_DatabaseManager {
      * findAdminUser()
      * - Attempts to locate at least one VaqPack admin user account.
      * - Also cleans the dead registration codes.
+     * - Also cleans the dead reset codes.
      * - No parameters.
      * - Returns a boolean value indicating whether or not a VaqPack admin user
      *   has been created and exists in the database user table. This is
@@ -537,17 +559,15 @@ public class VP_DatabaseManager {
         rts = stm.executeQuery(sql);
         if (rts.next()) {
             adminExists = true;
-        }
-        else {
+        } else {
             sql = "SELECT * FROM registering_user WHERE access_level = 1";
             rts = stm.executeQuery(sql);
             if (rts.next()) {
                 regTime = rts.getTimestamp("reg_time");
                 difference = dt.getTime() - regTime.getTime();
-                System.out.println("time difference is " + difference);
-                if (difference < 3600000)
+                if (difference < 3600000) {
                     adminExists = true;
-                else {
+                } else {
                     remId = rts.getInt("id");
                     sql = "DELETE FROM registering_user WHERE id = " + remId;
                     stm.executeUpdate(sql);
@@ -570,12 +590,23 @@ public class VP_DatabaseManager {
             while (rts.next()) {
                 regTime = rts.getTimestamp("reg_time");
                 difference = dt.getTime() - regTime.getTime();
-                System.out.println("time difference is " + difference);
                 if (difference >= 3600000) {
                     remId = rts.getInt("id");
                     sql = "DELETE FROM registering_user WHERE id = " + remId;
                     stm.executeUpdate(sql);
                 }
+            }
+        }
+        // clean reset_code table
+        sql = "SELECT * FROM reset_code";
+        rts = stm.executeQuery(sql);
+        while (rts.next()) {
+            regTime = rts.getTimestamp("sent_time");
+            difference = dt.getTime() - regTime.getTime();
+            if (difference > 86400000) {
+                remId = rts.getInt("id");
+                sql = "DELETE FROM reset_code WHERE id = " + remId;
+                stm.executeUpdate(sql);
             }
         }
         close();
@@ -586,21 +617,35 @@ public class VP_DatabaseManager {
      * createVaqPackAdmin()
      * - Inserts an admin VaqPack user.
      * - Parameters cred is a string array of the database admin user
-     *   credentials and the VaqPack admin user crfedentials.
+     *   credentials and the VaqPack admin user credentials.
      * - Returns a boolean value indicating if that the database admin user is
      *   valid, allowing the creation of this VP admin user account.
      *------------------------------------------------------------------------*/
     protected boolean createVaqPackAdmin(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         boolean adminCredChecked = false;
+        String sql, msg, code;
+        String[] ccMail = {};
+        VP_Mail regEmail;
         if (cred[0].equals(adminUserName) && cred[1].equals(adminPassword)) {
             adminCredChecked = true;
             connect(dbName);
-            String sql = "INSERT INTO registering_user (email, password, access_level, access_code)"
-                    + " VALUES ('" + cred[2] + "', '" + hashPassword(cred[3]) + "', 1, '" + generatAccessCode() + "')";
+            code = generatAccessCode();
+            sql = "INSERT INTO registering_user (email, password, access_level, access_code)"
+                    + " VALUES ('" + cred[2] + "', '" + hashPassword(cred[3]) + "', 1, '" + code + "')";
             stm.executeUpdate(sql);
-            close();
+            msg = "A VaqPack administrator account has been created associated with this email address.\n"
+                    + "Please log into VaqPack and enter the following code:\n\n"
+                    + code + "\n\n"
+                    + "The code will expire in 1 hour. If you do not enter the code within this timeframe, "
+                    + "the system administrator will have to set up your account again.\n"
+                    + "The code only needs to be entered once to activate your account.\n\n"
+                    + "This is an automated message from the VaqPack software. Please do not reply.";
+            regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg);
+            regEmail.setDaemon(true);
+            regEmail.start();
         }
+        close();
         return adminCredChecked;
     }
 
@@ -637,7 +682,176 @@ public class VP_DatabaseManager {
         }
         close();
     }
-    
+
+    protected int attemptUserLogin(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        int loginStatus = 0, id;
+        Timestamp regTime;
+        long newMS;
+        // first check if user is in the user table
+        String sql = "SELECT * FROM user WHERE email = '" + cred[0] + "' AND "
+                + "password = '" + hashPassword(cred[1]) + "'";
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            loginStatus = 1;
+        } else {
+            sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
+                    + "password = '" + hashPassword(cred[1]) + "'";
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                loginStatus = 2;
+                // extend the lifetime of the registration code by five minutes
+                id = rts.getInt("id");
+                regTime = rts.getTimestamp("reg_time");
+                newMS = regTime.getTime() + 300000;
+                regTime = new Timestamp(newMS);
+                sql = "UPDATE registering_user SET reg_time = '" + regTime + "' WHERE id = " + id;
+                stm.executeUpdate(sql);
+            }
+        }
+        close();
+        return loginStatus;
+    }
+
+    protected boolean verifyUserAccessCode(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        boolean success = false;
+        int remId,
+                remAccessLevel;
+        String sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
+                + "password = '" + hashPassword(cred[1]) + "' AND access_code = '" + cred[2] + "'";
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            success = true;
+            remId = rts.getInt("id");
+            remAccessLevel = rts.getInt("access_level");
+            sql = "DELETE FROM registering_user WHERE id = " + remId;
+            stm.executeUpdate(sql);
+            sql = "INSERT INTO user (email, password, access_level)"
+                    + " VALUES ('" + cred[0] + "', '" + hashPassword(cred[1]) + "', " + remAccessLevel + ")";
+            stm.executeUpdate(sql);
+        }
+        close();
+        return success;
+    }
+
+    protected int resetPassword(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        int resetStatus = 0,
+                remID;
+        long difference;
+        Timestamp sentTime;
+        Date dt;
+        String sql = "SELECT * FROM reset_code WHERE email = '" + cred[0]
+                + "' AND access_code = '" + cred[3] + "'";
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            resetStatus = 1;
+            dt = new java.util.Date();
+            remID = rts.getInt("id");
+            sentTime = rts.getTimestamp("sent_time");
+            difference = dt.getTime() - sentTime.getTime();
+            if (difference < 3600000) {
+                sql = "UPDATE reset_code SET confirm_time = '" + new Timestamp(dt.getTime()) + "' WHERE id = " + remID;
+                stm.executeUpdate(sql);
+                sql = "UPDATE user SET password = '" + hashPassword(cred[1]) + "' WHERE email = '" + cred[0] + "'";
+                stm.executeUpdate(sql);
+                resetStatus = 2;
+            }
+        }
+        close();
+        return resetStatus;
+    }
+
+    protected int findUserOrRegUser(String email) throws SQLException {
+        Timestamp sentTime,
+                confirmTime;
+        Date dt;
+        int userStatus = 0,
+                remID;
+        long difference;
+        String[] ccMail = {};
+        VP_Mail resetEmail;
+        String msg,
+                code,
+                sql = "SELECT * FROM user WHERE email = '" + email + "'";
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            userStatus = 2;
+        }
+        sql = "SELECT * FROM reset_code WHERE email = '" + email + "'";
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            remID = rts.getInt("id");
+            if (rts.getDate("confirm_time") == null) {
+                sql = "DELETE FROM reset_code WHERE id = " + remID;
+                stm.executeUpdate(sql);
+            } else {
+                sentTime = rts.getTimestamp("sent_time");
+                confirmTime = rts.getTimestamp("confirm_time");
+                difference = confirmTime.getTime() - sentTime.getTime();
+                if (difference < 86400000) {
+                    userStatus = 1;
+                } else {
+                    sql = "DELETE FROM reset_code WHERE id = " + remID;
+                    stm.executeUpdate(sql);
+                }
+            }
+        }
+        if (userStatus == 2) {
+            dt = new java.util.Date();
+            code = generatAccessCode();
+            sql = "INSERT INTO reset_code (email, access_code, sent_time) "
+                    + "VALUES ('" + email + "', '" + code + "', '" + new Timestamp(dt.getTime()) + "')";
+            stm.executeUpdate(sql);
+            msg = "Please enter the following code to reset your password:\n\n"
+                    + code + "\n\n"
+                    + "The code will expire in 1 hour.\n\n"
+                    + "This is an automated message from the VaqPack software. Please do not reply.";
+            resetEmail = new VP_Mail(controller, email, ccMail, "VaqPack Password Reset", msg);
+            resetEmail.setDaemon(true);
+            resetEmail.start();
+        }
+        close();
+        return userStatus;
+    }
+
+    protected void resendUserAccessCode(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        String code,
+                msg,
+                sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
+                + "password = '" + hashPassword(cred[1]) + "'";
+        String[] ccMail = {};
+        VP_Mail regEmail;
+        int id;
+        Date dt;
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            dt = new java.util.Date();
+            code = generatAccessCode();
+            id = rts.getInt("id");
+            sql = "UPDATE registering_user SET reg_time = '" + new Timestamp(dt.getTime()) + "', "
+                    + "access_code = '" + code + "' WHERE id = " + id;
+            stm.executeUpdate(sql);
+            msg = "Please log into VaqPack and enter the following code:\n\n"
+                    + code + "\n\n"
+                    + "The code will expire in 1 hour. If you do not enter the code within this timeframe, "
+                    + "you will have to register your account again.\n"
+                    + "The code only needs to be entered once to activate your account.\n\n"
+                    + "This is an automated message from the VaqPack software. Please do not reply.";
+            regEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg);
+            regEmail.setDaemon(true);
+            regEmail.start();
+        }
+        close();
+    }
+
     /*------------------------------------------------------------------------*
      * connect()
      * - Creates the connection and initializes the statement.
@@ -677,7 +891,7 @@ public class VP_DatabaseManager {
         stm.executeUpdate(sql);
         close();
     }
-    
+
     /*------------------------------------------------------------------------*
      * hashPassword()
      * - Hashes a password.
@@ -690,7 +904,7 @@ public class VP_DatabaseManager {
         byte[] passHash = mDig.digest(pass.getBytes("UTF-8"));
         return DatatypeConverter.printHexBinary(passHash);
     }
-    
+
     /*------------------------------------------------------------------------*
      * generatAccessCode()
      * - Generates a 16-character string used an an access code for verifying
@@ -705,12 +919,12 @@ public class VP_DatabaseManager {
             if (thisChar > 90 && thisChar < 97) {
                 i--;
             } else {
-                code += ((char)(thisChar));
+                code += ((char) (thisChar));
             }
         }
         return code;
     }
-    
+
     /*------------------------------------------------------------------------*
      * Setters and Getters
      *------------------------------------------------------------------------*/

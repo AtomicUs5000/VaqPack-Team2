@@ -20,18 +20,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class VP_Loader extends VBox {
-    private final StringProperty
-            loadPercentProp = new SimpleStringProperty(),
+
+    private final StringProperty loadPercentProp = new SimpleStringProperty(),
             activity1 = new SimpleStringProperty(),
             activity2 = new SimpleStringProperty();
-    private final Label
-            percentLabel,
+    private final Label percentLabel,
             activityLabel1,
             activityLabel2;
-    private int
-            totalTasks = 0,
+    private int totalTasks = 0,
             completedTasks = 0;
-    
+
     /*------------------------------------------------------------------------*
      * VP_Loader()
      * - Constructor.
@@ -56,11 +54,17 @@ public class VP_Loader extends VBox {
         activityLabel2.textProperty().bind(activity2);
         this.getChildren().addAll(loadLogoPane, percentLabel, activityLabel1, activityLabel2);
     }
-    
+
+    /*------------------------------------------------------------------------*
+     * incrementCompletedTasks()
+     * - Calculates the percentage of loading completion.
+     * - No Paramters
+     * - No Return
+     *------------------------------------------------------------------------*/
     protected void incrementCompletedTasks() {
         completedTasks++;
-        double percentDouble = (((double)completedTasks / (double)totalTasks) * 100);
-        int percent = (int)percentDouble;
+        double percentDouble = (((double) completedTasks / (double) totalTasks) * 100);
+        int percent = (int) percentDouble;
         loadPercentProp.set("Loading : " + percent + "%");
     }
 
@@ -74,7 +78,7 @@ public class VP_Loader extends VBox {
     public final void setActivity1(String value) {
         activity1.set(value);
     }
-    
+
     public final String getActivity2() {
         return activity2.get();
     }

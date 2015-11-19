@@ -43,7 +43,7 @@ public class VP_DataManager {
      *------------------------------------------------------------------------*/
     protected VP_DataManager(VP_GUIController controller) {
         this.controller = controller;
-        dbManager = new VP_DatabaseManager();
+        dbManager = new VP_DatabaseManager(controller);
         data2html = new VP_DataToHtml();
         html2pdf = new VP_HtmlToPdf();
         fileM = new VP_FileManager();
@@ -158,54 +158,57 @@ public class VP_DataManager {
                 dbManager.checkRegisteringUserTable();
                 break;
             case 3:
-                dbManager.checkBusinessCardTable();
+                dbManager.checkResetCodeTable();
                 break;
             case 4:
-                dbManager.checkContactTable();
+                dbManager.checkBusinessCardTable();
                 break;
             case 5:
-                dbManager.checkCoverLetterTable();
+                dbManager.checkContactTable();
                 break;
             case 6:
-                dbManager.checkResumeTable();
+                dbManager.checkCoverLetterTable();
                 break;
             case 7:
-                dbManager.checkUserDataTable();
+                dbManager.checkResumeTable();
                 break;
             case 8:
-                dbManager.checkCustomThemeTable();
+                dbManager.checkUserDataTable();
                 break;
             case 9:
-                dbManager.checkDefaultThemeTable();
+                dbManager.checkCustomThemeTable();
                 break;
             case 10:
-                dbManager.checkBCHasCustomThemeTable();
+                dbManager.checkDefaultThemeTable();
                 break;
             case 11:
-                dbManager.checkBCHasDefaultThemeTable();
+                dbManager.checkBCHasCustomThemeTable();
                 break;
             case 12:
-                dbManager.checkBusinessCardPDFTable();
+                dbManager.checkBCHasDefaultThemeTable();
                 break;
             case 13:
-                dbManager.checkCLHasCustomThemeTable();
+                dbManager.checkBusinessCardPDFTable();
                 break;
             case 14:
-                dbManager.checkCLHasDefaultThemeTable();
+                dbManager.checkCLHasCustomThemeTable();
                 break;
             case 15:
-                dbManager.checkCoverLetterPDFTable();
+                dbManager.checkCLHasDefaultThemeTable();
                 break;
             case 16:
-                dbManager.checkResHasCustomThemeTable();
+                dbManager.checkCoverLetterPDFTable();
                 break;
             case 17:
-                dbManager.checkResHasDefaultThemeTable();
+                dbManager.checkResHasCustomThemeTable();
                 break;
             case 18:
-                dbManager.checkResPDFTable();
+                dbManager.checkResHasDefaultThemeTable();
                 break;
             case 19:
+                dbManager.checkResPDFTable();
+                break;
+            case 20:
                 dbManager.checkResHTMLTable();
                 break;
         }
@@ -266,6 +269,30 @@ public class VP_DataManager {
         } else {
             return false;
         }
+    }
+
+    protected int userLogin(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        return dbManager.attemptUserLogin(cred);
+    }
+
+    protected boolean verifyRegAccess(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        return dbManager.verifyUserAccessCode(cred);
+    }
+
+    protected void resendAccess(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        dbManager.resendUserAccessCode(cred);
+    }
+
+    protected int findUser(String email) throws SQLException {
+        return dbManager.findUserOrRegUser(email);
+    }
+
+    protected int resetPass(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        return dbManager.resetPassword(cred);
     }
 
     /*------------------------------------------------------------------------*
