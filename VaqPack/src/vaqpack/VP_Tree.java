@@ -20,11 +20,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class VP_Tree extends VBox {
+    
     /*------------------------------------------------------------------------*
      * VP_Tree()
      * - Constructor.
      *------------------------------------------------------------------------*/
-
     protected VP_Tree() {
         this.setId("treeContainer");
     }
@@ -201,4 +201,11 @@ public class VP_Tree extends VBox {
         setPadding(new Insets(1, 1, 1, 1));
         getChildren().addAll(tree);
     }
+    
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
 }

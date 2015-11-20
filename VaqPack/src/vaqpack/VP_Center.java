@@ -15,13 +15,10 @@ package vaqpack;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -30,55 +27,75 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class VP_Center extends StackPane {
+
     private final VP_GUIController controller;
     private final VP_TextField loginEmail,
             resetEmail,
             regLoginAccess,
-            resetCode;
+            resetCode,
+            registerEmail;
     private final Label loginError,
             resetError,
             accessInstructions,
             resetInstructions1,
             resetInstructions2,
-            resetPassStrengthLabel;
+            resetPassStrengthLabel,
+            registerPassStrengthLabel,
+            registerError,
+            registerInstructions;
     private final VP_PasswordField loginPass,
             resetNewPass,
-            resetNewPassConfirm;
+            resetNewPassConfirm,
+            registerPass,
+            registerPassConfirm;
     private final HBox accessLine,
             loginButtonLine,
             resetNewPassLine,
             resetNewPassConfirmLine,
             resetCodeLine,
             resetButLine;
-    private final Button submitResetBtn;
+    private final VP_Button submitResetBtn;
 
     /*------------------------------------------------------------------------*
      * VP_Center()
      * - Constructor.
+     * - Parameter controller stored as member to access its data manager and
+     *   error function.
      *------------------------------------------------------------------------*/
     protected VP_Center(VP_GUIController controller) {
+        //-------- Initialization Start ----------\\
         this.controller = controller;
-        this.setId("center");
         loginError = new Label();
         resetError = new Label();
         accessInstructions = new Label();
         resetInstructions1 = new Label();
         resetInstructions2 = new Label();
         resetPassStrengthLabel = new Label();
+        registerPassStrengthLabel = new Label();
+        registerError = new Label();
+        registerInstructions = new Label();
         accessLine = new HBox();
         loginButtonLine = new HBox();
         resetNewPassLine = new HBox();
         resetNewPassConfirmLine = new HBox();
         resetCodeLine = new HBox();
         resetButLine = new HBox();
-        submitResetBtn = new Button();
+        submitResetBtn = new VP_Button("Submit", new SubmitResetAction());
         regLoginAccess = new VP_TextField(16, 16);
         resetCode = new VP_TextField(16, 16);
         loginEmail = new VP_TextField(32, 254);
         resetEmail = new VP_TextField(32, 254);
+        registerEmail = new VP_TextField(32, 254);
         loginPass = new VP_PasswordField(32, 32, 0, null);
-        resetNewPass = new VP_PasswordField(32, 32, 12, resetPassStrengthLabel);
+        resetNewPass = new VP_PasswordField(32, 32,
+                controller.getUSER_PASSWORD_MINIMUM(), resetPassStrengthLabel);
+        registerPass = new VP_PasswordField(32, 32,
+                controller.getUSER_PASSWORD_MINIMUM(), registerPassStrengthLabel);
         resetNewPassConfirm = new VP_PasswordField(32, 32, 0, null);
+        registerPassConfirm = new VP_PasswordField(32, 32, 0, null);
+        //-------- Initialization End ------------\\
+
+        this.setId("center");
     }
 
     /*------------------------------------------------------------------------*
@@ -93,8 +110,11 @@ public class VP_Center extends StackPane {
      * - No Return
      *------------------------------------------------------------------------*/
     protected void build() {
-        getChildren().addAll(buildLoginScreen(),
-                buildResetPasswordScreen(), buildTestScreen());
+        getChildren().addAll(
+                buildLoginScreen(),
+                buildResetPasswordScreen(),
+                buildRegistrationScreen(),
+                buildTestScreen());
         showScreen(0);
     }
 
@@ -114,21 +134,24 @@ public class VP_Center extends StackPane {
     /*------------------------------------------------------------------------*
      * buildLoginScreen()
      * - Creates the user login screen. Called by buildCenter().
+     *   A.K.A Screen 0
      * - No parameters.
      * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
     private ScrollPane buildLoginScreen() {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
         Label loginLabel = new Label("LOGIN"),
                 loginEmailLabel = new Label("email:"),
                 loginPassLabel = new Label("password:"),
                 passForgotLabel = new Label("forgot your password?"),
+                needAccountLabel = new Label("need an account?"),
                 regCodeLabel = new Label("code:");
-        Button loginBtn = new Button("Login"),
-                enterAccessBtn = new Button("Submit"),
-                accessCancelBtn = new Button("Cancel"),
-                accessResendBtn = new Button("Resend Code");
+        VP_Button loginBtn = new VP_Button("Login", new LoginAction()),
+                enterAccessBtn = new VP_Button("Submit", new SubmitAccessAction()),
+                accessCancelBtn = new VP_Button("Cancel", new CancelAccessAction()),
+                accessResendBtn = new VP_Button("Resend Code", new ResendAccessAction());
         VBox loginBox = new VBox();
         loginBox.setSpacing(10);
         loginBox.getStyleClass().add("formDivision");
@@ -140,6 +163,7 @@ public class VP_Center extends StackPane {
         loginEmailLabel.getStyleClass().add("inputLabel");
         loginEmailLabel.setPrefWidth(80);
         loginEmailLabel.setAlignment(Pos.CENTER_RIGHT);
+        loginEmailLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
         loginEmail.setAlignment(Pos.CENTER_LEFT);
         emailLine.getChildren().addAll(loginEmailLabel, loginEmail);
         HBox passLine = new HBox();
@@ -147,40 +171,36 @@ public class VP_Center extends StackPane {
         passLine.setSpacing(10);
         loginPassLabel.getStyleClass().add("inputLabel");
         loginPassLabel.setPrefWidth(80);
+        loginPassLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
         loginPassLabel.setAlignment(Pos.CENTER_RIGHT);
         loginPass.setAlignment(Pos.CENTER_LEFT);
         passLine.getChildren().addAll(loginPassLabel, loginPass);
         loginError.setWrapText(true);
+        loginError.setPadding(new Insets(10, 50, 10, 50));
         loginError.getStyleClass().add("errorLabel");
         loginError.setAlignment(Pos.CENTER);
-        loginError.prefWidthProperty().bind(loginBox.prefWidthProperty());
         loginError.setVisible(false);
         loginError.setManaged(false);
         loginButtonLine.setPadding(new Insets(0, 0, 0, 32));
         loginButtonLine.setAlignment(Pos.CENTER_LEFT);
         loginButtonLine.setSpacing(50);
-        loginBtn.getStyleClass().add("genButton");
-        loginBtn.setOnAction(new LoginAction());
         passForgotLabel.getStyleClass().add("clickable");
         passForgotLabel.setOnMouseClicked(new ForgotPassAction());
-        loginButtonLine.getChildren().addAll(loginBtn, passForgotLabel);
+        needAccountLabel.getStyleClass().add("clickable");
+        needAccountLabel.setOnMouseClicked(new NeedAccountAction());
+        loginButtonLine.getChildren().addAll(loginBtn, needAccountLabel, passForgotLabel);
         accessInstructions.setText("Enter the access code that was "
                 + "emailed to you when you registered below.");
         accessInstructions.setWrapText(true);
-        accessInstructions.getStyleClass().add("inputLabel");
+        accessInstructions.setPadding(new Insets(10, 50, 10, 50));
+        accessInstructions.getStyleClass().add("paragraph");
         accessInstructions.setAlignment(Pos.CENTER);
-        accessInstructions.prefWidthProperty().bind(loginBox.prefWidthProperty());
         accessInstructions.setVisible(false);
         accessInstructions.setManaged(false);
         accessLine.setAlignment(Pos.CENTER_LEFT);
         accessLine.setSpacing(20);
         regCodeLabel.getStyleClass().add("inputLabel");
-        enterAccessBtn.getStyleClass().add("genButton");
-        enterAccessBtn.setOnAction(new SubmitAccessAction());
-        accessCancelBtn.getStyleClass().add("genButton");
-        accessCancelBtn.setOnAction(new CancelAccessAction());
-        accessResendBtn.getStyleClass().add("genButton");
-        accessResendBtn.setOnAction(new ResendAccessAction());
+        regCodeLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
         accessLine.getChildren().addAll(regCodeLabel, regLoginAccess,
                 enterAccessBtn, accessCancelBtn, accessResendBtn);
         accessLine.setVisible(false);
@@ -198,6 +218,7 @@ public class VP_Center extends StackPane {
     /*------------------------------------------------------------------------*
      * buildResetPasswordScreen()
      * - Creates the reset password screen. Called by buildCenter().
+     *   A.K.A Screen 1
      * - No parameters.
      * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
@@ -205,14 +226,15 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox(),
                 forgotPassBox = new VBox();
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
         Label resetLabel = new Label("RESET PASSWORD"),
                 resetEmailLabel = new Label("email:"),
                 resetNewPassLabel = new Label("new password:"),
                 resetNewPassConfirmLabel = new Label("confirm\nnew password:"),
                 resetCodeLabel = new Label("code:");
-        Button cancelResetBtn1 = new Button("Cancel"),
-                submitResetPassCodeBtn = new Button("Submit"),
-                cancelResetBtn2 = new Button("Cancel");
+        VP_Button cancelResetBtn1 = new VP_Button("Cancel", new CancelResetAction()),
+                submitResetPassCodeBtn = new VP_Button("Submit", new SubmitResetPassCode()),
+                cancelResetBtn2 = new VP_Button("Cancel", new CancelResetAction());
         forgotPassBox.getStyleClass().add("formDivision");
         forgotPassBox.setSpacing(10);
         forgotPassBox.setPadding(new Insets(10, 10, 10, 10));
@@ -220,40 +242,37 @@ public class VP_Center extends StackPane {
         resetInstructions1.setText("Enter your email and submit. "
                 + "An access code will be sent to your email.");
         resetInstructions1.setWrapText(true);
-        resetInstructions1.getStyleClass().add("inputLabel");
+        resetInstructions1.setPadding(new Insets(10, 50, 10, 50));
+        resetInstructions1.getStyleClass().add("paragraph");
         resetInstructions1.setAlignment(Pos.CENTER);
-        resetInstructions1.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
         HBox emailLine = new HBox();
         emailLine.setAlignment(Pos.CENTER_LEFT);
         emailLine.setSpacing(10);
         resetEmailLabel.getStyleClass().add("inputLabel");
         resetEmailLabel.setPrefWidth(120);
+        resetEmailLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
         resetEmailLabel.setAlignment(Pos.CENTER_RIGHT);
-        submitResetBtn.setText("Submit");
-        submitResetBtn.getStyleClass().add("genButton");
-        submitResetBtn.setOnAction(new SubmitResetAction());
-        cancelResetBtn1.getStyleClass().add("genButton");
-        cancelResetBtn1.setOnAction(new CancelResetAction());
         emailLine.getChildren().addAll(resetEmailLabel, resetEmail,
                 submitResetBtn, cancelResetBtn1);
         resetError.setWrapText(true);
+        resetError.setPadding(new Insets(10, 50, 10, 50));
         resetError.getStyleClass().add("errorLabel");
         resetError.setAlignment(Pos.CENTER);
-        resetError.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
         resetError.setVisible(false);
         resetError.setManaged(false);
         resetInstructions2.setText("Enter your new password, confirm it, "
                 + "and enter the access code that was sent to you.");
         resetInstructions2.setWrapText(true);
-        resetInstructions2.getStyleClass().add("inputLabel");
+        resetInstructions2.setPadding(new Insets(10, 50, 10, 50));
+        resetInstructions2.getStyleClass().add("paragraph");
         resetInstructions2.setAlignment(Pos.CENTER);
-        resetInstructions2.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
         resetInstructions2.setVisible(false);
         resetInstructions2.setManaged(false);
         resetNewPassLine.setAlignment(Pos.CENTER_LEFT);
         resetNewPassLine.setSpacing(10);
         resetNewPassLabel.getStyleClass().add("inputLabel");
         resetNewPassLabel.setPrefWidth(120);
+        resetNewPassLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
         resetNewPassLabel.setAlignment(Pos.CENTER_RIGHT);
         resetNewPassLine.getChildren().addAll(resetNewPassLabel, resetNewPass);
         resetNewPassLine.setVisible(false);
@@ -262,11 +281,11 @@ public class VP_Center extends StackPane {
         resetNewPassConfirmLine.setSpacing(10);
         resetPassStrengthLabel.setAlignment(Pos.CENTER_LEFT);
         resetPassStrengthLabel.getStyleClass().add("inputLabel");
-        resetPassStrengthLabel.prefWidthProperty().bind(forgotPassBox.prefWidthProperty());
         resetPassStrengthLabel.setVisible(false);
         resetPassStrengthLabel.setManaged(false);
         resetNewPassConfirmLabel.getStyleClass().add("inputLabel");
         resetNewPassConfirmLabel.setPrefWidth(120);
+        resetNewPassConfirmLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
         resetNewPassConfirmLabel.setAlignment(Pos.CENTER_RIGHT);
         resetNewPassConfirmLine.getChildren().addAll(resetNewPassConfirmLabel,
                 resetNewPassConfirm);
@@ -276,6 +295,7 @@ public class VP_Center extends StackPane {
         resetCodeLine.setSpacing(10);
         resetCodeLabel.getStyleClass().add("inputLabel");
         resetCodeLabel.setPrefWidth(120);
+        resetCodeLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
         resetCodeLabel.setAlignment(Pos.CENTER_RIGHT);
         resetCodeLine.getChildren().addAll(resetCodeLabel, resetCode);
         resetCodeLine.setVisible(false);
@@ -283,10 +303,6 @@ public class VP_Center extends StackPane {
         resetButLine.setPadding(new Insets(0, 0, 0, 32));
         resetButLine.setAlignment(Pos.CENTER_LEFT);
         resetButLine.setSpacing(100);
-        submitResetPassCodeBtn.getStyleClass().add("genButton");
-        submitResetPassCodeBtn.setOnAction(new SubmitResetPassCode());
-        cancelResetBtn2.getStyleClass().add("genButton");
-        cancelResetBtn2.setOnAction(new CancelResetAction());
         resetButLine.getChildren().addAll(submitResetPassCodeBtn, cancelResetBtn2);
         resetButLine.setVisible(false);
         resetButLine.setManaged(false);
@@ -303,14 +319,82 @@ public class VP_Center extends StackPane {
     }
 
     /*------------------------------------------------------------------------*
-     * buildTestScreen()
-     * - TEMPORARY
-     * - Testing grounds
+     * buildRegistrationScreen()
+     * - Creates the user registration screen. Called by buildCenter().
+     *   A.K.A Screen 2
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
-    private ScrollPane buildTestScreen() {
+    private ScrollPane buildRegistrationScreen() {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        Label registerLabel = new Label("REGISTER NEW ACCOUNT"),
+                registerEmailLabel = new Label("email:"),
+                registerPassLabel = new Label("password:"),
+                registerPassConfirmLabel = new Label("confirm\npassword:");
+        VP_Button registerBtn = new VP_Button("Register", new RegisterSubmitAction()),
+                registerCancelBtn = new VP_Button("Cancel", new CancelRegisterAction());
+        VBox registerBox = new VBox();
+        registerBox.setSpacing(10);
+        registerBox.getStyleClass().add("formDivision");
+        registerBox.setPadding(new Insets(10, 10, 10, 10));
+        registerLabel.getStyleClass().add("pageHeader");
+        HBox emailLine = new HBox();
+        emailLine.setAlignment(Pos.CENTER_LEFT);
+        emailLine.setSpacing(10);
+        registerEmailLabel.getStyleClass().add("inputLabel");
+        registerEmailLabel.setPrefWidth(100);
+        registerEmailLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+        registerEmailLabel.setAlignment(Pos.CENTER_RIGHT);
+        registerEmail.setAlignment(Pos.CENTER_LEFT);
+        emailLine.getChildren().addAll(registerEmailLabel, registerEmail);
+        HBox passLine = new HBox();
+        passLine.setAlignment(Pos.CENTER_LEFT);
+        passLine.setSpacing(10);
+        registerPassLabel.getStyleClass().add("inputLabel");
+        registerPassLabel.setPrefWidth(100);
+        registerPassLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+        registerPassLabel.setAlignment(Pos.CENTER_RIGHT);
+        registerPass.setAlignment(Pos.CENTER_LEFT);
+        passLine.getChildren().addAll(registerPassLabel, registerPass);
+        registerPassStrengthLabel.setAlignment(Pos.CENTER_LEFT);
+        registerPassStrengthLabel.getStyleClass().add("inputLabel");
+        registerPassStrengthLabel.setPadding(new Insets(0, 50, 0, 50));
+        HBox registerConfirmLine = new HBox();
+        registerConfirmLine.setAlignment(Pos.CENTER_LEFT);
+        registerConfirmLine.setSpacing(10);
+        registerPassConfirmLabel.getStyleClass().add("inputLabel");
+        registerPassConfirmLabel.setPrefWidth(100);
+        registerPassConfirmLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+        registerPassConfirmLabel.setAlignment(Pos.CENTER_RIGHT);
+        registerConfirmLine.getChildren().addAll(registerPassConfirmLabel,
+                registerPassConfirm);
+        registerBox.getChildren().addAll(registerLabel, emailLine, passLine,
+                registerPassStrengthLabel, registerConfirmLine);
+        registerError.setWrapText(true);
+        registerError.setPadding(new Insets(10, 50, 10, 50));
+        registerError.getStyleClass().add("errorLabel");
+        registerError.setAlignment(Pos.CENTER);
+        registerError.setVisible(false);
+        registerError.setManaged(false);
+        registerInstructions.setWrapText(true);
+        registerInstructions.setPadding(new Insets(10, 50, 10, 50));
+        registerInstructions.getStyleClass().add("paragraph");
+        registerInstructions.setAlignment(Pos.CENTER);
+        registerInstructions.setText("Enter your email and password twice. When "
+                + "you submit, an email will be sent to you with a registration "
+                + "access code. Login with the email and password you provided "
+                + "and you will be prompted to enter in the access code. Access "
+                + "codes expire within one hour.");
+        HBox registerButtonLine = new HBox();
+        registerButtonLine.setPadding(new Insets(0, 0, 0, 32));
+        registerButtonLine.setAlignment(Pos.CENTER_LEFT);
+        registerButtonLine.setSpacing(50);
+        registerButtonLine.getChildren().addAll(registerBtn, registerCancelBtn);
+        registerBox.getChildren().addAll(registerError,
+                registerInstructions, registerButtonLine);
+        screenContent.getChildren().addAll(registerBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
         screen.setContent(screenContent);
@@ -318,6 +402,30 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
+    /*------------------------------------------------------------------------*
+     * buildTestScreen()
+     * - TEMPORARY
+     * - Testing grounds
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildTestScreen() {
+        //-------- Initialization Start ----------\\
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        //-------- Initialization End ------------\\
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+
+    /*------------------------------------------------------------------------*
+     * resetLoginRegForms()
+     * - Restores the login page back to its original state.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
     private void resetLoginRegForms() {
         loginEmail.setText("");
         loginEmail.setDisable(false);
@@ -338,6 +446,12 @@ public class VP_Center extends StackPane {
         accessLine.setManaged(false);
     }
 
+    /*------------------------------------------------------------------------*
+     * resetResetPasswordForms()
+     * - Restores the reset password page back to its original state.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
     private void resetResetPasswordForms() {
         resetEmail.setText("");
         resetEmail.setDisable(false);
@@ -367,12 +481,29 @@ public class VP_Center extends StackPane {
     }
 
     /*------------------------------------------------------------------------*
-     * Subclasses
+     * resetRegisterForms()
+     * - Restores the registration page back to its original state.
+     * - No parameters.
+     * - No return.
      *------------------------------------------------------------------------*/
+    private void resetRegisterForms() {
+        registerEmail.setText("");
+        registerPass.setText("");
+        registerPassConfirm.setText("");
+        registerError.setText("");
+        registerError.setVisible(false);
+        registerError.setManaged(false);
+    }
+
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
     /*------------------------------------------------------------------------*
      * Subclass LoginAction
+     * - Action event for the 'forgot password?' link on page 0. Switches the
+     *   center stackpane to show level 1.
      *------------------------------------------------------------------------*/
-    protected class ForgotPassAction implements EventHandler<MouseEvent> {
+    private class ForgotPassAction implements EventHandler<MouseEvent> {
 
         @Override
         public void handle(MouseEvent event) {
@@ -381,17 +512,39 @@ public class VP_Center extends StackPane {
         }
     }
 
-    protected class LoginAction implements EventHandler<ActionEvent> {
+    /*------------------------------------------------------------------------*
+     * Subclass NeedAccountAction
+     * - Action event for the 'need an account?' link on page 0. Switches the
+     *   center stackpane to show level 2.
+     *------------------------------------------------------------------------*/
+    private class NeedAccountAction implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(MouseEvent event) {
+            resetLoginRegForms();
+            showScreen(2);
+        }
+    }
+
+    /*------------------------------------------------------------------------*
+     * Subclass LoginAction
+     * - Action event for the login button on page 0.
+     *------------------------------------------------------------------------*/
+    private class LoginAction implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
             String cred[] = new String[]{loginEmail.getText().toLowerCase(),
                 loginPass.getText()};
+            int loginStatus;
+            //-------- Initialization End ------------\\
+
             accessInstructions.setText("Enter the access code that was emailed "
                     + "to you when you registered below.");
             try {
-                int loginStatus = controller.getDataM().userLogin(cred);
-                if (loginStatus == 0) {
+                loginStatus = controller.getDataM().userLogin(cred);
+                if (loginStatus == -1) {
                     // user does not exist in database
                     loginError.setText("The email address and/or password is "
                             + "incorrect. Please try again.");
@@ -399,11 +552,7 @@ public class VP_Center extends StackPane {
                     loginError.setVisible(true);
                     loginEmail.showInvalid();
                     loginPass.showInvalid();
-                } else if (loginStatus == 1) {
-                    // user login successful
-                    resetLoginRegForms();
-                    showScreen(2);
-                } else if (loginStatus == 2) {
+                } else if (loginStatus == -2) {
                     // user needs to enter registration code
                     loginEmail.setDisable(true);
                     loginEmail.setEditable(false);
@@ -418,31 +567,67 @@ public class VP_Center extends StackPane {
                     accessInstructions.setManaged(true);
                     accessLine.setVisible(true);
                     accessLine.setManaged(true);
-                }
+                } else {
+                    // user login successful
+                    resetLoginRegForms();
+                    showScreen(3);
+                } 
             } catch (SQLException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
+                controller.errorAlert(1407, ex.getMessage());
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                controller.errorAlert(1202, ex.getMessage());
+            }
+        }
+    }
+
+    /*------------------------------------------------------------------------*
+     * Subclass ResendAccessAction
+     * - Action event for the resend code button on page 0 to assign a new
+     *   access code for the user and send it to the user's email.
+     *------------------------------------------------------------------------*/
+    private class ResendAccessAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
+                loginPass.getText(), regLoginAccess.getText()};
+            //-------- Initialization End ------------\\
+
+            try {
+                controller.getDataM().resendAccess(cred);
+                accessInstructions.setText("A new access code has been emailed and "
+                        + "you should receive it shortly. Enter the code below.\n"
+                        + "If you do not receive an email, verify that you have "
+                        + "entered in the correct email address.");
+            } catch (SQLException ex) {
+                controller.errorAlert(1410, ex.getMessage());
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                controller.errorAlert(1205, ex.getMessage());
             }
         }
     }
 
     /*------------------------------------------------------------------------*
      * Subclass SubmitAccessAction
+     * - Action event for the submit button on page 0 which submits the
+     *   registration access code.
      *------------------------------------------------------------------------*/
-    protected class SubmitAccessAction implements EventHandler<ActionEvent> {
+    private class SubmitAccessAction implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
             String cred[] = new String[]{loginEmail.getText().toLowerCase(),
                 loginPass.getText(), regLoginAccess.getText()};
+            boolean accessStatus;
+            //-------- Initialization End ------------\\
+
             try {
-                boolean accessStatus = controller.getDataM().verifyRegAccess(cred);
+                accessStatus = controller.getDataM().verifyRegAccess(cred);
                 if (accessStatus) {
                     resetLoginRegForms();
-                    showScreen(2);
+                    showScreen(3);
                 } else {
                     loginError.setText("The registration code is incorrect. Please try again.");
                     accessInstructions.setText("Enter the access code that was emailed to you below.");
@@ -451,19 +636,19 @@ public class VP_Center extends StackPane {
                     regLoginAccess.showInvalid();
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
+                controller.errorAlert(1408, ex.getMessage());
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                controller.errorAlert(1203, ex.getMessage());
             }
         }
     }
 
     /*------------------------------------------------------------------------*
      * Subclass CancelAccessAction
+     * - Action event for the cancel button on page 0. Calls 
+     *   resetLoginRegForms() to reset the forms and view.
      *------------------------------------------------------------------------*/
-    protected class CancelAccessAction implements EventHandler<ActionEvent> {
+    private class CancelAccessAction implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
@@ -472,68 +657,21 @@ public class VP_Center extends StackPane {
     }
 
     /*------------------------------------------------------------------------*
-     * Subclass SubmitResetPassCode
-     *------------------------------------------------------------------------*/
-    protected class SubmitResetPassCode implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            int resetStatus = 0;
-            String[] cred = {resetEmail.getText(), resetNewPass.getText(),
-                resetNewPassConfirm.getText(), resetCode.getText()};
-            if (cred[1].length() < 12) {
-                resetNewPass.showInvalid();
-                resetNewPassConfirm.showInvalid();
-                resetError.setText("The new password is not long enough.");
-                resetError.setVisible(true);
-                resetError.setManaged(true);
-            } else if (!cred[1].equals(cred[2])) {
-                resetNewPass.showInvalid();
-                resetNewPassConfirm.showInvalid();
-                resetError.setText("The passwords do not match.");
-                resetError.setVisible(true);
-                resetError.setManaged(true);
-            } else {
-                try {
-                    resetStatus = controller.getDataM().resetPass(cred);
-                    if (resetStatus == 2) {
-                        accessInstructions.setText("Your password was reset. Login with your new password.");
-                        accessInstructions.setVisible(true);
-                        accessInstructions.setManaged(true);
-                        resetResetPasswordForms();
-                        showScreen(0);
-                    } else if (resetStatus == 1) {
-                        resetCode.showInvalid();
-                        resetError.setText("The code has expired. Cancel and start the reset process over again.");
-                        resetError.setVisible(true);
-                        resetError.setManaged(true);
-                    } else if (resetStatus == 0) {
-                        resetCode.showInvalid();
-                        resetError.setText("The code is incorrect. Please try again.");
-                        resetError.setVisible(true);
-                        resetError.setManaged(true);
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (NoSuchAlgorithmException ex) {
-                    Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
      * Subclass SubmitResetAction
+     * - Action event for the submit button on page 1 that is for submitting the
+     *   email to the database manager to check if the user is eligible for
+     *   password resetting.
      *------------------------------------------------------------------------*/
-    protected class SubmitResetAction implements EventHandler<ActionEvent> {
+    private class SubmitResetAction implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
             int userStatus;
+            //-------- Initialization End ------------\\
+
             try {
-                userStatus = controller.getDataM().findUser(resetEmail.getText());
+                userStatus = controller.getDataM().findUserForReset(resetEmail.getText().toLowerCase());
                 if (userStatus == 0) {
                     resetEmail.showInvalid();
                     resetError.setText("The provided user does not exists in VaqPack. "
@@ -567,15 +705,73 @@ public class VP_Center extends StackPane {
                     resetButLine.setManaged(true);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
+                controller.errorAlert(1411, ex.getMessage());
+            }
+        }
+    }
+
+    /*------------------------------------------------------------------------*
+     * Subclass SubmitResetPassCode
+     * - Action event for the submit button on page 1 to submit the code for
+     *   resetting a user password.
+     *------------------------------------------------------------------------*/
+    private class SubmitResetPassCode implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            int resetStatus = 0;
+            String[] cred = {resetEmail.getText().toLowerCase(), resetNewPass.getText(),
+                resetNewPassConfirm.getText(), resetCode.getText()};
+            //-------- Initialization End ------------\\
+
+            if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
+                resetNewPass.showInvalid();
+                resetNewPassConfirm.showInvalid();
+                resetError.setText("The new password is not long enough.");
+                resetError.setVisible(true);
+                resetError.setManaged(true);
+            } else if (!cred[1].equals(cred[2])) {
+                resetNewPass.showInvalid();
+                resetNewPassConfirm.showInvalid();
+                resetError.setText("The passwords do not match.");
+                resetError.setVisible(true);
+                resetError.setManaged(true);
+            } else {
+                try {
+                    resetStatus = controller.getDataM().resetPass(cred);
+                    if (resetStatus == 2) {
+                        accessInstructions.setText("Your password was reset. Login with your new password.");
+                        accessInstructions.setVisible(true);
+                        accessInstructions.setManaged(true);
+                        resetResetPasswordForms();
+                        showScreen(0);
+                    } else if (resetStatus == 1) {
+                        resetCode.showInvalid();
+                        resetError.setText("The code has expired. Cancel and start the reset process over again.");
+                        resetError.setVisible(true);
+                        resetError.setManaged(true);
+                    } else if (resetStatus == 0) {
+                        resetCode.showInvalid();
+                        resetError.setText("The code is incorrect. Please try again.");
+                        resetError.setVisible(true);
+                        resetError.setManaged(true);
+                    }
+                } catch (SQLException ex) {
+                    controller.errorAlert(1409, ex.getMessage());
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    controller.errorAlert(1204, ex.getMessage());
+                }
             }
         }
     }
 
     /*------------------------------------------------------------------------*
      * Subclass CancelResetAction
+     * - Action event for the cancel buttons on page 1. Calls
+     *   resetResetPasswordForms() to restore the page to its original state.
      *------------------------------------------------------------------------*/
-    protected class CancelResetAction implements EventHandler<ActionEvent> {
+    private class CancelResetAction implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
@@ -585,31 +781,81 @@ public class VP_Center extends StackPane {
     }
 
     /*------------------------------------------------------------------------*
-     * Subclass ResendAccessAction
+     * Subclass RegisterSubmitAction
+     * - Action event for the submit buttons on page 2.
      *------------------------------------------------------------------------*/
-    protected class ResendAccessAction implements EventHandler<ActionEvent> {
+    private class RegisterSubmitAction implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
-            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
-                loginPass.getText(), regLoginAccess.getText()};
-            try {
-                controller.getDataM().resendAccess(cred);
-                accessInstructions.setText("A new access code has been emailed and "
-                        + "you should receive it shortly. Enter the code below.\n"
-                        + "If you do not receive an email, verify that you have "
-                        + "entered in the correct email address.");
-            } catch (SQLException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(VP_Center.class.getName()).log(Level.SEVERE, null, ex);
+            //-------- Initialization Start ----------\\
+            String[] cred = {registerEmail.getText().toLowerCase(), registerPass.getText(),
+                registerPassConfirm.getText()};
+            int registerStatus;
+            //-------- Initialization End ------------\\
+
+            if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
+                registerPass.showInvalid();
+                registerPassConfirm.showInvalid();
+                registerError.setText("The password is not long enough.");
+                registerError.setVisible(true);
+                registerError.setManaged(true);
+            } else if (!cred[1].equals(cred[2])) {
+                registerPass.showInvalid();
+                registerPassConfirm.showInvalid();
+                registerError.setText("The passwords do not match.");
+                registerError.setVisible(true);
+                registerError.setManaged(true);
+            } else {
+                try {
+                    registerStatus = controller.getDataM().regUser(cred);
+                    if (registerStatus == 2) {
+                        accessInstructions.setText("Login with your new account.");
+                        accessInstructions.setVisible(true);
+                        accessInstructions.setManaged(true);
+                        resetRegisterForms();
+                        showScreen(0);
+                    } else if (registerStatus == 1) {
+                        registerEmail.showInvalid();
+                        registerError.setText("This email is already associated "
+                                + "with a VaqPack user.");
+                        registerError.setVisible(true);
+                        registerError.setManaged(true);
+                    } else if (registerStatus == 0) {
+                        registerEmail.showInvalid();
+                        registerError.setText("This email is already associated "
+                                + "with a VaqPack user who recently registered "
+                                + "but has not yet enetered in the access code. "
+                                + "Login and you will be prompted to enter in "
+                                + "this code. If you did not receive the code, "
+                                + "there will be an option to resend one.");
+                        registerError.setVisible(true);
+                        registerError.setManaged(true);
+                    }
+                } catch (SQLException ex) {
+                    controller.errorAlert(1412, ex.getMessage());
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    controller.errorAlert(1206, ex.getMessage());
+                }
             }
         }
     }
 
     /*------------------------------------------------------------------------*
-     * Setters and Getters
+     * Subclass CancelRegisterAction
+     * - Action event for the cancel buttons on page 2. Calls
+     *   resetRegisterForms() to restore the page to its original state.
      *------------------------------------------------------------------------*/
+    private class CancelRegisterAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            resetRegisterForms();
+            showScreen(0);
+        }
+    }
+
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
 }

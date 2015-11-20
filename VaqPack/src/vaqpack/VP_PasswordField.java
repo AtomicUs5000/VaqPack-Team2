@@ -8,6 +8,7 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
+ * FILE ID 2800
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
@@ -18,7 +19,7 @@ import javafx.scene.input.KeyEvent;
 
 public class VP_PasswordField extends PasswordField implements EventHandler<KeyEvent> {
 
-    private int limit,
+    private final int limit,
             minimum;
     private final Label strengthLabel;
 
@@ -33,9 +34,14 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
      *   label is not null.
      *---------------------------------------------------------------------*/
     protected VP_PasswordField(int columns, int limit, int minimum, Label strengthLabel) {
+        //-------- Initialization Start ----------\\
         this.limit = limit;
         this.minimum = minimum;
         this.strengthLabel = strengthLabel;
+        //-------- Initialization End ------------\\
+
+        this.setMinSize(PasswordField.USE_PREF_SIZE, PasswordField.USE_PREF_SIZE);
+        this.setMaxSize(PasswordField.USE_PREF_SIZE, PasswordField.USE_PREF_SIZE);
         this.setStyle("-fx-control-inner-background: white");
         this.setPrefColumnCount(columns);
         this.assignEvents();
@@ -50,6 +56,7 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
      *---------------------------------------------------------------------*/
     @Override
     public void handle(KeyEvent event) {
+        //-------- Initialization Start ----------\\
         String text = this.getText();
         int strength = 0, length = text.length();
         boolean hasUpper = false,
@@ -57,6 +64,8 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
                 hasAlpha = false,
                 hasNumb = false,
                 hasSpecial = false;
+        //-------- Initialization End ------------\\
+
         this.setStyle("-fx-control-inner-background: white");
         if (limit > 0) {
             if (length > limit) {
@@ -145,22 +154,10 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
         this.setOnKeyReleased(this);
     }
 
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
-    protected int getLimit() {
-        return limit;
-    }
-
-    protected void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    protected int getMinimum() {
-        return minimum;
-    }
-
-    protected void setMinimum(int minimum) {
-        this.minimum = minimum;
-    }
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
 }

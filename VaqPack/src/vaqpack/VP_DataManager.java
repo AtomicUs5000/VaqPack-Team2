@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Random;
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.bind.DatatypeConverter;
 
 public class VP_DataManager {
 
@@ -43,11 +45,13 @@ public class VP_DataManager {
      *   and a html-to-pdf convertor.
      *------------------------------------------------------------------------*/
     protected VP_DataManager(VP_GUIController controller) {
+        //-------- Initialization Start ----------\\
         this.controller = controller;
         dbManager = new VP_DatabaseManager();
         data2html = new VP_DataToHtml();
         html2pdf = new VP_HtmlToPdf();
         fileM = new VP_FileManager();
+        //-------- Initialization End ------------\\
     }
 
     /*------------------------------------------------------------------------*
@@ -68,7 +72,10 @@ public class VP_DataManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void retrieveDBLocation() throws FileNotFoundException, IOException {
+        //-------- Initialization Start ----------\\
         String[] loc = fileM.retrieveUrlPort();
+        //-------- Initialization End ------------\\
+
         dbManager.setUrl(loc[0]);
         dbManager.setPort(loc[1]);
     }
@@ -108,7 +115,10 @@ public class VP_DataManager {
             NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, BadPaddingException {
+        //-------- Initialization Start ----------\\
         String[] cred = fileM.retrieveAdminEncrypted(dbManager.getUrl(), dbManager.getPort());
+        //-------- Initialization End ------------\\
+
         dbManager.setAdminUserName(cred[0]);
         dbManager.setAdminPassword(cred[1]);
     }
@@ -242,15 +252,17 @@ public class VP_DataManager {
      * createVPAdmin()
      * - Calls createVaqPackAdmin() of the Database Manager.
      * - Parameters cred is a string array of the database admin user
-     *   credentials and the VaqPack admin user crfedentials.
+     *   credentials and the VaqPack admin user credentials.
      * - Returns a boolean value indicating if that the database admin user is
      *   valid, allowing the creation of this VP admin user account.
      *------------------------------------------------------------------------*/
     protected boolean createVPAdmin(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
+        //-------- Initialization Start ----------\\
+        boolean adminChecked;
         String[] ccMail = {};
         String code = generatAccessCode();
-        boolean adminChecked = dbManager.createVaqPackAdmin(cred, code);
+        adminChecked = dbManager.createVaqPackAdmin(cred, code, hashPassword(cred[3]));
         String msg = "A VaqPack administrator account has been created associated with this email address.\n"
                 + "Please log into VaqPack and enter the following code:\n\n"
                 + code + "\n\n"
@@ -259,48 +271,67 @@ public class VP_DataManager {
                 + "The code only needs to be entered once to activate your account.\n\n"
                 + "This is an automated message from the VaqPack software. Please do not reply.";
         VP_Mail regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg);
+        //-------- Initialization End ------------\\
+
         regEmail.setDaemon(true);
         regEmail.start();
         return adminChecked;
     }
 
     /*------------------------------------------------------------------------*
-     * checkEmail()
-     * - Compares the string parameter against a REGEX pattern to
-     *   determinine if an email address is well-formed.
-     * - Parameter email is a string of a potential email address.
-     * - Returns a boolean value indicating if the string parameter is a
-     *   well-formed address.
+     * userLogin()
+     * - Calls hashPassword() and then sends it to the Database Manager
+     *   with attemptUserLogin(). If all is well, a new VP_User is created.
+     * - Parameter cred is a string array of user credentials.
+     * - Returns an integer that is returned from attemptUserLogin().
      *------------------------------------------------------------------------*/
-    protected boolean checkEmail(String email) {
-        if (email.length() >= 3) {
-            String regex
-                    = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*"
-                    + "@(?:[A-Z0-9-]+\\.)+[A-Z]{2,63}$";
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(email);
-            return matcher.matches();
-        } else {
-            return false;
-        }
-    }
-
     protected int userLogin(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
-        return dbManager.attemptUserLogin(cred);
+        //-------- Initialization Start ----------\\
+        int loginStatus;
+        //-------- Initialization End ------------\\
+        
+        cred[1] = hashPassword(cred[1]);
+        loginStatus = dbManager.attemptUserLogin(cred);
+        if (loginStatus >= 0) {
+            controller.setCurrentUser(new VP_User(cred[0], loginStatus));
+        }
+        return loginStatus;
     }
 
+    /*------------------------------------------------------------------------*
+     * verifyRegAccess()
+     * - Calls hashPassword() and then sends it to the Database Manager
+     *   with verifyUserAccessCode().
+     * - Parameter cred is a string array of user credentials.
+     * - Returns a boolean value that is returned from verifyUserAccessCode().
+     *------------------------------------------------------------------------*/
     protected boolean verifyRegAccess(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
+        cred[1] = hashPassword(cred[1]);
         return dbManager.verifyUserAccessCode(cred);
     }
 
+    /*------------------------------------------------------------------------*
+     * resendAccess()
+     * - Calls hashPassword() and then sends it to the Database Manager
+     *   with resendUserAccessCode().
+     * - If the entered user email exists in the database, an email is sent
+     *   containing a new registration access code generated by 
+     *   generatAccessCode().
+     * - Parameter cred is a string array of user credentials.
+     * - No return..
+     *------------------------------------------------------------------------*/
     protected void resendAccess(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
+        //-------- Initialization Start ----------\\
         String msg,
                 code = generatAccessCode();
         String[] ccMail = {};
         VP_Mail regEmail;
+        //-------- Initialization End ------------\\
+
+        cred[1] = hashPassword(cred[1]);
         if (dbManager.resendUserAccessCode(cred, code)) {
             msg = "Please log into VaqPack and enter the following code:\n\n"
                     + code + "\n\n"
@@ -314,12 +345,25 @@ public class VP_DataManager {
         }
     }
 
-    protected int findUser(String email) throws SQLException {
+    /*------------------------------------------------------------------------*
+     * findUserForReset()
+     * - Calls generatAccessCode() and then sends it to the Database Manager
+     *   along with the user email through findUserOrRegUserForReset().
+     * - If the enetered user email exists in the database, and if the user
+     *   has not reset their password in over 24 hours, an email is sent
+     *   containing the code.
+     * - Parameter email is a string email of the user.
+     * - Returns the integer returned by findUserOrRegUserForReset().
+     *------------------------------------------------------------------------*/
+    protected int findUserForReset(String email) throws SQLException {
+        //-------- Initialization Start ----------\\
         String msg,
                 code = generatAccessCode();
         String[] ccMail = {};
         VP_Mail resetEmail;
-        int userStatus = dbManager.findUserOrRegUser(email, code);
+        int userStatus = dbManager.findUserOrRegUserForReset(email, code);
+        //-------- Initialization End ------------\\
+
         if (userStatus == 2) {
             msg = "Please enter the following code to reset your password:\n\n"
                     + code + "\n\n"
@@ -332,9 +376,78 @@ public class VP_DataManager {
         return userStatus;
     }
 
+    /*------------------------------------------------------------------------*
+     * resetPass()
+     * - Calls hashPassword() and then sends it to the Database Manager
+     *   with resetPassword().
+     * - Parameter cred is a string array of user credentials.
+     * - Returns an integer that is returned from resetPassword().
+     *------------------------------------------------------------------------*/
     protected int resetPass(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
+        cred[1] = hashPassword(cred[1]);
         return dbManager.resetPassword(cred);
+    }
+
+    /*------------------------------------------------------------------------*
+     * regUser()
+     * - Calls hashPassword() and generateCode() then sends these values to the 
+     *   Database Manager using registerUser() along with the user credentials.
+     *   If the user is new, an email is sent containing the access code.
+     * - Parameter cred is a string array of user credentials.
+     * - Returns an integer value that is returned from registerUser().
+     *------------------------------------------------------------------------*/
+    protected int regUser(String[] cred) throws SQLException,
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        //-------- Initialization Start ----------\\
+        int registerStatus;
+        String msg,
+                code = generatAccessCode();
+        String[] ccMail = {};
+        VP_Mail registerEmail;
+        //-------- Initialization End ------------\\
+
+        cred[1] = hashPassword(cred[1]);
+        registerStatus = dbManager.registerUser(cred, code);
+        if (registerStatus == 2) {
+            msg = "Please log into VaqPack and enter the following code:\n\n"
+                    + code + "\n\n"
+                    + "The code will expire in 1 hour. If you do not enter the code within this timeframe, "
+                    + "you will have to register your account again.\n"
+                    + "The code only needs to be entered once to activate your account.\n\n"
+                    + "This is an automated message from the VaqPack software. Please do not reply.";
+            registerEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg);
+            registerEmail.setDaemon(true);
+            registerEmail.start();
+        }
+        return registerStatus;
+    }
+
+    /*------------------------------------------------------------------------*
+     * checkEmail()
+     * - Compares the string parameter against a REGEX pattern to
+     *   determinine if an email address is well-formed.
+     * - Parameter email is a string of a potential email address.
+     * - Returns a boolean value indicating if the string parameter is a
+     *   well-formed address.
+     *------------------------------------------------------------------------*/
+    protected boolean checkEmail(String email) {
+        //-------- Initialization Start ----------\\
+        String regex;
+        Pattern pattern;
+        Matcher matcher;
+        //-------- Initialization End ------------\\
+
+        if (email.length() >= 3) {
+            regex
+                    = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*"
+                    + "@(?:[A-Z0-9-]+\\.)+[A-Z]{2,63}$";
+            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            matcher = pattern.matcher(email);
+            return matcher.matches();
+        } else {
+            return false;
+        }
     }
 
     /*------------------------------------------------------------------------*
@@ -344,8 +457,11 @@ public class VP_DataManager {
      * - Returns a random string of 16 characters.
      *------------------------------------------------------------------------*/
     private String generatAccessCode() {
+        //-------- Initialization Start ----------\\
         String code = "";
         Random rand = new Random();
+        //-------- Initialization End ------------\\
+
         for (int i = 0; i < 16; i++) {
             int thisChar = 48 + rand.nextInt(74);
             if (thisChar > 90 && thisChar < 97) {
@@ -358,6 +474,25 @@ public class VP_DataManager {
     }
 
     /*------------------------------------------------------------------------*
-     * Setters and Getters
+     * hashPassword()
+     * - Hashes a password.
+     * - Parameter pass is the string to be hashed.
+     * - Returns a string of the hashed password.
      *------------------------------------------------------------------------*/
+    private String hashPassword(String pass) throws NoSuchAlgorithmException,
+            UnsupportedEncodingException {
+        //-------- Initialization Start ----------\\
+        MessageDigest mDig = MessageDigest.getInstance("SHA-256");
+        byte[] passHash = mDig.digest(pass.getBytes("UTF-8"));
+        //-------- Initialization End ------------\\
+
+        return DatatypeConverter.printHexBinary(passHash);
+    }
+
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
 }

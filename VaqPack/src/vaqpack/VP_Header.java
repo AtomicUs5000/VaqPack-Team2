@@ -33,6 +33,8 @@ public class VP_Header extends VBox {
     private final HBox headerBar;
     private final Pane headerLogo;
     private final Label headerCaption;
+    private final Menu adminMenu;
+    private final MenuItem userLogout;
 
     /*------------------------------------------------------------------------*
      * VP_Header()
@@ -40,12 +42,16 @@ public class VP_Header extends VBox {
      * - Parameter 
      *------------------------------------------------------------------------*/
     protected VP_Header(VP_GUIController controller, Stage primaryStage) {
+        //-------- Initialization Start ----------\\
         this.controller = controller;
         this.primaryStage = primaryStage;
         menuBar = new MenuBar();
         headerBar = new HBox();
         headerLogo = new Pane();
         headerCaption = new Label();
+        adminMenu = new Menu("Admin");
+        userLogout = new MenuItem("Logout");
+        //-------- Initialization End ------------\\
         menuBar.setId("menuBar");
         headerBar.setId("headerBar");
         headerLogo.setId("headerLogo");
@@ -56,24 +62,24 @@ public class VP_Header extends VBox {
     /*------------------------------------------------------------------------*
      * build()
      * - Builds the gui header, including the menu.
-     *   Called in a task, to build in the background
+     *   Called in a task to build in the background.
      * - No Paramters
      * - No Return
      *------------------------------------------------------------------------*/
     protected void build() {
-        // Menu initialization
+        //-------- Initialization Start ----------\\
         Menu homeMenu = new Menu("Home"),
                 optionsMenu = new Menu("Options"),
                 helpMenu = new Menu("Help");
-        MenuItem userLogin = new MenuItem("Login"),
-                userLogout = new MenuItem("Logout"),
-                exitVP = new MenuItem("Exit"),
-                toggleTree = new MenuItem("Toggle Tree View"),
+        MenuItem exitVP = new MenuItem("Exit VaqPack"),
                 toggleFull = new MenuItem("Toggle Full Screen"),
+                adminItem = new MenuItem("Something adminny"),
                 gettingStarted = new MenuItem("Getting Started with VaqPack"),
-                aboutHelp = new MenuItem("About");
+                aboutHelp = new MenuItem("About VaqPack");
+        //-------- Initialization End ------------\\
 
         // Menu actions
+        userLogout.setOnAction(new LogoutAction());
         exitVP.setOnAction(controller.new ClosingSequence());
         toggleFull.setOnAction(new FullScreenToggle());
         //userLogin.setOnAction(...);
@@ -83,11 +89,13 @@ public class VP_Header extends VBox {
         //fullScreen.setOnAction(...fullScreenToggle());
 
         // Menu building
-        homeMenu.getItems().addAll(userLogin, userLogout,
+        homeMenu.getItems().addAll(userLogout,
                 new SeparatorMenuItem(), exitVP);
-        optionsMenu.getItems().addAll(toggleTree, toggleFull);
+        optionsMenu.getItems().addAll(toggleFull);
+        adminMenu.getItems().addAll(adminItem);
         helpMenu.getItems().addAll(gettingStarted, aboutHelp);
         menuBar.getMenus().addAll(homeMenu, optionsMenu, helpMenu);
+        userLogout.setVisible(false);
 
         // Logo header construction
         headerBar.setPrefHeight(50);
@@ -100,9 +108,23 @@ public class VP_Header extends VBox {
         headerCaption.setText("Graduate-to-Professional Aid Pack");
     }
 
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
     /*------------------------------------------------------------------------*
-     * Subclasses
+     * Subclass LogoutAction
+     * - Sequence of events that must occur before logout and after.
      *------------------------------------------------------------------------*/
+    protected class LogoutAction implements EventHandler {
+
+        @Override
+        public void handle(Event event) {
+            // have to insert code here to verify logout if things have not been saved
+            // assuming nothing to save for now...
+            controller.setCurrentUser(null);
+        }
+    }
+    
     /*------------------------------------------------------------------------*
      * Subclass FullScreenToggle
      * - Allows the user to enter or exit fullscreen mode
@@ -115,7 +137,18 @@ public class VP_Header extends VBox {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
+    protected Menu getAdminMenu() {
+        return adminMenu;
+    }
+
+    protected MenuItem getUserLogout() {
+        return userLogout;
+    }
+
+    protected MenuBar getMenuBar() {
+        return menuBar;
+    }
 }

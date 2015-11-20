@@ -21,14 +21,14 @@ import javafx.scene.layout.VBox;
 
 public class VP_Loader extends VBox {
 
-    private final StringProperty loadPercentProp = new SimpleStringProperty(),
-            activity1 = new SimpleStringProperty(),
-            activity2 = new SimpleStringProperty();
+    private final StringProperty loadPercentProp,
+            activity1,
+            activity2;
     private final Label percentLabel,
             activityLabel1,
             activityLabel2;
-    private int totalTasks = 0,
-            completedTasks = 0;
+    private int totalTasks,
+            completedTasks;
 
     /*------------------------------------------------------------------------*
      * VP_Loader()
@@ -37,17 +37,25 @@ public class VP_Loader extends VBox {
      * - Parameter sceneHeight used for the preferred height
      *------------------------------------------------------------------------*/
     protected VP_Loader(int sceneWidth, int sceneHeight) {
+        //-------- Initialization Start ----------\\
+        loadPercentProp = new SimpleStringProperty();
+        activity1 = new SimpleStringProperty();
+        activity2 = new SimpleStringProperty();
+        percentLabel = new Label();
+        activityLabel1 = new Label();
+        activityLabel2 = new Label();
+        totalTasks = 0;
+        completedTasks = 0;
+        //-------- Initialization End ------------\\
+
         this.setPrefSize(sceneWidth, sceneHeight);
         this.setAlignment(Pos.CENTER);
         this.setId("loader");
         Pane loadLogoPane = new Pane();
         loadLogoPane.setPrefSize(300, 300);
         loadLogoPane.setId("loadLogo");
-        percentLabel = new Label();
         percentLabel.getStyleClass().add("loadText");
-        activityLabel1 = new Label();
         activityLabel1.getStyleClass().add("loadText");
-        activityLabel2 = new Label();
         activityLabel2.getStyleClass().add("loadText");
         percentLabel.textProperty().bind(loadPercentProp);
         activityLabel1.textProperty().bind(activity1);
@@ -62,15 +70,23 @@ public class VP_Loader extends VBox {
      * - No Return
      *------------------------------------------------------------------------*/
     protected void incrementCompletedTasks() {
+        //-------- Initialization Start ----------\\
+        double percentDouble;
+        int percent;
+        //-------- Initialization End ------------\\
+
         completedTasks++;
-        double percentDouble = (((double) completedTasks / (double) totalTasks) * 100);
-        int percent = (int) percentDouble;
+        percentDouble = (((double) completedTasks / (double) totalTasks) * 100);
+        percent = (int) percentDouble;
         loadPercentProp.set("Loading : " + percent + "%");
     }
 
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
     public final String getActivity1() {
         return activity1.get();
     }

@@ -8,6 +8,7 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
+ * FILE ID 2700
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
@@ -26,7 +27,11 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
      *   A limit of 0 or less means to not limit the text.
      *---------------------------------------------------------------------*/
     protected VP_TextField(int columns, int limit) {
+        //-------- Initialization Start ----------\\
         this.limit = limit;
+        //-------- Initialization End ------------\\
+        this.setMinSize(TextField.USE_PREF_SIZE, TextField.USE_PREF_SIZE);
+        this.setMaxSize(TextField.USE_PREF_SIZE, TextField.USE_PREF_SIZE);
         this.setStyle("-fx-control-inner-background: white");
         this.setPrefColumnCount(columns);
         this.assignEvents();
@@ -70,9 +75,12 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
         this.setOnKeyReleased(this);
     }
 
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
     protected int getLimit() {
         return limit;
     }

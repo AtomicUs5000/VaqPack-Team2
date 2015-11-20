@@ -8,6 +8,7 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
+ * FILE ID 9900
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
@@ -26,29 +27,120 @@ public class VP_ErrorHandler {
      *------------------------------------------------------------------------*/
     protected VP_ErrorHandler(int errorCode, String exceptionString) {
         switch (errorCode) {
-            // ID 1100 VP_GUIController
+            // ID 1100 Originates from VP_GUIController
             case 1101:
-                header = "An error has occurred while attempting to delay a thread.\n"
-                        + "VaqPack will attempt to continue.";
+                header = "A thread was unexpectedly interrupted during the request "
+                        + "for MySQL location details.\n"
+                        + "VaqPack will attempt to continue.\n If the program is "
+                        + "unstable, restart it.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
             case 1102:
-                header = "A thread was unexpectedly interrupted.\n"
+                header = "A thread was unexpectedly interrupted during the request "
+                        + "for MySQL admin account details.\n"
+                        + "VaqPack will attempt to continue.\n If the program is "
+                        + "unstable, restart it.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1103:
+                header = "A thread was unexpectedly interrupted during verification "
+                        + "of MySQL location details.\n"
+                        + "VaqPack will attempt to continue.\n If the program is "
+                        + "unstable, restart it.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1104:
+                header = "A thread was unexpectedly interrupted during verification "
+                        + "of MySQL admin account details.\n"
+                        + "VaqPack will attempt to continue.\n If the program is "
+                        + "unstable, restart it.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1105:
+                header = "A thread was unexpectedly interrupted during verification "
+                        + "of the VaqPack admin user account details.\n"
+                        + "VaqPack will attempt to continue.\n If the program is "
+                        + "unstable, restart it.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1106:
+                header = "A thread was unexpectedly interrupted during the "
+                        + " creation of the VaqPack admin user account.\n"
+                        + "VaqPack will attempt to continue.\n If the program is "
+                        + "unstable, restart it.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1107:
+                header = "A thread was unexpectedly interrupted during the final "
+                        + "loading stages.\n"
                         + "VaqPack will attempt to continue.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
-            // ID 1200 VP_DataManger
-            // ID 1300 VP_FileManager
+
+            // ID 1200 Originates from VP_DataManger
+            case 1201:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to store the VaqPack admin user credentials.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1202:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to log in a user.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try logging in again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1203:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to complete the registration of a user.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try confirming registration again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1204:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to reset the password of a user.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try resetting the password again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1205:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to resend the registration code for a user.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try requesting the code again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1206:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to register a new user.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try submitting your registration again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+
+            // ID 1300 Originates from VP_FileManager
             case 1301:
-                header = "VaqPack is not able to read the configuration file "
+                header = "VaqPack is not able to store the configuration file "
                         + "that is necessary to connect to the MySQL database.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
             case 1302:
-                header = "VaqPack is not able to store the configuration file "
+                header = "VaqPack is not able to store the credentials file "
                         + "that is necessary to connect to the MySQL database.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
@@ -60,39 +152,25 @@ public class VP_ErrorHandler {
                 critical = true;
                 break;
             case 1304:
-                header = "VaqPack is not able to read the credentials file "
-                        + "that is necessary to connect to the MySQL database.\n"
-                        + "The file may be corrupt.\n"
-                        + "VaqPack will attempt to recover from this error.\n"
-                        + "The database administrator must reenter credentials.";
-                content = "Error " + errorCode + ": " + exceptionString;
-                critical = false;
-                break;
-            case 1305:
-                header = "VaqPack is not able to store the credentials file "
-                        + "that is necessary to connect to the MySQL database.";
-                content = "Error " + errorCode + ": " + exceptionString;
-                critical = true;
-                break;
-            case 1306:
                 header = "An unexpected error occurred while encrypting "
                         + "VaqPack admin credentials.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
-            case 1307:
+            case 1305:
                 header = "An unexpected error occurred while searching for "
                         + "VaqPack admin credentials.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
-            case 1308:
+            case 1306:
                 header = "An unexpected error occurred while storing "
                         + "VaqPack admin credentials.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
-            // ID 1400 VP_DatabaseManager
+
+            // ID 1400 Originates from VP_DatabaseManager
             case 1401:
                 header = "VaqPack has encountered a critical MySQL error \n"
                         + "while checking for connectivity.";
@@ -117,18 +195,91 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
-            // ID 1500 VP_Loader
-            // ID 1600 VP_GUIBuilder
-            // ID 1700 VP_Header
-            // ID 1800 VP_Tree
-            // ID 1900 VP_Center
-            // ID 2000 VP_Mail
-            case 2001:
+            case 1405:
+                header = "VaqPack has encountered a critical MySQL error \n"
+                        + "while verifying VaqPack admin user existence.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1406:
+                header = "VaqPack has encountered a critical MySQL error \n"
+                        + "while storing VaqPack admin user details.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 1407:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while logging in a user.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please login again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1408:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while completing the registration of a user.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please try confirming your registration again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1409:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while resetting a user password.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please try resetting your password again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1410:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while resetting and resending a user registration code.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please try resrnding a new code again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1411:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while initiating the password reset sequence.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1412:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while registering a new user.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+
+            // ID 1500 Originates from VP_Loader
+            // ID 1600 Originates from VP_Mail
+            case 1601:
                 header = "VaqPack could not send the email due to \n"
                         + "malformed parameters passed to the VP_Mail object.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+
+            // ID 1700 Originates from VP_Header
+            // ID 1800 Originates from VP_Tree
+            // ID 1900 Originates from VP_Center
+            // ID 2000 Originates from VP_Footer
+            // ID 2100 Originates from VP_BusinessCard
+            // ID 2200 Originates from VP_CoverLetter
+            // ID 2300 Originates from VP_Resume
+            // ID 2400 Originates from VP_User
+            // ID 2500 Originates from VP_Template
+            // ID 2600 Originates from VP_Contact
+            // ID 2700 Originates from VP_Textfield
+            // ID 2800 Originates from VP_PasswordField
+            // ID 2900 Originates from VP_DataToHtml
+            // ID 3000 Originates from VP_HtmlToPdf
+            // ID 3100 Originates from VP_SoundManager
             // General Error, perhaps invalid code in constructor
             default:
                 header = "An unknown error has occured.";

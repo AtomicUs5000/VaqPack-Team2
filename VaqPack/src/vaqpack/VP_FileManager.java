@@ -46,23 +46,29 @@ public class VP_FileManager {
      * No Parameters.
      *------------------------------------------------------------------------*/
     protected VP_FileManager() {
+        //-------- Initialization Start ----------\\
         keyPass = "localhostvaqPack3306";
         vector = "VAQPACK1";
+        //-------- Initialization End ------------\\
     }
 
     /*------------------------------------------------------------------------*
      * retrieveUrlPort()
      * - Retrieves the database url and port from the properties file.
      * - No parameters.
-     * - Return a string array of the database url and port.
+     * - Returns a string array of the database url and port.
      *------------------------------------------------------------------------*/
     protected String[] retrieveUrlPort() throws FileNotFoundException, IOException {
+        //-------- Initialization Start ----------\\
+        String urlPort[] = new String[2];
         Properties prop = new Properties();
         InputStream input = new FileInputStream("mysqll.properties");
+        //-------- Initialization End ------------\\
+
         prop.load(input);
-        String url = prop.getProperty("url");
-        String port = prop.getProperty("port");
-        return new String[]{url, port};
+        urlPort[0] = prop.getProperty("url");
+        urlPort[1] = prop.getProperty("port");
+        return urlPort;
     }
 
     /*------------------------------------------------------------------------*
@@ -72,8 +78,11 @@ public class VP_FileManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void storeUrlPort(String[] loc) throws FileNotFoundException, IOException {
+        //-------- Initialization Start ----------\\
         Properties prop = new Properties();
         OutputStream output = new FileOutputStream("mysqll.properties");
+        //-------- Initialization End ------------\\
+
         prop.setProperty("url", loc[0]);
         prop.setProperty("port", loc[1]);
         prop.store(output, null);
@@ -92,19 +101,21 @@ public class VP_FileManager {
     protected String[] retrieveAdminEncrypted(String url, String port) throws FileNotFoundException,
             IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        //-------- Initialization Start ----------\\
         keyPass = url + "vaqPack" + port;
         Properties prop = new Properties();
         InputStream input = new FileInputStream("mysqla.properties");
+        String[] cred = new String[2];
+        //-------- Initialization End ------------\\
+
         prop.load(input);
-        String userEncrypted = prop.getProperty("user"),
-                passEncrypted = prop.getProperty("pass"),
-                user = "",
-                pass = "";
-        if (!(userEncrypted == null || passEncrypted == null)) {
-            user = decrypt(userEncrypted);
-            pass = decrypt(passEncrypted);
+        cred[0] = prop.getProperty("user");
+        cred[1] = prop.getProperty("pass");
+        if (!(cred[0] == null || cred[1] == null)) {
+            cred[0] = decrypt(cred[0]);
+            cred[1] = decrypt(cred[1]);
         }
-        return new String[]{user, pass};
+        return cred;
     }
 
     /*------------------------------------------------------------------------*
@@ -119,8 +130,11 @@ public class VP_FileManager {
             IOException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, InvalidAlgorithmParameterException,
             UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
+        //-------- Initialization Start ----------\\
         Properties prop = new Properties();
         OutputStream output = new FileOutputStream("mysqla.properties");
+        //-------- Initialization End ------------\\
+
         prop.setProperty("user", encrypt(cred[0]));
         prop.setProperty("pass", encrypt(cred[1]));
         prop.store(output, null);
@@ -136,12 +150,17 @@ public class VP_FileManager {
             NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException,
             IllegalBlockSizeException, BadPaddingException {
+        //-------- Initialization Start ----------\\
         key = new SecretKeySpec(Arrays.copyOf(keyPass.getBytes("utf-8"), 24), "DESede");
         ivps = new IvParameterSpec(vector.getBytes("utf-8"));
         Cipher encrypt = Cipher.getInstance("DESede/CBC/PKCS5Padding");
+        byte[] inputBytes,
+                encryptedInputBytes;
+        //-------- Initialization End ------------\\
+
         encrypt.init(Cipher.ENCRYPT_MODE, key, ivps);
-        byte[] inputBytes = input.getBytes("utf-8");
-        byte[] encryptedInputBytes = encrypt.doFinal(inputBytes);
+        inputBytes = input.getBytes("utf-8");
+        encryptedInputBytes = encrypt.doFinal(inputBytes);
         return Arrays.toString(encryptedInputBytes);
     }
 
@@ -155,20 +174,27 @@ public class VP_FileManager {
             NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException,
             BadPaddingException, UnsupportedEncodingException {
+        //-------- Initialization Start ----------\\
         key = new SecretKeySpec(Arrays.copyOf(keyPass.getBytes("utf-8"), 24), "DESede");
         ivps = new IvParameterSpec(vector.getBytes("utf-8"));
         Cipher decrypt = Cipher.getInstance("DESede/CBC/PKCS5Padding");
-        decrypt.init(Cipher.DECRYPT_MODE, key, ivps);
         String[] byteValues = input.substring(1, input.length() - 1).split(",");
-        byte[] bytes = new byte[byteValues.length];
+        byte[] bytes = new byte[byteValues.length],
+                decryptedInputBytes;
+        //-------- Initialization End ------------\\
+
+        decrypt.init(Cipher.DECRYPT_MODE, key, ivps);
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = Byte.parseByte(byteValues[i].trim());
         }
-        byte[] decryptedInputBytes = decrypt.doFinal(bytes);
+        decryptedInputBytes = decrypt.doFinal(bytes);
         return new String(decryptedInputBytes);
     }
 
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
 }

@@ -43,8 +43,8 @@ import javax.crypto.NoSuchPaddingException;
 
 public class VP_GUIController {
 
-    private final String title = "VaqPack";
     private final Scene primaryScene;
+    private final String title;
     private final StackPane mainLayout;
     private final VP_Loader loader;
     private final VP_DataManager dataM;
@@ -56,19 +56,24 @@ public class VP_GUIController {
             dbTasks;
     private ArrayList<String> guiTaskLabels,
             dbTaskLabels;
-    private final int USER_PASSWORD_MINIMUM = 12,
-            sceneWidth = 1000, // width is temporary
-            sceneHeight = 600;           // height is temporary
+    private final int USER_PASSWORD_MINIMUM,
+            sceneWidth,
+            sceneHeight;
+    private VP_User currentUser;
 
     /*------------------------------------------------------------------------*
      * VP_GUIController()
-     * - Constructor. Stores primaryStage and creates the empty scene and sets 
-     *   the title for it. Creates a VP_Loader and sets it as visible, while the
+     * - Constructor. Creates the empty scene and sets the title for it. 
+     *   Creates a VP_Loader and sets it as visible, while the
      *   empty GUI is not visible. Creates the Data Manager.
-     * - Parameter primaryStage stored for window control.
+     * - Parameter primaryStage sent to header object for fullscreen control.
      * - Calls load().
      *------------------------------------------------------------------------*/
     protected VP_GUIController(Stage primaryStage) {
+        //-------- Initialization Start ----------\\
+        USER_PASSWORD_MINIMUM = 12;
+        sceneWidth = 1000;
+        sceneHeight = 600;
         mainLayout = new StackPane();
         loader = new VP_Loader(sceneWidth, sceneHeight);
         dataM = new VP_DataManager(this);
@@ -76,11 +81,14 @@ public class VP_GUIController {
         leftTree = new VP_Tree();
         center = new VP_Center(this);
         footer = new VP_Footer();
+        primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
+        title = "VaqPack";
+        //-------- Initialization End ------------\\
+
         mainLayout.getChildren().addAll(loader, createShell());
         mainLayout.getChildren().get(1).setVisible(false);
         mainLayout.getChildren().get(0).setVisible(true);
         mainLayout.setAlignment(Pos.TOP_LEFT);
-        primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
         primaryScene.getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
         primaryStage.setTitle(title);
         primaryStage.setScene(primaryScene);
@@ -98,8 +106,11 @@ public class VP_GUIController {
      * - No Return.
      *------------------------------------------------------------------------*/
     protected void errorAlert(int errorCode, String exceptionString) {
+        //-------- Initialization Start ----------\\
         VP_ErrorHandler eh = new VP_ErrorHandler(errorCode, exceptionString);
         VPErrorAlert errorAlert = new VPErrorAlert(AlertType.ERROR);
+        //-------- Initialization End ------------\\
+
         errorAlert.setTitle("Error");
         errorAlert.setHeaderText(eh.getHeader());
         errorAlert.setContentText(eh.getContent());
@@ -117,7 +128,10 @@ public class VP_GUIController {
      * - Returns the empty GUI BorderPane.
      *------------------------------------------------------------------------*/
     private BorderPane createShell() {
+        //-------- Initialization Start ----------\\
         BorderPane guiShell = new BorderPane();
+        //-------- Initialization End ------------\\
+
         guiShell.setTop(header);
         guiShell.setLeft(leftTree);
         guiShell.setCenter(center);
@@ -133,10 +147,15 @@ public class VP_GUIController {
      * - No return.
      *------------------------------------------------------------------------*/
     private void load() {
+        //-------- Initialization Start ----------\\
+        LoadingThread loadDB;
+        LoadingThread loadGUI;
         dbTasks = new ArrayList();
         guiTasks = new ArrayList();
         dbTaskLabels = new ArrayList();
         guiTaskLabels = new ArrayList();
+        //-------- Initialization End ------------\\
+
         dbTaskLabels.add("Retrieving MySQL Location");
         dbTaskLabels.add("Retrieving MySQL Admin Credentials");
         dbTaskLabels.add("Checking User Table");
@@ -175,8 +194,8 @@ public class VP_GUIController {
             dbTasks.add(new LoadDBTask(i));
         }
         loader.setTotalTasks(dbTaskLabels.size() + guiTaskLabels.size());
-        LoadingThread loadDB = new LoadingThread(dbTasks);
-        LoadingThread loadGUI = new LoadingThread(guiTasks);
+        loadDB = new LoadingThread(dbTasks);
+        loadGUI = new LoadingThread(guiTasks);
         loadGUI.setDaemon(true);
         loadDB.start();
         loadGUI.start();
@@ -191,13 +210,16 @@ public class VP_GUIController {
      * - Returns a string array of the database server url and port.
      *------------------------------------------------------------------------*/
     private String[] requestDBLocation(int type) {
-        VP_Dialog requestLoc = new VP_Dialog("MySQL Database Server Location");
+        //-------- Initialization Start ----------\\
         Optional result;
+        VP_Dialog requestLoc = new VP_Dialog("MySQL Database Server Location");
         VP_TextField urlField = new VP_TextField(50, 0),
                 portField = new VP_TextField(5, 5);
         String[] loc = dataM.getCurrentLocation();
         Label urlLabel = new Label("URL: "),
                 portLabel = new Label("PORT: ");
+        //-------- Initialization End ------------\\
+
         if (type == 0) {
             requestLoc.setHeaderText("MySQL Database Server Location");
         } else if (type == 1) {
@@ -232,8 +254,9 @@ public class VP_GUIController {
      * - Returns a string array of the database admin username and password.
      *------------------------------------------------------------------------*/
     private String[] requestAdminCred(int type) {
-        VP_Dialog requestCred = new VP_Dialog("MySQL Database Admin Credentials");
+        //-------- Initialization Start ----------\\
         Optional result;
+        VP_Dialog requestCred = new VP_Dialog("MySQL Database Admin Credentials");
         VP_TextField userField = new VP_TextField(16, 16);
         VP_PasswordField passField = new VP_PasswordField(32, 32, 0, null);
         String[] cred = {"", ""};
@@ -241,6 +264,8 @@ public class VP_GUIController {
                 passLabel = new Label("ADMIN PASSWORD: ");
         String headerString = "The MySQL admin account must already be created "
                 + "for the MyDQL server, with privileges to create a database and tables.";
+        //-------- Initialization End ------------\\
+
         if (type == 0) {
             requestCred.setHeaderText("Set up the MySQL admin account.\n" + headerString);
         } else if (type == 1) {
@@ -276,11 +301,12 @@ public class VP_GUIController {
      *   the VaqPack admin user email and password.
      *------------------------------------------------------------------------*/
     private String[] requestVPAdmin(int type) {
+        //-------- Initialization Start ----------\\
+        Optional result;
         boolean passwordsOK = false,
                 emailOK = false,
                 lengthOK = false;
         VP_Dialog requestCred = new VP_Dialog("VaqPack Admin User Setup");
-        Optional result;
         VP_TextField userField = new VP_TextField(16, USER_PASSWORD_MINIMUM),
                 emailField = new VP_TextField(32, 254);
         String[] cred = {"", "", "", ""};
@@ -289,7 +315,8 @@ public class VP_GUIController {
                 emailLabel = new Label("VaqPack Admin Email: "),
                 passLabel2 = new Label("VaqPack Admin Password: "),
                 passLabel3 = new Label("Reenter VP Admin Password:"),
-                passStrengthLabel = new Label("(Password must be at least " + USER_PASSWORD_MINIMUM + " characters in length)"),
+                passStrengthLabel = new Label("(Password must be at least "
+                        + USER_PASSWORD_MINIMUM + " characters in length)"),
                 passStrengthLevel = new Label("Srength: Unacceptable");
         VP_PasswordField passField = new VP_PasswordField(32, 32, 0, null),
                 passField2 = new VP_PasswordField(32, 32, USER_PASSWORD_MINIMUM, passStrengthLevel),
@@ -300,11 +327,13 @@ public class VP_GUIController {
                 + "admin user does not exist upon loading.\nThe MySQL database "
                 + "admin must login in order to create a VaqPack admin user.\n"
                 + "Canceling will force the program to close.";
+        //-------- Initialization End ------------\\
+
         if (type == 0) {
             requestCred.setHeaderText(headerString);
         } else {
-            requestCred.setHeaderText(headerString + "\n\nThe provided database admin credentials "
-                    + "were incorrect.\nPlease try again.");
+            requestCred.setHeaderText(headerString + "\n\nThe provided database "
+                    + "admin credentials were incorrect.\nPlease try again.");
             userField.showInvalid();
             passField.showInvalid();
         }
@@ -337,13 +366,14 @@ public class VP_GUIController {
                 emailOK = dataM.checkEmail(cred[2]);
                 lengthOK = true;
                 if (!emailOK) {
-                    requestCred.setHeaderText(headerString + "\n\nThe entered VaqPack admin email address "
-                            + "is not in valid email form.\nPlease try again.");
+                    requestCred.setHeaderText(headerString + "\n\nThe entered "
+                            + "VaqPack admin email address is not in valid email"
+                            + " form.\nPlease try again.");
                     emailField.showInvalid();
                 } else if (cred[3].length() < USER_PASSWORD_MINIMUM) {
                     lengthOK = false;
-                    requestCred.setHeaderText(headerString + "\n\nThe VaqPack admin user password is "
-                            + "not long enough.\nPlease try again.");
+                    requestCred.setHeaderText(headerString + "\n\nThe VaqPack "
+                            + "admin user password is not long enough.\nPlease try again.");
                     passField2.showInvalid();
                     passField3.showInvalid();
                 }
@@ -369,20 +399,71 @@ public class VP_GUIController {
         mainLayout.getChildren().get(0).setVisible(false);
         mainLayout.getChildren().get(1).setVisible(true);
     }
-
+    
     /*------------------------------------------------------------------------*
-     * Subclasses
+     * newUserSet()
+     * - Makes changes throughout the GUI, triggered when the current user
+     *   has changed.
+     * - No parameters.
+     * - No return.
      *------------------------------------------------------------------------*/
+    private void newUserSet() {
+        if (header.getMenuBar().getMenus().size() > 3)
+            header.getMenuBar().getMenus().remove(3);
+        if (currentUser == null) {
+            footer.getUserLoggedInLabel().setText("");
+            header.getAdminMenu().setVisible(false);
+            header.getUserLogout().setVisible(false);
+            center.showScreen(0);
+        }
+        else {
+            footer.getUserLoggedInLabel().setText(currentUser.getEmail());
+            header.getUserLogout().setVisible(true);
+            center.showScreen(3);
+            if (currentUser.getAccessLevel() > 0) {
+                header.getMenuBar().getMenus().add(header.getAdminMenu());
+            }
+            // add code to begin a timer that resets with activity. If a certain
+            // amount of time goes by with no activity, automatically log out
+            // the user.
+        }
+    }
+
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*------------------------------------------------------------------------*
+     * Subclass ClosingSequence
+     * - Prevents the window from closing before the user saves things.
+     *------------------------------------------------------------------------*/
+    protected class ClosingSequence implements EventHandler {
+
+        @Override
+        public void handle(Event event) {
+            //-------- Initialization Start ----------\\
+            boolean exitCancelled = false;
+            //-------- Initialization End ------------\\
+
+            event.consume();
+            // insert code alert user to save things. if necessary
+            // let the alert return a value
+            // exitCancelled = blahblahblah
+            if (!exitCancelled) {
+                System.exit(0);
+            }
+        }
+    }
 
     /*------------------------------------------------------------------------*
      * Subclass LoadDBTasks
-     * - Defines the runnablw wrappers for the datatbase tasks.
+     * - Defines the runnable wrappers for the datatbase tasks.
      *------------------------------------------------------------------------*/
     private class LoadDBTask implements Runnable {
 
         private final int stage;
         private boolean adminCheck;
-        private CountDownLatch adminlatch;
+        private CountDownLatch adminlatch,
+                latch;
 
         public LoadDBTask(int stage) {
             this.stage = stage;
@@ -390,79 +471,84 @@ public class VP_GUIController {
 
         @Override
         public void run() {
+            //-------- Initialization Start ----------\\
+            boolean complete = false,
+                    retrieveComplete = false,
+                    adminExists = false;
+            //-------- Initialization End ------------\\
+
             Platform.runLater(() -> (loader.setActivity1(dbTaskLabels.get(stage))));
             if (stage == 0 || stage == 1) {
-                boolean complete = false;
                 while (!complete) {
-                    boolean retrieveComplete = false;
+                    retrieveComplete = false;
                     while (!retrieveComplete) {
                         try {
                             if (stage == 0) {
-                                getDataM().retrieveDBLocation();
+                                dataM.retrieveDBLocation();
                             } else if (stage == 1) {
-                                getDataM().retrieveAdmin();
+                                dataM.retrieveAdmin();
                             }
                             retrieveComplete = true;
                         } catch (FileNotFoundException ex) {
-                            CountDownLatch latch = new CountDownLatch(1);
+                            latch = new CountDownLatch(1);
                             Platform.runLater(() -> {
                                 try {
                                     if (stage == 0) {
-                                        getDataM().storeDBLocation(requestDBLocation(0));
+                                        dataM.storeDBLocation(requestDBLocation(0));
                                         latch.countDown();
                                     } else if (stage == 1) {
-                                        getDataM().storeAdminCred(requestAdminCred(0));
+                                        dataM.storeAdminCred(requestAdminCred(0));
                                         latch.countDown();
                                     }
                                 } catch (IOException ex2) {
-                                    Platform.runLater(() -> errorAlert(1302 + (3 * stage), ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(1301 + stage, ex2.getMessage()));
                                 } catch (NoSuchAlgorithmException | NoSuchPaddingException |
                                         InvalidKeyException | InvalidAlgorithmParameterException |
                                         IllegalBlockSizeException | BadPaddingException ex2) {
-                                    Platform.runLater(() -> errorAlert(1303 + (3 * stage), ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(1303 + stage, ex2.getMessage()));
                                 }
                             });
                             try {
                                 latch.await();
                             } catch (InterruptedException ex1) {
-                                Platform.runLater(() -> errorAlert(1101, ex1.getMessage()));
+                                Platform.runLater(() -> errorAlert(1101 + stage, ex1.getMessage()));
                             } finally {
                                 latch.countDown();
                             }
                         } catch (IOException ex) {
-                            Platform.runLater(() -> errorAlert(1301 + (3 * stage), ex.getMessage()));
+                            Platform.runLater(() -> errorAlert(1301 + stage, ex.getMessage()));
                         } catch (NoSuchAlgorithmException | NoSuchPaddingException |
                                 InvalidKeyException | InvalidAlgorithmParameterException |
                                 IllegalBlockSizeException | BadPaddingException ex) {
-                            Platform.runLater(() -> errorAlert(1303 + (3 * stage), ex.getMessage()));
+                            Platform.runLater(() -> errorAlert(1303 + stage, ex.getMessage()));
                         }
                     }
                     try {
                         if (stage == 0) {
-                            getDataM().checkDBLocation();
+                            dataM.checkDBLocation();
                             complete = true;
                         } else if (stage == 1) {
-                            getDataM().checkDBSchemaExists();
+                            dataM.checkDBSchemaExists();
                         }
 
                     } catch (SQLException ex) {
                         if ((ex.getErrorCode() == 0 && stage == 0) || (ex.getErrorCode() == 1045 && stage == 1)) {
-                            CountDownLatch latch = new CountDownLatch(1);
+                            latch = new CountDownLatch(1);
                             Platform.runLater(() -> {
                                 try {
                                     if (stage == 0) {
-                                        getDataM().storeDBLocation(requestDBLocation(1));
+                                        dataM.storeDBLocation(requestDBLocation(1));
                                         latch.countDown();
                                     } else if (stage == 1) {
-                                        getDataM().storeAdminCred(requestAdminCred(1));
+                                        dataM.storeAdminCred(requestAdminCred(1));
                                         latch.countDown();
                                     }
                                 } catch (IOException ex2) {
-                                    Platform.runLater(() -> errorAlert(1302 + (3 * stage), ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(1301 + stage, ex2.getMessage()));
                                 } catch (NoSuchAlgorithmException | NoSuchPaddingException |
                                         InvalidKeyException | InvalidAlgorithmParameterException |
                                         IllegalBlockSizeException | BadPaddingException ex2) {
-                                    Platform.runLater(() -> errorAlert(1303 + (3 * stage), ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(1303 + stage, ex2.getMessage()));
                                 } finally {
                                     latch.countDown();
                                 }
@@ -470,7 +556,7 @@ public class VP_GUIController {
                             try {
                                 latch.await();
                             } catch (InterruptedException ex1) {
-                                errorAlert(1102, ex.getMessage());
+                                errorAlert(1103 + stage, ex.getMessage());
                             } finally {
                                 latch.countDown();
                             }
@@ -484,34 +570,36 @@ public class VP_GUIController {
             } else if (stage > 1 && stage < 24) {
                 try {
                     if (stage < 23) {
-                        getDataM().checkDBTable(stage - 2);
+                        dataM.checkDBTable(stage - 2);
                     } else if (stage == 23) {
-                        getDataM().contructUserAccess();
+                        dataM.contructUserAccess();
                     }
                 } catch (SQLException ex) {
-                    if (ex.getErrorCode() != 1050 && stage < 23) {
+                    if (ex.getErrorCode() != 1050 && stage != 3) {
                         Platform.runLater(() -> errorAlert(1403, ex.getMessage()));
-                    } else if (stage == 23) {
+                    } else if (ex.getErrorCode() != 1050 && stage == 3) {
                         Platform.runLater(() -> errorAlert(1404, ex.getMessage()));
                     }
                 }
             } else if (stage == 24) {
-                boolean adminExists = false;
+                adminExists = false;
                 while (!adminExists && !adminCheck) {
                     adminCheck = false;
                     adminlatch = new CountDownLatch(1);
                     try {
-                        adminExists = getDataM().searchForVPAdmin();
+                        adminExists = dataM.searchForVPAdmin();
                     } catch (SQLException ex) {
-                        Platform.runLater(() -> errorAlert(1307, ex.getMessage()));
+                        Platform.runLater(() -> errorAlert(1405, ex.getMessage()));
                     }
                     if (!adminExists) {
                         Platform.runLater(() -> {
                             try {
-                                adminCheck = getDataM().createVPAdmin(requestVPAdmin(0));
+                                adminCheck = dataM.createVPAdmin(requestVPAdmin(0));
                                 adminlatch.countDown();
-                            } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                                Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
+                            } catch (SQLException ex) {
+                                Platform.runLater(() -> errorAlert(1406, ex.getMessage()));
+                            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                                Platform.runLater(() -> errorAlert(1201, ex.getMessage()));
                             }
                         });
                     } else {
@@ -520,23 +608,25 @@ public class VP_GUIController {
                     try {
                         adminlatch.await();
                     } catch (InterruptedException ex) {
-                        errorAlert(1102, ex.getMessage());
+                        errorAlert(1105, ex.getMessage());
                     }
                     if (!adminExists && !adminCheck) {
                         while (!adminCheck) {
                             adminlatch = new CountDownLatch(1);
                             Platform.runLater(() -> {
                                 try {
-                                    adminCheck = getDataM().createVPAdmin(requestVPAdmin(1));
+                                    adminCheck = dataM.createVPAdmin(requestVPAdmin(1));
                                     adminlatch.countDown();
-                                } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                                } catch (SQLException ex) {
                                     Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
+                                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                                    Platform.runLater(() -> errorAlert(1201, ex.getMessage()));
                                 }
                             });
                             try {
                                 adminlatch.await();
                             } catch (InterruptedException ex) {
-                                Platform.runLater(() -> errorAlert(1102, ex.getMessage()));
+                                Platform.runLater(() -> errorAlert(1106, ex.getMessage()));
                             } finally {
                                 adminlatch.countDown();
                             }
@@ -544,7 +634,7 @@ public class VP_GUIController {
                     }
                 }
             } else {
-                CountDownLatch latch = new CountDownLatch(1);
+                latch = new CountDownLatch(1);
                 Platform.runLater(() -> {
                     loader.incrementCompletedTasks();
                     latch.countDown();
@@ -554,7 +644,7 @@ public class VP_GUIController {
                     Thread.sleep(500);
                     exposeGUI();
                 } catch (InterruptedException ex) {
-                    Platform.runLater(() -> errorAlert(1102, ex.getMessage()));
+                    Platform.runLater(() -> errorAlert(1107, ex.getMessage()));
                 }
             }
             if (stage != dbTaskLabels.size() - 1) {
@@ -632,9 +722,12 @@ public class VP_GUIController {
          *---------------------------------------------------------------------*/
 
         public VP_Dialog(String title) {
+            //-------- Initialization Start ----------\\
+            VBox shellPad = new VBox();
+            //-------- Initialization End ------------\\
+
             this.getDialogPane().getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
             this.setTitle(title);
-            VBox shellPad = new VBox();
             this.dialogShell = new GridPane();
             this.dialogShell.setAlignment(Pos.CENTER_LEFT);
             this.dialogShell.setVgap(20);
@@ -659,33 +752,23 @@ public class VP_GUIController {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass ClosingSequence
-     * - Prevents the window from closing before the user saves things.
-     *------------------------------------------------------------------------*/
-    protected class ClosingSequence implements EventHandler {
-
-        @Override
-        public void handle(Event event) {
-            event.consume();
-            boolean exitCancelled = false;
-            // insert code alert user to save things. if necessary
-            // let the alert return a value
-            // exitCancelled = blahblahblah
-            if (!exitCancelled) {
-                System.exit(0);
-            }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
     protected int getUSER_PASSWORD_MINIMUM() {
         return USER_PASSWORD_MINIMUM;
     }
 
     protected VP_DataManager getDataM() {
         return dataM;
+    }
+
+    protected VP_User getCurrentUser() {
+        return currentUser;
+    }
+
+    protected void setCurrentUser(VP_User currentUser) {
+        this.currentUser = currentUser;
+        newUserSet();
     }
 }

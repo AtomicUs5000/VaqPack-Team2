@@ -140,6 +140,12 @@
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
 }
+#footerUser {
+    -fx-text-fill:
+        linear-gradient(rgb(200, 230, 230) 0%, rgb(255, 255, 255) 100%);
+    -fx-font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    -fx-font-size: 13px;
+}
 
 // popups
 .dialog-pane {
@@ -362,6 +368,7 @@
 .clickable {
     -fx-text-fill: rgb(0, 38, 73);
     -fx-font-style: italic;
+    -fx-underline: true;
 }
 .clickable:hover {
     -fx-text-fill: rgb(0, 135, 81);
@@ -371,4 +378,9 @@
 .errorLabel {
     -fx-text-fill: rgb(155, 0, 0);
     -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+.paragraph {
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-size: 14px;
 }

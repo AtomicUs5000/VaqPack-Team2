@@ -8,7 +8,7 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
- * FILE ID 2000
+ * FILE ID 1600
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
@@ -26,10 +26,10 @@ import javax.mail.internet.MimeMessage;
 public class VP_Mail extends Thread {
 
     private final VP_GUIController controller;
-    private final String port = "465",
-            host = "smtp.gamil.com",
-            userName = "vaqpackt2",
-            password = "!vpMaiL3340?",
+    private final String port,
+            host,
+            userName,
+            password,
             recipient,
             subject,
             message;
@@ -44,21 +44,36 @@ public class VP_Mail extends Thread {
      * - Parameter string message is the email's message body.
      *------------------------------------------------------------------------*/
     protected VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message) {
+        //-------- Initialization Start ----------\\
         this.controller = controller;
         this.recipient = recipient;
         this.ccEmails = ccEmails;
         this.subject = subject;
         this.message = message;
+        port = "465";
+        host = "smtp.gamil.com";
+        userName = "vaqpackt2";
+        password = "!vpMaiL3340?";
+        //-------- Initialization End ------------\\
     }
 
     @Override
     public void run() {
+        //-------- Initialization Start ----------\\
+        int ccLength = 0;
+        Properties props = System.getProperties();
+        String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+        Session session;
+        MimeMessage msg;
+        SMTPTransport transPort;
+        //-------- Initialization End ------------\\
+
+        if (ccEmails != null) {
+            ccLength = ccEmails.length;
+        }
         try {
             // need to figure out how to work in attachments
-            int ccLength = ccEmails.length;
             Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-            String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-            Properties props = System.getProperties();
             props.setProperty("mail.smtps.host", host);
             props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
             props.setProperty("mail.smtp.socketFactory.fallback", "false");
@@ -67,9 +82,10 @@ public class VP_Mail extends Thread {
             props.setProperty("mail.smtps.auth", "true");
             // property "mail.smtps.quitwait" as string "false" means QUIT command is sent right away
             // property "mail.smtps.quitwait" as string "true" means wait for response to QUIT command.
+            // this setting of this property does not matter recently according to google mail docs.
             props.put("mail.smtps.quitwait", "false");
-            Session session = Session.getInstance(props, null);
-            MimeMessage msg = new MimeMessage(session);
+            session = Session.getInstance(props, null);
+            msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(userName + "@gmail.com"));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
             for (int i = 0; i < ccLength; i++) {
@@ -78,16 +94,19 @@ public class VP_Mail extends Thread {
             msg.setSubject(subject);
             msg.setText(message, "utf-8");
             msg.setSentDate(new Date());
-            SMTPTransport transPort = (SMTPTransport) session.getTransport("smtps");
+            transPort = (SMTPTransport) session.getTransport("smtps");
             transPort.connect("smtp.gmail.com", userName, password);
             transPort.sendMessage(msg, msg.getAllRecipients());
             transPort.close();
         } catch (MessagingException ex) {
-            Platform.runLater(() -> controller.errorAlert(2001, ex.getMessage()));
+            Platform.runLater(() -> controller.errorAlert(1601, ex.getMessage()));
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
 }

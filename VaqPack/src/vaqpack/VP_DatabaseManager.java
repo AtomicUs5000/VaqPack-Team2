@@ -12,9 +12,6 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,22 +19,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
-import javax.xml.bind.DatatypeConverter;
 
 public class VP_DatabaseManager {
 
     private Connection con;
     private Statement stm;
     private ResultSet rts;
-    // url, port, dbadmin user and pass kept here just for refernce. These values
-    // may or not be used. These were the original values before the program
-    // allowed the entry of different values.
-    private final String dbName = "vaqpack_db";
-    private String port = "3306",
-            url = "localhost",
-            fullURL = "jdbc:mysql://" + url + ":" + port + "/",
-            adminUserName = "vpAdmin",
-            adminPassword = "vpTeam2Pa$$";
+    private final String dbName;
+    private String url,
+            port,
+            fullURL,
+            adminUserName,
+            adminPassword;
 
     /*------------------------------------------------------------------------*
      * VP_DatabaseManager()
@@ -45,9 +38,20 @@ public class VP_DatabaseManager {
      * No Parameters.
      *------------------------------------------------------------------------*/
     protected VP_DatabaseManager() {
+        //-------- Initialization Start ----------\\
+        // url, port, dbadmin user and pass kept here just for refernce. These values
+        // may or not be used. These were the original values before the program
+        // allowed the entry of different values.
+        dbName = "vaqpack_db";
+        port = "3306";
+        url = "localhost";
+        fullURL = "jdbc:mysql://" + url + ":" + port + "/";
+        adminUserName = "vpAdmin";
+        adminPassword = "vpTeam2Pa$$";
         con = null;
         stm = null;
         rts = null;
+        //-------- Initialization End ------------\\
     }
 
     /*------------------------------------------------------------------------*
@@ -68,8 +72,11 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkSchema() throws SQLException {
-        connect("");
+        //-------- Initialization Start ----------\\
         String sql = "CREATE DATABASE " + dbName;
+        //-------- Initialization End ------------\\
+
+        connect("");
         stm.executeUpdate(sql);
         close();
     }
@@ -82,6 +89,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkUserTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE user ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  email varchar(254) NOT NULL,"
@@ -92,6 +100,8 @@ public class VP_DatabaseManager {
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY email_UNIQUE (email)"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -103,6 +113,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkAcessLevelTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE access_level ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  level int(1) unsigned NOT NULL,"
@@ -113,6 +124,8 @@ public class VP_DatabaseManager {
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY level_UNIQUE (level)"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -124,6 +137,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkRegisteringUserTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE registering_user ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  email varchar(254) NOT NULL,"
@@ -135,6 +149,8 @@ public class VP_DatabaseManager {
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY email_UNIQUE (email)"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -146,6 +162,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkResetCodeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE reset_code ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  email varchar(254) NOT NULL,"
@@ -156,6 +173,8 @@ public class VP_DatabaseManager {
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY email_UNIQUE (email)"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -167,6 +186,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkBusinessCardTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
@@ -178,6 +198,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT BusUserID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -189,6 +211,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkContactTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE contact ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
@@ -200,6 +223,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT conUID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -211,6 +236,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkCoverLetterTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE cover_letter ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
@@ -226,6 +252,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT CovUserID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -237,6 +265,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkResumeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,\n"
@@ -248,6 +277,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT ResUserID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -259,6 +290,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkUserDataTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE user_data ("
                 + "  user_id int(10) unsigned NOT NULL,"
                 + "  first_name varchar(45) NOT NULL,"
@@ -279,6 +311,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT userID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -290,6 +324,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkCustomThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE custom_theme ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
@@ -299,6 +334,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT CTUserID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -310,11 +347,14 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkDefaultThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE default_theme ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id)"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -326,6 +366,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkBCHasCustomThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card_has_custom_theme ("
                 + "  business_card_id int(10) unsigned NOT NULL,"
                 + "  custom_theme_id int(10) unsigned NOT NULL,"
@@ -337,6 +378,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT ctbHID FOREIGN KEY (custom_theme_id) "
                 + "  REFERENCES custom_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -348,6 +391,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkBCHasDefaultThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card_has_default_theme ("
                 + "  business_card_id int(10) unsigned NOT NULL,"
                 + "  default_theme_id int(10) unsigned NOT NULL,"
@@ -359,6 +403,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT dtHID FOREIGN KEY (default_theme_id) "
                 + "  REFERENCES default_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -370,6 +416,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkBusinessCardPDFTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card_pdf ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  business_card_id int(10) unsigned NOT NULL,"
@@ -380,6 +427,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT busPID FOREIGN KEY (business_card_id) "
                 + "  REFERENCES business_card (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -391,6 +440,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkCLHasCustomThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE cover_letter_has_custom_theme ("
                 + "  cover_letter_id int(10) unsigned NOT NULL,"
                 + "  custom_theme_id int(10) unsigned NOT NULL,"
@@ -402,6 +452,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT ctclHID FOREIGN KEY (custom_theme_id) "
                 + "  REFERENCES custom_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -413,6 +465,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkCLHasDefaultThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE cover_letter_has_default_theme ("
                 + "  cover_letter_id int(10) unsigned NOT NULL,"
                 + "  default_theme_id int(10) unsigned NOT NULL,"
@@ -424,6 +477,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT dtclHID FOREIGN KEY (default_theme_id) "
                 + "  REFERENCES default_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -435,6 +490,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkCoverLetterPDFTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE cover_letter_pdf ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  cover_letter_id int(10) unsigned NOT NULL,"
@@ -445,6 +501,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT covPID FOREIGN KEY (cover_letter_id) "
                 + "  REFERENCES cover_letter (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -456,6 +514,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkResHasCustomThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_has_custom_theme ("
                 + "  resume_id int(10) unsigned NOT NULL,"
                 + "  custom_theme_id int(10) unsigned NOT NULL,"
@@ -467,6 +526,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT r2ID FOREIGN KEY (resume_id) "
                 + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -478,6 +539,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkResHasDefaultThemeTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_has_default_theme ("
                 + "  resume_id int(10) unsigned NOT NULL,"
                 + "  default_theme_id int(10) unsigned NOT NULL,"
@@ -489,6 +551,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT rID FOREIGN KEY (resume_id) "
                 + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -500,6 +564,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkResPDFTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_pdf ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  resume_id int(10) unsigned NOT NULL,"
@@ -510,6 +575,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT resPID FOREIGN KEY (resume_id) "
                 + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -521,6 +588,7 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void checkResHTMLTable() throws SQLException {
+        //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_html ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  resume_id int(10) unsigned NOT NULL,"
@@ -531,6 +599,8 @@ public class VP_DatabaseManager {
                 + "  CONSTRAINT resHID FOREIGN KEY (resume_id) "
                 + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
+        //-------- Initialization End ------------\\
+
         checkTable(sql);
     }
 
@@ -546,12 +616,15 @@ public class VP_DatabaseManager {
      *   of first-run initialization.
      *------------------------------------------------------------------------*/
     protected boolean findAdminUser() throws SQLException {
+        //-------- Initialization Start ----------\\
         boolean adminExists = false;
         Date dt = new java.util.Date();
         String sql = "SELECT * FROM user WHERE access_level = 1";
         Timestamp regTime;
         int remId;
         long difference;
+        //-------- Initialization End ------------\\
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -618,15 +691,18 @@ public class VP_DatabaseManager {
      * - Returns a boolean value indicating if that the database admin user is
      *   valid, allowing the creation of this VP admin user account.
      *------------------------------------------------------------------------*/
-    protected boolean createVaqPackAdmin(String[] cred, String code) throws SQLException,
-            NoSuchAlgorithmException, UnsupportedEncodingException {
+    protected boolean createVaqPackAdmin(String[] cred, String code, String hashed)
+            throws SQLException {
+        //-------- Initialization Start ----------\\
         boolean adminCredChecked = false;
         String sql;
+        //-------- Initialization End ------------\\
+
         if (cred[0].equals(adminUserName) && cred[1].equals(adminPassword)) {
             adminCredChecked = true;
             connect(dbName);
             sql = "INSERT INTO registering_user (email, password, access_level, access_code)"
-                    + " VALUES ('" + cred[2] + "', '" + hashPassword(cred[3]) + "', 1, '" + code + "')";
+                    + " VALUES ('" + cred[2] + "', '" + hashed + "', 1, '" + code + "')";
             stm.executeUpdate(sql);
         }
         close();
@@ -642,11 +718,15 @@ public class VP_DatabaseManager {
      * - No return.
      *------------------------------------------------------------------------*/
     protected void buildAccessLevels() throws SQLException {
-        connect(dbName);
+        //-------- Initialization Start ----------\\
+        int count;
         String sql = "SELECT COUNT(*) FROM access_level";
+        //-------- Initialization End ------------\\
+
+        connect(dbName);
         rts = stm.executeQuery(sql);
         rts.next();
-        int count = rts.getInt(1);
+        count = rts.getInt(1);
         if (count != 3) {
             if (count != 0) {
                 sql = "TRUNCATE access_level";
@@ -667,24 +747,40 @@ public class VP_DatabaseManager {
         close();
     }
 
-    protected int attemptUserLogin(String[] cred) throws SQLException,
-            NoSuchAlgorithmException, UnsupportedEncodingException {
-        int loginStatus = 0, id;
+    /*------------------------------------------------------------------------*
+     * attemptUserLogin()
+     * - May or may not log in the user, depending on where the user is found in
+     *   the databse.
+     * - Parameter cred is a string array of user credentials.
+     * - Returns -1 if user does not exist, returns the user's access level if
+     *   the user exists in the user table, and returns -2 if the user is found
+     *   in registering_user table.
+     *------------------------------------------------------------------------*/
+    protected int attemptUserLogin(String[] cred)
+            throws SQLException {
+        //-------- Initialization Start ----------\\
+        int loginStatus = -1,
+                id;
         Timestamp regTime;
         long newMS;
-        // first check if user is in the user table
+        Date dt;
         String sql = "SELECT * FROM user WHERE email = '" + cred[0] + "' AND "
-                + "password = '" + hashPassword(cred[1]) + "'";
+                + "password = '" + cred[1] + "'";
+        //-------- Initialization End ------------\\
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
-            loginStatus = 1;
+            loginStatus = rts.getInt("access_level");
+            dt = new java.util.Date();
+            sql = "UPDATE user SET last_access = '" + new Timestamp(dt.getTime()) + "' WHERE id = " + rts.getInt("id");
+                stm.executeUpdate(sql);
         } else {
             sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
-                    + "password = '" + hashPassword(cred[1]) + "'";
+                    + "password = '" + cred[1] + "'";
             rts = stm.executeQuery(sql);
             if (rts.next()) {
-                loginStatus = 2;
+                loginStatus = -2;
                 // extend the lifetime of the registration code by five minutes
                 id = rts.getInt("id");
                 regTime = rts.getTimestamp("reg_time");
@@ -698,13 +794,26 @@ public class VP_DatabaseManager {
         return loginStatus;
     }
 
-    protected boolean verifyUserAccessCode(String[] cred) throws SQLException,
-            NoSuchAlgorithmException, UnsupportedEncodingException {
+    /*------------------------------------------------------------------------*
+     * verifyUserAccessCode()
+     * - May or may not complete the registration of a user. This is determined 
+     *   by whether or not the access code and user credentials match up. If
+     *   everything matches, the user is moved from the registering_user table
+     *   to the user table.
+     * - Parameter cred is a string array of user credentials.
+     * - Returns a boolean value indicating whether or not the verification of 
+     *   user's registration was successful.
+     *------------------------------------------------------------------------*/
+    protected boolean verifyUserAccessCode(String[] cred)
+            throws SQLException {
+        //-------- Initialization Start ----------\\
         boolean success = false;
         int remId,
                 remAccessLevel;
         String sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
-                + "password = '" + hashPassword(cred[1]) + "' AND access_code = '" + cred[2] + "'";
+                + "password = '" + cred[1] + "' AND access_code = '" + cred[2] + "'";
+        //-------- Initialization End ------------\\
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -714,15 +823,29 @@ public class VP_DatabaseManager {
             sql = "DELETE FROM registering_user WHERE id = " + remId;
             stm.executeUpdate(sql);
             sql = "INSERT INTO user (email, password, access_level)"
-                    + " VALUES ('" + cred[0] + "', '" + hashPassword(cred[1]) + "', " + remAccessLevel + ")";
+                    + " VALUES ('" + cred[0] + "', '" + cred[1] + "', " + remAccessLevel + ")";
             stm.executeUpdate(sql);
         }
         close();
         return success;
     }
 
-    protected int resetPassword(String[] cred) throws SQLException,
-            NoSuchAlgorithmException, UnsupportedEncodingException {
+    /*------------------------------------------------------------------------*
+     * resetPassword()
+     * - May or may not reset a user's password. This is determined by the
+     *   matching of credentials and acces code, and only occurs if the code has
+     *   not expired. Users cannot reset a password if they already have within
+     *   a 24-hour period, but this is determined in a separate function before
+     *   function can be called. However, if the reset can happen, the reset
+     *   time is stored to prevent resetting again within the next 24 hours.
+     * - Parameter cred is a string array of user credentials.
+     * - Returns a value of 0 if credentials do not match, returns a 1 if the
+     *   credentials match but the code has expired, and returns a 2 if the
+     *   password reset was a success.
+     *------------------------------------------------------------------------*/
+    protected int resetPassword(String[] cred)
+            throws SQLException {
+        //-------- Initialization Start ----------\\
         int resetStatus = 0,
                 remID;
         long difference;
@@ -730,6 +853,8 @@ public class VP_DatabaseManager {
         Date dt;
         String sql = "SELECT * FROM reset_code WHERE email = '" + cred[0]
                 + "' AND access_code = '" + cred[3] + "'";
+        //-------- Initialization End ------------\\
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -741,7 +866,7 @@ public class VP_DatabaseManager {
             if (difference < 3600000) {
                 sql = "UPDATE reset_code SET confirm_time = '" + new Timestamp(dt.getTime()) + "' WHERE id = " + remID;
                 stm.executeUpdate(sql);
-                sql = "UPDATE user SET password = '" + hashPassword(cred[1]) + "' WHERE email = '" + cred[0] + "'";
+                sql = "UPDATE user SET password = '" + cred[1] + "' WHERE email = '" + cred[0] + "'";
                 stm.executeUpdate(sql);
                 resetStatus = 2;
             }
@@ -750,7 +875,22 @@ public class VP_DatabaseManager {
         return resetStatus;
     }
 
-    protected int findUserOrRegUser(String email, String code) throws SQLException {
+    /*------------------------------------------------------------------------*
+     * findUserOrRegUserForReset()
+     * - This function is called when a user submits the email in the reset
+     *   password page. This first step verifies that the email exists in the
+     *   system. If it does, a check is done to see if the user has reset the 
+     *   password already within the past 24 hours.
+     * - Parameter email is the string user email.
+     * - Parameter code is the code that is stored in the database and sent to 
+     *   user via email.
+     * - Returns a value of 0 if the user does not exist, returns a 1 if the
+     *   user exists but has already reset within the past 24 hours, and returns
+     *   a 2 if resetting is allowed and a new code is stored.
+     *------------------------------------------------------------------------*/
+    protected int findUserOrRegUserForReset(String email, String code)
+            throws SQLException {
+        //-------- Initialization Start ----------\\
         Timestamp sentTime,
                 confirmTime;
         Date dt;
@@ -758,6 +898,8 @@ public class VP_DatabaseManager {
                 remID;
         long difference;
         String sql = "SELECT * FROM user WHERE email = '" + email + "'";
+        //-------- Initialization End ------------\\
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -792,13 +934,26 @@ public class VP_DatabaseManager {
         return userStatus;
     }
 
-    protected boolean resendUserAccessCode(String[] cred, String code) throws SQLException,
-            NoSuchAlgorithmException, UnsupportedEncodingException {
+    /*------------------------------------------------------------------------*
+     * resendUserAccessCode()
+     * - This function stores a brand new registration code for a user if the 
+     *   credentials match. This is typically called for when a user does not 
+     *   receive the registration email or failed to enter in the code before
+     *   its expiration time.
+     * - Parameter cred is the string array of user credentials.
+     * - Parameter code is the registration code that the user has entered.
+     * - Returns a boolean value indicating whether the user exists.
+     *------------------------------------------------------------------------*/
+    protected boolean resendUserAccessCode(String[] cred, String code)
+            throws SQLException {
+        //-------- Initialization Start ----------\\
         boolean userExists = false;
         String sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
-                + "password = '" + hashPassword(cred[1]) + "'";
+                + "password = '" + cred[1] + "'";
         int id;
         Date dt;
+        //-------- Initialization End ------------\\
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -811,6 +966,40 @@ public class VP_DatabaseManager {
         }
         close();
         return userExists;
+    }
+
+    /*------------------------------------------------------------------------*
+     * registerUser()
+     * - This function stores a registration code for a new user.
+     * - Parameter cred is the string array of user credentials.
+     * - Parameter code is the registration code that the user has entered.
+     * - Returns an integer value indicating whether the user is new or not.
+     *------------------------------------------------------------------------*/
+    protected int registerUser(String[] cred, String code)
+            throws SQLException {
+        //-------- Initialization Start ----------\\
+        int registerStatus = 1;
+        String sql = "SELECT * FROM user WHERE email = '" + cred[0] + "'";
+        Date dt;
+        //-------- Initialization End ------------\\
+
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (!rts.next()) {
+            sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "'";
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                registerStatus = 0;
+            } else {
+                registerStatus = 2;
+                dt = new java.util.Date();
+                sql = "INSERT INTO registering_user (email, password, access_code)"
+                        + " VALUES ('" + cred[0] + "', '" + cred[1] + "', '" + code + "')";
+                stm.executeUpdate(sql);
+            }
+        }
+        close();
+        return registerStatus;
     }
 
     /*------------------------------------------------------------------------*
@@ -853,22 +1042,12 @@ public class VP_DatabaseManager {
         close();
     }
 
-    /*------------------------------------------------------------------------*
-     * hashPassword()
-     * - Hashes a password.
-     * - Parameter pass is the string to be hashed.
-     * - Returns a string of the hashed password.
-     *------------------------------------------------------------------------*/
-    private String hashPassword(String pass) throws NoSuchAlgorithmException,
-            UnsupportedEncodingException {
-        MessageDigest mDig = MessageDigest.getInstance("SHA-256");
-        byte[] passHash = mDig.digest(pass.getBytes("UTF-8"));
-        return DatatypeConverter.printHexBinary(passHash);
-    }
-
-    /*------------------------------------------------------------------------*
-     * Setters and Getters
-     *------------------------------------------------------------------------*/
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
     protected void setAdminPassword(String adminPassword) {
         this.adminPassword = adminPassword;
     }
