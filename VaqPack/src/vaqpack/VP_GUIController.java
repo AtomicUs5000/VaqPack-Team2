@@ -110,7 +110,7 @@ public class VP_GUIController {
         VP_ErrorHandler eh = new VP_ErrorHandler(errorCode, exceptionString);
         VPErrorAlert errorAlert = new VPErrorAlert(AlertType.ERROR);
         //-------- Initialization End ------------\\
-
+        VP_Sounds.play(-2);
         errorAlert.setTitle("Error");
         errorAlert.setHeaderText(eh.getHeader());
         errorAlert.setContentText(eh.getContent());

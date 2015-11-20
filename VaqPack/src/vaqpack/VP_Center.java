@@ -507,6 +507,7 @@ public class VP_Center extends StackPane {
 
         @Override
         public void handle(MouseEvent event) {
+            VP_Sounds.play(0);
             resetLoginRegForms();
             showScreen(1);
         }
@@ -521,6 +522,7 @@ public class VP_Center extends StackPane {
 
         @Override
         public void handle(MouseEvent event) {
+            VP_Sounds.play(0);
             resetLoginRegForms();
             showScreen(2);
         }
@@ -539,6 +541,7 @@ public class VP_Center extends StackPane {
                 loginPass.getText()};
             int loginStatus;
             //-------- Initialization End ------------\\
+            VP_Sounds.play(0);
 
             accessInstructions.setText("Enter the access code that was emailed "
                     + "to you when you registered below.");
@@ -552,6 +555,7 @@ public class VP_Center extends StackPane {
                     loginError.setVisible(true);
                     loginEmail.showInvalid();
                     loginPass.showInvalid();
+                    VP_Sounds.play(-1);
                 } else if (loginStatus == -2) {
                     // user needs to enter registration code
                     loginEmail.setDisable(true);
@@ -594,6 +598,7 @@ public class VP_Center extends StackPane {
                 loginPass.getText(), regLoginAccess.getText()};
             //-------- Initialization End ------------\\
 
+            VP_Sounds.play(0);
             try {
                 controller.getDataM().resendAccess(cred);
                 accessInstructions.setText("A new access code has been emailed and "
@@ -623,6 +628,7 @@ public class VP_Center extends StackPane {
             boolean accessStatus;
             //-------- Initialization End ------------\\
 
+            VP_Sounds.play(0);
             try {
                 accessStatus = controller.getDataM().verifyRegAccess(cred);
                 if (accessStatus) {
@@ -634,6 +640,7 @@ public class VP_Center extends StackPane {
                     loginError.setVisible(true);
                     loginError.setManaged(true);
                     regLoginAccess.showInvalid();
+                    VP_Sounds.play(-1);
                 }
             } catch (SQLException ex) {
                 controller.errorAlert(1408, ex.getMessage());
@@ -652,6 +659,7 @@ public class VP_Center extends StackPane {
 
         @Override
         public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
             resetLoginRegForms();
         }
     }
@@ -670,6 +678,7 @@ public class VP_Center extends StackPane {
             int userStatus;
             //-------- Initialization End ------------\\
 
+            VP_Sounds.play(0);
             try {
                 userStatus = controller.getDataM().findUserForReset(resetEmail.getText().toLowerCase());
                 if (userStatus == 0) {
@@ -678,12 +687,14 @@ public class VP_Center extends StackPane {
                             + "If the email is correct, you need to register a new account.");
                     resetError.setVisible(true);
                     resetError.setManaged(true);
+                    VP_Sounds.play(-1);
                 } else if (userStatus == 1) {
                     resetEmail.showInvalid();
                     resetError.setText("The password for this email has recently been reset. "
                             + "Passwords may only be reset once every 24 hours.");
                     resetError.setVisible(true);
                     resetError.setManaged(true);
+                    VP_Sounds.play(-1);
                 } else {
                     submitResetBtn.setDisable(true);
                     resetEmail.setDisable(true);
@@ -725,18 +736,21 @@ public class VP_Center extends StackPane {
                 resetNewPassConfirm.getText(), resetCode.getText()};
             //-------- Initialization End ------------\\
 
+            VP_Sounds.play(0);
             if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 resetNewPass.showInvalid();
                 resetNewPassConfirm.showInvalid();
                 resetError.setText("The new password is not long enough.");
                 resetError.setVisible(true);
                 resetError.setManaged(true);
+                VP_Sounds.play(-1);
             } else if (!cred[1].equals(cred[2])) {
                 resetNewPass.showInvalid();
                 resetNewPassConfirm.showInvalid();
                 resetError.setText("The passwords do not match.");
                 resetError.setVisible(true);
                 resetError.setManaged(true);
+                VP_Sounds.play(-1);
             } else {
                 try {
                     resetStatus = controller.getDataM().resetPass(cred);
@@ -751,11 +765,13 @@ public class VP_Center extends StackPane {
                         resetError.setText("The code has expired. Cancel and start the reset process over again.");
                         resetError.setVisible(true);
                         resetError.setManaged(true);
+                        VP_Sounds.play(-1);
                     } else if (resetStatus == 0) {
                         resetCode.showInvalid();
                         resetError.setText("The code is incorrect. Please try again.");
                         resetError.setVisible(true);
                         resetError.setManaged(true);
+                        VP_Sounds.play(-1);
                     }
                 } catch (SQLException ex) {
                     controller.errorAlert(1409, ex.getMessage());
@@ -775,6 +791,7 @@ public class VP_Center extends StackPane {
 
         @Override
         public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
             resetResetPasswordForms();
             showScreen(0);
         }
@@ -794,18 +811,21 @@ public class VP_Center extends StackPane {
             int registerStatus;
             //-------- Initialization End ------------\\
 
+            VP_Sounds.play(0);
             if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 registerPass.showInvalid();
                 registerPassConfirm.showInvalid();
                 registerError.setText("The password is not long enough.");
                 registerError.setVisible(true);
                 registerError.setManaged(true);
+                VP_Sounds.play(-1);
             } else if (!cred[1].equals(cred[2])) {
                 registerPass.showInvalid();
                 registerPassConfirm.showInvalid();
                 registerError.setText("The passwords do not match.");
                 registerError.setVisible(true);
                 registerError.setManaged(true);
+                VP_Sounds.play(-1);
             } else {
                 try {
                     registerStatus = controller.getDataM().regUser(cred);
@@ -821,6 +841,7 @@ public class VP_Center extends StackPane {
                                 + "with a VaqPack user.");
                         registerError.setVisible(true);
                         registerError.setManaged(true);
+                        VP_Sounds.play(-1);
                     } else if (registerStatus == 0) {
                         registerEmail.showInvalid();
                         registerError.setText("This email is already associated "
@@ -831,6 +852,7 @@ public class VP_Center extends StackPane {
                                 + "there will be an option to resend one.");
                         registerError.setVisible(true);
                         registerError.setManaged(true);
+                        VP_Sounds.play(-1);
                     }
                 } catch (SQLException ex) {
                     controller.errorAlert(1412, ex.getMessage());
@@ -850,6 +872,7 @@ public class VP_Center extends StackPane {
 
         @Override
         public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
             resetRegisterForms();
             showScreen(0);
         }
