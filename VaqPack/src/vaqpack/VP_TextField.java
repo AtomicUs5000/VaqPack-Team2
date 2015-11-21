@@ -13,6 +13,7 @@
 package vaqpack;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
@@ -32,6 +33,7 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
         //-------- Initialization End ------------\\
         this.setMinSize(TextField.USE_PREF_SIZE, TextField.USE_PREF_SIZE);
         this.setMaxSize(TextField.USE_PREF_SIZE, TextField.USE_PREF_SIZE);
+        this.setAlignment(Pos.CENTER_LEFT);
         this.setStyle("-fx-control-inner-background: white");
         this.setPrefColumnCount(columns);
         this.assignEvents();
@@ -44,7 +46,7 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
      *---------------------------------------------------------------------*/
     @Override
     public void handle(KeyEvent event) {
-        this.setStyle("-fx-control-inner-background: white");
+        this.showValid();
         if (limit > 0) {
             String text = this.getText();
             if (text.length() > limit) {
@@ -62,6 +64,16 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
      *------------------------------------------------------------------------*/
     protected void showInvalid() {
         this.setStyle("-fx-control-inner-background: rgb(255, 210, 210);");
+    }
+    
+    /*------------------------------------------------------------------------*
+     * showValid()
+     * - Removies the red tint when the caller deems it as valid.
+     * - No Paramters
+     * - No Return
+     *------------------------------------------------------------------------*/
+    protected void showValid() {
+        this.setStyle("-fx-control-inner-background: white");
     }
 
     /*------------------------------------------------------------------------*

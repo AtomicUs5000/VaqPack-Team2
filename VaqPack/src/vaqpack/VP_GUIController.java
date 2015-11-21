@@ -21,6 +21,8 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -60,6 +62,9 @@ public class VP_GUIController {
             sceneWidth,
             sceneHeight;
     private VP_User currentUser;
+    private final Alert warnLogOut;
+    private final Timer timer;
+    private int sessionSeconds;
 
     /*------------------------------------------------------------------------*
      * VP_GUIController()
@@ -82,6 +87,9 @@ public class VP_GUIController {
         center = new VP_Center(this);
         footer = new VP_Footer();
         primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
+        sessionSeconds = 300;
+        timer = new java.util.Timer();
+        warnLogOut = new Alert(AlertType.WARNING);
         title = "VaqPack";
         //-------- Initialization End ------------\\
 
@@ -90,9 +98,14 @@ public class VP_GUIController {
         mainLayout.getChildren().get(0).setVisible(true);
         mainLayout.setAlignment(Pos.TOP_LEFT);
         primaryScene.getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
+        primaryScene.setOnMouseMoved(new UpdateActivity());
+        primaryScene.setOnKeyTyped(new UpdateActivity());
         primaryStage.setTitle(title);
         primaryStage.setScene(primaryScene);
         primaryStage.setOnCloseRequest(new ClosingSequence());
+        warnLogOut.setContentText("You will be logged out for inactivity in 30 seconds.");
+        warnLogOut.getDialogPane().setOnMouseMoved(new UpdateActivity());
+        warnLogOut.getDialogPane().setOnKeyTyped(new UpdateActivity());
         load();
     }
 
@@ -423,9 +436,27 @@ public class VP_GUIController {
             if (currentUser.getAccessLevel() > 0) {
                 header.getMenuBar().getMenus().add(header.getAdminMenu());
             }
-            // add code to begin a timer that resets with activity. If a certain
-            // amount of time goes by with no activity, automatically log out
-            // the user.
+            sessionSeconds = 300;
+            timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                 Platform.runLater(() -> {
+                     sessionSeconds -= 1;
+                     if (sessionSeconds == 30) {
+                         warnLogOut.show();
+                     }
+                     if (sessionSeconds < 0) {
+                         sessionSeconds = 0;
+                         if (currentUser != null) {
+                             setCurrentUser(null);
+                             if (warnLogOut.isShowing())
+                                 warnLogOut.close();
+                             this.cancel();
+                         }
+                     }
+                     System.out.println ("remaining time = " + sessionSeconds);
+                 });
+            }}, 0, 1000);
         }
     }
 
@@ -749,6 +780,15 @@ public class VP_GUIController {
             super(alertType);
             this.getDialogPane().getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
             this.getDialogPane().getStyleClass().add("errorAlert");
+        }
+    }
+    
+    private class UpdateActivity implements EventHandler {
+        @Override
+        public void handle(Event event) {
+            sessionSeconds = 300;
+            if (warnLogOut.isShowing())
+                warnLogOut.close();
         }
     }
 
