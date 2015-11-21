@@ -27,7 +27,7 @@ public class VP_DivisionLine extends HBox {
     public VP_DivisionLine() {
         this.setAlignment(Pos.CENTER_LEFT);
         this.setSpacing(20);
-        this.setPadding(new Insets(0, 0, 0, 20));
+        this.setPadding(new Insets(4, 0, 4, 20));
     }
     
     /*------------------------------------------------------------------------*
@@ -40,7 +40,7 @@ public class VP_DivisionLine extends HBox {
         this.setAlignment(Pos.CENTER_LEFT);
         this.setSpacing(20);
         this.getChildren().addAll(nodes);
-        this.setPadding(new Insets(0, 0, 0, 20));
+        this.setPadding(new Insets(4, 0, 4, 20));
     }
     
     /*------------------------------------------------------------------------*
@@ -64,4 +64,11 @@ public class VP_DivisionLine extends HBox {
         this.setVisible(true);
         this.setManaged(true);
     }
+    
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
 }

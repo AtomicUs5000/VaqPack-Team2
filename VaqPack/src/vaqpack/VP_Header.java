@@ -121,7 +121,7 @@ public class VP_Header extends VBox {
         public void handle(Event event) {
             // have to insert code here to verify logout if things have not been saved
             // assuming nothing to save for now...
-            controller.setCurrentUser(null);
+            controller.logoutUser();
         }
     }
     

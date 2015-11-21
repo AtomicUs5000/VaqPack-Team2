@@ -273,7 +273,7 @@ public class VP_ErrorHandler {
             // ID 2200 Originates from VP_CoverLetter
             // ID 2300 Originates from VP_Resume
             // ID 2400 Originates from VP_User
-            // ID 2500 Originates from VP_Template
+            // ID 2500 Originates from VP_Theme
             // ID 2600 Originates from VP_Contact
             // ID 2700 Originates from VP_Textfield
             // ID 2800 Originates from VP_PasswordField

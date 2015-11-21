@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="VaqPack.jar" size="1809094" download="eager" />
+    <jar href="VaqPack.jar" size="1822019" download="eager" />
     <jar href="lib\javax.mail.jar" size="582024" download="eager" />
     <jar href="lib\mysql-connector-java-5.1.37-bin.jar" size="985603" download="eager" />
   </resources>

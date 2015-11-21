@@ -49,9 +49,14 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
         this.showValid();
         if (limit > 0) {
             String text = this.getText();
-            if (text.length() > limit) {
-                this.setText(text.substring(0, limit));
-                this.positionCaret(limit);
+            try {
+                if (text.length() > limit) {
+                    this.setText(text.substring(0, limit));
+                    this.positionCaret(limit);
+                }
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }
