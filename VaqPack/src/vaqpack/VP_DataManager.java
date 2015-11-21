@@ -294,7 +294,10 @@ public class VP_DataManager {
         cred[1] = hashPassword(cred[1]);
         loginStatus = dbManager.attemptUserLogin(cred);
         if (loginStatus >= 0) {
-            controller.setCurrentUser(new VP_User(cred[0], loginStatus));
+            
+            controller.getCurrentUser().getEmail().setValue(cred[0]);
+            controller.getCurrentUser().setAccessLevel(loginStatus);
+            controller.newUserSet();
         }
         return loginStatus;
     }
@@ -449,6 +452,11 @@ public class VP_DataManager {
             return false;
         }
     }
+    
+    protected void saveUserData() {
+        // UNDER CONSTRUCTION
+        System.out.println("saveUserData called, needs to be implememnted");
+    } 
 
     /*------------------------------------------------------------------------*
      * generatAccessCode()

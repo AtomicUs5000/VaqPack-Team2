@@ -21,20 +21,20 @@ import javafx.scene.layout.Priority;
 
 public class VP_Footer extends HBox {
 
+    private final VP_GUIController controller;
     private final Pane footerLogo;
     private final Label footerCaption;
-    private final Label userLoggedInLabel;
 
     /*------------------------------------------------------------------------*
      * VP_Footer()
      * - Constructor. Adds empty panes for the footer information
      * - No parameters.
      *------------------------------------------------------------------------*/
-    protected VP_Footer() {
+    protected VP_Footer(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
+        this.controller = controller;
         footerLogo = new Pane();
         footerCaption = new Label();
-        userLoggedInLabel = new Label();
         //-------- Initialization End ------------\\
 
         this.setId("footer");
@@ -51,6 +51,7 @@ public class VP_Footer extends HBox {
     protected void build() {
         //-------- Initialization Start ----------\\
         HBox leftFooterBox = new HBox();
+        Label userLoggedInLabel = new Label();
         //-------- Initialization End ------------\\
         
         setAlignment(Pos.CENTER_RIGHT);
@@ -65,8 +66,9 @@ public class VP_Footer extends HBox {
         leftFooterBox.setFillHeight(true);
         HBox.setHgrow(leftFooterBox, Priority.ALWAYS);
         userLoggedInLabel.setId("footerUser");
-        leftFooterBox.getChildren().addAll(userLoggedInLabel);
         userLoggedInLabel.setAlignment(Pos.CENTER_LEFT);
+        userLoggedInLabel.textProperty().bind(controller.getCurrentUser().getEmail());
+        leftFooterBox.getChildren().addAll(userLoggedInLabel);
         getChildren().addAll(leftFooterBox, footerLogo, footerCaption);
     }
 
@@ -76,8 +78,4 @@ public class VP_Footer extends HBox {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
-
-    protected Label getUserLoggedInLabel() {
-        return userLoggedInLabel;
-    }
 }

@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------*
- * VP_Template.java
- * - Contains the default templates and stores custom templates
+ * VP_Theme.java
+ * - Contains the default theme and stores custom themes
  * Authors:
  * - Team-02
  * -- William Dewald (Project Manager)
@@ -12,13 +12,13 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-public class VP_Template {
+public class VP_Theme {
 
     /*------------------------------------------------------------------------*
-     * VP_Template()
+     * VP_Theme()
      * - Constructor.
      *------------------------------------------------------------------------*/
-    protected VP_Template() {
+    protected VP_Theme() {
 
     }
 

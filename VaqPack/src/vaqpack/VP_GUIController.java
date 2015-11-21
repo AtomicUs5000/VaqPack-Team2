@@ -21,6 +21,8 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -57,9 +59,13 @@ public class VP_GUIController {
     private ArrayList<String> guiTaskLabels,
             dbTaskLabels;
     private final int USER_PASSWORD_MINIMUM,
+            USER_INACTIVITY_LIMIT,
             sceneWidth,
             sceneHeight;
-    private VP_User currentUser;
+    private final VP_User currentUser;
+    private final Alert warnLogOut;
+    private Timer timer;
+    private int sessionSeconds;
 
     /*------------------------------------------------------------------------*
      * VP_GUIController()
@@ -72,6 +78,7 @@ public class VP_GUIController {
     protected VP_GUIController(Stage primaryStage) {
         //-------- Initialization Start ----------\\
         USER_PASSWORD_MINIMUM = 12;
+        USER_INACTIVITY_LIMIT = 300;
         sceneWidth = 1000;
         sceneHeight = 600;
         mainLayout = new StackPane();
@@ -80,8 +87,12 @@ public class VP_GUIController {
         header = new VP_Header(this, primaryStage);
         leftTree = new VP_Tree();
         center = new VP_Center(this);
-        footer = new VP_Footer();
+        footer = new VP_Footer(this);
         primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
+        sessionSeconds = USER_INACTIVITY_LIMIT;
+        timer = new java.util.Timer();
+        warnLogOut = new Alert(AlertType.WARNING);
+        currentUser = new VP_User();
         title = "VaqPack";
         //-------- Initialization End ------------\\
 
@@ -90,9 +101,14 @@ public class VP_GUIController {
         mainLayout.getChildren().get(0).setVisible(true);
         mainLayout.setAlignment(Pos.TOP_LEFT);
         primaryScene.getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
+        primaryScene.setOnMouseMoved(new UpdateActivity());
+        primaryScene.setOnKeyTyped(new UpdateActivity());
         primaryStage.setTitle(title);
         primaryStage.setScene(primaryScene);
         primaryStage.setOnCloseRequest(new ClosingSequence());
+        warnLogOut.setContentText("You will be logged out for inactivity in 30 seconds.");
+        warnLogOut.getDialogPane().setOnMouseMoved(new UpdateActivity());
+        warnLogOut.getDialogPane().setOnKeyTyped(new UpdateActivity());
         load();
     }
 
@@ -117,6 +133,68 @@ public class VP_GUIController {
         errorAlert.showAndWait();
         if (eh.isCritical()) {
             System.exit(-1);
+        }
+    }
+    
+    /*------------------------------------------------------------------------*
+     * logoutUser()
+     * - Calls logout() for the user to clear bound values and then calls
+     *   newUserSet() which will detect that there is no user and will adjust
+     *   the GUI accordingly.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void logoutUser() {
+        timer.cancel();
+        timer.purge();
+        currentUser.logout();
+        newUserSet();
+    }
+    
+    /*------------------------------------------------------------------------*
+     * newUserSet()
+     * - Makes changes throughout the GUI, triggered when the current user
+     *   has changed. If the user is logged in, the inactivity timer is set.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void newUserSet() {
+        if (header.getMenuBar().getMenus().size() > 3) {
+            header.getMenuBar().getMenus().remove(3);
+        }
+        if (currentUser.getAccessLevel() == -1) {
+            header.getAdminMenu().setVisible(false);
+            header.getUserLogout().setVisible(false);
+            center.showScreen(0);
+        } else {
+            header.getUserLogout().setVisible(true);
+            center.showScreen(3);
+            if (currentUser.getAccessLevel() > 0) {
+                header.getMenuBar().getMenus().add(header.getAdminMenu());
+            }
+            sessionSeconds = USER_INACTIVITY_LIMIT;
+            timer = new java.util.Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        sessionSeconds -= 1;
+                        if (sessionSeconds == 30) {
+                            warnLogOut.show();
+                        }
+                        if (sessionSeconds < 0) {
+                            sessionSeconds = 0;
+                            if (currentUser.getAccessLevel() != -1) {
+                                logoutUser();
+                                if (warnLogOut.isShowing()) {
+                                    warnLogOut.close();
+                                }
+                                this.cancel();
+                            }
+                        }
+                    });
+                }
+            }, 0, 1000);
         }
     }
 
@@ -399,35 +477,6 @@ public class VP_GUIController {
         mainLayout.getChildren().get(0).setVisible(false);
         mainLayout.getChildren().get(1).setVisible(true);
     }
-    
-    /*------------------------------------------------------------------------*
-     * newUserSet()
-     * - Makes changes throughout the GUI, triggered when the current user
-     *   has changed.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    private void newUserSet() {
-        if (header.getMenuBar().getMenus().size() > 3)
-            header.getMenuBar().getMenus().remove(3);
-        if (currentUser == null) {
-            footer.getUserLoggedInLabel().setText("");
-            header.getAdminMenu().setVisible(false);
-            header.getUserLogout().setVisible(false);
-            center.showScreen(0);
-        }
-        else {
-            footer.getUserLoggedInLabel().setText(currentUser.getEmail());
-            header.getUserLogout().setVisible(true);
-            center.showScreen(3);
-            if (currentUser.getAccessLevel() > 0) {
-                header.getMenuBar().getMenus().add(header.getAdminMenu());
-            }
-            // add code to begin a timer that resets with activity. If a certain
-            // amount of time goes by with no activity, automatically log out
-            // the user.
-        }
-    }
 
     /*##########################################################################
      * SUBCLASSES
@@ -449,6 +498,7 @@ public class VP_GUIController {
             // let the alert return a value
             // exitCancelled = blahblahblah
             if (!exitCancelled) {
+                logoutUser();
                 System.exit(0);
             }
         }
@@ -752,6 +802,21 @@ public class VP_GUIController {
         }
     }
 
+    /*------------------------------------------------------------------------*
+     * Subclass UpdateActivity
+     * - Resets the inactivity timer. If a warning is showing, it closes.
+     *------------------------------------------------------------------------*/
+    private class UpdateActivity implements EventHandler {
+
+        @Override
+        public void handle(Event event) {
+            sessionSeconds = USER_INACTIVITY_LIMIT;
+            if (warnLogOut.isShowing()) {
+                warnLogOut.close();
+            }
+        }
+    }
+
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
@@ -765,10 +830,5 @@ public class VP_GUIController {
 
     protected VP_User getCurrentUser() {
         return currentUser;
-    }
-
-    protected void setCurrentUser(VP_User currentUser) {
-        this.currentUser = currentUser;
-        newUserSet();
     }
 }

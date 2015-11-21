@@ -13,6 +13,7 @@
 package vaqpack;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.input.KeyEvent;
@@ -42,6 +43,7 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
 
         this.setMinSize(PasswordField.USE_PREF_SIZE, PasswordField.USE_PREF_SIZE);
         this.setMaxSize(PasswordField.USE_PREF_SIZE, PasswordField.USE_PREF_SIZE);
+        this.setAlignment(Pos.CENTER_LEFT);
         this.setStyle("-fx-control-inner-background: white");
         this.setPrefColumnCount(columns);
         this.assignEvents();
@@ -66,7 +68,7 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
                 hasSpecial = false;
         //-------- Initialization End ------------\\
 
-        this.setStyle("-fx-control-inner-background: white");
+        this.showValid();
         if (limit > 0) {
             if (length > limit) {
                 text = text.substring(0, limit);
@@ -141,6 +143,16 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
      *------------------------------------------------------------------------*/
     protected void showInvalid() {
         this.setStyle("-fx-control-inner-background: rgb(255, 210, 210);");
+    }
+    
+    /*------------------------------------------------------------------------*
+     * showValid()
+     * - Removies the red tint when the caller deems it as valid.
+     * - No Paramters
+     * - No Return
+     *------------------------------------------------------------------------*/
+    protected void showValid() {
+        this.setStyle("-fx-control-inner-background: white");
     }
 
     /*------------------------------------------------------------------------*

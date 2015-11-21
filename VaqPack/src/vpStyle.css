@@ -317,15 +317,15 @@
 }
 .genButton:focused {
     -fx-background-color:
-        linear-gradient(rgb(200, 242, 230) 0%, rgb(0, 135, 81) 100%),
-        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(255, 255, 255, 0.1) 45%, rgba(0, 135, 81, 0.5) 50%);
+        linear-gradient(rgb(200, 242, 230) 0%, rgb(0, 38, 73) 100%),
+        radial-gradient(focus-distance 40% ,center 30% 30% , radius 100% , rgba(0, 135, 81, 0.1) 45%, rgba(0, 135, 81, 0.5) 50%);
     -fx-background-radius: 10, 10, 10, 10;
     -fx-border-radius: 8, 8, 8, 8;
     -fx-background-insets: 0, 1;
-    -fx-text-fill: rgb(0, 38, 73);
+    -fx-text-fill: rgb(255, 255, 255);
     -fx-font-weight: bold;
     -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.3), 10, 0.01, 0, 4);
-    -fx-border-color: rgb(0, 38, 73);
+    -fx-border-color: rgb(0, 135, 81);
 }
 .genButton:focused:hover {
     -fx-background-color:
@@ -337,7 +337,7 @@
     -fx-text-fill: rgb(0, 135, 81);
     -fx-font-weight: bold;
     -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.3), 10, 0.01, 0, 4);
-    -fx-border-color: rgb(0, 38, 73);
+    -fx-border-color: rgb(0, 135, 81);
     -fx-cursor: hand;
 }
 .dot {
@@ -382,5 +382,32 @@
 }
 .paragraph {
     -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-size: 14px;
+}
+.notStarted {
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-style: italic;
+    -fx-background-image: url("notStarted.png");
+    -fx-background-size: 154, 24;
+    -fx-background-position: left center;
+    -fx-background-repeat: no-repeat;
+    -fx-font-size: 14px;
+}
+.inProgress {
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-style: italic;
+    -fx-background-image: url("inProgress.png");
+    -fx-background-size: 154, 24;
+    -fx-background-position: left center;
+    -fx-background-repeat: no-repeat;
+    -fx-font-size: 14px;
+}
+.complete {
+    -fx-text-fill: rgb(0, 38, 73);
+    -fx-font-style: italic;
+    -fx-background-image: url("complete.png");
+    -fx-background-size: 154, 24;
+    -fx-background-position: left center;
+    -fx-background-repeat: no-repeat;
     -fx-font-size: 14px;
 }

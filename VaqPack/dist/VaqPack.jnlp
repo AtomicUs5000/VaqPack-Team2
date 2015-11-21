@@ -8,9 +8,15 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+<<<<<<< HEAD
     <jar href="VaqPack.jar" size="1803622" download="eager" />
     <jar href="lib/javax.mail.jar" size="582024" download="eager" />
     <jar href="lib/mysql-connector-java-5.1.37-bin.jar" size="985603" download="eager" />
+=======
+    <jar href="VaqPack.jar" size="1822019" download="eager" />
+    <jar href="lib\javax.mail.jar" size="582024" download="eager" />
+    <jar href="lib\mysql-connector-java-5.1.37-bin.jar" size="985603" download="eager" />
+>>>>>>> a692fef1de13930a4dd0124c25bfd4b38bc1bd98
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="VaqPack" >
     <param name="requiredFXVersion" value="8.0+"/>

@@ -14,15 +14,16 @@ package vaqpack;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
+import java.sql.SQLException; 
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -34,27 +35,41 @@ public class VP_Center extends StackPane {
             regLoginAccess,
             resetCode,
             registerEmail;
-    private final Label loginError,
-            resetError,
-            accessInstructions,
-            resetInstructions1,
-            resetInstructions2,
-            resetPassStrengthLabel,
+    private final Label resetPassStrengthLabel,
             registerPassStrengthLabel,
-            registerError,
-            registerInstructions;
+            infoProgress,
+            resumeProgress,
+            bcardProgress,
+            covletProgress;
     private final VP_PasswordField loginPass,
             resetNewPass,
             resetNewPassConfirm,
             registerPass,
             registerPassConfirm;
-    private final HBox accessLine,
+    private final VP_DivisionLine loginErrorLine,
+            accessInstructionsLine,
             loginButtonLine,
+            accessLine,
+            resetErrorLine,
+            resetInstructions1Line,
+            resetInstructions2Line,
             resetNewPassLine,
             resetNewPassConfirmLine,
             resetCodeLine,
-            resetButLine;
+            resetButLine,
+            resetPassStrengthLine,
+            registerErrorLine,
+            personalInfoErrorLine;
+    private final VP_Paragraph loginError,
+            accessInstructions,
+            resetError,
+            resetInstructions1,
+            resetInstructions2,
+            registerError,
+            overviewInfo,
+            personalInfoError;
     private final VP_Button submitResetBtn;
+    private final ArrayList<VP_Button> wizardMainButtons;
 
     /*------------------------------------------------------------------------*
      * VP_Center()
@@ -65,21 +80,34 @@ public class VP_Center extends StackPane {
     protected VP_Center(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
-        loginError = new Label();
-        resetError = new Label();
-        accessInstructions = new Label();
-        resetInstructions1 = new Label();
-        resetInstructions2 = new Label();
+        loginErrorLine = new VP_DivisionLine();
+        loginButtonLine = new VP_DivisionLine();
+        accessInstructionsLine = new VP_DivisionLine();
+        resetErrorLine = new VP_DivisionLine();
+        resetInstructions1Line = new VP_DivisionLine();
+        resetInstructions2Line = new VP_DivisionLine();
+        resetNewPassLine = new VP_DivisionLine();
+        resetNewPassConfirmLine = new VP_DivisionLine();
+        resetCodeLine = new VP_DivisionLine();
+        accessLine = new VP_DivisionLine();
+        resetButLine = new VP_DivisionLine();
+        resetPassStrengthLine = new VP_DivisionLine();
+        registerErrorLine = new VP_DivisionLine();
+        personalInfoErrorLine = new VP_DivisionLine();
+        loginError = new VP_Paragraph("", true);
+        resetError = new VP_Paragraph("", true);
+        registerError = new VP_Paragraph("", true);
+        personalInfoError = new VP_Paragraph("", true);
+        accessInstructions = new VP_Paragraph();
+        resetInstructions1 = new VP_Paragraph();
+        resetInstructions2 = new VP_Paragraph();
+        overviewInfo = new VP_Paragraph();
         resetPassStrengthLabel = new Label();
         registerPassStrengthLabel = new Label();
-        registerError = new Label();
-        registerInstructions = new Label();
-        accessLine = new HBox();
-        loginButtonLine = new HBox();
-        resetNewPassLine = new HBox();
-        resetNewPassConfirmLine = new HBox();
-        resetCodeLine = new HBox();
-        resetButLine = new HBox();
+        infoProgress = new Label();
+        resumeProgress = new Label();
+        bcardProgress = new Label();
+        covletProgress = new Label();
         submitResetBtn = new VP_Button("Submit", new SubmitResetAction());
         regLoginAccess = new VP_TextField(16, 16);
         resetCode = new VP_TextField(16, 16);
@@ -93,6 +121,7 @@ public class VP_Center extends StackPane {
                 controller.getUSER_PASSWORD_MINIMUM(), registerPassStrengthLabel);
         resetNewPassConfirm = new VP_PasswordField(32, 32, 0, null);
         registerPassConfirm = new VP_PasswordField(32, 32, 0, null);
+        wizardMainButtons = new ArrayList();
         //-------- Initialization End ------------\\
 
         this.setId("center");
@@ -114,7 +143,8 @@ public class VP_Center extends StackPane {
                 buildLoginScreen(),
                 buildResetPasswordScreen(),
                 buildRegistrationScreen(),
-                buildTestScreen());
+                buildOverviewScreen(),
+                buildPersonalInfoScreen());
         showScreen(0);
     }
 
@@ -128,6 +158,7 @@ public class VP_Center extends StackPane {
         for (int i = 0; i < getChildren().size(); i++) {
             getChildren().get(i).setVisible(false);
         }
+        updateOverview();
         getChildren().get(screenNumber).setVisible(true);
     }
 
@@ -139,74 +170,36 @@ public class VP_Center extends StackPane {
      * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
     private ScrollPane buildLoginScreen() {
+        //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
-        Label loginLabel = new Label("LOGIN"),
-                loginEmailLabel = new Label("email:"),
-                loginPassLabel = new Label("password:"),
-                passForgotLabel = new Label("forgot your password?"),
-                needAccountLabel = new Label("need an account?"),
-                regCodeLabel = new Label("code:");
+        VP_PageDivision loginBox = new VP_PageDivision("LOGIN");
+        VP_FieldLabel loginEmailLabel = new VP_FieldLabel("email:", 60),
+                loginPassLabel = new VP_FieldLabel("password:", 60),
+                regCodeLabel = new VP_FieldLabel("code:", 60);
+        Label passForgotLabel = new Label("forgot your password?"),
+                needAccountLabel = new Label("need an account?");
         VP_Button loginBtn = new VP_Button("Login", new LoginAction()),
                 enterAccessBtn = new VP_Button("Submit", new SubmitAccessAction()),
                 accessCancelBtn = new VP_Button("Cancel", new CancelAccessAction()),
                 accessResendBtn = new VP_Button("Resend Code", new ResendAccessAction());
-        VBox loginBox = new VBox();
-        loginBox.setSpacing(10);
-        loginBox.getStyleClass().add("formDivision");
-        loginBox.setPadding(new Insets(10, 10, 10, 10));
-        loginLabel.getStyleClass().add("pageHeader");
-        HBox emailLine = new HBox();
-        emailLine.setAlignment(Pos.CENTER_LEFT);
-        emailLine.setSpacing(10);
-        loginEmailLabel.getStyleClass().add("inputLabel");
-        loginEmailLabel.setPrefWidth(80);
-        loginEmailLabel.setAlignment(Pos.CENTER_RIGHT);
-        loginEmailLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        loginEmail.setAlignment(Pos.CENTER_LEFT);
-        emailLine.getChildren().addAll(loginEmailLabel, loginEmail);
-        HBox passLine = new HBox();
-        passLine.setAlignment(Pos.CENTER_LEFT);
-        passLine.setSpacing(10);
-        loginPassLabel.getStyleClass().add("inputLabel");
-        loginPassLabel.setPrefWidth(80);
-        loginPassLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        loginPassLabel.setAlignment(Pos.CENTER_RIGHT);
-        loginPass.setAlignment(Pos.CENTER_LEFT);
-        passLine.getChildren().addAll(loginPassLabel, loginPass);
-        loginError.setWrapText(true);
-        loginError.setPadding(new Insets(10, 50, 10, 50));
-        loginError.getStyleClass().add("errorLabel");
-        loginError.setAlignment(Pos.CENTER);
-        loginError.setVisible(false);
-        loginError.setManaged(false);
-        loginButtonLine.setPadding(new Insets(0, 0, 0, 32));
-        loginButtonLine.setAlignment(Pos.CENTER_LEFT);
-        loginButtonLine.setSpacing(50);
+        VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{loginEmailLabel, loginEmail}),
+                passLine = new VP_DivisionLine(new Node[]{loginPassLabel, loginPass});
+        //-------- Initialization End ------------\\
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        loginErrorLine.getChildren().addAll(loginError);
         passForgotLabel.getStyleClass().add("clickable");
         passForgotLabel.setOnMouseClicked(new ForgotPassAction());
         needAccountLabel.getStyleClass().add("clickable");
         needAccountLabel.setOnMouseClicked(new NeedAccountAction());
         loginButtonLine.getChildren().addAll(loginBtn, needAccountLabel, passForgotLabel);
-        accessInstructions.setText("Enter the access code that was "
-                + "emailed to you when you registered below.");
-        accessInstructions.setWrapText(true);
-        accessInstructions.setPadding(new Insets(10, 50, 10, 50));
-        accessInstructions.getStyleClass().add("paragraph");
-        accessInstructions.setAlignment(Pos.CENTER);
-        accessInstructions.setVisible(false);
-        accessInstructions.setManaged(false);
-        accessLine.setAlignment(Pos.CENTER_LEFT);
-        accessLine.setSpacing(20);
-        regCodeLabel.getStyleClass().add("inputLabel");
-        regCodeLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+        accessInstructionsLine.getChildren().addAll(accessInstructions);
         accessLine.getChildren().addAll(regCodeLabel, regLoginAccess,
                 enterAccessBtn, accessCancelBtn, accessResendBtn);
-        accessLine.setVisible(false);
-        accessLine.setManaged(false);
-        loginBox.getChildren().addAll(loginLabel, emailLine, passLine, loginError,
-                loginButtonLine, accessInstructions, accessLine);
+        loginBox.getChildren().addAll(emailLine, passLine, loginErrorLine,
+                loginButtonLine, accessInstructionsLine, accessLine);
+        resetLoginRegForms();
         screenContent.getChildren().addAll(loginBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -223,93 +216,37 @@ public class VP_Center extends StackPane {
      * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
     private ScrollPane buildResetPasswordScreen() {
+        //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox(),
-                forgotPassBox = new VBox();
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
-        Label resetLabel = new Label("RESET PASSWORD"),
-                resetEmailLabel = new Label("email:"),
-                resetNewPassLabel = new Label("new password:"),
-                resetNewPassConfirmLabel = new Label("confirm\nnew password:"),
-                resetCodeLabel = new Label("code:");
+        VBox screenContent = new VBox();
+        VP_PageDivision forgotPassBox = new VP_PageDivision("RESET PASSWORD");
+        VP_FieldLabel resetEmailLabel = new VP_FieldLabel("email:", 100),
+                resetNewPassLabel = new VP_FieldLabel("new password:", 100),
+                resetNewPassConfirmLabel = new VP_FieldLabel("confirm\nnew password:", 100),
+                resetCodeLabel = new VP_FieldLabel("code:", 100);
         VP_Button cancelResetBtn1 = new VP_Button("Cancel", new CancelResetAction()),
                 submitResetPassCodeBtn = new VP_Button("Submit", new SubmitResetPassCode()),
                 cancelResetBtn2 = new VP_Button("Cancel", new CancelResetAction());
-        forgotPassBox.getStyleClass().add("formDivision");
-        forgotPassBox.setSpacing(10);
-        forgotPassBox.setPadding(new Insets(10, 10, 10, 10));
-        resetLabel.getStyleClass().add("pageHeader");
-        resetInstructions1.setText("Enter your email and submit. "
-                + "An access code will be sent to your email.");
-        resetInstructions1.setWrapText(true);
-        resetInstructions1.setPadding(new Insets(10, 50, 10, 50));
-        resetInstructions1.getStyleClass().add("paragraph");
-        resetInstructions1.setAlignment(Pos.CENTER);
-        HBox emailLine = new HBox();
-        emailLine.setAlignment(Pos.CENTER_LEFT);
-        emailLine.setSpacing(10);
-        resetEmailLabel.getStyleClass().add("inputLabel");
-        resetEmailLabel.setPrefWidth(120);
-        resetEmailLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        resetEmailLabel.setAlignment(Pos.CENTER_RIGHT);
-        emailLine.getChildren().addAll(resetEmailLabel, resetEmail,
-                submitResetBtn, cancelResetBtn1);
-        resetError.setWrapText(true);
-        resetError.setPadding(new Insets(10, 50, 10, 50));
-        resetError.getStyleClass().add("errorLabel");
-        resetError.setAlignment(Pos.CENTER);
-        resetError.setVisible(false);
-        resetError.setManaged(false);
-        resetInstructions2.setText("Enter your new password, confirm it, "
-                + "and enter the access code that was sent to you.");
-        resetInstructions2.setWrapText(true);
-        resetInstructions2.setPadding(new Insets(10, 50, 10, 50));
-        resetInstructions2.getStyleClass().add("paragraph");
-        resetInstructions2.setAlignment(Pos.CENTER);
-        resetInstructions2.setVisible(false);
-        resetInstructions2.setManaged(false);
-        resetNewPassLine.setAlignment(Pos.CENTER_LEFT);
-        resetNewPassLine.setSpacing(10);
-        resetNewPassLabel.getStyleClass().add("inputLabel");
-        resetNewPassLabel.setPrefWidth(120);
-        resetNewPassLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        resetNewPassLabel.setAlignment(Pos.CENTER_RIGHT);
+        VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{resetEmailLabel, resetEmail,
+                submitResetBtn, cancelResetBtn1});
+        //-------- Initialization End ------------\\
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        resetInstructions1Line.getChildren().addAll(resetInstructions1);
+        resetErrorLine.getChildren().addAll(resetError);
+        resetInstructions2Line.getChildren().addAll(resetInstructions2);
         resetNewPassLine.getChildren().addAll(resetNewPassLabel, resetNewPass);
-        resetNewPassLine.setVisible(false);
-        resetNewPassLine.setManaged(false);
-        resetNewPassConfirmLine.setAlignment(Pos.CENTER_LEFT);
-        resetNewPassConfirmLine.setSpacing(10);
-        resetPassStrengthLabel.setAlignment(Pos.CENTER_LEFT);
         resetPassStrengthLabel.getStyleClass().add("inputLabel");
-        resetPassStrengthLabel.setVisible(false);
-        resetPassStrengthLabel.setManaged(false);
-        resetNewPassConfirmLabel.getStyleClass().add("inputLabel");
-        resetNewPassConfirmLabel.setPrefWidth(120);
-        resetNewPassConfirmLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        resetNewPassConfirmLabel.setAlignment(Pos.CENTER_RIGHT);
+        resetPassStrengthLine.getChildren().addAll(resetPassStrengthLabel);
         resetNewPassConfirmLine.getChildren().addAll(resetNewPassConfirmLabel,
                 resetNewPassConfirm);
-        resetNewPassConfirmLine.setVisible(false);
-        resetNewPassConfirmLine.setManaged(false);
-        resetCodeLine.setAlignment(Pos.CENTER_LEFT);
-        resetCodeLine.setSpacing(10);
-        resetCodeLabel.getStyleClass().add("inputLabel");
-        resetCodeLabel.setPrefWidth(120);
-        resetCodeLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        resetCodeLabel.setAlignment(Pos.CENTER_RIGHT);
         resetCodeLine.getChildren().addAll(resetCodeLabel, resetCode);
-        resetCodeLine.setVisible(false);
-        resetCodeLine.setManaged(false);
-        resetButLine.setPadding(new Insets(0, 0, 0, 32));
-        resetButLine.setAlignment(Pos.CENTER_LEFT);
-        resetButLine.setSpacing(100);
         resetButLine.getChildren().addAll(submitResetPassCodeBtn, cancelResetBtn2);
-        resetButLine.setVisible(false);
-        resetButLine.setManaged(false);
-        forgotPassBox.getChildren().addAll(resetLabel, resetInstructions1,
-                emailLine, resetError, resetInstructions2,
+        forgotPassBox.getChildren().addAll(resetInstructions1Line,
+                emailLine, resetErrorLine, resetInstructions2Line,
                 resetNewPassLine, resetPassStrengthLabel,
                 resetNewPassConfirmLine, resetCodeLine, resetButLine);
+        resetResetPasswordForms();
         screenContent.getChildren().addAll(forgotPassBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -326,74 +263,35 @@ public class VP_Center extends StackPane {
      * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
     private ScrollPane buildRegistrationScreen() {
+        //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
-        Label registerLabel = new Label("REGISTER NEW ACCOUNT"),
-                registerEmailLabel = new Label("email:"),
-                registerPassLabel = new Label("password:"),
-                registerPassConfirmLabel = new Label("confirm\npassword:");
+        VP_PageDivision registerBox = new VP_PageDivision("REGISTER NEW ACCOUNT");
+        VP_FieldLabel registerEmailLabel = new VP_FieldLabel ("email:", 100),
+                registerPassLabel = new VP_FieldLabel ("password:", 100),
+                registerPassConfirmLabel = new VP_FieldLabel ("confirm\npassword:", 100);
         VP_Button registerBtn = new VP_Button("Register", new RegisterSubmitAction()),
                 registerCancelBtn = new VP_Button("Cancel", new CancelRegisterAction());
-        VBox registerBox = new VBox();
-        registerBox.setSpacing(10);
-        registerBox.getStyleClass().add("formDivision");
-        registerBox.setPadding(new Insets(10, 10, 10, 10));
-        registerLabel.getStyleClass().add("pageHeader");
-        HBox emailLine = new HBox();
-        emailLine.setAlignment(Pos.CENTER_LEFT);
-        emailLine.setSpacing(10);
-        registerEmailLabel.getStyleClass().add("inputLabel");
-        registerEmailLabel.setPrefWidth(100);
-        registerEmailLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        registerEmailLabel.setAlignment(Pos.CENTER_RIGHT);
-        registerEmail.setAlignment(Pos.CENTER_LEFT);
-        emailLine.getChildren().addAll(registerEmailLabel, registerEmail);
-        HBox passLine = new HBox();
-        passLine.setAlignment(Pos.CENTER_LEFT);
-        passLine.setSpacing(10);
-        registerPassLabel.getStyleClass().add("inputLabel");
-        registerPassLabel.setPrefWidth(100);
-        registerPassLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        registerPassLabel.setAlignment(Pos.CENTER_RIGHT);
-        registerPass.setAlignment(Pos.CENTER_LEFT);
-        passLine.getChildren().addAll(registerPassLabel, registerPass);
-        registerPassStrengthLabel.setAlignment(Pos.CENTER_LEFT);
-        registerPassStrengthLabel.getStyleClass().add("inputLabel");
-        registerPassStrengthLabel.setPadding(new Insets(0, 50, 0, 50));
-        HBox registerConfirmLine = new HBox();
-        registerConfirmLine.setAlignment(Pos.CENTER_LEFT);
-        registerConfirmLine.setSpacing(10);
-        registerPassConfirmLabel.getStyleClass().add("inputLabel");
-        registerPassConfirmLabel.setPrefWidth(100);
-        registerPassConfirmLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-        registerPassConfirmLabel.setAlignment(Pos.CENTER_RIGHT);
-        registerConfirmLine.getChildren().addAll(registerPassConfirmLabel,
-                registerPassConfirm);
-        registerBox.getChildren().addAll(registerLabel, emailLine, passLine,
-                registerPassStrengthLabel, registerConfirmLine);
-        registerError.setWrapText(true);
-        registerError.setPadding(new Insets(10, 50, 10, 50));
-        registerError.getStyleClass().add("errorLabel");
-        registerError.setAlignment(Pos.CENTER);
-        registerError.setVisible(false);
-        registerError.setManaged(false);
-        registerInstructions.setWrapText(true);
-        registerInstructions.setPadding(new Insets(10, 50, 10, 50));
-        registerInstructions.getStyleClass().add("paragraph");
-        registerInstructions.setAlignment(Pos.CENTER);
-        registerInstructions.setText("Enter your email and password twice. When "
+        VP_Paragraph registerInstructions = new VP_Paragraph("Enter your email and password twice. When "
                 + "you submit, an email will be sent to you with a registration "
                 + "access code. Login with the email and password you provided "
                 + "and you will be prompted to enter in the access code. Access "
                 + "codes expire within one hour.");
-        HBox registerButtonLine = new HBox();
-        registerButtonLine.setPadding(new Insets(0, 0, 0, 32));
-        registerButtonLine.setAlignment(Pos.CENTER_LEFT);
-        registerButtonLine.setSpacing(50);
-        registerButtonLine.getChildren().addAll(registerBtn, registerCancelBtn);
-        registerBox.getChildren().addAll(registerError,
-                registerInstructions, registerButtonLine);
+        VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{registerEmailLabel, registerEmail}),
+                passLine = new VP_DivisionLine(new Node[]{registerPassLabel, registerPass}),
+                registerPassStrengthLine = new VP_DivisionLine(new Node[]{registerPassStrengthLabel}),
+                registerConfirmLine = new VP_DivisionLine(new Node[]{registerPassConfirmLabel, registerPassConfirm}),
+                registerInstructionsLine = new VP_DivisionLine(new Node[]{registerInstructions}),
+                registerButtonLine = new VP_DivisionLine(new Node[]{registerBtn, registerCancelBtn});
+        //-------- Initialization End ------------\\
+
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        registerPassStrengthLabel.getStyleClass().add("inputLabel");
+        registerErrorLine.getChildren().addAll(registerError);
+        registerBox.getChildren().addAll(emailLine, passLine,
+                registerPassStrengthLine, registerConfirmLine, registerErrorLine,
+                registerInstructionsLine, registerButtonLine);
+        resetRegisterForms();
         screenContent.getChildren().addAll(registerBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -401,18 +299,140 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-
+    
     /*------------------------------------------------------------------------*
-     * buildTestScreen()
-     * - TEMPORARY
-     * - Testing grounds
+     * buildOverviewScreen()
+     * - Builds the Overview screen which provides access to the main
+     *   functionality of the program and lists the completion status of some of 
+     *   these functions for the logged in user.
+     *   A.K.A Screen 3
+     * - No parameters.
+     * - No return.
      *------------------------------------------------------------------------*/
-    private ScrollPane buildTestScreen() {
+    private ScrollPane buildOverviewScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
+        VP_PageDivision overviewBox = new VP_PageDivision("OVERVIEW");
+        VP_Button updateInfoBtn = new VP_Button("Update Personal Information", new WizardMainAction(4)),
+                updateResumeBtn = new VP_Button("Update Your Resume", new WizardMainAction(5)),
+                updateBcardBtn = new VP_Button("Update Your Business Card", new WizardMainAction(6)),
+                updateCovLetBtn = new VP_Button("Update Your Cover Letters", new WizardMainAction(7)),
+                applyThemesBtn = new VP_Button("Apply Themes to Your Docs", new WizardMainAction(8)),
+                distributeBtn = new VP_Button("Distribute Your Docs", new WizardMainAction(9));
+        VP_DivisionLine step1Line = new VP_DivisionLine(new Node[]{updateInfoBtn, infoProgress}),
+                step2Line = new VP_DivisionLine(new Node[]{updateResumeBtn, resumeProgress}),
+                step3Line = new VP_DivisionLine(new Node[]{updateBcardBtn, bcardProgress}),
+                step4Line = new VP_DivisionLine(new Node[]{updateCovLetBtn, covletProgress}),
+                step5Line = new VP_DivisionLine(new Node[]{applyThemesBtn}),
+                step6Line = new VP_DivisionLine(new Node[]{distributeBtn});
         //-------- Initialization End ------------\\
+        
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        wizardMainButtons.add(updateInfoBtn);
+        wizardMainButtons.add(updateResumeBtn);
+        wizardMainButtons.add(updateBcardBtn);
+        wizardMainButtons.add(updateCovLetBtn);
+        wizardMainButtons.add(applyThemesBtn);
+        wizardMainButtons.add(distributeBtn);
+        for (int i = 0; i < wizardMainButtons.size(); i++) {
+            wizardMainButtons.get(i).setPrefWidth(200);
+        }
+        infoProgress.getStyleClass().add("notStarted");
+        infoProgress.setMinWidth(250);
+        infoProgress.setAlignment(Pos.CENTER_RIGHT);
+        resumeProgress.getStyleClass().add("notStarted");
+        resumeProgress.setMinWidth(250);
+        resumeProgress.setAlignment(Pos.CENTER_RIGHT);
+        bcardProgress.getStyleClass().add("notStarted");
+        bcardProgress.setMinWidth(250);
+        bcardProgress.setAlignment(Pos.CENTER_RIGHT);
+        covletProgress.getStyleClass().add("notStarted");
+        covletProgress.setMinWidth(250);
+        covletProgress.setAlignment(Pos.CENTER_RIGHT);
+        
+        overviewBox.getChildren().addAll(overviewInfo, step1Line, step2Line,
+                step3Line, step4Line, step5Line, step6Line);
+        updateOverview();
+        screenContent.getChildren().addAll(overviewBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildPersonalInfoScreen()
+     * - Builds the screen where the user inputs personal information.
+     *   A.K.A Screen 4
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildPersonalInfoScreen() {
+        //-------- Initialization Start ----------\\
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision personalInfoBox = new VP_PageDivision("PERSONAL INFO");
+        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 100),
+                middleNameLabel = new VP_FieldLabel("*middle name:", 100),
+                lastNameLabel = new VP_FieldLabel("last name:", 100),
+                address1Label = new VP_FieldLabel("address line 1:", 100),
+                address2Label = new VP_FieldLabel("*address line 2:", 100),
+                cityLabel = new VP_FieldLabel("city:", 100),
+                stateLabel = new VP_FieldLabel("state:", 100),
+                zipLabel = new VP_FieldLabel("zipcode:", 100),
+                phoneLabel = new VP_FieldLabel("phone:", 100),
+                cellLabel = new VP_FieldLabel("*cell:", 100),
+                emailLabel = new VP_FieldLabel("*email:", 100);
+        VP_TextField firstNameField = new VP_TextField(32, 45),
+                middleNameField = new VP_TextField(32, 45),
+                lastNameField = new VP_TextField(32, 45),
+                address1Field = new VP_TextField(32, 254),
+                address2Field = new VP_TextField(32, 254),
+                cityField = new VP_TextField(32, 45),
+                stateField = new VP_TextField(2, 2),
+                zipField = new VP_TextField(10, 10),
+                phoneField = new VP_TextField(13, 13),
+                cellField = new VP_TextField(13, 13),
+                emailField = new VP_TextField(32, 254);
+        VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
+                + "Leave email blank to use your VaqPack account login email address.");
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitPersonalInfoAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelPersonalInfoAction());
+        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, firstNameField}),
+                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, middleNameField}),
+                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, lastNameField}),
+                address1Line = new VP_DivisionLine(new Node[]{address1Label, address1Field}),
+                address2Line = new VP_DivisionLine(new Node[]{address2Label, address2Field}),
+                cityLine = new VP_DivisionLine(new Node[]{cityLabel, cityField}),
+                stateLine = new VP_DivisionLine(new Node[]{stateLabel, stateField}),
+                zipLine = new VP_DivisionLine(new Node[]{zipLabel, zipField}),
+                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, phoneField}),
+                cellLine = new VP_DivisionLine(new Node[]{cellLabel, cellField}),
+                emailLine = new VP_DivisionLine(new Node[]{emailLabel, emailField}),
+                notesLine = new VP_DivisionLine(new Node[]{notes}),
+                buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+        //-------- Initialization End ------------\\
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        firstNameField.textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
+        middleNameField.textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
+        lastNameField.textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
+        address1Field.textProperty().bindBidirectional(controller.getCurrentUser().getAddress1());
+        address2Field.textProperty().bindBidirectional(controller.getCurrentUser().getAddress2());
+        cityField.textProperty().bindBidirectional(controller.getCurrentUser().getCity());
+        stateField.textProperty().bindBidirectional(controller.getCurrentUser().getState());
+        zipField.textProperty().bindBidirectional(controller.getCurrentUser().getZip());
+        phoneField.textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
+        cellField.textProperty().bindBidirectional(controller.getCurrentUser().getCell());
+        emailField.textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
+        personalInfoErrorLine.getChildren().addAll(personalInfoError);
+        personalInfoErrorLine.hide();
+        personalInfoBox.getChildren().addAll(firstNameLine, middleNameLine, lastNameLine,
+                address1Line, address2Line, cityLine, stateLine, zipLine, phoneLine, cellLine,
+                emailLine, notesLine, personalInfoErrorLine, buttonsLine);
+        screenContent.getChildren().addAll(personalInfoBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
         screen.setContent(screenContent);
@@ -430,20 +450,18 @@ public class VP_Center extends StackPane {
         loginEmail.setText("");
         loginEmail.setDisable(false);
         loginEmail.setEditable(true);
+        loginEmail.showValid();
         loginPass.setText("");
         loginPass.setDisable(false);
         loginPass.setEditable(true);
-        loginButtonLine.setVisible(true);
-        loginButtonLine.setManaged(true);
-        loginError.setText("");
-        loginError.setVisible(false);
-        loginError.setManaged(false);
-        accessInstructions.setText("Enter the access code that was emailed to "
+        loginPass.showValid();
+        loginButtonLine.show();
+        loginError.setParaText("");
+        loginErrorLine.hide();
+        accessInstructions.setParaText("Enter the access code that was emailed to "
                 + "you when you registered below.");
-        accessInstructions.setVisible(false);
-        accessInstructions.setManaged(false);
-        accessLine.setVisible(false);
-        accessLine.setManaged(false);
+        accessInstructionsLine.hide();
+        accessLine.hide();
     }
 
     /*------------------------------------------------------------------------*
@@ -456,28 +474,28 @@ public class VP_Center extends StackPane {
         resetEmail.setText("");
         resetEmail.setDisable(false);
         resetEmail.setEditable(true);
+        resetEmail.showValid();
         submitResetBtn.setDisable(false);
-        resetError.setText("");
-        resetError.setVisible(false);
-        resetError.setManaged(false);
-        resetInstructions1.setVisible(true);
-        resetInstructions1.setManaged(true);
-        resetInstructions2.setVisible(false);
-        resetInstructions2.setManaged(false);
-        resetNewPassLine.setVisible(false);
-        resetNewPassLine.setManaged(false);
+        resetError.setParaText("");
+        resetErrorLine.hide();
+        resetInstructions1.setParaText("Enter your email and submit. "
+                + "An access code will be sent to your email.");
+        resetInstructions2.setParaText("Enter your new password, confirm it, "
+                + "and enter the access code that was sent to you.");
+        resetInstructions1Line.show();
+        resetInstructions2Line.hide();
+        resetNewPassLine.hide();
         resetPassStrengthLabel.setText("");
-        resetPassStrengthLabel.setVisible(false);
-        resetPassStrengthLabel.setManaged(false);
-        resetNewPassConfirmLine.setVisible(false);
-        resetNewPassConfirmLine.setManaged(false);
-        resetCodeLine.setVisible(false);
-        resetCodeLine.setManaged(false);
-        resetButLine.setVisible(false);
-        resetButLine.setManaged(false);
+        resetPassStrengthLine.hide();
+        resetNewPassConfirmLine.hide();
+        resetCodeLine.hide();
+        resetButLine.hide();
         resetCode.setText("");
+        resetCode.showValid();
         resetNewPass.setText("");
+        resetNewPass.showValid();
         resetNewPassConfirm.setText("");
+        resetNewPassConfirm.showValid();
     }
 
     /*------------------------------------------------------------------------*
@@ -488,16 +506,154 @@ public class VP_Center extends StackPane {
      *------------------------------------------------------------------------*/
     private void resetRegisterForms() {
         registerEmail.setText("");
+        registerEmail.showValid();
         registerPass.setText("");
+        registerPass.showValid();
         registerPassConfirm.setText("");
+        registerPassConfirm.showValid();
         registerError.setText("");
-        registerError.setVisible(false);
-        registerError.setManaged(false);
+        registerErrorLine.hide();
+    }
+    
+    /*------------------------------------------------------------------------*
+     * updateOverview()
+     * - Adjust the overview page depending on what the user has completed.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    private void updateOverview() {
+        VP_User thisUser = controller.getCurrentUser();
+        if (thisUser != null) {
+            infoProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
+            resumeProgress.getStyleClass().remove(resumeProgress.getStyleClass().size() - 1);
+            bcardProgress.getStyleClass().remove(bcardProgress.getStyleClass().size() - 1);
+            covletProgress.getStyleClass().remove(bcardProgress.getStyleClass().size() - 1);
+            if (!thisUser.hasCompletedPersonalInfo()) {
+                overviewInfo.setParaText("Welcome to VaqPack! Before you can begin building "
+                        + "your resume, business card, and cover letters, we need to gather "
+                        + "your personal information. This information remains private to "
+                        + "you and is stored for the sole purpose of automatically filling in "
+                        + "text in your documents. Click \"Update Personal Information\" below "
+                        + "to get started.");
+                infoProgress.getStyleClass().add("notStarted");
+                infoProgress.setText("Not started yet");
+                resumeProgress.getStyleClass().add("notStarted");
+                resumeProgress.setText("Not started yet");
+                bcardProgress.getStyleClass().add("notStarted");
+                bcardProgress.setText("Not started yet");
+                covletProgress.getStyleClass().add("notStarted");
+                covletProgress.setText("Not started yet");
+                for (int i = 1; i < wizardMainButtons.size(); i++) {
+                    wizardMainButtons.get(i).setDisable(true);
+                }
+            } else {
+                infoProgress.getStyleClass().add("complete");
+                infoProgress.setText("Complete");
+                wizardMainButtons.get(1).setDisable(false);
+                wizardMainButtons.get(2).setDisable(false);
+                wizardMainButtons.get(3).setDisable(false);
+                if (thisUser.hasCompletedResume() || thisUser.hasCompletedBusinessCard() ||
+                        thisUser.hasCompletedCoverLetter()) {
+                    overviewInfo.setParaText("You have completed updating your personal information "
+                            + "and at least one document. You may update any document or information at "
+                            + "any time. You may now also apply a theme to your completed documents and "
+                            + "send them via email.");
+                    wizardMainButtons.get(4).setDisable(false);
+                    wizardMainButtons.get(5).setDisable(false);
+                    if (thisUser.hasCompletedResume()) {
+                        resumeProgress.getStyleClass().add("complete");
+                        resumeProgress.setText("Complete");
+                    } else if (thisUser.hasStartedResume()) {
+                        resumeProgress.getStyleClass().add("inProgress");
+                        resumeProgress.setText("In progress");
+                    } else {
+                        resumeProgress.getStyleClass().add("notStarted");
+                        resumeProgress.setText("Not started yet");
+                    }
+                    if (thisUser.hasCompletedBusinessCard()) {
+                        bcardProgress.getStyleClass().add("complete");
+                        bcardProgress.setText("Complete");
+                    } else if (thisUser.hasStartedBusinessCard()) {
+                        bcardProgress.getStyleClass().add("inProgress");
+                        bcardProgress.setText("In progress");
+                    } else {
+                        bcardProgress.getStyleClass().add("notStarted");
+                        bcardProgress.setText("Not started yet");
+                    }
+                    if (thisUser.hasCompletedCoverLetter()) {
+                        covletProgress.getStyleClass().add("complete");
+                        covletProgress.setText("Complete");
+                    } else if (thisUser.hasStartedCoverLetter()) {
+                        covletProgress.getStyleClass().add("inProgress");
+                        covletProgress.setText("In progress");
+                    } else {
+                        covletProgress.getStyleClass().add("notStarted");
+                        covletProgress.setText("Not started yet");
+                    }
+                }
+                else {
+                    overviewInfo.setParaText("You have completed updating your personal information. "
+                            + "You may go back to edit this information at any time. Your next step is to "
+                            + "complete any document of your choice.");
+                }
+            }
+        }
     }
 
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
+    /*------------------------------------------------------------------------*
+     * Subclass CancelPersonalInfoAction
+     * - Reverts any information changed in the Personal Information form back 
+     *   to the user's saved values and brings the user back to the Overview
+     *   page.
+     *------------------------------------------------------------------------*/
+    private class CancelPersonalInfoAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            controller.getCurrentUser().revert();
+            showScreen(3);
+        }
+    }
+    
+    /*------------------------------------------------------------------------*
+     * Subclass SubmitPersonalInfoAction
+     * - Saves any information changed in the Personal Information page and 
+     *   brings the user back to the Overview page.
+     *------------------------------------------------------------------------*/
+    private class SubmitPersonalInfoAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            // UNDER CONSTRUCTION
+            System.out.println("SubmitPersonalInfoAction handled, needs to "
+                    + "verify that all fields have been completed and that the "
+                    + "data is valid before it is saved.");
+            controller.getCurrentUser().save();
+            controller.getDataM().saveUserData();
+            showScreen(3);
+        }
+    }
+    
+    /*------------------------------------------------------------------------*
+     * Subclass WizardMainAction
+     * - Brings the user to one of the main wizard pages
+     *------------------------------------------------------------------------*/
+    private class WizardMainAction implements EventHandler<ActionEvent> {
+        private final int wizardPage;
+        
+        public WizardMainAction(int wizardPage) {
+            this.wizardPage = wizardPage;
+        }
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            showScreen(wizardPage);
+        }
+    }
+    
     /*------------------------------------------------------------------------*
      * Subclass LoginAction
      * - Action event for the 'forgot password?' link on page 0. Switches the
@@ -541,45 +697,46 @@ public class VP_Center extends StackPane {
                 loginPass.getText()};
             int loginStatus;
             //-------- Initialization End ------------\\
+            
             VP_Sounds.play(0);
-
-            accessInstructions.setText("Enter the access code that was emailed "
+            accessInstructions.setParaText("Enter the access code that was emailed "
                     + "to you when you registered below.");
-            try {
-                loginStatus = controller.getDataM().userLogin(cred);
-                if (loginStatus == -1) {
-                    // user does not exist in database
-                    loginError.setText("The email address and/or password is "
-                            + "incorrect. Please try again.");
-                    loginError.setManaged(true);
-                    loginError.setVisible(true);
-                    loginEmail.showInvalid();
-                    loginPass.showInvalid();
-                    VP_Sounds.play(-1);
-                } else if (loginStatus == -2) {
-                    // user needs to enter registration code
-                    loginEmail.setDisable(true);
-                    loginEmail.setEditable(false);
-                    loginPass.setDisable(true);
-                    loginPass.setEditable(false);
-                    loginError.setText("");
-                    loginError.setVisible(false);
-                    loginError.setManaged(false);
-                    loginButtonLine.setVisible(false);
-                    loginButtonLine.setManaged(false);
-                    accessInstructions.setVisible(true);
-                    accessInstructions.setManaged(true);
-                    accessLine.setVisible(true);
-                    accessLine.setManaged(true);
-                } else {
-                    // user login successful
-                    resetLoginRegForms();
-                    showScreen(3);
-                } 
-            } catch (SQLException ex) {
-                controller.errorAlert(1407, ex.getMessage());
-            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                controller.errorAlert(1202, ex.getMessage());
+            if (controller.getDataM().checkEmail(cred[0])) {
+                try {
+                    loginStatus = controller.getDataM().userLogin(cred);
+                    if (loginStatus == -1) {
+                        // user does not exist in database
+                        loginError.setParaText("The email address and/or password is "
+                                + "incorrect. Please try again.");
+                        loginErrorLine.show();
+                        loginEmail.showInvalid();
+                        loginPass.showInvalid();
+                        VP_Sounds.play(-1);
+                    } else if (loginStatus == -2) {
+                        // user needs to enter registration code
+                        loginEmail.setDisable(true);
+                        loginEmail.setEditable(false);
+                        loginPass.setDisable(true);
+                        loginPass.setEditable(false);
+                        loginError.setParaText("");
+                        loginErrorLine.hide();
+                        loginButtonLine.hide();
+                        accessInstructionsLine.show();
+                        accessLine.show();
+                    } else {
+                        // user login successful
+                        resetLoginRegForms();
+                        showScreen(3);
+                    } 
+                } catch (SQLException ex) {
+                    controller.errorAlert(1407, ex.getMessage());
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    controller.errorAlert(1202, ex.getMessage());
+                }
+            } else {
+                loginError.setParaText("The email provided is invalid. Please try again.");
+                loginErrorLine.show();
+                loginEmail.showInvalid();
             }
         }
     }
@@ -597,11 +754,11 @@ public class VP_Center extends StackPane {
             String cred[] = new String[]{loginEmail.getText().toLowerCase(),
                 loginPass.getText(), regLoginAccess.getText()};
             //-------- Initialization End ------------\\
-
+            
             VP_Sounds.play(0);
             try {
                 controller.getDataM().resendAccess(cred);
-                accessInstructions.setText("A new access code has been emailed and "
+                accessInstructions.setParaText("A new access code has been emailed and "
                         + "you should receive it shortly. Enter the code below.\n"
                         + "If you do not receive an email, verify that you have "
                         + "entered in the correct email address.");
@@ -636,9 +793,8 @@ public class VP_Center extends StackPane {
                     showScreen(3);
                 } else {
                     loginError.setText("The registration code is incorrect. Please try again.");
-                    accessInstructions.setText("Enter the access code that was emailed to you below.");
-                    loginError.setVisible(true);
-                    loginError.setManaged(true);
+                    accessInstructions.setParaText("Enter the access code that was emailed to you below.");
+                    loginErrorLine.show();
                     regLoginAccess.showInvalid();
                     VP_Sounds.play(-1);
                 }
@@ -679,44 +835,44 @@ public class VP_Center extends StackPane {
             //-------- Initialization End ------------\\
 
             VP_Sounds.play(0);
-            try {
-                userStatus = controller.getDataM().findUserForReset(resetEmail.getText().toLowerCase());
-                if (userStatus == 0) {
-                    resetEmail.showInvalid();
-                    resetError.setText("The provided user does not exists in VaqPack. "
-                            + "If the email is correct, you need to register a new account.");
-                    resetError.setVisible(true);
-                    resetError.setManaged(true);
-                    VP_Sounds.play(-1);
-                } else if (userStatus == 1) {
-                    resetEmail.showInvalid();
-                    resetError.setText("The password for this email has recently been reset. "
-                            + "Passwords may only be reset once every 24 hours.");
-                    resetError.setVisible(true);
-                    resetError.setManaged(true);
-                    VP_Sounds.play(-1);
-                } else {
-                    submitResetBtn.setDisable(true);
-                    resetEmail.setDisable(true);
-                    resetEmail.setEditable(false);
-                    resetInstructions1.setVisible(false);
-                    resetInstructions1.setManaged(false);
-                    resetInstructions2.setVisible(true);
-                    resetInstructions2.setManaged(true);
-                    resetNewPassLine.setVisible(true);
-                    resetNewPassLine.setManaged(true);
-                    resetPassStrengthLabel.setText("");
-                    resetPassStrengthLabel.setVisible(true);
-                    resetPassStrengthLabel.setManaged(true);
-                    resetNewPassConfirmLine.setVisible(true);
-                    resetNewPassConfirmLine.setManaged(true);
-                    resetCodeLine.setVisible(true);
-                    resetCodeLine.setManaged(true);
-                    resetButLine.setVisible(true);
-                    resetButLine.setManaged(true);
+            if (controller.getDataM().checkEmail(resetEmail.getText())) {
+                try {
+                    userStatus = controller.getDataM().findUserForReset(resetEmail.getText().toLowerCase());
+                    if (userStatus == 0) {
+                        resetEmail.showInvalid();
+                        resetError.setParaText("The provided user does not exists in VaqPack. "
+                                + "If the email is correct, you need to register a new account.");
+                        resetErrorLine.show();
+                        VP_Sounds.play(-1);
+                    } else if (userStatus == 1) {
+                        resetEmail.showInvalid();
+                        resetError.setParaText("The password for this email has recently been reset. "
+                                + "Passwords may only be reset once every 24 hours.");
+                        resetErrorLine.show();
+                        VP_Sounds.play(-1);
+                    } else {
+                        resetError.setParaText("");
+                        resetErrorLine.hide();
+                        submitResetBtn.setDisable(true);
+                        resetEmail.setDisable(true);
+                        resetEmail.setEditable(false);
+                        resetInstructions1Line.hide();
+                        resetInstructions2Line.show();
+                        resetNewPassLine.show();
+                        resetPassStrengthLabel.setText("");
+                        resetPassStrengthLine.show();
+                        resetNewPassConfirmLine.show();
+                        resetCodeLine.show();
+                        resetButLine.show();
+                    }
+                } catch (SQLException ex) {
+                    controller.errorAlert(1411, ex.getMessage());
                 }
-            } catch (SQLException ex) {
-                controller.errorAlert(1411, ex.getMessage());
+            } else {
+                resetError.setParaText("The email provided is invalid. Please try again.");
+                resetErrorLine.show();
+                resetEmail.showInvalid();
+                VP_Sounds.play(-1);
             }
         }
     }
@@ -740,37 +896,32 @@ public class VP_Center extends StackPane {
             if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 resetNewPass.showInvalid();
                 resetNewPassConfirm.showInvalid();
-                resetError.setText("The new password is not long enough.");
-                resetError.setVisible(true);
-                resetError.setManaged(true);
+                resetError.setParaText("The new password is not long enough.");
+                resetErrorLine.show();
                 VP_Sounds.play(-1);
             } else if (!cred[1].equals(cred[2])) {
                 resetNewPass.showInvalid();
                 resetNewPassConfirm.showInvalid();
-                resetError.setText("The passwords do not match.");
-                resetError.setVisible(true);
-                resetError.setManaged(true);
+                resetError.setParaText("The passwords do not match.");
+                resetErrorLine.show();
                 VP_Sounds.play(-1);
             } else {
                 try {
                     resetStatus = controller.getDataM().resetPass(cred);
                     if (resetStatus == 2) {
-                        accessInstructions.setText("Your password was reset. Login with your new password.");
-                        accessInstructions.setVisible(true);
-                        accessInstructions.setManaged(true);
+                        accessInstructions.setParaText("Your password was reset. Login with your new password.");
+                        accessInstructionsLine.show();
                         resetResetPasswordForms();
                         showScreen(0);
                     } else if (resetStatus == 1) {
                         resetCode.showInvalid();
-                        resetError.setText("The code has expired. Cancel and start the reset process over again.");
-                        resetError.setVisible(true);
-                        resetError.setManaged(true);
+                        resetError.setParaText("The code has expired. Cancel and start the reset process over again.");
+                        resetErrorLine.show();
                         VP_Sounds.play(-1);
                     } else if (resetStatus == 0) {
                         resetCode.showInvalid();
-                        resetError.setText("The code is incorrect. Please try again.");
-                        resetError.setVisible(true);
-                        resetError.setManaged(true);
+                        resetError.setParaText("The code is incorrect. Please try again.");
+                        resetErrorLine.show();
                         VP_Sounds.play(-1);
                     }
                 } catch (SQLException ex) {
@@ -812,53 +963,55 @@ public class VP_Center extends StackPane {
             //-------- Initialization End ------------\\
 
             VP_Sounds.play(0);
-            if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
-                registerPass.showInvalid();
-                registerPassConfirm.showInvalid();
-                registerError.setText("The password is not long enough.");
-                registerError.setVisible(true);
-                registerError.setManaged(true);
-                VP_Sounds.play(-1);
-            } else if (!cred[1].equals(cred[2])) {
-                registerPass.showInvalid();
-                registerPassConfirm.showInvalid();
-                registerError.setText("The passwords do not match.");
-                registerError.setVisible(true);
-                registerError.setManaged(true);
-                VP_Sounds.play(-1);
-            } else {
-                try {
-                    registerStatus = controller.getDataM().regUser(cred);
-                    if (registerStatus == 2) {
-                        accessInstructions.setText("Login with your new account.");
-                        accessInstructions.setVisible(true);
-                        accessInstructions.setManaged(true);
-                        resetRegisterForms();
-                        showScreen(0);
-                    } else if (registerStatus == 1) {
-                        registerEmail.showInvalid();
-                        registerError.setText("This email is already associated "
-                                + "with a VaqPack user.");
-                        registerError.setVisible(true);
-                        registerError.setManaged(true);
-                        VP_Sounds.play(-1);
-                    } else if (registerStatus == 0) {
-                        registerEmail.showInvalid();
-                        registerError.setText("This email is already associated "
-                                + "with a VaqPack user who recently registered "
-                                + "but has not yet enetered in the access code. "
-                                + "Login and you will be prompted to enter in "
-                                + "this code. If you did not receive the code, "
-                                + "there will be an option to resend one.");
-                        registerError.setVisible(true);
-                        registerError.setManaged(true);
-                        VP_Sounds.play(-1);
+            if (controller.getDataM().checkEmail(cred[0])) {
+                if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
+                    registerPass.showInvalid();
+                    registerPassConfirm.showInvalid();
+                    registerError.setText("The password is not long enough.");
+                    registerErrorLine.show();
+                    VP_Sounds.play(-1);
+                } else if (!cred[1].equals(cred[2])) {
+                    registerPass.showInvalid();
+                    registerPassConfirm.showInvalid();
+                    registerError.setText("The passwords do not match.");
+                    registerErrorLine.show();
+                    VP_Sounds.play(-1);
+                } else {
+                    try {
+                        registerStatus = controller.getDataM().regUser(cred);
+                        if (registerStatus == 2) {
+                            accessInstructions.setParaText("Login with your new account.");
+                            accessInstructionsLine.show();
+                            resetRegisterForms();
+                            showScreen(0);
+                        } else if (registerStatus == 1) {
+                            registerEmail.showInvalid();
+                            registerError.setText("This email is already associated "
+                                    + "with a VaqPack user.");
+                            registerErrorLine.show();
+                            VP_Sounds.play(-1);
+                        } else if (registerStatus == 0) {
+                            registerEmail.showInvalid();
+                            registerError.setText("This email is already associated "
+                                    + "with a VaqPack user who recently registered "
+                                    + "but has not yet enetered in the access code. "
+                                    + "Login and you will be prompted to enter in "
+                                    + "this code. If you did not receive the code, "
+                                    + "there will be an option to resend one.");
+                            registerErrorLine.show();
+                            VP_Sounds.play(-1);
+                        }
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1412, ex.getMessage());
+                    } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                        controller.errorAlert(1206, ex.getMessage());
                     }
-                } catch (SQLException ex) {
-                    controller.errorAlert(1412, ex.getMessage());
-                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                    controller.errorAlert(1206, ex.getMessage());
                 }
+            } else {
+                registerEmail.showInvalid();
+                registerError.setText("The email provided is invalid. Please try again.");
+                registerErrorLine.show();
+                VP_Sounds.play(-1);
             }
         }
     }
