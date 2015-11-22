@@ -12,15 +12,21 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-import java.util.ArrayList;
+import com.sun.javafx.scene.control.skin.LabeledText;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class VP_Tree extends VBox {
     private final VP_GUIController controller;
+    private final TreeItem<String> falseRoot;
     
     /*------------------------------------------------------------------------*
      * VP_Tree()
@@ -28,8 +34,45 @@ public class VP_Tree extends VBox {
      *------------------------------------------------------------------------*/
     protected VP_Tree(VP_GUIController controller) {
         this.controller = controller;
+        this.falseRoot = new TreeItem();
     }
 
+    
+    private class TreeClick implements EventHandler<MouseEvent> {
+        private final TreeView<String> treeView;
+
+        private TreeClick(TreeView<String> treeView) {
+            this.treeView = treeView;
+        }
+        
+        @Override
+        public void handle(MouseEvent event) {
+            Node node = event.getPickResult().getIntersectedNode();
+            //if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
+            if ((!(node instanceof StackPane)) && (node instanceof LabeledText || (node instanceof TreeCell && ((TreeCell) node).getText() != null)))
+            {
+                try {
+                    VP_Sounds.play(0);
+                    int wizardNumber = (int) ((VP_TreeItem)treeView.getSelectionModel().getSelectedItem()).getWizardNumber();
+                    System.out.println("GOOD Node click: " + wizardNumber);
+                    controller.quickJump(wizardNumber);
+                    
+                    // adds a paragrapg the the cover letter
+                    /*
+                    treeView.getRoot().getChildren().get(3).getChildren().get(4).getChildren().add(new VP_TreeItem(
+                            "Paragraph " + 
+                           (treeView.getRoot().getChildren().get(3).getChildren().get(4).getChildren().size() + 1),
+                            3));
+                    */
+                }
+                catch (Exception e) {
+                    // just east it, shouldn't tak you anywhere anyway
+                }
+            }
+        }
+    }
+
+    
     /*------------------------------------------------------------------------*
      * build()
      * - Builds the tree view. Called in a task, to build in the background
@@ -37,17 +80,20 @@ public class VP_Tree extends VBox {
      * - No Return
      *------------------------------------------------------------------------*/
     protected void build() {
+
         this.setId("treeContainer");
-        
-        ArrayList<TreeItem> ROOT_Nodes = new ArrayList();
-        
         VBox.setVgrow(this, Priority.ALWAYS);
         setPrefWidth(200);
-        TreeItem<String> falseRoot = new TreeItem();
         falseRoot.setExpanded(true);
         
+        /*
+        
+        // OVERVIEW
+        VP_TreeItem overviewTI = new VP_TreeItem("Overview", 3);
+        ROOT_Nodes.add(overviewTI);
+        
         // RESUME
-        ROOT_Nodes.add(new TreeItem("Resume"));
+        ROOT_Nodes.add(new VP_TreeItem("Resume", 11));
         ArrayList<TreeItem> RES_Nodes = new ArrayList();
         RES_Nodes.add(new TreeItem("Heading"));
         ArrayList<TreeItem> RES_He_Nodes = new ArrayList();
@@ -155,60 +201,127 @@ public class VP_Tree extends VBox {
             RES_R_Nodes.get(i).getChildren().addAll(RES_RR_Nodes);
         }
         RES_Nodes.get(10).getChildren().addAll(RES_R_Nodes);
-        ROOT_Nodes.get(0).getChildren().addAll(RES_Nodes);
+        ROOT_Nodes.get(1).getChildren().addAll(RES_Nodes);
 
         // BUSINESS CARD
-        ROOT_Nodes.add(new TreeItem("Business Card"));
+        ROOT_Nodes.add(new VP_TreeItem("Business Card", 5));
         ArrayList<TreeItem> BC_Nodes = new ArrayList();
-        BC_Nodes.add(new TreeItem("Name"));
-        BC_Nodes.add(new TreeItem("Profession"));
-        BC_Nodes.add(new TreeItem("Company"));
-        ArrayList<TreeItem> BC_C_Nodes = new ArrayList();
-        BC_C_Nodes.add(new TreeItem("Company Name"));
-        BC_C_Nodes.add(new TreeItem("Slogan"));
-        BC_Nodes.get(2).getChildren().addAll(BC_C_Nodes);
-        BC_Nodes.add(new TreeItem("Street Address"));
-        BC_Nodes.add(new TreeItem("City-State-Zip"));
-        BC_Nodes.add(new TreeItem("Primary Phone"));
-        BC_Nodes.add(new TreeItem("Secondary Phone"));
-        BC_Nodes.add(new TreeItem("Fax Number"));
-        BC_Nodes.add(new TreeItem("Email Address"));
-        BC_Nodes.add(new TreeItem("Web Address"));
-        ROOT_Nodes.get(1).getChildren().addAll(BC_Nodes);
+            BC_Nodes.add(new VP_TreeItem("Name", 5));
+            ArrayList<TreeItem> BC_N_Nodes = new ArrayList();
+                BC_N_Nodes.add(new VP_TreeItem("First Name", 4));
+                BC_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
+                BC_N_Nodes.add(new VP_TreeItem("Last Name", 4));
+            BC_Nodes.get(0).getChildren().addAll(BC_N_Nodes); 
+
+            BC_Nodes.add(new VP_TreeItem("Company", 5));
+            ArrayList<TreeItem> BC_CY_Nodes = new ArrayList();
+                BC_CY_Nodes.add(new VP_TreeItem("Profession", 5));
+                BC_CY_Nodes.add(new VP_TreeItem("Company Name", 5));
+                BC_CY_Nodes.add(new VP_TreeItem("Slogan", 5));
+            BC_Nodes.get(1).getChildren().addAll(BC_CY_Nodes);
+
+            BC_Nodes.add(new VP_TreeItem("Address", 5));
+            ArrayList<TreeItem> BC_A_Nodes = new ArrayList();
+                BC_A_Nodes.add(new VP_TreeItem("Address Line 1", 4));
+                BC_A_Nodes.add(new VP_TreeItem("Address Line 2", 4));
+                BC_A_Nodes.add(new VP_TreeItem("City", 4));
+                BC_A_Nodes.add(new VP_TreeItem("State", 4));
+                BC_A_Nodes.add(new VP_TreeItem("Zip", 4));
+            BC_Nodes.get(2).getChildren().addAll(BC_A_Nodes);
+
+            BC_Nodes.add(new VP_TreeItem("Communication", 5));
+            ArrayList<TreeItem> BC_CN_Nodes = new ArrayList();
+                BC_CN_Nodes.add(new VP_TreeItem("Phone", 4));
+                BC_CN_Nodes.add(new VP_TreeItem("Cell", 4));
+                BC_CN_Nodes.add(new VP_TreeItem("Email", 4));
+                BC_CN_Nodes.add(new VP_TreeItem("Web Page", 5));
+            BC_Nodes.get(3).getChildren().addAll(BC_CN_Nodes);
+        ROOT_Nodes.get(2).getChildren().addAll(BC_Nodes);
         
         // COVER LETTER
-        ROOT_Nodes.add(new TreeItem("Cover Letter"));
+        ROOT_Nodes.add(new VP_TreeItem("Cover Letter", 6));
         ArrayList<TreeItem> CL_Nodes = new ArrayList();
-        CL_Nodes.add(new TreeItem("Heading"));
-        ArrayList<TreeItem> CL_H_Nodes = new ArrayList();
-        CL_H_Nodes.add(new TreeItem("Name"));
-        CL_H_Nodes.add(new TreeItem("Street Address"));
-        CL_H_Nodes.add(new TreeItem("City-State-Zip"));
-        CL_H_Nodes.add(new TreeItem("Phone-Email"));
-        CL_Nodes.get(0).getChildren().addAll(CL_H_Nodes);
-        CL_Nodes.add(new TreeItem("Date"));
-        CL_Nodes.add(new TreeItem("Inside-Address"));
-        ArrayList<TreeItem> CL_I_Nodes = new ArrayList();
-        CL_I_Nodes.add(new TreeItem("Contact Name"));
-        CL_I_Nodes.add(new TreeItem("Company Name"));
-        CL_I_Nodes.add(new TreeItem("Street Address"));
-        CL_I_Nodes.add(new TreeItem("City-State-Zip"));
-        CL_Nodes.get(1).getChildren().addAll(CL_I_Nodes);
-        CL_Nodes.add(new TreeItem("Salutation"));
-        CL_Nodes.add(new TreeItem("Body"));
-        ArrayList<TreeItem> CL_B_Nodes = new ArrayList();
-        for (int i = 0; i < 3; i++) {
-            CL_B_Nodes.add(new TreeItem("Paragraph"));
-        }
-        CL_Nodes.get(4).getChildren().addAll(CL_B_Nodes);
-        CL_Nodes.add(new TreeItem("Closing"));
-        CL_Nodes.add(new TreeItem("Signature"));
-        ROOT_Nodes.get(2).getChildren().addAll(CL_Nodes);
+        
+            CL_Nodes.add(new VP_TreeItem("Heading", 7));
+            ArrayList<TreeItem> CL_H_Nodes = new ArrayList();
+                CL_H_Nodes.add(new VP_TreeItem("Name", 7));
+                ArrayList<TreeItem> CL_HN_Nodes = new ArrayList();
+                    CL_HN_Nodes.add(new VP_TreeItem("First Name", 4));
+                    CL_HN_Nodes.add(new VP_TreeItem("Middle name", 4));
+                    CL_HN_Nodes.add(new VP_TreeItem("Last Name", 4));
+                CL_H_Nodes.get(0).getChildren().addAll(CL_HN_Nodes);
+                
+                CL_H_Nodes.add(new VP_TreeItem("Address", 7));
+                ArrayList<TreeItem> CL_HA_Nodes = new ArrayList();
+                    CL_HA_Nodes.add(new VP_TreeItem("Address Line 1", 4));
+                    CL_HA_Nodes.add(new VP_TreeItem("Address Line 2", 4));
+                    CL_HA_Nodes.add(new VP_TreeItem("City", 4));
+                    CL_HA_Nodes.add(new VP_TreeItem("State", 4));
+                    CL_HA_Nodes.add(new VP_TreeItem("Zip", 4));
+                CL_H_Nodes.get(1).getChildren().addAll(CL_HA_Nodes);
+                
+                CL_H_Nodes.add(new VP_TreeItem("Communication", 7));
+                ArrayList<TreeItem> CL_HC_Nodes = new ArrayList();
+                    CL_HC_Nodes.add(new VP_TreeItem("Phone", 4));
+                    CL_HC_Nodes.add(new VP_TreeItem("Cell", 4));
+                    CL_HC_Nodes.add(new VP_TreeItem("Email", 4));
+                CL_H_Nodes.get(2).getChildren().addAll(CL_HC_Nodes);
+            CL_Nodes.get(0).getChildren().addAll(CL_H_Nodes);
+            
+            CL_Nodes.add(new VP_TreeItem("Ad Reference", 7));
+            ArrayList<TreeItem> CL_A_Nodes = new ArrayList();
+                CL_A_Nodes.add(new VP_TreeItem("Source", 7));
+                CL_A_Nodes.add(new VP_TreeItem("Job Position", 7));
+                CL_A_Nodes.add(new VP_TreeItem("Reference Number", 7));
+            CL_Nodes.get(1).getChildren().addAll(CL_A_Nodes);
+            
+            CL_Nodes.add(new VP_TreeItem("Contact Information", 7));
+            ArrayList<TreeItem> CL_C_Nodes = new ArrayList();
+                CL_C_Nodes.add(new VP_TreeItem("Name", 7));
+                ArrayList<TreeItem> CL_CN_Nodes = new ArrayList();
+                    CL_CN_Nodes.add(new VP_TreeItem("First Name", 7));
+                    CL_CN_Nodes.add(new VP_TreeItem("Middle name", 7));
+                    CL_CN_Nodes.add(new VP_TreeItem("Last Name", 7));
+                CL_C_Nodes.get(0).getChildren().addAll(CL_CN_Nodes);
+                
+                CL_C_Nodes.add(new VP_TreeItem("Company", 7));
+                ArrayList<TreeItem> CL_CC_Nodes = new ArrayList();
+                    CL_CC_Nodes.add(new VP_TreeItem("Contact Title", 7));
+                    CL_CC_Nodes.add(new VP_TreeItem("Company Name", 7));
+                CL_C_Nodes.get(1).getChildren().addAll(CL_CC_Nodes);
+                
+                CL_C_Nodes.add(new VP_TreeItem("Address", 7));
+                ArrayList<TreeItem> CL_CA_Nodes = new ArrayList();
+                    CL_CA_Nodes.add(new VP_TreeItem("Address Line 1", 7));
+                    CL_CA_Nodes.add(new VP_TreeItem("Address Line 2", 7));
+                    CL_CA_Nodes.add(new VP_TreeItem("City", 7));
+                    CL_CA_Nodes.add(new VP_TreeItem("State", 7));
+                    CL_CA_Nodes.add(new VP_TreeItem("Zip", 7));
+                CL_C_Nodes.get(2).getChildren().addAll(CL_CA_Nodes);
+            CL_Nodes.get(2).getChildren().addAll(CL_C_Nodes);
+            
+            CL_Nodes.add(new VP_TreeItem("Salutation", 7));
+            
+            CL_Nodes.add(new VP_TreeItem("Body", 7));
+            ArrayList<TreeItem> CL_B_Nodes = new ArrayList();
+                for (int i = 1; i < 4; i++) {
+                    CL_B_Nodes.add(new VP_TreeItem("Paragraph " + i, 7));
+                }
+            CL_Nodes.get(4).getChildren().addAll(CL_B_Nodes);
+            
+            CL_Nodes.add(new VP_TreeItem("Closing", 7));
+            
+            CL_Nodes.add(new VP_TreeItem("Signature", 7));
+            
+        ROOT_Nodes.get(3).getChildren().addAll(CL_Nodes);
 
         for (int i = 0; i < ROOT_Nodes.size(); i++) {
             falseRoot.getChildren().add(ROOT_Nodes.get(i));
         }
+        */
+        
         TreeView<String> tree = new TreeView(falseRoot);
+        tree.setOnMouseClicked(new TreeClick(tree));
         tree.setShowRoot(false);
         tree.prefWidthProperty().bind(widthProperty());
         tree.prefHeightProperty().bind(heightProperty());
@@ -223,4 +336,8 @@ public class VP_Tree extends VBox {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
+
+    protected TreeItem<String> getFalseRoot() {
+        return falseRoot;
+    }
 }

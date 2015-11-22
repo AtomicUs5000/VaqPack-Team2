@@ -112,6 +112,11 @@ public class VP_GUIController {
         load();
     }
 
+    protected void quickJump(int wizardNumber) {
+        center.cancelActionFunction();
+        center.showScreen(wizardNumber);
+    }
+    
     /*------------------------------------------------------------------------*
      * errorAlert()
      * - Loads an error into a new VP_ErrorHandler and then shows an alert with
@@ -149,8 +154,62 @@ public class VP_GUIController {
     protected void logoutUser() {
         timer.cancel();
         timer.purge();
+        updateTree();
         currentUser.logout();
         newUserSet();
+    }
+    
+    protected void updateTree() {
+        if (currentUser.getUserID() != -1) {
+            if (leftTree.getFalseRoot().getChildren().size() == 0) {
+                leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("OVERVIEW", 3));
+                leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Personal Information", 4));
+            }
+            if (currentUser.hasCompletedPersonalInfo()) {
+                if (leftTree.getFalseRoot().getChildren().size() == 2) {
+                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Resume", 11));
+                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Business Card", 5));
+                    VP_TreeItem bc = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(3);
+                    ArrayList<VP_TreeItem> BC_Nodes = new ArrayList();
+                    BC_Nodes.add(new VP_TreeItem("Name", 5));
+                    ArrayList<VP_TreeItem> BC_N_Nodes = new ArrayList();
+                        BC_N_Nodes.add(new VP_TreeItem("First Name", 4));
+                        BC_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
+                        BC_N_Nodes.add(new VP_TreeItem("Last Name", 4));
+                    BC_Nodes.get(0).getChildren().addAll(BC_N_Nodes); 
+
+                    BC_Nodes.add(new VP_TreeItem("Company", 5));
+                    ArrayList<VP_TreeItem> BC_CY_Nodes = new ArrayList();
+                        BC_CY_Nodes.add(new VP_TreeItem("Profession", 5));
+                        BC_CY_Nodes.add(new VP_TreeItem("Company Name", 5));
+                        BC_CY_Nodes.add(new VP_TreeItem("Slogan", 5));
+                    BC_Nodes.get(1).getChildren().addAll(BC_CY_Nodes);
+
+                    BC_Nodes.add(new VP_TreeItem("Address", 5));
+                    ArrayList<VP_TreeItem> BC_A_Nodes = new ArrayList();
+                        BC_A_Nodes.add(new VP_TreeItem("Address Line 1", 4));
+                        BC_A_Nodes.add(new VP_TreeItem("Address Line 2", 4));
+                        BC_A_Nodes.add(new VP_TreeItem("City", 4));
+                        BC_A_Nodes.add(new VP_TreeItem("State", 4));
+                        BC_A_Nodes.add(new VP_TreeItem("Zip", 4));
+                    BC_Nodes.get(2).getChildren().addAll(BC_A_Nodes);
+
+                    BC_Nodes.add(new VP_TreeItem("Communication", 5));
+                    ArrayList<VP_TreeItem> BC_CN_Nodes = new ArrayList();
+                        BC_CN_Nodes.add(new VP_TreeItem("Phone", 4));
+                        BC_CN_Nodes.add(new VP_TreeItem("Cell", 4));
+                        BC_CN_Nodes.add(new VP_TreeItem("Email", 4));
+                        BC_CN_Nodes.add(new VP_TreeItem("Web Page", 5));
+                    BC_Nodes.get(3).getChildren().addAll(BC_CN_Nodes);
+                    bc.getChildren().addAll(BC_Nodes);
+                    
+                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Cover Letter", 6));
+                }
+            }
+        }
+        else {
+            leftTree.getFalseRoot().getChildren().clear();
+        }
     }
     
     /*------------------------------------------------------------------------*
@@ -718,7 +777,7 @@ public class VP_GUIController {
             if (stage == 0) {
                 Platform.runLater(() -> header.build());
             } else if (stage == 1) {
-                Platform.runLater(() -> leftTree.build());
+                Platform.runLater(() -> getLeftTree().build());
             } else if (stage == 2) {
                 Platform.runLater(() -> center.build());
             } else if (stage == 3) {
@@ -825,5 +884,9 @@ public class VP_GUIController {
 
     protected VP_User getCurrentUser() {
         return currentUser;
+    }
+
+    protected VP_Tree getLeftTree() {
+        return leftTree;
     }
 }
