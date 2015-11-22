@@ -12,6 +12,8 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import com.lowagie.text.DocumentException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -27,13 +29,13 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class VP_DataManager {
 
     private final VP_GUIController controller;
     private final VP_DatabaseManager dbManager;
-    private final VP_DataToHtml data2html;
-    private final VP_HtmlToPdf html2pdf;
     private final VP_FileManager fileM;
 
     /*------------------------------------------------------------------------*
@@ -48,8 +50,6 @@ public class VP_DataManager {
         //-------- Initialization Start ----------\\
         this.controller = controller;
         dbManager = new VP_DatabaseManager();
-        data2html = new VP_DataToHtml();
-        html2pdf = new VP_HtmlToPdf();
         fileM = new VP_FileManager();
         //-------- Initialization End ------------\\
     }
@@ -190,36 +190,15 @@ public class VP_DataManager {
                 dbManager.checkCustomThemeTable();
                 break;
             case 10:
-                dbManager.checkDefaultThemeTable();
-                break;
-            case 11:
-                dbManager.checkBCHasCustomThemeTable();
-                break;
-            case 12:
-                dbManager.checkBCHasDefaultThemeTable();
-                break;
-            case 13:
                 dbManager.checkBusinessCardPDFTable();
                 break;
-            case 14:
-                dbManager.checkCLHasCustomThemeTable();
-                break;
-            case 15:
-                dbManager.checkCLHasDefaultThemeTable();
-                break;
-            case 16:
+            case 11:
                 dbManager.checkCoverLetterPDFTable();
                 break;
-            case 17:
-                dbManager.checkResHasCustomThemeTable();
-                break;
-            case 18:
-                dbManager.checkResHasDefaultThemeTable();
-                break;
-            case 19:
+            case 12:
                 dbManager.checkResPDFTable();
                 break;
-            case 20:
+            case 13:
                 dbManager.checkResHTMLTable();
                 break;
         }
@@ -290,7 +269,6 @@ public class VP_DataManager {
         //-------- Initialization Start ----------\\
         int loginStatus;
         //-------- Initialization End ------------\\
-        
         cred[1] = hashPassword(cred[1]);
         loginStatus = dbManager.attemptUserLogin(cred, controller.getCurrentUser());
         if (loginStatus >= 0) {
@@ -308,8 +286,12 @@ public class VP_DataManager {
      *------------------------------------------------------------------------*/
     protected boolean verifyRegAccess(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
+        //-------- Initialization Start ----------\\
         cred[1] = hashPassword(cred[1]);
-        return dbManager.verifyUserAccessCode(cred);
+        boolean success = dbManager.verifyUserAccessCode(cred);
+        //-------- Initialization End ------------\\
+        
+        return success;
     }
 
     /*------------------------------------------------------------------------*
@@ -458,6 +440,22 @@ public class VP_DataManager {
      *------------------------------------------------------------------------*/
     protected void saveUserData() throws SQLException {
         dbManager.storeUserData(controller.getCurrentUser());
+    }
+    
+    /*------------------------------------------------------------------------*
+     * saveUserData()
+     * - Calls storeUserData() in the database manager passing user data.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void saveBCardData() throws SQLException, TransformerException,
+            ParserConfigurationException, IOException, FileNotFoundException, 
+            DocumentException {
+        File bcpdf = fileM.generateBCardPDF(controller.getCurrentUser());
+        dbManager.storeBCardData(controller.getCurrentUser(), bcpdf);
+        if (bcpdf.exists()) {
+            bcpdf.delete();
+        }
     }
 
     /*------------------------------------------------------------------------*

@@ -85,7 +85,7 @@ public class VP_GUIController {
         loader = new VP_Loader(sceneWidth, sceneHeight);
         dataM = new VP_DataManager(this);
         header = new VP_Header(this, primaryStage);
-        leftTree = new VP_Tree();
+        leftTree = new VP_Tree(this);
         center = new VP_Center(this);
         footer = new VP_Footer(this);
         primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
@@ -248,15 +248,8 @@ public class VP_GUIController {
         dbTaskLabels.add("Checking Resume Table");
         dbTaskLabels.add("Checking User Data Table");
         dbTaskLabels.add("Checking Custom Theme Table");
-        dbTaskLabels.add("Checking Default Theme Table");
-        dbTaskLabels.add("Checking Business Card Has Custom Theme Table");
-        dbTaskLabels.add("Checking Business Card Has Default Theme Table");
         dbTaskLabels.add("Checking Business Card PDF Table");
-        dbTaskLabels.add("Checking Cover Letter Has Custom Theme Table");
-        dbTaskLabels.add("Checking Cover Letter Has Default Theme Table");
         dbTaskLabels.add("Checking Cover Letter PDF Table");
-        dbTaskLabels.add("Checking Resume Has Custom Theme Table");
-        dbTaskLabels.add("Checking Resume Has Default Theme Table");
         dbTaskLabels.add("Checking Resume PDF Table");
         dbTaskLabels.add("Checking Resume HTML Table");
         dbTaskLabels.add("Verifying User Access Levels");
@@ -619,11 +612,11 @@ public class VP_GUIController {
                         }
                     }
                 }
-            } else if (stage > 1 && stage < 24) {
+            } else if (stage > 1 && stage < 17) {
                 try {
-                    if (stage < 23) {
+                    if (stage < 16) {
                         dataM.checkDBTable(stage - 2);
-                    } else if (stage == 23) {
+                    } else if (stage == 16) {
                         dataM.contructUserAccess();
                     }
                 } catch (SQLException ex) {
@@ -633,7 +626,7 @@ public class VP_GUIController {
                         Platform.runLater(() -> errorAlert(1404, ex.getMessage()));
                     }
                 }
-            } else if (stage == 24) {
+            } else if (stage == 17) {
                 adminExists = false;
                 while (!adminExists && !adminCheck) {
                     adminCheck = false;

@@ -12,6 +12,8 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import com.lowagie.text.DocumentException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -28,6 +30,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class VP_Center extends StackPane {
 
@@ -61,7 +65,8 @@ public class VP_Center extends StackPane {
             resetButLine,
             resetPassStrengthLine,
             registerErrorLine,
-            personalInfoErrorLine;
+            personalInfoErrorLine,
+            bcardErrorLine;;
     private final VP_Paragraph loginError,
             accessInstructions,
             resetError,
@@ -69,7 +74,8 @@ public class VP_Center extends StackPane {
             resetInstructions2,
             registerError,
             overviewInfo,
-            personalInfoError;
+            personalInfoError,
+            bcardError;;
     private final VP_Button submitResetBtn;
     private final ArrayList<VP_Button> wizardMainButtons;
 
@@ -96,10 +102,12 @@ public class VP_Center extends StackPane {
         resetPassStrengthLine = new VP_DivisionLine();
         registerErrorLine = new VP_DivisionLine();
         personalInfoErrorLine = new VP_DivisionLine();
+        bcardErrorLine = new VP_DivisionLine();
         loginError = new VP_Paragraph("", true);
         resetError = new VP_Paragraph("", true);
         registerError = new VP_Paragraph("", true);
         personalInfoError = new VP_Paragraph("", true);
+        bcardError = new VP_Paragraph("", true);
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
         resetInstructions2 = new VP_Paragraph();
@@ -142,11 +150,19 @@ public class VP_Center extends StackPane {
      *------------------------------------------------------------------------*/
     protected void build() {
         getChildren().addAll(
-                buildLoginScreen(),
-                buildResetPasswordScreen(),
-                buildRegistrationScreen(),
-                buildOverviewScreen(),
-                buildPersonalInfoScreen());
+                buildLoginScreen(),               // screen 0
+                buildResetPasswordScreen(),       // screen 1
+                buildRegistrationScreen(),        // screen 2
+                buildOverviewScreen(),            // screen 3
+                buildPersonalInfoScreen(),        // screen 4
+                buildBusinessCardScreen(),        // screen 5
+                buildCoverLettersStartScreen(),   // screen 6
+                buildCoverLettersEditScreen(),    // screen 7
+                buildThemesStartScreen(),         // screen 8
+                buildThemesEditScreen(),          // screen 9
+                buildDistributeScreen(),          // screen 10
+                buildResumeStartScreen()          // screen 11
+                );
         showScreen(0);
     }
 
@@ -309,7 +325,7 @@ public class VP_Center extends StackPane {
      *   these functions for the logged in user.
      *   A.K.A Screen 3
      * - No parameters.
-     * - No return.
+     * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
     private ScrollPane buildOverviewScreen() {
         //-------- Initialization Start ----------\\
@@ -317,11 +333,11 @@ public class VP_Center extends StackPane {
         VBox screenContent = new VBox();
         VP_PageDivision overviewBox = new VP_PageDivision("OVERVIEW");
         VP_Button updateInfoBtn = new VP_Button("Update Personal Information", new WizardMainAction(4)),
-                updateResumeBtn = new VP_Button("Update Your Resume", new WizardMainAction(5)),
-                updateBcardBtn = new VP_Button("Update Your Business Card", new WizardMainAction(6)),
-                updateCovLetBtn = new VP_Button("Update Your Cover Letters", new WizardMainAction(7)),
+                updateResumeBtn = new VP_Button("Update Your Resume", new WizardMainAction(11)),
+                updateBcardBtn = new VP_Button("Update Your Business Card", new WizardMainAction(5)),
+                updateCovLetBtn = new VP_Button("Update Your Cover Letters", new WizardMainAction(6)),
                 applyThemesBtn = new VP_Button("Apply Themes to Your Docs", new WizardMainAction(8)),
-                distributeBtn = new VP_Button("Distribute Your Docs", new WizardMainAction(9));
+                distributeBtn = new VP_Button("Distribute Your Docs", new WizardMainAction(10));
         VP_DivisionLine step1Line = new VP_DivisionLine(new Node[]{updateInfoBtn, infoProgress}),
                 step2Line = new VP_DivisionLine(new Node[]{updateResumeBtn, resumeProgress}),
                 step3Line = new VP_DivisionLine(new Node[]{updateBcardBtn, bcardProgress}),
@@ -369,7 +385,7 @@ public class VP_Center extends StackPane {
      * - Builds the screen where the user inputs personal information.
      *   A.K.A Screen 4
      * - No parameters.
-     * - No return.
+     * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
     private ScrollPane buildPersonalInfoScreen() {
         //-------- Initialization Start ----------\\
@@ -436,6 +452,245 @@ public class VP_Center extends StackPane {
                 address1Line, address2Line, cityLine, stateLine, zipLine, phoneLine, cellLine,
                 emailLine, notesLine, personalInfoErrorLine, buttonsLine);
         screenContent.getChildren().addAll(personalInfoBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildBusinessCardScreen()
+     * - Builds the screen where the user edits the budiness card.
+     *   A.K.A Screen 5
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildBusinessCardScreen() {
+         //-------- Initialization Start ----------\\
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision bcardPageBox = new VP_PageDivision("BUSINESS CARD");
+        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 110),
+                middleNameLabel = new VP_FieldLabel("*middle name:", 110),
+                lastNameLabel = new VP_FieldLabel("last name:", 110),
+                professionLabel = new VP_FieldLabel("profession:", 110),
+                companyNameLabel = new VP_FieldLabel("*company name:", 110),
+                companySloganLabel = new VP_FieldLabel("*company slogan:", 110),
+                address1Label = new VP_FieldLabel("address line 1:", 110),
+                address2Label = new VP_FieldLabel("*address line 2:", 110),
+                cityLabel = new VP_FieldLabel("city:", 110),
+                stateLabel = new VP_FieldLabel("state:", 110),
+                zipLabel = new VP_FieldLabel("zipcode:", 110), 
+                phoneLabel = new VP_FieldLabel("phone:", 110),
+                cellLabel = new VP_FieldLabel("*cell:", 110),
+                emailLabel = new VP_FieldLabel("email:", 110),
+                webpageLabel = new VP_FieldLabel("*web page:", 110);
+        ArrayList<VP_TextField> businessCardFields = new ArrayList();
+        businessCardFields.add(new VP_TextField(32, 45));   // bind to user
+        businessCardFields.add(new VP_TextField(32, 45));   // bind to user
+        businessCardFields.add(new VP_TextField(32, 45));   // bind to user
+        businessCardFields.add(new VP_TextField(32, 48));   // bind to card
+        businessCardFields.add(new VP_TextField(32, 48));   // bind to card
+        businessCardFields.add(new VP_TextField(32, 128));  // bind to card
+        businessCardFields.add(new VP_TextField(32, 254));  // bind to user
+        businessCardFields.add(new VP_TextField(32, 254));  // bind to user
+        businessCardFields.add(new VP_TextField(32, 45));   // bind to user
+        businessCardFields.add(new VP_TextField(2, 2));     // bind to user
+        businessCardFields.add(new VP_TextField(10, 10));   // bind to suer
+        businessCardFields.add(new VP_TextField(13, 13));   // bind to user
+        businessCardFields.add(new VP_TextField(13, 13));   // bind to user
+        businessCardFields.add(new VP_TextField(32, 254));  // bind to user
+        businessCardFields.add(new VP_TextField(32, 48));   // bind to card
+        VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
+                + "Locked fields can be edited by updating your personal info.");
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitBCardAction(businessCardFields)),
+                cancelBtn = new VP_Button("Cancel", new CancelBCardAction());
+        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, businessCardFields.get(0)}),
+                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, businessCardFields.get(1)}),
+                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, businessCardFields.get(2)}),
+                professionLine = new VP_DivisionLine(new Node[]{professionLabel, businessCardFields.get(3)}),
+                companyNameLine = new VP_DivisionLine(new Node[]{companyNameLabel, businessCardFields.get(4)}),
+                companySloganLine = new VP_DivisionLine(new Node[]{companySloganLabel, businessCardFields.get(5)}),
+                address1Line = new VP_DivisionLine(new Node[]{address1Label, businessCardFields.get(6)}),
+                address2Line = new VP_DivisionLine(new Node[]{address2Label, businessCardFields.get(7)}),
+                cityLine = new VP_DivisionLine(new Node[]{cityLabel, businessCardFields.get(8)}),
+                stateLine = new VP_DivisionLine(new Node[]{stateLabel, businessCardFields.get(9)}),
+                zipLine = new VP_DivisionLine(new Node[]{zipLabel, businessCardFields.get(10)}),
+                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, businessCardFields.get(11)}),
+                cellLine = new VP_DivisionLine(new Node[]{cellLabel, businessCardFields.get(12)}),
+                emailLine = new VP_DivisionLine(new Node[]{emailLabel, businessCardFields.get(13)}),
+                webpageLine = new VP_DivisionLine(new Node[]{webpageLabel, businessCardFields.get(14)}),
+                notesLine = new VP_DivisionLine(new Node[]{notes}),
+                buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+        //-------- Initialization End ------------\\
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        businessCardFields.get(0).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
+        businessCardFields.get(1).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
+        businessCardFields.get(2).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
+        businessCardFields.get(3).textProperty().bindBidirectional(controller.getCurrentUser().getBcard().getProfession());
+        businessCardFields.get(4).textProperty().bindBidirectional(controller.getCurrentUser().getBcard().getCompanyName());
+        businessCardFields.get(5).textProperty().bindBidirectional(controller.getCurrentUser().getBcard().getCompanySlogan());
+        businessCardFields.get(6).textProperty().bindBidirectional(controller.getCurrentUser().getAddress1());
+        businessCardFields.get(7).textProperty().bindBidirectional(controller.getCurrentUser().getAddress2());
+        businessCardFields.get(8).textProperty().bindBidirectional(controller.getCurrentUser().getCity());
+        businessCardFields.get(9).textProperty().bindBidirectional(controller.getCurrentUser().getState());
+        businessCardFields.get(10).textProperty().bindBidirectional(controller.getCurrentUser().getZip());
+        businessCardFields.get(11).textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
+        businessCardFields.get(12).textProperty().bindBidirectional(controller.getCurrentUser().getCell());
+        businessCardFields.get(13).textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
+        businessCardFields.get(14).textProperty().bindBidirectional(controller.getCurrentUser().getBcard().getWebPage());
+        for (int i = 0; i < businessCardFields.size(); i++) {
+            if (i != 3 && i != 4 && i != 5 && i != 14) {
+                businessCardFields.get(i).setEditable(false);
+            }
+        }
+        bcardErrorLine.getChildren().addAll(bcardError);
+        bcardErrorLine.hide();
+        bcardPageBox.getChildren().addAll(firstNameLine, middleNameLine, lastNameLine, professionLine,
+                companyNameLine, companySloganLine, address1Line, address2Line, cityLine, stateLine,
+                zipLine, phoneLine, cellLine, emailLine, webpageLine, notesLine, bcardErrorLine, buttonsLine);
+        screenContent.getChildren().addAll(bcardPageBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildCoverLettersStartScreen()
+     * - Builds the screen where the user sees the list of existing cover
+     *   letters or begins a new one.
+     *   A.K.A Screen 6
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildCoverLettersStartScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision covLetListBox = new VP_PageDivision("COVER LETTERS");
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        
+        screenContent.getChildren().addAll(covLetListBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildCoverLettersEditScreen()
+     * - Builds the screen where the user edits a selected cover letter. 
+     *   A.K.A Screen 7
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildCoverLettersEditScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision covLetEditBox = new VP_PageDivision("EDIT COVER LETTER");
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        
+        screenContent.getChildren().addAll(covLetEditBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildThemesStartScreen()
+     * - Builds the screen where the user sees a list of available themes and 
+     *   applies them to documents. From here, a user may select to build a
+     *   custom theme. 
+     *   A.K.A Screen 8
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildThemesStartScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision themesListBox = new VP_PageDivision("DOCUMENT THEMES");
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        
+        screenContent.getChildren().addAll(themesListBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildThemesEditScreen()
+     * - Builds the screen where the user edits a selected custom theme. 
+     *   A.K.A Screen 9
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildThemesEditScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision themeEditBox = new VP_PageDivision("EDIT CUSTOM THEME");
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        
+        screenContent.getChildren().addAll(themeEditBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildDistributeScreen()
+     * - Builds the screen where the user selects which documents to send as
+     *   attachments to a selected contact. User may also edit the list of
+     *   stored contacts.
+     *   A.K.A Screen 10
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildDistributeScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision distributeBox = new VP_PageDivision("DISTRIBUTE DOCUMENTS");
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        
+        screenContent.getChildren().addAll(distributeBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    /*------------------------------------------------------------------------*
+     * buildResumeStartScreen()
+     * - Builds the screen displaying the completion status of the various 
+     *   resume sections. From here, the user navigates to these sections to
+     *   edit them, or may choose to create a custom section.
+     *   A.K.A Screen 11
+     * - No parameters.
+     * - Returns a scroller that gets applied to a center stackpane level.
+     *------------------------------------------------------------------------*/
+    private ScrollPane buildResumeStartScreen() {
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision resumeStatusBox = new VP_PageDivision("RESUME");
+        
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
+        
+        screenContent.getChildren().addAll(resumeStatusBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
         screen.setContent(screenContent);
@@ -552,8 +807,8 @@ public class VP_Center extends StackPane {
                 wizardMainButtons.get(1).setDisable(false);
                 wizardMainButtons.get(2).setDisable(false);
                 wizardMainButtons.get(3).setDisable(false);
-                if (thisUser.hasCompletedResume() || thisUser.hasCompletedBusinessCard()
-                        || thisUser.hasCompletedCoverLetter()) {
+                if (thisUser.getResume().hasCompletedResume() || thisUser.getBcard().hasCompletedBusinessCard()
+                        || thisUser.getCovlet().hasCompletedCoverLetter()) {
                     overviewInfo.setParaText("You have completed updating your personal information "
                             + "and at least one document. You may update any document or information at "
                             + "any time. You may now also apply a theme to your completed documents and "
@@ -567,30 +822,30 @@ public class VP_Center extends StackPane {
                             + "complete any document of your choice.");
                 }
             }
-            if (thisUser.hasCompletedResume()) {
+            if (thisUser.getResume().hasCompletedResume()) {
                 resumeProgress.getStyleClass().add("complete");
                 resumeProgress.setText("Complete");
-            } else if (thisUser.hasStartedResume()) {
+            } else if (thisUser.getResume().hasStartedResume()) {
                 resumeProgress.getStyleClass().add("inProgress");
                 resumeProgress.setText("In progress");
             } else {
                 resumeProgress.getStyleClass().add("notStarted");
                 resumeProgress.setText("Not started");
             }
-            if (thisUser.hasCompletedBusinessCard()) {
+            if (thisUser.getBcard().hasCompletedBusinessCard()) {
                 bcardProgress.getStyleClass().add("complete");
                 bcardProgress.setText("Complete");
-            } else if (thisUser.hasStartedBusinessCard()) {
+            } else if (thisUser.getBcard().hasStartedBusinessCard()) {
                 bcardProgress.getStyleClass().add("inProgress");
                 bcardProgress.setText("In progress");
             } else {
                 bcardProgress.getStyleClass().add("notStarted");
                 bcardProgress.setText("Not started");
             }
-            if (thisUser.hasCompletedCoverLetter()) {
+            if (thisUser.getCovlet().hasCompletedCoverLetter()) {
                 covletProgress.getStyleClass().add("complete");
                 covletProgress.setText("Complete");
-            } else if (thisUser.hasStartedCoverLetter()) {
+            } else if (thisUser.getCovlet().hasStartedCoverLetter()) {
                 covletProgress.getStyleClass().add("inProgress");
                 covletProgress.setText("In progress");
             } else {
@@ -604,6 +859,86 @@ public class VP_Center extends StackPane {
      * SUBCLASSES
      *########################################################################*/
     /*------------------------------------------------------------------------*
+     * Subclass CancelBCardAction
+     * - Reverts any information changed in the Business Card form back to the 
+     *   user's saved values and brings the user back to the Overview
+     *   page.
+     *------------------------------------------------------------------------*/
+    private class CancelBCardAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            bcardError.setParaText("");
+            bcardErrorLine.hide();
+            controller.getCurrentUser().getBcard().revert();
+            showScreen(3);
+        }
+    }
+    
+    /*------------------------------------------------------------------------*
+     * Subclass SubmitBCardAction
+     * - Saves any information changed in the Business Card  page and brings the
+     *   user back to the Overview page.
+     *------------------------------------------------------------------------*/
+    private class SubmitBCardAction implements EventHandler<ActionEvent> {
+
+        private final ArrayList<VP_TextField> businessCardFields;
+
+        public SubmitBCardAction(ArrayList<VP_TextField> businessCardFields) {
+            this.businessCardFields = businessCardFields;
+        }
+
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            boolean hasError = false;
+            String webRegex = "^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+            Pattern webPattern = Pattern.compile(webRegex);
+            Matcher matcher;
+            //-------- Initialization End ------------\\
+            
+            VP_Sounds.play(0);
+            businessCardFields.get(3).textProperty().setValue(businessCardFields.get(3).textProperty().getValueSafe().trim());
+            businessCardFields.get(4).textProperty().setValue(businessCardFields.get(4).textProperty().getValueSafe().trim());
+            businessCardFields.get(5).textProperty().setValue(businessCardFields.get(5).textProperty().getValueSafe().trim());
+            businessCardFields.get(14).textProperty().setValue(businessCardFields.get(14).textProperty().getValueSafe().trim());
+            if (businessCardFields.get(3).textProperty().getValueSafe() == null) {
+                hasError = true;
+                businessCardFields.get(3).showInvalid();
+                bcardError.setParaText("Profession cannot be blank");
+            }
+            else if (!businessCardFields.get(14).textProperty().getValueSafe().equals("")) {
+               matcher = webPattern.matcher(businessCardFields.get(14).textProperty().getValueSafe());
+               if (!matcher.matches()) {
+                    hasError = true;
+                    businessCardFields.get(14).showInvalid();
+                    bcardError.setParaText("The web address is not in valid form. Be sure to include whether "
+                            + "the address is http or https");
+               }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                bcardErrorLine.show();
+            } else {
+                bcardError.setParaText("");
+                bcardErrorLine.hide();
+                controller.getCurrentUser().getBcard().save();
+                try {
+                    controller.getDataM().saveBCardData();
+                } catch (SQLException ex) {
+                    controller.errorAlert(1414, ex.getMessage());
+                } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                    controller.errorAlert(2901, ex.getMessage());
+                } finally {
+                    showScreen(3);
+                }
+            }
+        }
+    }
+    
+    
+    /*------------------------------------------------------------------------*
      * Subclass CancelPersonalInfoAction
      * - Reverts any information changed in the Personal Information form back 
      *   to the user's saved values and brings the user back to the Overview
@@ -614,6 +949,8 @@ public class VP_Center extends StackPane {
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
+            personalInfoError.setParaText("");
+            personalInfoErrorLine.hide();
             controller.getCurrentUser().revert();
             showScreen(3);
         }
@@ -708,7 +1045,7 @@ public class VP_Center extends StackPane {
                                         + "(xxx)xxx-xxxx");
                             }
                         }
-                        if (!hasError) {
+                        if ((!hasError) && (!personalInfoFields.get(10).textProperty().getValueSafe().equals(""))) {
                             hasError = (!controller.getDataM().checkEmail(personalInfoFields.get(10).textProperty().getValueSafe()));
                             if (hasError) {
                                 personalInfoFields.get(10).showInvalid();
@@ -890,6 +1227,8 @@ public class VP_Center extends StackPane {
             try {
                 accessStatus = controller.getDataM().verifyRegAccess(cred);
                 if (accessStatus) {
+                    cred[1] = loginPass.getText();
+                    controller.getDataM().userLogin(cred);
                     resetLoginRegForms();
                     showScreen(3);
                 } else {

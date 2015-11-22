@@ -56,7 +56,7 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
                 }
             }
             catch (Exception e) {
-                System.out.println(e.getMessage());
+                // tab or enter pressed, just ignore
             }
         }
     }

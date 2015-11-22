@@ -13,6 +13,8 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import com.lowagie.text.DocumentException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,6 +34,17 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class VP_FileManager {
 
@@ -39,16 +52,20 @@ public class VP_FileManager {
     private final String vector;
     private SecretKey key;
     private IvParameterSpec ivps;
+    private DocumentBuilderFactory icFactory;
+    private DocumentBuilder icBuilder;
 
     /*------------------------------------------------------------------------*
-     * VP_DatabaseManager()
-     * - Constructor. Initialiazes the keyPas and vector used in encryption.
+     * VP_FileManager()
+     * - Constructor. Initialiazes the keyPass and vector used in encryption.
      * No Parameters.
      *------------------------------------------------------------------------*/
     protected VP_FileManager() {
         //-------- Initialization Start ----------\\
         keyPass = "localhostvaqPack3306";
         vector = "VAQPACK1";
+        icFactory = null;
+        icBuilder = null;
         //-------- Initialization End ------------\\
     }
 
@@ -138,6 +155,108 @@ public class VP_FileManager {
         prop.setProperty("user", encrypt(cred[0]));
         prop.setProperty("pass", encrypt(cred[1]));
         prop.store(output, null);
+    }
+    
+    protected File generateBCardPDF(VP_User user) throws FileNotFoundException, 
+            TransformerException, ParserConfigurationException, IOException, DocumentException {
+        File bcpdf = new File("bcpdf.tmp"),
+                bcxsl = new File("bcxsl.tmp"),
+                bcxml = new File("bcxml.tmp"),
+                bchtml = new File("bchtml.tmp");
+        bcxsl.deleteOnExit();
+        bcpdf.deleteOnExit();
+        bcxml.deleteOnExit();
+        bchtml.deleteOnExit();
+        // write the xml file
+        FileOutputStream outputStream = new FileOutputStream(bcxml);
+        StreamResult xmlStream = new StreamResult(outputStream);
+        icFactory = DocumentBuilderFactory.newInstance();
+        icBuilder = icFactory.newDocumentBuilder();
+        Document document = icBuilder.newDocument();
+        Element root = document.createElement("businesscard");
+        document.appendChild(root);
+        Element name = document.createElement("name");
+        root.appendChild(name);
+        Element company = document.createElement("company");
+        root.appendChild(company);
+        Element address = document.createElement("address");
+        root.appendChild(address);
+        Element communication = document.createElement("communication");
+        root.appendChild(communication);
+        Element firstname = document.createElement("firstname");
+        name.appendChild(firstname);
+        firstname.appendChild(document.createTextNode(user.getFirstName().getValueSafe()));
+        Element middlename = document.createElement("middlename");
+        name.appendChild(middlename);
+        middlename.appendChild(document.createTextNode(user.getMiddleName().getValueSafe()));
+        Element lastname = document.createElement("lastname");
+        name.appendChild(lastname);
+        lastname.appendChild(document.createTextNode(user.getLastName().getValueSafe())); 
+        Element profession = document.createElement("profession");
+        company.appendChild(profession);
+        profession.appendChild(document.createTextNode(user.getBcard().getProfession().getValueSafe()));
+        Element companyname = document.createElement("companyname");
+        company.appendChild(companyname);
+        companyname.appendChild(document.createTextNode(user.getBcard().getCompanyName().getValueSafe()));
+        Element slogan = document.createElement("slogan");
+        company.appendChild(slogan);
+        slogan.appendChild(document.createTextNode(user.getBcard().getCompanySlogan().getValueSafe()));
+        Element line1 = document.createElement("line1");
+        address.appendChild(line1);
+        line1.appendChild(document.createTextNode(user.getAddress1().getValueSafe()));
+        Element line2 = document.createElement("line2");
+        address.appendChild(line2);
+        line2.appendChild(document.createTextNode(user.getAddress2().getValueSafe()));
+        Element city = document.createElement("city");
+        address.appendChild(city);
+        city.appendChild(document.createTextNode(user.getCity().getValueSafe()));
+        Element state = document.createElement("state");
+        address.appendChild(state);
+        state.appendChild(document.createTextNode(user.getState().getValueSafe()));
+        Element zip = document.createElement("zip");
+        address.appendChild(zip);
+        zip.appendChild(document.createTextNode(user.getZip().getValueSafe()));
+        Element phone = document.createElement("phone");
+        communication.appendChild(phone);
+        phone.appendChild(document.createTextNode(user.getPhone().getValueSafe()));
+        Element cell = document.createElement("cell");
+        communication.appendChild(cell);
+        cell.appendChild(document.createTextNode(user.getCell().getValueSafe()));
+        Element email = document.createElement("email");
+        communication.appendChild(email);
+        email.appendChild(document.createTextNode(user.getDocEmail().getValueSafe()));
+        Element web = document.createElement("web");
+        communication.appendChild(web);
+        web.appendChild(document.createTextNode(user.getBcard().getWebPage().getValueSafe()));
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
+        DOMSource source = new DOMSource(document);
+        transformer.transform(source, xmlStream);
+        outputStream.flush();
+        outputStream.close();
+        // write the xsl file
+        outputStream = new FileOutputStream(bcxsl);
+        byte[] xslBytes = user.getBcard().getXsl().getBytes();
+        outputStream.write(xslBytes);
+        outputStream.flush();
+        outputStream.close();
+        // convert to html
+        VP_DataToHtml.convert(bcxml, bcxsl, bchtml);
+        // convert to pdf
+        VP_HtmlToPdf.convert(bchtml, bcpdf);
+        if (bcxsl.exists()) {
+            bcxsl.delete();
+        }
+        if (bcxml.exists()) {
+            bcxml.delete();
+        }
+        if (bchtml.exists()) {
+            bchtml.delete();
+        }
+        return bcpdf;
     }
 
     /*------------------------------------------------------------------------*

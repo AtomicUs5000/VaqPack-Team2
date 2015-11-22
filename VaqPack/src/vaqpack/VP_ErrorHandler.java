@@ -263,6 +263,14 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 1414:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing business card data.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
 
             // ID 1500 Originates from VP_Loader
             // ID 1600 Originates from VP_Mail
@@ -286,6 +294,12 @@ public class VP_ErrorHandler {
             // ID 2700 Originates from VP_Textfield
             // ID 2800 Originates from VP_PasswordField
             // ID 2900 Originates from VP_DataToHtml
+            case 2901:
+                header = "VaqPack could not create the pdf document for the "
+                        + "business card.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
             // ID 3000 Originates from VP_HtmlToPdf
             // ID 3100 Originates from VP_SoundManager
             // General Error, perhaps invalid code in constructor

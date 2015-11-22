@@ -12,8 +12,16 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -190,8 +198,11 @@ public class VP_DatabaseManager {
         String sql = "CREATE TABLE business_card ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
-                + "  last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
-                + "  data longtext,"
+                + "  profession varchar(48) DEFAULT NULL,"
+                + "  company_name varchar(48) DEFAULT NULL,"
+                + "  company_slogan varchar(128) DEFAULT NULL,"
+                + "  webpage varchar(48) DEFAULT NULL,"
+                + "  theme int(10) DEFAULT -1,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY user_id_UNIQUE (user_id),"
@@ -240,7 +251,6 @@ public class VP_DatabaseManager {
         String sql = "CREATE TABLE cover_letter ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
-                + "  last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "  source varchar(128) DEFAULT NULL,"
                 + "  date datetime DEFAULT NULL,"
                 + "  job_title varchar(128) DEFAULT NULL,"
@@ -269,7 +279,6 @@ public class VP_DatabaseManager {
         String sql = "CREATE TABLE resume ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,\n"
-                + "  last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "  data longtext,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
@@ -296,7 +305,7 @@ public class VP_DatabaseManager {
                 + "  first_name varchar(45) NOT NULL,"
                 + "  middle_name varchar(45) DEFAULT NULL,"
                 + "  last_name varchar(45) NOT NULL,"
-                + "  address_line1 varchar(254) DEFAULT NULL,"
+                + "  address_line1 varchar(254) NOT NULL,"
                 + "  address_line2 varchar(254) DEFAULT NULL,"
                 + "  city varchar(45) NOT NULL,"
                 + "  state varchar(2) NOT NULL,"
@@ -338,75 +347,6 @@ public class VP_DatabaseManager {
     }
 
     /*------------------------------------------------------------------------*
-     * checkDefaultThemeTable()
-     * - Defines the SQL statement to create the 'default_theme' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkDefaultThemeTable() throws SQLException {
-        //-------- Initialization Start ----------\\
-        String sql = "CREATE TABLE default_theme ("
-                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  PRIMARY KEY (id),"
-                + "  UNIQUE KEY id_UNIQUE (id)"
-                + ")";
-        //-------- Initialization End ------------\\
-
-        checkTable(sql);
-    }
-
-    /*------------------------------------------------------------------------*
-     * checkBCHasCustomThemeTable()
-     * - Defines the SQL statement to create the 
-     *   'business_card_has_custom_theme' table and then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkBCHasCustomThemeTable() throws SQLException {
-        //-------- Initialization Start ----------\\
-        String sql = "CREATE TABLE business_card_has_custom_theme ("
-                + "  business_card_id int(10) unsigned NOT NULL,"
-                + "  custom_theme_id int(10) unsigned NOT NULL,"
-                + "  PRIMARY KEY (business_card_id,custom_theme_id),"
-                + "  UNIQUE KEY business_card_id_UNIQUE (business_card_id),"
-                + "  UNIQUE KEY custom_theme_id_UNIQUE (custom_theme_id),"
-                + "  CONSTRAINT bccHID FOREIGN KEY (business_card_id) "
-                + "  REFERENCES business_card (id) ON DELETE CASCADE ON UPDATE NO ACTION,"
-                + "  CONSTRAINT ctbHID FOREIGN KEY (custom_theme_id) "
-                + "  REFERENCES custom_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
-                + ")";
-        //-------- Initialization End ------------\\
-
-        checkTable(sql);
-    }
-
-    /*------------------------------------------------------------------------*
-     * checkBCHasDefaultThemeTable()
-     * - Defines the SQL statement to create the 
-     *   'business_card_has_default_theme' table and then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkBCHasDefaultThemeTable() throws SQLException {
-        //-------- Initialization Start ----------\\
-        String sql = "CREATE TABLE business_card_has_default_theme ("
-                + "  business_card_id int(10) unsigned NOT NULL,"
-                + "  default_theme_id int(10) unsigned NOT NULL,"
-                + "  PRIMARY KEY (business_card_id,default_theme_id),"
-                + "  UNIQUE KEY business_card_id_UNIQUE (business_card_id),"
-                + "  UNIQUE KEY default_theme_id_UNIQUE (default_theme_id),"
-                + "  CONSTRAINT bcdHID FOREIGN KEY (business_card_id) "
-                + "  REFERENCES business_card (id) ON DELETE CASCADE ON UPDATE NO ACTION,"
-                + "  CONSTRAINT dtHID FOREIGN KEY (default_theme_id) "
-                + "  REFERENCES default_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
-                + ")";
-        //-------- Initialization End ------------\\
-
-        checkTable(sql);
-    }
-
-    /*------------------------------------------------------------------------*
      * checkBusinessCardPDFTable()
      * - Defines the SQL statement to create the 'business_card_pdf' table and 
      *   then calls checkTable().
@@ -416,64 +356,12 @@ public class VP_DatabaseManager {
     protected void checkBusinessCardPDFTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card_pdf ("
-                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  business_card_id int(10) unsigned NOT NULL,"
-                + "  pdf longtext,"
-                + "  PRIMARY KEY (id,business_card_id),"
-                + "  UNIQUE KEY id_UNIQUE (id),"
-                + "  UNIQUE KEY business_card_id_UNIQUE (business_card_id),"
-                + "  CONSTRAINT busPID FOREIGN KEY (business_card_id) "
-                + "  REFERENCES business_card (id) ON DELETE CASCADE ON UPDATE NO ACTION"
-                + ")";
-        //-------- Initialization End ------------\\
-
-        checkTable(sql);
-    }
-
-    /*------------------------------------------------------------------------*
-     * checkCLHasCustomThemeTable()
-     * - Defines the SQL statement to create the 'cover_letter_has_custom_theme'
-     *   table and then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkCLHasCustomThemeTable() throws SQLException {
-        //-------- Initialization Start ----------\\
-        String sql = "CREATE TABLE cover_letter_has_custom_theme ("
-                + "  cover_letter_id int(10) unsigned NOT NULL,"
-                + "  custom_theme_id int(10) unsigned NOT NULL,"
-                + "  PRIMARY KEY (cover_letter_id,custom_theme_id),"
-                + "  UNIQUE KEY cover_letter_id_UNIQUE (cover_letter_id),"
-                + "  UNIQUE KEY custom_theme_id_UNIQUE (custom_theme_id),"
-                + "  CONSTRAINT clcHID FOREIGN KEY (cover_letter_id) "
-                + "  REFERENCES cover_letter (id) ON DELETE CASCADE ON UPDATE NO ACTION,"
-                + "  CONSTRAINT ctclHID FOREIGN KEY (custom_theme_id) "
-                + "  REFERENCES custom_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
-                + ")";
-        //-------- Initialization End ------------\\
-
-        checkTable(sql);
-    }
-
-    /*------------------------------------------------------------------------*
-     * checkCLHasDefaultThemeTable()
-     * - Defines the SQL statement to create the
-     *   'cover_letter_has_default_theme' table and then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkCLHasDefaultThemeTable() throws SQLException {
-        //-------- Initialization Start ----------\\
-        String sql = "CREATE TABLE cover_letter_has_default_theme ("
-                + "  cover_letter_id int(10) unsigned NOT NULL,"
-                + "  default_theme_id int(10) unsigned NOT NULL,"
-                + "  PRIMARY KEY (cover_letter_id,default_theme_id),"
-                + "  UNIQUE KEY cover_letter_id_UNIQUE (cover_letter_id),"
-                + "  UNIQUE KEY default_theme_id_UNIQUE (default_theme_id),"
-                + "  CONSTRAINT cldHID FOREIGN KEY (cover_letter_id) "
-                + "  REFERENCES cover_letter (id) ON DELETE CASCADE ON UPDATE NO ACTION,"
-                + "  CONSTRAINT dtclHID FOREIGN KEY (default_theme_id) "
-                + "  REFERENCES default_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION"
+                + "  user_id int(10) unsigned NOT NULL,"
+                + "  pdf blob,"
+                + "  PRIMARY KEY (user_id),"
+                + "  UNIQUE KEY user_id_UNIQUE (user_id),"
+                + "  CONSTRAINT userIDbcpdf FOREIGN KEY (user_id) REFERENCES user (id)"
+                + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
         //-------- Initialization End ------------\\
 
@@ -492,62 +380,12 @@ public class VP_DatabaseManager {
         String sql = "CREATE TABLE cover_letter_pdf ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  cover_letter_id int(10) unsigned NOT NULL,"
-                + "  pdf longtext,"
+                + "  pdf blob,"
                 + "  PRIMARY KEY (id,cover_letter_id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY cover_letter_id_UNIQUE (cover_letter_id),"
                 + "  CONSTRAINT covPID FOREIGN KEY (cover_letter_id) "
                 + "  REFERENCES cover_letter (id) ON DELETE CASCADE ON UPDATE NO ACTION"
-                + ")";
-        //-------- Initialization End ------------\\
-
-        checkTable(sql);
-    }
-
-    /*------------------------------------------------------------------------*
-     * checkResHasCustomThemeTable()
-     * - Defines the SQL statement to create the 'resume_has_custom_theme' table
-     *   and then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkResHasCustomThemeTable() throws SQLException {
-        //-------- Initialization Start ----------\\
-        String sql = "CREATE TABLE resume_has_custom_theme ("
-                + "  resume_id int(10) unsigned NOT NULL,"
-                + "  custom_theme_id int(10) unsigned NOT NULL,"
-                + "  PRIMARY KEY (resume_id,custom_theme_id),"
-                + "  UNIQUE KEY resume_id_UNIQUE (resume_id),"
-                + "  UNIQUE KEY custom_theme_id_UNIQUE (custom_theme_id),"
-                + "  CONSTRAINT c2ID FOREIGN KEY (custom_theme_id) "
-                + "  REFERENCES custom_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION,"
-                + "  CONSTRAINT r2ID FOREIGN KEY (resume_id) "
-                + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
-                + ")";
-        //-------- Initialization End ------------\\
-
-        checkTable(sql);
-    }
-
-    /*------------------------------------------------------------------------*
-     * checkResHasDefaultThemeTable()
-     * - Defines the SQL statement to create the 'resume_has_default_theme'
-     *   table and then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
-    protected void checkResHasDefaultThemeTable() throws SQLException {
-        //-------- Initialization Start ----------\\
-        String sql = "CREATE TABLE resume_has_default_theme ("
-                + "  resume_id int(10) unsigned NOT NULL,"
-                + "  default_theme_id int(10) unsigned NOT NULL,"
-                + "  PRIMARY KEY (resume_id, default_theme_id),"
-                + "  UNIQUE KEY resume_id_UNIQUE (resume_id),"
-                + "  UNIQUE KEY default_theme_id_UNIQUE (default_theme_id),"
-                + "  CONSTRAINT dID FOREIGN KEY (default_theme_id) "
-                + "  REFERENCES default_theme (id) ON DELETE CASCADE ON UPDATE NO ACTION,"
-                + "  CONSTRAINT rID FOREIGN KEY (resume_id) "
-                + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
         //-------- Initialization End ------------\\
 
@@ -564,14 +402,12 @@ public class VP_DatabaseManager {
     protected void checkResPDFTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_pdf ("
-                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  resume_id int(10) unsigned NOT NULL,"
-                + "  pdf longtext,"
-                + "  PRIMARY KEY (id,resume_id),"
-                + "  UNIQUE KEY id_UNIQUE (id),"
-                + "  UNIQUE KEY resume_id_UNIQUE (resume_id),"
-                + "  CONSTRAINT resPID FOREIGN KEY (resume_id) "
-                + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
+                + "  user_id int(10) unsigned NOT NULL,"
+                + "  pdf blob,"
+                + "  PRIMARY KEY (user_id),"
+                + "  UNIQUE KEY user_id_UNIQUE (user_id),"
+                + "  CONSTRAINT userIDrespdf FOREIGN KEY (user_id) REFERENCES user (id)"
+                + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
         //-------- Initialization End ------------\\
 
@@ -588,14 +424,12 @@ public class VP_DatabaseManager {
     protected void checkResHTMLTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_html ("
-                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  resume_id int(10) unsigned NOT NULL,"
-                + "  html longtext,"
-                + "  PRIMARY KEY (id,resume_id),"
-                + "  UNIQUE KEY id_UNIQUE (id),"
-                + "  UNIQUE KEY resume_id_UNIQUE (resume_id),"
-                + "  CONSTRAINT resHID FOREIGN KEY (resume_id) "
-                + "  REFERENCES resume (id) ON DELETE CASCADE ON UPDATE NO ACTION"
+                + "  user_id int(10) unsigned NOT NULL,"
+                + "  pdf blob,"
+                + "  PRIMARY KEY (user_id),"
+                + "  UNIQUE KEY user_id_UNIQUE (user_id),"
+                + "  CONSTRAINT userIDresH FOREIGN KEY (user_id) REFERENCES user (id)"
+                + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
         //-------- Initialization End ------------\\
 
@@ -766,16 +600,15 @@ public class VP_DatabaseManager {
         String sql = "SELECT * FROM user WHERE email = '" + cred[0] + "' AND "
                 + "password = '" + cred[1] + "'";
         //-------- Initialization End ------------\\
-
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
             userID = rts.getInt("id");
+            thisUser.setUserID(userID);
             loginStatus = rts.getInt("access_level");
             dt = new java.util.Date();
             sql = "UPDATE user SET last_access = '" + new Timestamp(dt.getTime()) + "' WHERE id = " + userID;
             stm.executeUpdate(sql);
-            thisUser.setUserID(userID);
             thisUser.getEmail().setValue(cred[0]);
             thisUser.setAccessLevel(loginStatus);
             sql = "SELECT * FROM user_data WHERE user_id = " + userID;
@@ -792,6 +625,17 @@ public class VP_DatabaseManager {
                 thisUser.getPhone().setValue(rts.getString("phone"));
                 thisUser.getCell().setValue(rts.getString("cell"));
                 thisUser.getDocEmail().setValue(rts.getString("email"));
+                thisUser.save();
+                sql = "SELECT * FROM business_card WHERE user_id = " + userID;
+                rts = stm.executeQuery(sql);
+                if (rts.next()) {
+                    thisUser.getBcard().getProfession().setValue(rts.getString("profession"));
+                    thisUser.getBcard().getCompanyName().setValue(rts.getString("company_name"));
+                    thisUser.getBcard().getCompanySlogan().setValue(rts.getString("company_slogan"));
+                    thisUser.getBcard().getWebPage().setValue(rts.getString("webpage"));
+                    thisUser.getBcard().setThemeId(rts.getInt("theme"));
+                    thisUser.getBcard().save();
+                }
             }
             
         } else {
@@ -1021,6 +865,12 @@ public class VP_DatabaseManager {
         return registerStatus;
     }
     
+    /*------------------------------------------------------------------------*
+     * storeUserData()
+     * - This function stores user personal information.
+     * - Parameter thisUser is the currently logged in user.
+     * - No return.
+     *------------------------------------------------------------------------*/
     protected void storeUserData(VP_User thisUser) throws SQLException {
         //-------- Initialization Start ----------\\
         int userID = thisUser.getUserID();
@@ -1061,6 +911,81 @@ public class VP_DatabaseManager {
                     + "'" + thisUser.getDocEmail().getValueSafe() + "')";
         }
         stm.executeUpdate(sql);
+        close();
+    }
+    
+    /*------------------------------------------------------------------------*
+     * storeBCardData()
+     * - This function stores business card data and its pdf file.
+     * - Parameter thisUser is the currently logged in user.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void storeBCardData(VP_User thisUser, File bcpdf) throws SQLException,
+            FileNotFoundException, IOException {
+        //-------- Initialization Start ----------\\
+        int userID = thisUser.getUserID();
+        String sql = "SELECT * FROM business_card WHERE user_id = " + userID;
+        FileInputStream inputStream = new FileInputStream(bcpdf);
+        //-------- Initialization End ------------\\
+        
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            sql = "UPDATE business_card SET "
+                    + "profession = '" + thisUser.getBcard().getProfession().getValueSafe() + "', "
+                    + "company_name = '" + thisUser.getBcard().getCompanyName().getValueSafe() + "', "
+                    + "company_slogan = '" + thisUser.getBcard().getCompanySlogan().getValueSafe() + "', "
+                    + "webpage = '" + thisUser.getBcard().getWebPage().getValueSafe() + "', "
+                    + "theme = " + thisUser.getBcard().getThemeId() + " "
+                    + "WHERE user_id = " + userID;
+        }
+        else {
+            sql = "INSERT INTO business_card (user_id, profession, company_name, "
+                    + "company_slogan, webpage, theme) VALUES (" + thisUser.getUserID() + " ,"
+                    + "'" + thisUser.getBcard().getProfession().getValueSafe() + "', "
+                    + "'" + thisUser.getBcard().getCompanyName().getValueSafe() + "', "
+                    + "'" + thisUser.getBcard().getCompanySlogan().getValueSafe() + "', "
+                    + "'" + thisUser.getBcard().getWebPage().getValueSafe() + "', "
+                    + thisUser.getBcard().getThemeId() + ")";
+        }
+        stm.executeUpdate(sql);
+        sql = "SELECT * FROM business_card_pdf WHERE user_id = " + userID;
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            try (PreparedStatement ps = con.prepareStatement("UPDATE business_card_pdf SET pdf = ? WHERE user_id = ?")) {
+                ps.setBinaryStream(1, (InputStream) inputStream, (int)bcpdf.length());
+                ps.setInt(2, userID);
+                ps.executeUpdate();
+                inputStream.close();
+            }
+        }
+        else {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO business_card_pdf (user_id, pdf) values(?,?)")) {
+                ps.setInt(1, userID);
+                ps.setBinaryStream(2, (InputStream) inputStream, (int)bcpdf.length());
+                ps.executeUpdate();
+                inputStream.close();
+            }
+        }
+        // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
+        sql = "SELECT * FROM business_card_pdf WHERE user_id = " + userID;
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            Blob pdfBlob = rts.getBlob("pdf");
+            File pdf2 = new File("bcpdfLoadedFromDatabaseTest.pdf");
+            InputStream inputStream2 = rts.getBinaryStream("pdf");
+            try (FileOutputStream outputStream = new FileOutputStream(pdf2)) {
+                int current;
+                while ((current = inputStream2.read()) > -1) {
+                    outputStream.write(current);
+                }
+                inputStream.close();
+                outputStream.flush();
+                outputStream.close();
+            }
+        }
+        // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
+        
         close();
     }
 

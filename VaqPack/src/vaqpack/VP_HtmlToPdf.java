@@ -12,16 +12,37 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
-public class VP_HtmlToPdf {
+import com.lowagie.text.DocumentException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+public final class VP_HtmlToPdf {
 
     /*------------------------------------------------------------------------*
      * VP_HtmlToPdf()
-     * - Constructor.
+     * - Private constructor. Cannot be instantiated
+     * No Parameters.
      *------------------------------------------------------------------------*/
-    protected VP_HtmlToPdf() {
-
+    private VP_HtmlToPdf() {
     }
 
+    public static void convert(File htmlFile, File pdfFile) 
+            throws FileNotFoundException, IOException, DocumentException {
+        String url = htmlFile.toURI().toURL().toString();
+        try (OutputStream outputStream = new FileOutputStream(pdfFile)) {
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.setDocument(url);
+            renderer.layout();
+            renderer.createPDF(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }
+    }
+    
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/

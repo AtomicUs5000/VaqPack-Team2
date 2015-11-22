@@ -17,15 +17,12 @@ import javafx.beans.property.StringProperty;
 
 public class VP_User {
 
+    private final VP_BusinessCard bcard;
+    private final VP_Resume resume;
+    private final VP_CoverLetter covlet;
     private int accessLevel,
             userID;
-    private boolean completedPersonalInfo,
-            completedResume,
-            completedBusinessCard,
-            completedCoverLetter,
-            startedResume,
-            startedBusinessCard,
-            startedCoverLetter;
+    private boolean completedPersonalInfo;
     private final StringProperty email,
             firstName,
             middleName,
@@ -71,12 +68,9 @@ public class VP_User {
         userID = -1;
         accessLevel = -1;
         completedPersonalInfo = false;
-        completedResume = false;
-        completedBusinessCard = false;
-        completedCoverLetter = false;
-        startedResume = false;
-        startedBusinessCard = false;
-        startedCoverLetter = false;
+        bcard = new VP_BusinessCard(this);
+        resume = new VP_Resume(this);
+        covlet = new VP_CoverLetter(this);
     }
 
     /*------------------------------------------------------------------------*
@@ -111,13 +105,10 @@ public class VP_User {
         docEmail.setValue(null);
         accessLevel = -1;
         userID = -1;
+        bcard.clear();
+        resume.clear();
+        covlet.clear();
         completedPersonalInfo = false;
-        completedResume = false;
-        completedBusinessCard = false;
-        completedCoverLetter = false;
-        startedResume = false;
-        startedBusinessCard = false;
-        startedCoverLetter = false;
     }
     
     /*------------------------------------------------------------------------*
@@ -141,7 +132,7 @@ public class VP_User {
     }
     
     /*------------------------------------------------------------------------*
-     * revert()
+     * save()
      * - Stored values are set to the current bound properties.
      * - No parameters
      * - No return
@@ -173,30 +164,6 @@ public class VP_User {
      *########################################################################*/
     protected boolean hasCompletedPersonalInfo() {
         return completedPersonalInfo;
-    }
-    
-    protected boolean hasCompletedResume() {
-        return completedResume;
-    }
-
-    protected boolean hasCompletedBusinessCard() {
-        return completedBusinessCard;
-    }
-
-    protected boolean hasCompletedCoverLetter() {
-        return completedCoverLetter;
-    }
-    
-    protected boolean hasStartedResume() {
-        return startedResume;
-    }
-
-    protected boolean hasStartedBusinessCard() {
-        return startedBusinessCard;
-    }
-
-    protected boolean hasStartedCoverLetter() {
-        return startedCoverLetter;
     }
 
     protected int getAccessLevel() {
@@ -261,5 +228,17 @@ public class VP_User {
 
     protected void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    protected VP_BusinessCard getBcard() {
+        return bcard;
+    }
+
+    protected VP_Resume getResume() {
+        return resume;
+    }
+
+    protected VP_CoverLetter getCovlet() {
+        return covlet;
     }
 }
