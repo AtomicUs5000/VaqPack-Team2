@@ -300,10 +300,9 @@ public class VP_DatabaseManager {
                 + "  address_line2 varchar(254) DEFAULT NULL,"
                 + "  city varchar(45) NOT NULL,"
                 + "  state varchar(2) NOT NULL,"
-                + "  zipcode varchar(5) NOT NULL,"
-                + "  zip_plus_4 varchar(4) DEFAULT NULL,"
-                + "  phone varchar(10) NOT NULL,"
-                + "  cell varchar(10) DEFAULT NULL,"
+                + "  zipcode varchar(10) NOT NULL,"
+                + "  phone varchar(13) NOT NULL,"
+                + "  cell varchar(13) DEFAULT NULL,"
                 + "  email varchar(254) DEFAULT NULL,"
                 + "  PRIMARY KEY (user_id),"
                 + "  UNIQUE KEY user_id_UNIQUE (user_id),"
@@ -749,16 +748,17 @@ public class VP_DatabaseManager {
     /*------------------------------------------------------------------------*
      * attemptUserLogin()
      * - May or may not log in the user, depending on where the user is found in
-     *   the databse.
+     *   the database.
      * - Parameter cred is a string array of user credentials.
      * - Returns -1 if user does not exist, returns the user's access level if
      *   the user exists in the user table, and returns -2 if the user is found
      *   in registering_user table.
      *------------------------------------------------------------------------*/
-    protected int attemptUserLogin(String[] cred)
+    protected int attemptUserLogin(String[] cred, VP_User thisUser)
             throws SQLException {
         //-------- Initialization Start ----------\\
         int loginStatus = -1,
+                userID = -1,
                 id;
         Timestamp regTime;
         long newMS;
@@ -770,10 +770,30 @@ public class VP_DatabaseManager {
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
+            userID = rts.getInt("id");
             loginStatus = rts.getInt("access_level");
             dt = new java.util.Date();
-            sql = "UPDATE user SET last_access = '" + new Timestamp(dt.getTime()) + "' WHERE id = " + rts.getInt("id");
-                stm.executeUpdate(sql);
+            sql = "UPDATE user SET last_access = '" + new Timestamp(dt.getTime()) + "' WHERE id = " + userID;
+            stm.executeUpdate(sql);
+            thisUser.setUserID(userID);
+            thisUser.getEmail().setValue(cred[0]);
+            thisUser.setAccessLevel(loginStatus);
+            sql = "SELECT * FROM user_data WHERE user_id = " + userID;
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                thisUser.getFirstName().setValue(rts.getString("first_name"));
+                thisUser.getMiddleName().setValue(rts.getString("middle_name"));
+                thisUser.getLastName().setValue(rts.getString("last_name"));
+                thisUser.getAddress1().setValue(rts.getString("address_line1"));
+                thisUser.getAddress2().setValue(rts.getString("address_line2"));
+                thisUser.getCity().setValue(rts.getString("city"));
+                thisUser.getState().setValue(rts.getString("state"));
+                thisUser.getZip().setValue(rts.getString("zipcode"));
+                thisUser.getPhone().setValue(rts.getString("phone"));
+                thisUser.getCell().setValue(rts.getString("cell"));
+                thisUser.getDocEmail().setValue(rts.getString("email"));
+            }
+            
         } else {
             sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
                     + "password = '" + cred[1] + "'";
@@ -999,6 +1019,49 @@ public class VP_DatabaseManager {
         }
         close();
         return registerStatus;
+    }
+    
+    protected void storeUserData(VP_User thisUser) throws SQLException {
+        //-------- Initialization Start ----------\\
+        int userID = thisUser.getUserID();
+        String sql = "SELECT * FROM user_data WHERE user_id = " + userID;
+        //-------- Initialization End ------------\\
+        
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            sql = "UPDATE user_data SET "
+                    + "first_name = '" + thisUser.getFirstName().getValueSafe() + "', "
+                    + "middle_name = '" + thisUser.getMiddleName().getValueSafe() + "', "
+                    + "last_name = '" + thisUser.getLastName().getValueSafe() + "', "
+                    + "address_line1 = '" + thisUser.getAddress1().getValueSafe() + "', "
+                    + "address_line2 = '" + thisUser.getAddress2().getValueSafe() + "', "
+                    + "city = '" + thisUser.getCity().getValueSafe() + "', "
+                    + "state = '" + thisUser.getState().getValueSafe() + "', "
+                    + "zipcode = '" + thisUser.getZip().getValueSafe() + "', "
+                    + "phone = '" + thisUser.getPhone().getValueSafe() + "', "
+                    + "cell = '" + thisUser.getCell().getValueSafe() + "', "
+                    + "email = '" + thisUser.getDocEmail().getValueSafe() + "' "
+                    + "WHERE user_id = " + userID;
+        }
+        else {
+            sql = "INSERT INTO user_data (user_id, first_name, middle_name, last_name,  "
+                    + "address_line1, address_line2, city, state, zipcode, phone, "
+                    + "cell, email) VALUES (" + thisUser.getUserID() + " ,"
+                    + "'" + thisUser.getFirstName().getValueSafe() + "', "
+                    + "'" + thisUser.getMiddleName().getValueSafe() + "', "
+                    + "'" + thisUser.getLastName().getValueSafe() + "', "
+                    + "'" + thisUser.getAddress1().getValueSafe() + "', "
+                    + "'" + thisUser.getAddress2().getValueSafe() + "', "
+                    + "'" + thisUser.getCity().getValueSafe() + "', "
+                    + "'" + thisUser.getState().getValueSafe() + "', "
+                    + "'" + thisUser.getZip().getValueSafe() + "', "
+                    + "'" + thisUser.getPhone().getValueSafe() + "', "
+                    + "'" + thisUser.getCell().getValueSafe() + "', "
+                    + "'" + thisUser.getDocEmail().getValueSafe() + "')";
+        }
+        stm.executeUpdate(sql);
+        close();
     }
 
     /*------------------------------------------------------------------------*

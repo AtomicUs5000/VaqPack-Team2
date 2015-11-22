@@ -17,7 +17,8 @@ import javafx.beans.property.StringProperty;
 
 public class VP_User {
 
-    private int accessLevel;
+    private int accessLevel,
+            userID;
     private boolean completedPersonalInfo,
             completedResume,
             completedBusinessCard,
@@ -67,6 +68,7 @@ public class VP_User {
         phone = new SimpleStringProperty();
         cell = new SimpleStringProperty();
         docEmail = new SimpleStringProperty();
+        userID = -1;
         accessLevel = -1;
         completedPersonalInfo = false;
         completedResume = false;
@@ -108,6 +110,7 @@ public class VP_User {
         cell.setValue(null);
         docEmail.setValue(null);
         accessLevel = -1;
+        userID = -1;
         completedPersonalInfo = false;
         completedResume = false;
         completedBusinessCard = false;
@@ -250,5 +253,13 @@ public class VP_User {
 
     protected StringProperty getDocEmail() {
         return docEmail;
+    }
+
+    protected int getUserID() {
+        return userID;
+    }
+
+    protected void setUserID(int userID) {
+        this.userID = userID;
     }
 }

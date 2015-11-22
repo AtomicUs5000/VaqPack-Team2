@@ -14,8 +14,10 @@ package vaqpack;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException; 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -186,7 +188,7 @@ public class VP_Center extends StackPane {
         VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{loginEmailLabel, loginEmail}),
                 passLine = new VP_DivisionLine(new Node[]{loginPassLabel, loginPass});
         //-------- Initialization End ------------\\
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
         loginErrorLine.getChildren().addAll(loginError);
         passForgotLabel.getStyleClass().add("clickable");
@@ -228,9 +230,9 @@ public class VP_Center extends StackPane {
                 submitResetPassCodeBtn = new VP_Button("Submit", new SubmitResetPassCode()),
                 cancelResetBtn2 = new VP_Button("Cancel", new CancelResetAction());
         VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{resetEmailLabel, resetEmail,
-                submitResetBtn, cancelResetBtn1});
+            submitResetBtn, cancelResetBtn1});
         //-------- Initialization End ------------\\
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
         resetInstructions1Line.getChildren().addAll(resetInstructions1);
         resetErrorLine.getChildren().addAll(resetError);
@@ -267,9 +269,9 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision registerBox = new VP_PageDivision("REGISTER NEW ACCOUNT");
-        VP_FieldLabel registerEmailLabel = new VP_FieldLabel ("email:", 100),
-                registerPassLabel = new VP_FieldLabel ("password:", 100),
-                registerPassConfirmLabel = new VP_FieldLabel ("confirm\npassword:", 100);
+        VP_FieldLabel registerEmailLabel = new VP_FieldLabel("email:", 100),
+                registerPassLabel = new VP_FieldLabel("password:", 100),
+                registerPassConfirmLabel = new VP_FieldLabel("confirm\npassword:", 100);
         VP_Button registerBtn = new VP_Button("Register", new RegisterSubmitAction()),
                 registerCancelBtn = new VP_Button("Cancel", new CancelRegisterAction());
         VP_Paragraph registerInstructions = new VP_Paragraph("Enter your email and password twice. When "
@@ -299,7 +301,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildOverviewScreen()
      * - Builds the Overview screen which provides access to the main
@@ -327,7 +329,7 @@ public class VP_Center extends StackPane {
                 step5Line = new VP_DivisionLine(new Node[]{applyThemesBtn}),
                 step6Line = new VP_DivisionLine(new Node[]{distributeBtn});
         //-------- Initialization End ------------\\
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
         wizardMainButtons.add(updateInfoBtn);
         wizardMainButtons.add(updateResumeBtn);
@@ -350,7 +352,7 @@ public class VP_Center extends StackPane {
         covletProgress.getStyleClass().add("notStarted");
         covletProgress.setMinWidth(250);
         covletProgress.setAlignment(Pos.CENTER_RIGHT);
-        
+
         overviewBox.getChildren().addAll(overviewInfo, step1Line, step2Line,
                 step3Line, step4Line, step5Line, step6Line);
         updateOverview();
@@ -361,7 +363,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildPersonalInfoScreen()
      * - Builds the screen where the user inputs personal information.
@@ -385,48 +387,49 @@ public class VP_Center extends StackPane {
                 phoneLabel = new VP_FieldLabel("phone:", 100),
                 cellLabel = new VP_FieldLabel("*cell:", 100),
                 emailLabel = new VP_FieldLabel("*email:", 100);
-        VP_TextField firstNameField = new VP_TextField(32, 45),
-                middleNameField = new VP_TextField(32, 45),
-                lastNameField = new VP_TextField(32, 45),
-                address1Field = new VP_TextField(32, 254),
-                address2Field = new VP_TextField(32, 254),
-                cityField = new VP_TextField(32, 45),
-                stateField = new VP_TextField(2, 2),
-                zipField = new VP_TextField(10, 10),
-                phoneField = new VP_TextField(13, 13),
-                cellField = new VP_TextField(13, 13),
-                emailField = new VP_TextField(32, 254);
+        ArrayList<VP_TextField> personalInfoFields = new ArrayList();
+        personalInfoFields.add(new VP_TextField(32, 45));
+        personalInfoFields.add(new VP_TextField(32, 45));
+        personalInfoFields.add(new VP_TextField(32, 45));
+        personalInfoFields.add(new VP_TextField(32, 254));
+        personalInfoFields.add(new VP_TextField(32, 254));
+        personalInfoFields.add(new VP_TextField(32, 45));
+        personalInfoFields.add(new VP_TextField(2, 2));
+        personalInfoFields.add(new VP_TextField(10, 10));
+        personalInfoFields.add(new VP_TextField(13, 13));
+        personalInfoFields.add(new VP_TextField(13, 13));
+        personalInfoFields.add(new VP_TextField(32, 254));
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
                 + "Leave email blank to use your VaqPack account login email address.");
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitPersonalInfoAction()),
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitPersonalInfoAction(personalInfoFields)),
                 cancelBtn = new VP_Button("Cancel", new CancelPersonalInfoAction());
-        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, firstNameField}),
-                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, middleNameField}),
-                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, lastNameField}),
-                address1Line = new VP_DivisionLine(new Node[]{address1Label, address1Field}),
-                address2Line = new VP_DivisionLine(new Node[]{address2Label, address2Field}),
-                cityLine = new VP_DivisionLine(new Node[]{cityLabel, cityField}),
-                stateLine = new VP_DivisionLine(new Node[]{stateLabel, stateField}),
-                zipLine = new VP_DivisionLine(new Node[]{zipLabel, zipField}),
-                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, phoneField}),
-                cellLine = new VP_DivisionLine(new Node[]{cellLabel, cellField}),
-                emailLine = new VP_DivisionLine(new Node[]{emailLabel, emailField}),
+        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, personalInfoFields.get(0)}),
+                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, personalInfoFields.get(1)}),
+                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, personalInfoFields.get(2)}),
+                address1Line = new VP_DivisionLine(new Node[]{address1Label, personalInfoFields.get(3)}),
+                address2Line = new VP_DivisionLine(new Node[]{address2Label, personalInfoFields.get(4)}),
+                cityLine = new VP_DivisionLine(new Node[]{cityLabel, personalInfoFields.get(5)}),
+                stateLine = new VP_DivisionLine(new Node[]{stateLabel, personalInfoFields.get(6)}),
+                zipLine = new VP_DivisionLine(new Node[]{zipLabel, personalInfoFields.get(7)}),
+                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, personalInfoFields.get(8)}),
+                cellLine = new VP_DivisionLine(new Node[]{cellLabel, personalInfoFields.get(9)}),
+                emailLine = new VP_DivisionLine(new Node[]{emailLabel, personalInfoFields.get(10)}),
                 notesLine = new VP_DivisionLine(new Node[]{notes}),
                 buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
         //-------- Initialization End ------------\\
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
-        firstNameField.textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
-        middleNameField.textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
-        lastNameField.textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
-        address1Field.textProperty().bindBidirectional(controller.getCurrentUser().getAddress1());
-        address2Field.textProperty().bindBidirectional(controller.getCurrentUser().getAddress2());
-        cityField.textProperty().bindBidirectional(controller.getCurrentUser().getCity());
-        stateField.textProperty().bindBidirectional(controller.getCurrentUser().getState());
-        zipField.textProperty().bindBidirectional(controller.getCurrentUser().getZip());
-        phoneField.textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
-        cellField.textProperty().bindBidirectional(controller.getCurrentUser().getCell());
-        emailField.textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
+        personalInfoFields.get(0).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
+        personalInfoFields.get(1).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
+        personalInfoFields.get(2).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
+        personalInfoFields.get(3).textProperty().bindBidirectional(controller.getCurrentUser().getAddress1());
+        personalInfoFields.get(4).textProperty().bindBidirectional(controller.getCurrentUser().getAddress2());
+        personalInfoFields.get(5).textProperty().bindBidirectional(controller.getCurrentUser().getCity());
+        personalInfoFields.get(6).textProperty().bindBidirectional(controller.getCurrentUser().getState());
+        personalInfoFields.get(7).textProperty().bindBidirectional(controller.getCurrentUser().getZip());
+        personalInfoFields.get(8).textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
+        personalInfoFields.get(9).textProperty().bindBidirectional(controller.getCurrentUser().getCell());
+        personalInfoFields.get(10).textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
         personalInfoErrorLine.getChildren().addAll(personalInfoError);
         personalInfoErrorLine.hide();
         personalInfoBox.getChildren().addAll(firstNameLine, middleNameLine, lastNameLine,
@@ -514,7 +517,7 @@ public class VP_Center extends StackPane {
         registerError.setText("");
         registerErrorLine.hide();
     }
-    
+
     /*------------------------------------------------------------------------*
      * updateOverview()
      * - Adjust the overview page depending on what the user has completed.
@@ -522,27 +525,24 @@ public class VP_Center extends StackPane {
      * - No return.
      *------------------------------------------------------------------------*/
     private void updateOverview() {
+        //-------- Initialization Start ----------\\
         VP_User thisUser = controller.getCurrentUser();
+        //-------- Initialization End ------------\\
+        
         if (thisUser != null) {
             infoProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
             resumeProgress.getStyleClass().remove(resumeProgress.getStyleClass().size() - 1);
             bcardProgress.getStyleClass().remove(bcardProgress.getStyleClass().size() - 1);
-            covletProgress.getStyleClass().remove(bcardProgress.getStyleClass().size() - 1);
+            covletProgress.getStyleClass().remove(covletProgress.getStyleClass().size() - 1);
             if (!thisUser.hasCompletedPersonalInfo()) {
+                infoProgress.getStyleClass().add("notStarted");
+                infoProgress.setText("Not started");
                 overviewInfo.setParaText("Welcome to VaqPack! Before you can begin building "
                         + "your resume, business card, and cover letters, we need to gather "
                         + "your personal information. This information remains private to "
                         + "you and is stored for the sole purpose of automatically filling in "
                         + "text in your documents. Click \"Update Personal Information\" below "
                         + "to get started.");
-                infoProgress.getStyleClass().add("notStarted");
-                infoProgress.setText("Not started yet");
-                resumeProgress.getStyleClass().add("notStarted");
-                resumeProgress.setText("Not started yet");
-                bcardProgress.getStyleClass().add("notStarted");
-                bcardProgress.setText("Not started yet");
-                covletProgress.getStyleClass().add("notStarted");
-                covletProgress.setText("Not started yet");
                 for (int i = 1; i < wizardMainButtons.size(); i++) {
                     wizardMainButtons.get(i).setDisable(true);
                 }
@@ -552,50 +552,50 @@ public class VP_Center extends StackPane {
                 wizardMainButtons.get(1).setDisable(false);
                 wizardMainButtons.get(2).setDisable(false);
                 wizardMainButtons.get(3).setDisable(false);
-                if (thisUser.hasCompletedResume() || thisUser.hasCompletedBusinessCard() ||
-                        thisUser.hasCompletedCoverLetter()) {
+                if (thisUser.hasCompletedResume() || thisUser.hasCompletedBusinessCard()
+                        || thisUser.hasCompletedCoverLetter()) {
                     overviewInfo.setParaText("You have completed updating your personal information "
                             + "and at least one document. You may update any document or information at "
                             + "any time. You may now also apply a theme to your completed documents and "
                             + "send them via email.");
                     wizardMainButtons.get(4).setDisable(false);
                     wizardMainButtons.get(5).setDisable(false);
-                    if (thisUser.hasCompletedResume()) {
-                        resumeProgress.getStyleClass().add("complete");
-                        resumeProgress.setText("Complete");
-                    } else if (thisUser.hasStartedResume()) {
-                        resumeProgress.getStyleClass().add("inProgress");
-                        resumeProgress.setText("In progress");
-                    } else {
-                        resumeProgress.getStyleClass().add("notStarted");
-                        resumeProgress.setText("Not started yet");
-                    }
-                    if (thisUser.hasCompletedBusinessCard()) {
-                        bcardProgress.getStyleClass().add("complete");
-                        bcardProgress.setText("Complete");
-                    } else if (thisUser.hasStartedBusinessCard()) {
-                        bcardProgress.getStyleClass().add("inProgress");
-                        bcardProgress.setText("In progress");
-                    } else {
-                        bcardProgress.getStyleClass().add("notStarted");
-                        bcardProgress.setText("Not started yet");
-                    }
-                    if (thisUser.hasCompletedCoverLetter()) {
-                        covletProgress.getStyleClass().add("complete");
-                        covletProgress.setText("Complete");
-                    } else if (thisUser.hasStartedCoverLetter()) {
-                        covletProgress.getStyleClass().add("inProgress");
-                        covletProgress.setText("In progress");
-                    } else {
-                        covletProgress.getStyleClass().add("notStarted");
-                        covletProgress.setText("Not started yet");
-                    }
-                }
-                else {
+                } else {
+                    
                     overviewInfo.setParaText("You have completed updating your personal information. "
                             + "You may go back to edit this information at any time. Your next step is to "
                             + "complete any document of your choice.");
                 }
+            }
+            if (thisUser.hasCompletedResume()) {
+                resumeProgress.getStyleClass().add("complete");
+                resumeProgress.setText("Complete");
+            } else if (thisUser.hasStartedResume()) {
+                resumeProgress.getStyleClass().add("inProgress");
+                resumeProgress.setText("In progress");
+            } else {
+                resumeProgress.getStyleClass().add("notStarted");
+                resumeProgress.setText("Not started");
+            }
+            if (thisUser.hasCompletedBusinessCard()) {
+                bcardProgress.getStyleClass().add("complete");
+                bcardProgress.setText("Complete");
+            } else if (thisUser.hasStartedBusinessCard()) {
+                bcardProgress.getStyleClass().add("inProgress");
+                bcardProgress.setText("In progress");
+            } else {
+                bcardProgress.getStyleClass().add("notStarted");
+                bcardProgress.setText("Not started");
+            }
+            if (thisUser.hasCompletedCoverLetter()) {
+                covletProgress.getStyleClass().add("complete");
+                covletProgress.setText("Complete");
+            } else if (thisUser.hasStartedCoverLetter()) {
+                covletProgress.getStyleClass().add("inProgress");
+                covletProgress.setText("In progress");
+            } else {
+                covletProgress.getStyleClass().add("notStarted");
+                covletProgress.setText("Not started");
             }
         }
     }
@@ -610,6 +610,7 @@ public class VP_Center extends StackPane {
      *   page.
      *------------------------------------------------------------------------*/
     private class CancelPersonalInfoAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
@@ -617,43 +618,143 @@ public class VP_Center extends StackPane {
             showScreen(3);
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * Subclass SubmitPersonalInfoAction
      * - Saves any information changed in the Personal Information page and 
      *   brings the user back to the Overview page.
      *------------------------------------------------------------------------*/
     private class SubmitPersonalInfoAction implements EventHandler<ActionEvent> {
+
+        private final ArrayList<VP_TextField> personalInfoFields;
+
+        public SubmitPersonalInfoAction(ArrayList<VP_TextField> personalInfoFields) {
+            this.personalInfoFields = personalInfoFields;
+        }
+
         @Override
         public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            boolean hasError = false;
+            String zipRegex = "^[0-9]{5}(?:-[0-9]{4})?$",
+                    phoneRegex = "\\([0-9]{3}\\)[0-9]{3}\\-[0-9]{4}$";
+            Pattern zipPattern = Pattern.compile(zipRegex),
+                    phonePattern = Pattern.compile(phoneRegex);
+            Matcher matcher;
+            //-------- Initialization End ------------\\
+            
             VP_Sounds.play(0);
-            // UNDER CONSTRUCTION
-            System.out.println("SubmitPersonalInfoAction handled, needs to "
-                    + "verify that all fields have been completed and that the "
-                    + "data is valid before it is saved.");
-            controller.getCurrentUser().save();
-            controller.getDataM().saveUserData();
-            showScreen(3);
+            for (int i = 0; i < personalInfoFields.size(); i++) {
+                personalInfoFields.get(i).textProperty().setValue(personalInfoFields.get(i).textProperty().getValueSafe().trim());
+            }
+            personalInfoFields.get(6).textProperty().setValue(personalInfoFields.get(6).textProperty().getValueSafe().toUpperCase());
+            personalInfoFields.get(10).textProperty().setValue(personalInfoFields.get(10).textProperty().getValueSafe().toLowerCase());
+            if (personalInfoFields.get(10).textProperty().getValueSafe().equals("")) {
+                personalInfoFields.get(10).textProperty().setValue(controller.getCurrentUser().getEmail().getValue());
+            }
+            if (personalInfoFields.get(0).textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                personalInfoFields.get(0).showInvalid();
+                personalInfoError.setParaText("First Name cannot be blank.");
+            } else if (personalInfoFields.get(2).textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                personalInfoFields.get(2).showInvalid();
+                personalInfoError.setParaText("Last Name cannot be blank.");
+            } else if (personalInfoFields.get(3).textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                personalInfoFields.get(3).showInvalid();
+                personalInfoError.setParaText("Address Line 1 cannot be blank.");
+            } else if (personalInfoFields.get(5).textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                personalInfoFields.get(5).showInvalid();
+                personalInfoError.setParaText("City cannot be blank.");
+            } else if (personalInfoFields.get(6).textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                personalInfoFields.get(6).showInvalid();
+                personalInfoError.setParaText("State cannot be blank.");
+            } else if (personalInfoFields.get(6).textProperty().getValueSafe().length() != 2) {
+                hasError = true;
+                personalInfoFields.get(6).showInvalid();
+                personalInfoError.setParaText("State must be two characters.");
+            } else if (personalInfoFields.get(7).textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                personalInfoFields.get(7).showInvalid();
+                personalInfoError.setParaText("Zipcode cannot be blank.");
+            } else if (personalInfoFields.get(8).textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                personalInfoFields.get(8).showInvalid();
+                personalInfoError.setParaText("Phone cannot be blank.");
+            } else {
+                matcher = zipPattern.matcher(personalInfoFields.get(7).textProperty().getValueSafe());
+                if (!matcher.matches()) {
+                    hasError = true;
+                    personalInfoFields.get(7).showInvalid();
+                    personalInfoError.setParaText("Zipcode is not in proper form. "
+                            + "Zipcodes can only be in form xxxxx or xxxxx-xxxx");
+                } else {
+                    matcher = phonePattern.matcher(personalInfoFields.get(8).textProperty().getValueSafe());
+                    if (!matcher.matches()) {
+                        hasError = true;
+                        personalInfoFields.get(8).showInvalid();
+                        personalInfoError.setParaText("Phone numbers must be in  form "
+                                + "(xxx)xxx-xxxx");
+                    } else {
+                        if (personalInfoFields.get(9).textProperty().getValueSafe().length() > 0) {
+                            matcher = phonePattern.matcher(personalInfoFields.get(9).textProperty().getValueSafe());
+                            if (!matcher.matches()) {
+                                hasError = true;
+                                personalInfoFields.get(9).showInvalid();
+                                personalInfoError.setParaText("Phone numbers must be in  form "
+                                        + "(xxx)xxx-xxxx");
+                            }
+                        }
+                        if (!hasError) {
+                            hasError = (!controller.getDataM().checkEmail(personalInfoFields.get(10).textProperty().getValueSafe()));
+                            if (hasError) {
+                                personalInfoFields.get(10).showInvalid();
+                                personalInfoError.setParaText("Email is not in valid form.");
+                            }
+                        }
+                    }
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                personalInfoErrorLine.show();
+            } else {
+                personalInfoError.setParaText("");
+                personalInfoErrorLine.hide();
+                controller.getCurrentUser().save();
+                try {
+                    controller.getDataM().saveUserData();
+                } catch (SQLException ex) {
+                    controller.errorAlert(1413, ex.getMessage());
+                } finally {
+                    showScreen(3);
+                }
+            }
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * Subclass WizardMainAction
      * - Brings the user to one of the main wizard pages
      *------------------------------------------------------------------------*/
     private class WizardMainAction implements EventHandler<ActionEvent> {
+
         private final int wizardPage;
-        
+
         public WizardMainAction(int wizardPage) {
             this.wizardPage = wizardPage;
         }
+
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
             showScreen(wizardPage);
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * Subclass LoginAction
      * - Action event for the 'forgot password?' link on page 0. Switches the
@@ -697,7 +798,7 @@ public class VP_Center extends StackPane {
                 loginPass.getText()};
             int loginStatus;
             //-------- Initialization End ------------\\
-            
+
             VP_Sounds.play(0);
             accessInstructions.setParaText("Enter the access code that was emailed "
                     + "to you when you registered below.");
@@ -727,7 +828,7 @@ public class VP_Center extends StackPane {
                         // user login successful
                         resetLoginRegForms();
                         showScreen(3);
-                    } 
+                    }
                 } catch (SQLException ex) {
                     controller.errorAlert(1407, ex.getMessage());
                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
@@ -754,7 +855,7 @@ public class VP_Center extends StackPane {
             String cred[] = new String[]{loginEmail.getText().toLowerCase(),
                 loginPass.getText(), regLoginAccess.getText()};
             //-------- Initialization End ------------\\
-            
+
             VP_Sounds.play(0);
             try {
                 controller.getDataM().resendAccess(cred);

@@ -292,11 +292,8 @@ public class VP_DataManager {
         //-------- Initialization End ------------\\
         
         cred[1] = hashPassword(cred[1]);
-        loginStatus = dbManager.attemptUserLogin(cred);
+        loginStatus = dbManager.attemptUserLogin(cred, controller.getCurrentUser());
         if (loginStatus >= 0) {
-            
-            controller.getCurrentUser().getEmail().setValue(cred[0]);
-            controller.getCurrentUser().setAccessLevel(loginStatus);
             controller.newUserSet();
         }
         return loginStatus;
@@ -453,10 +450,15 @@ public class VP_DataManager {
         }
     }
     
-    protected void saveUserData() {
-        // UNDER CONSTRUCTION
-        System.out.println("saveUserData called, needs to be implememnted");
-    } 
+    /*------------------------------------------------------------------------*
+     * saveUserData()
+     * - Calls storeUserData() in the database manager passing user data.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void saveUserData() throws SQLException {
+        dbManager.storeUserData(controller.getCurrentUser());
+    }
 
     /*------------------------------------------------------------------------*
      * generatAccessCode()

@@ -130,6 +130,8 @@ public class VP_GUIController {
         errorAlert.setTitle("Error");
         errorAlert.setHeaderText(eh.getHeader());
         errorAlert.setContentText(eh.getContent());
+        errorAlert.setResizable(true);
+        errorAlert.getDialogPane().setPrefSize(sceneWidth * 0.5, sceneHeight * 0.75);
         errorAlert.showAndWait();
         if (eh.isCritical()) {
             System.exit(-1);
