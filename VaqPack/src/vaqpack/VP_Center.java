@@ -199,7 +199,7 @@ public class VP_Center extends StackPane {
                 needAccountLabel = new Label("need an account?");
         VP_Button loginBtn = new VP_Button("Login", new LoginAction()),
                 enterAccessBtn = new VP_Button("Submit", new SubmitAccessAction()),
-                accessCancelBtn = new VP_Button("Cancel", new CancelAccessAction()),
+                accessCancelBtn = new VP_Button("Cancel", new CancelActionPrelogin()),
                 accessResendBtn = new VP_Button("Resend Code", new ResendAccessAction());
         VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{loginEmailLabel, loginEmail}),
                 passLine = new VP_DivisionLine(new Node[]{loginPassLabel, loginPass});
@@ -242,9 +242,9 @@ public class VP_Center extends StackPane {
                 resetNewPassLabel = new VP_FieldLabel("new password:", 100),
                 resetNewPassConfirmLabel = new VP_FieldLabel("confirm\nnew password:", 100),
                 resetCodeLabel = new VP_FieldLabel("code:", 100);
-        VP_Button cancelResetBtn1 = new VP_Button("Cancel", new CancelResetAction()),
+        VP_Button cancelResetBtn1 = new VP_Button("Cancel", new CancelActionPrelogin()),
                 submitResetPassCodeBtn = new VP_Button("Submit", new SubmitResetPassCode()),
-                cancelResetBtn2 = new VP_Button("Cancel", new CancelResetAction());
+                cancelResetBtn2 = new VP_Button("Cancel", new CancelActionPrelogin());
         VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{resetEmailLabel, resetEmail,
             submitResetBtn, cancelResetBtn1});
         //-------- Initialization End ------------\\
@@ -289,7 +289,7 @@ public class VP_Center extends StackPane {
                 registerPassLabel = new VP_FieldLabel("password:", 100),
                 registerPassConfirmLabel = new VP_FieldLabel("confirm\npassword:", 100);
         VP_Button registerBtn = new VP_Button("Register", new RegisterSubmitAction()),
-                registerCancelBtn = new VP_Button("Cancel", new CancelRegisterAction());
+                registerCancelBtn = new VP_Button("Cancel", new CancelActionPrelogin());
         VP_Paragraph registerInstructions = new VP_Paragraph("Enter your email and password twice. When "
                 + "you submit, an email will be sent to you with a registration "
                 + "access code. Login with the email and password you provided "
@@ -391,7 +391,7 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision personalInfoBox = new VP_PageDivision("PERSONAL INFO");
+        VP_PageDivision personalInfoBox = new VP_PageDivision("PERSONAL INFO", "personal-icon-larger.png", 160);
         VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 100),
                 middleNameLabel = new VP_FieldLabel("*middle name:", 100),
                 lastNameLabel = new VP_FieldLabel("last name:", 100),
@@ -418,7 +418,7 @@ public class VP_Center extends StackPane {
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
                 + "Leave email blank to use your VaqPack account login email address.");
         VP_Button submitBtn = new VP_Button("Submit", new SubmitPersonalInfoAction(personalInfoFields)),
-                cancelBtn = new VP_Button("Cancel", new CancelPersonalInfoAction());
+                cancelBtn = new VP_Button("Cancel", new CancelAction());
         VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, personalInfoFields.get(0)}),
                 middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, personalInfoFields.get(1)}),
                 lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, personalInfoFields.get(2)}),
@@ -505,7 +505,7 @@ public class VP_Center extends StackPane {
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
                 + "Locked fields can be edited by updating your personal info.");
         VP_Button submitBtn = new VP_Button("Submit", new SubmitBCardAction(businessCardFields)),
-                cancelBtn = new VP_Button("Cancel", new CancelBCardAction());
+                cancelBtn = new VP_Button("Cancel", new CancelAction());
         VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, businessCardFields.get(0)}),
                 middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, businessCardFields.get(1)}),
                 lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, businessCardFields.get(2)}),
@@ -854,24 +854,38 @@ public class VP_Center extends StackPane {
             }
         }
     }
+    
+    protected void cancelActionFunction() {
+        VP_Sounds.play(0);
+        bcardError.setParaText("");
+        bcardErrorLine.hide();
+        controller.getCurrentUser().getBcard().revert();
+        personalInfoError.setParaText("");
+        personalInfoErrorLine.hide();
+        controller.getCurrentUser().revert();
+    }
+    
+    protected void cancelActionPreloginFunction() {
+        VP_Sounds.play(0);
+        resetLoginRegForms();
+        resetResetPasswordForms();
+        resetRegisterForms();
+    }
 
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
     /*------------------------------------------------------------------------*
-     * Subclass CancelBCardAction
-     * - Reverts any information changed in the Business Card form back to the 
+     * Subclass CancelAction
+     * - Reverts any information changed in post-login forms back to the 
      *   user's saved values and brings the user back to the Overview
      *   page.
      *------------------------------------------------------------------------*/
-    private class CancelBCardAction implements EventHandler<ActionEvent> {
+    private class CancelAction implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            bcardError.setParaText("");
-            bcardErrorLine.hide();
-            controller.getCurrentUser().getBcard().revert();
+            cancelActionFunction();
             showScreen(3);
         }
     }
@@ -936,26 +950,8 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
-    
-    /*------------------------------------------------------------------------*
-     * Subclass CancelPersonalInfoAction
-     * - Reverts any information changed in the Personal Information form back 
-     *   to the user's saved values and brings the user back to the Overview
-     *   page.
-     *------------------------------------------------------------------------*/
-    private class CancelPersonalInfoAction implements EventHandler<ActionEvent> {
 
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            personalInfoError.setParaText("");
-            personalInfoErrorLine.hide();
-            controller.getCurrentUser().revert();
-            showScreen(3);
-        }
-    }
-
+    
     /*------------------------------------------------------------------------*
      * Subclass SubmitPersonalInfoAction
      * - Saves any information changed in the Personal Information page and 
@@ -1164,6 +1160,7 @@ public class VP_Center extends StackPane {
                     } else {
                         // user login successful
                         resetLoginRegForms();
+                        controller.updateTree();
                         showScreen(3);
                     }
                 } catch (SQLException ex) {
@@ -1230,6 +1227,7 @@ public class VP_Center extends StackPane {
                     cred[1] = loginPass.getText();
                     controller.getDataM().userLogin(cred);
                     resetLoginRegForms();
+                    controller.updateTree();
                     showScreen(3);
                 } else {
                     loginError.setText("The registration code is incorrect. Please try again.");
@@ -1247,16 +1245,15 @@ public class VP_Center extends StackPane {
     }
 
     /*------------------------------------------------------------------------*
-     * Subclass CancelAccessAction
-     * - Action event for the cancel button on page 0. Calls 
-     *   resetLoginRegForms() to reset the forms and view.
+     * Subclass CancelActionPrelogin
+     * - Action event for the cancel button on pages before login or involving 
+     *   login. Calls cancelActionPreloginFunction().
      *------------------------------------------------------------------------*/
-    private class CancelAccessAction implements EventHandler<ActionEvent> {
+    private class CancelActionPrelogin implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            resetLoginRegForms();
+            cancelActionPreloginFunction();
         }
     }
 
@@ -1374,21 +1371,6 @@ public class VP_Center extends StackPane {
     }
 
     /*------------------------------------------------------------------------*
-     * Subclass CancelResetAction
-     * - Action event for the cancel buttons on page 1. Calls
-     *   resetResetPasswordForms() to restore the page to its original state.
-     *------------------------------------------------------------------------*/
-    private class CancelResetAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            resetResetPasswordForms();
-            showScreen(0);
-        }
-    }
-
-    /*------------------------------------------------------------------------*
      * Subclass RegisterSubmitAction
      * - Action event for the submit buttons on page 2.
      *------------------------------------------------------------------------*/
@@ -1453,21 +1435,6 @@ public class VP_Center extends StackPane {
                 registerErrorLine.show();
                 VP_Sounds.play(-1);
             }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass CancelRegisterAction
-     * - Action event for the cancel buttons on page 2. Calls
-     *   resetRegisterForms() to restore the page to its original state.
-     *------------------------------------------------------------------------*/
-    private class CancelRegisterAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            resetRegisterForms();
-            showScreen(0);
         }
     }
 

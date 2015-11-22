@@ -35,7 +35,16 @@ public final class VP_Theme {
         BC_PHONE_CELL_1(" style=\"font-family:'Times New Roman', Times, serif;\""),
         BC_EMAIL_1(" style=\"font-family:'Times New Roman', Times, serif;font-size: 11pt; display: block;\""),
         BC_WEB_1(" style=\"font-family:'Times New Roman', Times, serif;font-size: 9pt; display: block;\""),
-        
+        CL_NAME_1(" style = \"font-family: 'Times New Roman', Times, serif; font-weight: bold; font-size: 14pt; display: block;\""),
+        CL_ADDRESS1_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_ADDRESS2_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_CITY_STATE_ZIP_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_COMMUNICATION_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_AD_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_DATE_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_CONTACT_NAME_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_CONTACT_INFO_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_LETTER_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
         
         NAME_2(""),
         BC_BACKGROUND_2(""),
@@ -49,7 +58,16 @@ public final class VP_Theme {
         BC_PHONE_CELL_2(""),
         BC_EMAIL_2(""),
         BC_WEB_2(""),
-        
+        CL_NAME_2(""),
+        CL_ADDRESS1_2(""),
+        CL_ADDRESS2_2(""),
+        CL_CITY_STATE_ZIP_2(""),
+        CL_COMMUNICATION_2(""),
+        CL_AD_2(""),
+        CL_DATE_2(""),
+        CL_CONTACT_NAME_2(""),
+        CL_CONTACT_INFO_2(""),
+        CL_LETTER_2(""),
         
         NAME_3(""),
         BC_BACKGROUND_3(""),
@@ -63,6 +81,16 @@ public final class VP_Theme {
         BC_PHONE_CELL_3(""),
         BC_EMAIL_3(""),
         BC_WEB_3(""),
+        CL_NAME_3(""),
+        CL_ADDRESS1_3(""),
+        CL_ADDRESS2_3(""),
+        CL_CITY_STATE_ZIP_3(""),
+        CL_COMMUNICATION_3(""),
+        CL_AD_3(""),
+        CL_DATE_3(""),
+        CL_CONTACT_NAME_3(""),
+        CL_CONTACT_INFO_3(""),
+        CL_LETTER_3(""),
         
         NAME_4(""),
         BC_BACKGROUND_4(""),
@@ -75,7 +103,17 @@ public final class VP_Theme {
         BC_CITY_STATE_ZIP_4(""),
         BC_PHONE_CELL_4(""),
         BC_EMAIL_4(""),
-        BC_WEB_4("");
+        BC_WEB_4(""),
+        CL_NAME_4(""),
+        CL_ADDRESS1_4(""),
+        CL_ADDRESS2_4(""),
+        CL_CITY_STATE_ZIP_4(""),
+        CL_COMMUNICATION_4(""),
+        CL_AD_4(""),
+        CL_DATE_4(""),
+        CL_CONTACT_NAME_4(""),
+        CL_CONTACT_INFO_4(""),
+        CL_LETTER_4("");
         
         
         private final String value;
