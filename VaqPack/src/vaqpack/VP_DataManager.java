@@ -42,7 +42,7 @@ public class VP_DataManager {
      * VP_DataManager()
      * - Constructor.
      * - Parameter VP_GUIController stored to access events
-     * - Parameter VP_Loader atored to manipulate its progress
+     * - Parameter VP_Loader stored to manipulate its progress
      * - Creates a Database Manager, a File Manager, a data-to-html convertor,
      *   and a html-to-pdf convertor.
      *------------------------------------------------------------------------*/
@@ -67,7 +67,7 @@ public class VP_DataManager {
     /*------------------------------------------------------------------------*
      * retrieveDBLocation()
      * - Gets the database server url and port from the properties file that is
-     *   accessible by the File Mangager and sends the values to Database Manager.
+     *   accessible by the File Manager and sends the values to Database Manager.
      * - No parameters.
      * - No return.
      *------------------------------------------------------------------------*/
@@ -127,7 +127,7 @@ public class VP_DataManager {
      * storeAdminCred()
      * - Sends the database admin credentials to the the File Mangager for
      *   encryption and storing in the properties file, and sends the values to 
-     *   th eDatabase Manager to be used by all queries.
+     *   the Database Manager to be used by all queries.
      * - Parameters cred is a string array of database admin credentials.
      * - No return.
      *------------------------------------------------------------------------*/
@@ -232,7 +232,7 @@ public class VP_DataManager {
      * - Calls createVaqPackAdmin() of the Database Manager.
      * - Parameters cred is a string array of the database admin user
      *   credentials and the VaqPack admin user credentials.
-     * - Returns a boolean value indicating if that the database admin user is
+     * - Returns a boolean value indicating if the database admin user is
      *   valid, allowing the creation of this VP admin user account.
      *------------------------------------------------------------------------*/
     protected boolean createVPAdmin(String[] cred) throws SQLException,
@@ -444,7 +444,7 @@ public class VP_DataManager {
     
     /*------------------------------------------------------------------------*
      * saveUserData()
-     * - Calls storeUserData() in the database manager passing user data.
+     * - Calls storeBCardData() in the file manager passing user data.
      * - No parameters.
      * - No return.
      *------------------------------------------------------------------------*/

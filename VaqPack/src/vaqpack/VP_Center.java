@@ -66,7 +66,7 @@ public class VP_Center extends StackPane {
             resetPassStrengthLine,
             registerErrorLine,
             personalInfoErrorLine,
-            bcardErrorLine;;
+            bcardErrorLine;
     private final VP_Paragraph loginError,
             accessInstructions,
             resetError,
@@ -75,7 +75,7 @@ public class VP_Center extends StackPane {
             registerError,
             overviewInfo,
             personalInfoError,
-            bcardError;;
+            bcardError;
     private final VP_Button submitResetBtn;
     private final ArrayList<VP_Button> wizardMainButtons;
 
@@ -461,7 +461,7 @@ public class VP_Center extends StackPane {
     
     /*------------------------------------------------------------------------*
      * buildBusinessCardScreen()
-     * - Builds the screen where the user edits the budiness card.
+     * - Builds the screen where the user edits the business card.
      *   A.K.A Screen 5
      * - No parameters.
      * - Returns a scroller that gets applied to a center stackpane level.

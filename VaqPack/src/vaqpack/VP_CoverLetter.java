@@ -52,7 +52,7 @@ public class VP_CoverLetter {
     
     /*------------------------------------------------------------------------*
      * clear()
-     * - Clears all data in the resume for the next user
+     * - Clears all data in the cover letter for the next user
      * - No parameters
      * - No return
      *------------------------------------------------------------------------*/

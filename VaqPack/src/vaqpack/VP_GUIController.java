@@ -203,7 +203,7 @@ public class VP_GUIController {
     /*------------------------------------------------------------------------*
      * createShell()
      * - Creates an empty BorderPane and its children to be built after the
-     *   stage is showing and while the dtatabase is being checked.
+     *   stage is showing and while the database is being checked.
      * - No paramters.
      * - Returns the empty GUI BorderPane.
      *------------------------------------------------------------------------*/
@@ -366,7 +366,7 @@ public class VP_GUIController {
     /*------------------------------------------------------------------------*
      * requestVPAdmin()
      * - Displays a dialog requesting the VaqPack admin user credentials, as
-     *   well as confirmation that of database server admin credentials.
+     *   well as confirmation of database server admin credentials.
      *   If the user cancels this, the program exits.
      * - Parameter type. type = 0 indicates first time showing this dialog.
      *   type = 1 indicates that the dialog is being shown again.

@@ -73,7 +73,7 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
     
     /*------------------------------------------------------------------------*
      * showValid()
-     * - Removies the red tint when the caller deems it as valid.
+     * - Removes the red tint when the caller deems it as valid.
      * - No Paramters
      * - No Return
      *------------------------------------------------------------------------*/
