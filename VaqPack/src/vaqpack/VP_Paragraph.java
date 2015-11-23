@@ -59,7 +59,7 @@ public class VP_Paragraph extends Label {
 
     /*------------------------------------------------------------------------*
      * setParaText()
-     * - Separate from setText(), this add an indent on the first line.
+     * - Separate from setText(), this adds an indent on the first line.
      * - Parameter string text sets the text for the paragraph.
      * - No return
      *------------------------------------------------------------------------*/

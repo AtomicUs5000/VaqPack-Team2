@@ -147,7 +147,7 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
     
     /*------------------------------------------------------------------------*
      * showValid()
-     * - Removies the red tint when the caller deems it as valid.
+     * - Removes the red tint when the caller deems it as valid.
      * - No Paramters
      * - No Return
      *------------------------------------------------------------------------*/
