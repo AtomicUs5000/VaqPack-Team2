@@ -69,6 +69,7 @@ public class VP_BusinessCard {
         companyNameStored = companyName.getValue();
         companySloganStored = companySlogan.getValue();
         webPageStored = webPage.getValue();
+        // check for completeness
         if (professionStored != null) {
             startedBusinessCard = true;
             completedBusinessCard = true;

@@ -544,6 +544,7 @@ public class VP_Center extends StackPane {
         for (int i = 0; i < businessCardFields.size(); i++) {
             if (i != 3 && i != 4 && i != 5 && i != 14) {
                 businessCardFields.get(i).setEditable(false);
+                businessCardFields.get(i).setDisable(true);
             }
         }
         bcardErrorLine.getChildren().addAll(bcardError);
