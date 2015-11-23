@@ -17,11 +17,17 @@ import java.util.Properties;
 import java.util.Date;
 import java.security.Security;
 import javafx.application.Platform;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class VP_Mail extends Thread {
 
@@ -32,7 +38,8 @@ public class VP_Mail extends Thread {
             password,
             recipient,
             subject,
-            message;
+            message,
+            filename;
     private final String[] ccEmails;
 
     /*------------------------------------------------------------------------*
@@ -54,6 +61,7 @@ public class VP_Mail extends Thread {
         host = "smtp.gamil.com";
         userName = "vaqpackt2";
         password = "!vpMaiL3340?";
+        filename = "/Desktop/testfish.jpg";
         //-------- Initialization End ------------\\
     }
 
@@ -65,7 +73,10 @@ public class VP_Mail extends Thread {
         String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         Session session;
         MimeMessage msg;
+        MimeMultipart attach;
+        BodyPart msgbody;
         SMTPTransport transPort;
+        DataSource source;
         //-------- Initialization End ------------\\
 
         if (ccEmails != null) {
@@ -92,8 +103,19 @@ public class VP_Mail extends Thread {
                 msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmails[i], false));
             }
             msg.setSubject(subject);
-            msg.setText(message, "utf-8");
+            msgbody = new MimeBodyPart();
+            msgbody.setText(message);
             msg.setSentDate(new Date());
+            attach = new MimeMultipart();
+            attach.addBodyPart(msgbody);
+            msgbody = new MimeBodyPart();
+            source = new FileDataSource(filename);
+            msgbody.setDataHandler(new DataHandler(source));
+            msgbody.setFileName(filename);
+            attach.addBodyPart(msgbody);
+            
+            msg.setContent(attach);
+            
             transPort = (SMTPTransport) session.getTransport("smtps");
             transPort.connect("smtp.gmail.com", userName, password);
             transPort.sendMessage(msg, msg.getAllRecipients());
