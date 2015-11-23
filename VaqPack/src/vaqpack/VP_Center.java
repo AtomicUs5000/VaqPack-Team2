@@ -939,15 +939,16 @@ public class VP_Center extends StackPane {
                 bcardError.setParaText("");
                 bcardErrorLine.hide();
                 controller.getCurrentUser().getBcard().save();
-                try {
-                    controller.getDataM().saveBCardData();
-                } catch (SQLException ex) {
-                    controller.errorAlert(1414, ex.getMessage());
-                } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                    controller.errorAlert(2901, ex.getMessage());
-                } finally {
-                    showScreen(3);
+                if (controller.getCurrentUser().getBcard().hasChanges()) {
+                    try {
+                            controller.getDataM().saveBCardData();
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1414, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(2901, ex.getMessage());
+                    }
                 }
+                showScreen(3);
             }
         }
     }

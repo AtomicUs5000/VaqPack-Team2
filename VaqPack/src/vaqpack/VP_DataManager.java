@@ -49,7 +49,7 @@ public class VP_DataManager {
     protected VP_DataManager(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
-        dbManager = new VP_DatabaseManager();
+        dbManager = new VP_DatabaseManager(controller);
         fileM = new VP_FileManager();
         //-------- Initialization End ------------\\
     }
@@ -249,7 +249,7 @@ public class VP_DataManager {
                 + "the system administrator will have to set up your account again.\n"
                 + "The code only needs to be entered once to activate your account.\n\n"
                 + "This is an automated message from the VaqPack software. Please do not reply.";
-        VP_Mail regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg);
+        VP_Mail regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg, "", null);
         //-------- Initialization End ------------\\
 
         regEmail.setDaemon(true);
@@ -321,7 +321,7 @@ public class VP_DataManager {
                     + "you will have to register your account again.\n"
                     + "The code only needs to be entered once to activate your account.\n\n"
                     + "This is an automated message from the VaqPack software. Please do not reply.";
-            regEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg);
+            regEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg, "", null);
             regEmail.setDaemon(true);
             regEmail.start();
         }
@@ -351,7 +351,7 @@ public class VP_DataManager {
                     + code + "\n\n"
                     + "The code will expire in 1 hour.\n\n"
                     + "This is an automated message from the VaqPack software. Please do not reply.";
-            resetEmail = new VP_Mail(controller, email, ccMail, "VaqPack Password Reset", msg);
+            resetEmail = new VP_Mail(controller, email, ccMail, "VaqPack Password Reset", msg, "", null);
             resetEmail.setDaemon(true);
             resetEmail.start();
         }
@@ -398,7 +398,7 @@ public class VP_DataManager {
                     + "you will have to register your account again.\n"
                     + "The code only needs to be entered once to activate your account.\n\n"
                     + "This is an automated message from the VaqPack software. Please do not reply.";
-            registerEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg);
+            registerEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg, "", null);
             registerEmail.setDaemon(true);
             registerEmail.start();
         }

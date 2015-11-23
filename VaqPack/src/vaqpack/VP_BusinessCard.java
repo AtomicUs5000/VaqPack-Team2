@@ -28,7 +28,8 @@ public class VP_BusinessCard {
             companySloganStored,
             webPageStored;
     private boolean startedBusinessCard,
-            completedBusinessCard;
+            completedBusinessCard,
+            changes;
     
     /*------------------------------------------------------------------------*
      * VP_BusinessCard()
@@ -65,19 +66,37 @@ public class VP_BusinessCard {
      * - No return
      *------------------------------------------------------------------------*/
     protected void save() {
-        professionStored = profession.getValue();
-        companyNameStored = companyName.getValue();
-        companySloganStored = companySlogan.getValue();
-        webPageStored = webPage.getValue();
+        changes = false;
+        completedBusinessCard = false;
+        startedBusinessCard = false;
+        
+        if (!professionStored.equals(profession.getValueSafe())) {
+            professionStored = profession.getValue();
+            changes = true;
+        }
+        if (!companyNameStored.equals(companyName.getValueSafe())) {
+            companyNameStored = companyName.getValue();
+            changes = true;
+        }
+        if (!companySloganStored.equals(companySlogan.getValueSafe())) {
+            companySloganStored = companySlogan.getValue();
+            changes = true;
+        }
+        if (!webPageStored.equals(webPage.getValueSafe())) {
+            webPageStored = webPage.getValue();
+            changes = true;
+        }
+        
         // check for completeness
-        if (professionStored != null) {
+        if (professionStored != null && !professionStored.equals("")) {
             startedBusinessCard = true;
             completedBusinessCard = true;
-        } else {
-            completedBusinessCard = false;
+        } else if(companyNameStored != null || companySloganStored != null || webPageStored != null) {
             startedBusinessCard = true;
         }
-        generateXLS();
+        if (changes) {
+            generateXLS();
+        }
     }
     
     /*------------------------------------------------------------------------*
@@ -233,5 +252,9 @@ public class VP_BusinessCard {
 
     protected String getXsl() {
         return xsl;
+    }
+
+    protected boolean hasChanges() {
+        return changes;
     }
 }

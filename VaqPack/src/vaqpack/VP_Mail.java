@@ -13,15 +13,22 @@
 package vaqpack;
 
 import com.sun.mail.smtp.SMTPTransport;
+import java.io.File;
 import java.util.Properties;
 import java.util.Date;
 import java.security.Security;
 import javafx.application.Platform;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class VP_Mail extends Thread {
 
@@ -32,8 +39,10 @@ public class VP_Mail extends Thread {
             password,
             recipient,
             subject,
-            message;
+            message,
+            filename;
     private final String[] ccEmails;
+    private final File attachment;
 
     /*------------------------------------------------------------------------*
      * VP_Mail()
@@ -43,17 +52,19 @@ public class VP_Mail extends Thread {
      * - Paramater string subject is the subject or title of the email.
      * - Parameter string message is the email's message body.
      *------------------------------------------------------------------------*/
-    protected VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message) {
+    protected VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message, String filename, File attachment) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
         this.recipient = recipient;
         this.ccEmails = ccEmails;
         this.subject = subject;
         this.message = message;
+        this.attachment = attachment;
         port = "465";
         host = "smtp.gamil.com";
         userName = "vaqpackt2";
         password = "!vpMaiL3340?";
+        this.filename = filename;
         //-------- Initialization End ------------\\
     }
 
@@ -65,7 +76,10 @@ public class VP_Mail extends Thread {
         String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         Session session;
         MimeMessage msg;
+        MimeMultipart attach;
+        BodyPart msgbody;
         SMTPTransport transPort;
+        DataSource source;
         //-------- Initialization End ------------\\
 
         if (ccEmails != null) {
@@ -92,8 +106,22 @@ public class VP_Mail extends Thread {
                 msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmails[i], false));
             }
             msg.setSubject(subject);
-            msg.setText(message, "utf-8");
+            msgbody = new MimeBodyPart();
+            msgbody.setText(message);
             msg.setSentDate(new Date());
+            attach = new MimeMultipart();
+            attach.addBodyPart(msgbody);
+            msgbody = new MimeBodyPart();
+            
+            // attachment
+            if (!filename.equals("") && attachment != null) {
+                source = new FileDataSource(attachment);
+                msgbody.setDataHandler(new DataHandler(source));
+                msgbody.setFileName(filename);
+                attach.addBodyPart(msgbody);
+                msg.setContent(attach);
+            }
+            
             transPort = (SMTPTransport) session.getTransport("smtps");
             transPort.connect("smtp.gmail.com", userName, password);
             transPort.sendMessage(msg, msg.getAllRecipients());

@@ -30,6 +30,7 @@ import java.util.Date;
 
 public class VP_DatabaseManager {
 
+    private final VP_GUIController controller; // temporary for testing
     private Connection con;
     private Statement stm;
     private ResultSet rts;
@@ -45,11 +46,12 @@ public class VP_DatabaseManager {
      * - Constructor. Initialiazes the connection, statement, and result set.
      * No Parameters.
      *------------------------------------------------------------------------*/
-    protected VP_DatabaseManager() {
+    protected VP_DatabaseManager(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         // url, port, dbadmin user and pass kept here just for refernce. These values
         // may or not be used. These were the original values before the program
         // allowed the entry of different values.
+        this.controller = controller; // temporary for testing
         dbName = "vaqpack_db";
         port = "3306";
         url = "localhost";
@@ -982,6 +984,17 @@ public class VP_DatabaseManager {
                 inputStream.close();
                 outputStream.flush();
                 outputStream.close();
+                
+                String[] ccMail = {
+                "william.dewald01.@utrgv.edu"
+                };
+                VP_Mail bcpdfEmail;
+                String msg = "Pdf send file test.\n\n"
+                    + "This is an automated message from the VaqPack software. Please do not reply.";
+                bcpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "bcpdfLoadedFromDatabaseTest.pdf", pdf2);
+                bcpdfEmail.setDaemon(true);
+                bcpdfEmail.start();
+                
             }
         }
         // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
