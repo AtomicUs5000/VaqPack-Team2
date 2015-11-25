@@ -69,20 +69,24 @@ public class VP_BusinessCard {
         changes = false;
         completedBusinessCard = false;
         startedBusinessCard = false;
-        
-        if (!professionStored.equals(profession.getValueSafe())) {
+        System.out.println("in business card save");
+        if ((professionStored != null && !professionStored.equals(profession.getValue())) || 
+                (professionStored == null && profession.getValue() != null) ) {
             professionStored = profession.getValue();
             changes = true;
         }
-        if (!companyNameStored.equals(companyName.getValueSafe())) {
+        if ((companyNameStored != null && !companyNameStored.equals(companyName.getValue())) || 
+                (companyNameStored == null && companyName.getValue() != null) ) {
             companyNameStored = companyName.getValue();
             changes = true;
         }
-        if (!companySloganStored.equals(companySlogan.getValueSafe())) {
+        if ((companySloganStored != null && !companySloganStored.equals(companySlogan.getValue())) || 
+                (companySloganStored == null && companySlogan.getValue() != null) ) {
             companySloganStored = companySlogan.getValue();
             changes = true;
         }
-        if (!webPageStored.equals(webPage.getValueSafe())) {
+        if ((webPageStored != null && !webPageStored.equals(webPage.getValue())) || 
+                (webPageStored == null && webPage.getValue() != null) ) {
             webPageStored = webPage.getValue();
             changes = true;
         }

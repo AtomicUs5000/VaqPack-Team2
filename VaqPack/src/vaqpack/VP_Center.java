@@ -573,6 +573,8 @@ public class VP_Center extends StackPane {
         VBox screenContent = new VBox();
         VP_PageDivision covLetListBox = new VP_PageDivision("COVER LETTERS");
         
+        
+        
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-10));
         
         screenContent.getChildren().addAll(covLetListBox);

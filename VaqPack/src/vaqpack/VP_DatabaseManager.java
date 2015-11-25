@@ -986,7 +986,7 @@ public class VP_DatabaseManager {
                 outputStream.close();
                 
                 String[] ccMail = {
-                "william.dewald01.@utrgv.edu"
+                "william.dewald01@utrgv.edu"
                 };
                 VP_Mail bcpdfEmail;
                 String msg = "Pdf send file test.\n\n"
@@ -994,7 +994,9 @@ public class VP_DatabaseManager {
                 bcpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "bcpdfLoadedFromDatabaseTest.pdf", pdf2);
                 bcpdfEmail.setDaemon(true);
                 bcpdfEmail.start();
-                
+                if (pdf2.exists()) {
+                    pdf2.delete();
+                }
             }
         }
         // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
