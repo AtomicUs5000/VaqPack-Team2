@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class VP_DatabaseManager {
@@ -61,6 +62,12 @@ public class VP_DatabaseManager {
         con = null;
         stm = null;
         rts = null;
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        Date date = new Date();
+        String formattedDate = formatter.format(date);
+        System.out.println("DATE: " + formattedDate);
+        
         //-------- Initialization End ------------\\
     }
 
@@ -104,7 +111,7 @@ public class VP_DatabaseManager {
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  email varchar(254) NOT NULL,"
                 + "  password char(64) NOT NULL,"
-                + "  access_level int(1) unsigned NOT NULL DEFAULT 0,"
+                + "  access_level tinyint(1) unsigned NOT NULL DEFAULT 0,"
                 + "  last_access datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "  PRIMARY KEY (id, email),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
@@ -126,7 +133,7 @@ public class VP_DatabaseManager {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE access_level ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  level int(1) unsigned NOT NULL,"
+                + "  level tinyint(1) unsigned NOT NULL,"
                 + "  change_credentials bit(1) NOT NULL DEFAULT 0,"
                 + "  create_manager bit(1) NOT NULL DEFAULT 0,"
                 + "  move_db bit(1) NOT NULL DEFAULT 0,"
@@ -152,7 +159,7 @@ public class VP_DatabaseManager {
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  email varchar(254) NOT NULL,"
                 + "  password char(64) NOT NULL,"
-                + "  access_level int(1) unsigned NOT NULL DEFAULT 0,"
+                + "  access_level tinyint(1) unsigned NOT NULL DEFAULT 0,"
                 + "  reg_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "  access_code varchar(16) NOT NULL,"
                 + "  PRIMARY KEY (id, email),"
@@ -204,7 +211,7 @@ public class VP_DatabaseManager {
                 + "  company_name varchar(48) DEFAULT NULL,"
                 + "  company_slogan varchar(128) DEFAULT NULL,"
                 + "  webpage varchar(48) DEFAULT NULL,"
-                + "  theme int(10) DEFAULT -1,"
+                + "  theme tinyint(2) DEFAULT -1,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY user_id_UNIQUE (user_id),"
@@ -254,10 +261,24 @@ public class VP_DatabaseManager {
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
                 + "  source varchar(128) DEFAULT NULL,"
-                + "  date datetime DEFAULT NULL,"
                 + "  job_title varchar(128) DEFAULT NULL,"
                 + "  reference_number varchar(128) DEFAULT NULL,"
+                + "  date varchar(32) NOT NULL,"
+                + "  contact_first_name varchar(45) NOT NULL,"
+                + "  contact_middle_name varchar(45) DEFAULT NULL,"
+                + "  contact_last_name varchar(45) NOT NULL,"
+                + "  contact_title varchar(48) DEFAULT NULL,"
+                + "  contact_company_name varchar(48) DEFAULT NULL,"
+                + "  contact_address_line1 varchar(254) NOT NULL,"
+                + "  contact_address_line2 varchar(254) DEFAULT NULL,"
+                + "  contact_city varchar(45) NOT NULL,"
+                + "  contact_state varchar(2) NOT NULL,"
+                + "  contact_zipcode varchar(10) NOT NULL,"
+                + "  salutation varchar(128) NOT NULL,"
+                + "  numb_paragraphs tinyint(1) unsigned DEFAULT 1,"
                 + "  text longtext,"
+                + "  closing varchar(128) NOT NULL,"
+                + "  theme tinyint(2) DEFAULT -1,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY user_id_UNIQUE (user_id),"
@@ -337,6 +358,7 @@ public class VP_DatabaseManager {
         String sql = "CREATE TABLE custom_theme ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
+                + "  user_theme_id tinyint(2) unsigned NOT NULL,"
                 + "  PRIMARY KEY (id,user_id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY user_id_UNIQUE (user_id),"
@@ -985,18 +1007,13 @@ public class VP_DatabaseManager {
                 outputStream.flush();
                 outputStream.close();
                 
-                String[] ccMail = {
-                "william.dewald01@utrgv.edu"
-                };
+                String[] ccMail = {};
                 VP_Mail bcpdfEmail;
                 String msg = "Pdf send file test.\n\n"
                     + "This is an automated message from the VaqPack software. Please do not reply.";
                 bcpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "bcpdfLoadedFromDatabaseTest.pdf", pdf2);
                 bcpdfEmail.setDaemon(true);
                 bcpdfEmail.start();
-                if (pdf2.exists()) {
-                    pdf2.delete();
-                }
             }
         }
         // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus

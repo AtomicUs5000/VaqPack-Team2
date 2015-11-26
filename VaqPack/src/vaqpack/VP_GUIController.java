@@ -282,7 +282,6 @@ public class VP_GUIController {
                     }
                     CL_Nodes.get(4).getChildren().addAll(CL_B_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Closing", 7));
-                    CL_Nodes.add(new VP_TreeItem("Signature", 7));
                     cl.getChildren().addAll(CL_Nodes);
                 } else if (leftTree.getFalseRoot().getChildren().size() > 2) {
                     // update the dynamically added custom nodes, this is not login

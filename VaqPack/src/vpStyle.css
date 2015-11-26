@@ -285,6 +285,23 @@
     -fx-font-weight: bold;
     -fx-font-size: 16px;
 }
+.formSubdivision {
+    -fx-border-color: rgb(0, 135, 81);
+    -fx-border-radius: 5 5 5 5;
+    -fx-background-radius: 7 7 7 7;
+    -fx-background-color: rgba(255, 255, 255, 0.75);
+}
+.pageSubheader {
+    -fx-text-fill: rgb(0, 135, 81);
+    -fx-font-weight: bold;
+    -fx-font-size: 9px;
+}
+.formContainer {
+    -fx-border-color: rgb(0, 135, 81);
+    -fx-border-radius: 7 7 7 7;
+    -fx-background-radius: 9 9 9 9;
+    -fx-background-color: linear-gradient(to left, rgba(0, 38, 73, 0.3) 0%, rgba(0, 38, 73, 0.05) 100%);
+}
 .inputLabel {
     -fx-text-fill: rgb(0, 38, 73);
     -fx-font-weight: bold;

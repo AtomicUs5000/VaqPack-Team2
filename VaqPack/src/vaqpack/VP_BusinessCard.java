@@ -69,7 +69,6 @@ public class VP_BusinessCard {
         changes = false;
         completedBusinessCard = false;
         startedBusinessCard = false;
-        System.out.println("in business card save");
         if ((professionStored != null && !professionStored.equals(profession.getValue())) || 
                 (professionStored == null && profession.getValue() != null) ) {
             professionStored = profession.getValue();
@@ -243,7 +242,7 @@ public class VP_BusinessCard {
     }
     
     protected boolean hasStartedBusinessCard() {
-        return completedBusinessCard;
+        return startedBusinessCard;
     }
 
     protected int getThemeId() {

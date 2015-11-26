@@ -25,7 +25,7 @@ public class VP_PageDivision extends VBox {
      * - Parameter string title is the title at the top of this component
      *------------------------------------------------------------------------*/
     public VP_PageDivision(String title) {
-        this.setSpacing(10);
+        this.setSpacing(6);
         this.getStyleClass().add("formDivision");
         this.setPadding(new Insets(10, 10, 10, 10));
         Label titleLabel = new Label(title);

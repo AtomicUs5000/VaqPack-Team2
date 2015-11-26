@@ -18,10 +18,12 @@ import javafx.beans.property.StringProperty;
 
 public class VP_CoverLetter {
     private int themeId = -1,
-            numbParagraphs = 1;
+            numbParagraphs = 1,
+            id;
     private final VP_User owner;
     private boolean startedCoverLetter,
-            completedCoverLetter;
+            completedCoverLetter,
+            changes;
     private final StringProperty 
             adSource,
             adJobTitle,
@@ -37,8 +39,7 @@ public class VP_CoverLetter {
             contactState,
             contactZip,
             salutation,
-            closing,
-            signature;
+            closing;
     private final ArrayList<StringProperty> paragraphs;
     private final ArrayList<String> paragraphsStored;
     private String 
@@ -57,7 +58,6 @@ public class VP_CoverLetter {
             contactZipStored,
             salutationStored,
             closingStored,
-            signatureStored,
             xsl;
     
     /*------------------------------------------------------------------------*
@@ -82,7 +82,6 @@ public class VP_CoverLetter {
         contactZip  = new SimpleStringProperty();
         salutation  = new SimpleStringProperty();
         closing  = new SimpleStringProperty();
-        signature  = new SimpleStringProperty();
         paragraphsStored = new ArrayList();
         paragraphs = new ArrayList();
         StringProperty paragraph = new SimpleStringProperty();
@@ -113,7 +112,6 @@ public class VP_CoverLetter {
         contactZip.setValue(contactZipStored);
         salutation.setValue(salutationStored);
         closing.setValue(closingStored);
-        signature.setValue(signatureStored);
         for (int i = 0; i < numbParagraphs; i++) {
             paragraphs.get(i).setValue(paragraphsStored.get(i));
         }
@@ -126,35 +124,42 @@ public class VP_CoverLetter {
      * - No return
      *------------------------------------------------------------------------*/
     protected void save() {
+        changes = false;
+        completedCoverLetter = false;
+        startedCoverLetter = false;
         adSourceStored = adSource.getValue();
         adJobTitleStored = adJobTitle.getValue();
         adRefNumberStored = adRefNumber.getValue();
-        
         contactFirstNameStored = contactFirstName.getValue();
         contactMiddleNameStored = contactMiddleName.getValue();
         contactLastNameStored = contactLastName.getValue();
-        
         contactTitleStored = contactTitle.getValue();
         contactCompanyStored = contactCompany.getValue();
-        
         contactAddress1Stored = contactAddress1.getValue();
-        
         contactAddress2Stored = contactAddress2.getValue();
-        
         contactCityStored = contactCity.getValue();
         contactStateStored = contactState.getValue();
         contactZipStored = contactZip.getValue();
-        
         salutationStored = salutation.getValue();
         closingStored = closing.getValue();
-        signatureStored = signature.getValue();
         for (int i = 0; i < numbParagraphs; i++) {
             paragraphsStored.set(i, paragraphs.get(i).getValueSafe());
         }
+        
         // check for completeness
-        
-        
-        generateXLS();
+        if (contactFirstNameStored != null && !contactFirstNameStored.equals("") &&
+                contactLastNameStored != null && !contactLastNameStored.equals("") &&
+                contactAddress1Stored != null && !contactAddress1Stored.equals("") &&
+                contactCityStored != null && !contactCityStored.equals("") &&
+                contactStateStored != null && !contactStateStored.equals("") &&
+                contactZipStored != null && !contactZipStored.equals("") &&
+                salutationStored != null && !salutationStored.equals("") &&
+                closingStored != null && !closingStored.equals("")) {
+            startedCoverLetter = true;
+            completedCoverLetter = true;
+        }
+        if (changes)
+            generateXLS();
     }
     
     /*------------------------------------------------------------------------*
@@ -188,7 +193,6 @@ public class VP_CoverLetter {
         contactZip.setValue(null);
         salutation.setValue(null);
         closing.setValue(null);
-        signature.setValue(null);
         adSourceStored = null;
         adJobTitleStored = null;
         adRefNumberStored = null;
@@ -204,7 +208,6 @@ public class VP_CoverLetter {
         contactZipStored = null;
         salutationStored = null;
         closingStored = null;
-        signatureStored = null;
     }
     
     /*------------------------------------------------------------------------*
@@ -238,5 +241,89 @@ public class VP_CoverLetter {
 
     protected void setNumbParagraphs(int numbParagraphs) {
         this.numbParagraphs = numbParagraphs;
+    }
+
+    protected int getThemeId() {
+        return themeId;
+    }
+
+    protected void setThemeId(int themeId) {
+        this.themeId = themeId;
+    }
+
+    protected StringProperty getAdSource() {
+        return adSource;
+    }
+
+    protected StringProperty getAdJobTitle() {
+        return adJobTitle;
+    }
+
+    protected StringProperty getAdRefNumber() {
+        return adRefNumber;
+    }
+
+    protected StringProperty getContactFirstName() {
+        return contactFirstName;
+    }
+
+    protected StringProperty getContactMiddleName() {
+        return contactMiddleName;
+    }
+
+    protected StringProperty getContactLastName() {
+        return contactLastName;
+    }
+
+    protected StringProperty getContactTitle() {
+        return contactTitle;
+    }
+
+    protected StringProperty getContactCompany() {
+        return contactCompany;
+    }
+
+    protected StringProperty getContactAddress1() {
+        return contactAddress1;
+    }
+
+    protected StringProperty getContactAddress2() {
+        return contactAddress2;
+    }
+
+    protected StringProperty getContactCity() {
+        return contactCity;
+    }
+
+    protected StringProperty getContactState() {
+        return contactState;
+    }
+
+    protected StringProperty getContactZip() {
+        return contactZip;
+    }
+
+    protected StringProperty getSalutation() {
+        return salutation;
+    }
+
+    protected StringProperty getClosing() {
+        return closing;
+    }
+
+    protected ArrayList<StringProperty> getParagraphs() {
+        return paragraphs;
+    }
+    
+    protected boolean hasChanges() {
+        return changes;
+    }
+
+    protected int getId() {
+        return id;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
     }
 }

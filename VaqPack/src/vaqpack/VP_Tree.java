@@ -48,7 +48,6 @@ public class VP_Tree extends VBox {
         @Override
         public void handle(MouseEvent event) {
             Node node = event.getPickResult().getIntersectedNode();
-            //if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
             if ((!(node instanceof StackPane)) && (node instanceof LabeledText || (node instanceof TreeCell && ((TreeCell) node).getText() != null)))
             {
                 try {
@@ -57,7 +56,7 @@ public class VP_Tree extends VBox {
                     System.out.println("GOOD Node click: " + wizardNumber);
                     controller.quickJump(wizardNumber);
                     
-                    // adds a paragrapg the the cover letter
+                    // adds a paragraph the the cover letter
                     /*
                     treeView.getRoot().getChildren().get(3).getChildren().get(4).getChildren().add(new VP_TreeItem(
                             "Paragraph " + 
@@ -66,7 +65,7 @@ public class VP_Tree extends VBox {
                     */
                 }
                 catch (Exception e) {
-                    // just east it, shouldn't tak you anywhere anyway
+                    // just eat it, shouldn't take you anywhere anyway
                 }
             }
         }

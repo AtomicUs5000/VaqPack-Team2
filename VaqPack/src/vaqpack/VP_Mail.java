@@ -76,17 +76,16 @@ public class VP_Mail extends Thread {
         String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         Session session;
         MimeMessage msg;
-        MimeMultipart attach;
-        BodyPart msgbody;
         SMTPTransport transPort;
+        MimeMultipart attach;
         DataSource source;
+        BodyPart msgbody;
         //-------- Initialization End ------------\\
 
         if (ccEmails != null) {
             ccLength = ccEmails.length;
         }
         try {
-            // need to figure out how to work in attachments
             Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
             props.setProperty("mail.smtps.host", host);
             props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
@@ -106,26 +105,32 @@ public class VP_Mail extends Thread {
                 msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmails[i], false));
             }
             msg.setSubject(subject);
-            msgbody = new MimeBodyPart();
-            msgbody.setText(message);
             msg.setSentDate(new Date());
-            attach = new MimeMultipart();
-            attach.addBodyPart(msgbody);
-            msgbody = new MimeBodyPart();
-            
+
             // attachment
             if (!filename.equals("") && attachment != null) {
+                msgbody = new MimeBodyPart();
+                msgbody.setText(message);
+                attach = new MimeMultipart();
+                attach.addBodyPart(msgbody);
+                msgbody = new MimeBodyPart();
                 source = new FileDataSource(attachment);
                 msgbody.setDataHandler(new DataHandler(source));
                 msgbody.setFileName(filename);
                 attach.addBodyPart(msgbody);
                 msg.setContent(attach);
+            } else {
+                msg.setText(message, "utf-8");
             }
-            
             transPort = (SMTPTransport) session.getTransport("smtps");
             transPort.connect("smtp.gmail.com", userName, password);
             transPort.sendMessage(msg, msg.getAllRecipients());
             transPort.close();
+            if (!filename.equals("") && attachment != null) {
+                if (attachment.exists()) {
+                    attachment.delete();
+                }
+            }  
         } catch (MessagingException ex) {
             Platform.runLater(() -> controller.errorAlert(1601, ex.getMessage()));
         }
