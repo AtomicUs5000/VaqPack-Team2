@@ -246,12 +246,13 @@ public class VP_GUIController {
                     CL_HC_Nodes.add(new VP_TreeItem("Email", 4));
                     CL_H_Nodes.get(2).getChildren().addAll(CL_HC_Nodes);
                     CL_Nodes.get(0).getChildren().addAll(CL_H_Nodes);
+                    CL_Nodes.add(new VP_TreeItem("Date", 7));
                     CL_Nodes.add(new VP_TreeItem("Ad Reference", 7));
                     ArrayList<VP_TreeItem> CL_A_Nodes = new ArrayList();
                     CL_A_Nodes.add(new VP_TreeItem("Source", 7));
                     CL_A_Nodes.add(new VP_TreeItem("Job Position", 7));
                     CL_A_Nodes.add(new VP_TreeItem("Reference Number", 7));
-                    CL_Nodes.get(1).getChildren().addAll(CL_A_Nodes);
+                    CL_Nodes.get(2).getChildren().addAll(CL_A_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Contact Information", 7));
                     ArrayList<VP_TreeItem> CL_C_Nodes = new ArrayList();
                     CL_C_Nodes.add(new VP_TreeItem("Name", 7));
@@ -273,15 +274,21 @@ public class VP_GUIController {
                     CL_CA_Nodes.add(new VP_TreeItem("State", 7));
                     CL_CA_Nodes.add(new VP_TreeItem("Zip", 7));
                     CL_C_Nodes.get(2).getChildren().addAll(CL_CA_Nodes);
-                    CL_Nodes.get(2).getChildren().addAll(CL_C_Nodes);
+                    CL_Nodes.get(3).getChildren().addAll(CL_C_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Salutation", 7));
                     CL_Nodes.add(new VP_TreeItem("Body", 7));
                     ArrayList<VP_TreeItem> CL_B_Nodes = new ArrayList();
                     for (int i = 1; i <= currentUser.getCovlet().getNumbParagraphs(); i++) {
                         CL_B_Nodes.add(new VP_TreeItem("Paragraph " + i, 7));
                     }
-                    CL_Nodes.get(4).getChildren().addAll(CL_B_Nodes);
+                    CL_Nodes.get(5).getChildren().addAll(CL_B_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Closing", 7));
+                    CL_Nodes.add(new VP_TreeItem("Signature", 7));
+                    ArrayList<VP_TreeItem> CL_S_Nodes = new ArrayList();
+                        CL_S_Nodes.add(new VP_TreeItem("First Name", 4));
+                        CL_S_Nodes.add(new VP_TreeItem("Middle Name", 4));
+                        CL_S_Nodes.add(new VP_TreeItem("Last Name", 4));
+                        CL_Nodes.get(7).getChildren().addAll(CL_S_Nodes);
                     cl.getChildren().addAll(CL_Nodes);
                 } else if (leftTree.getFalseRoot().getChildren().size() > 2) {
                     // update the dynamically added custom nodes, this is not login

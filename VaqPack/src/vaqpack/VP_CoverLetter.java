@@ -12,7 +12,9 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -24,7 +26,8 @@ public class VP_CoverLetter {
     private boolean startedCoverLetter,
             completedCoverLetter,
             changes;
-    private final StringProperty 
+    private final StringProperty
+            date,
             adSource,
             adJobTitle,
             adRefNumber,
@@ -43,6 +46,7 @@ public class VP_CoverLetter {
     private final ArrayList<StringProperty> paragraphs;
     private final ArrayList<String> paragraphsStored;
     private String 
+            dateStored,
             adSourceStored,
             adJobTitleStored,
             adRefNumberStored,
@@ -67,6 +71,7 @@ public class VP_CoverLetter {
      *------------------------------------------------------------------------*/
     protected VP_CoverLetter(VP_User owner) {
         this.owner = owner;
+        date = new SimpleStringProperty();
         adSource  = new SimpleStringProperty();
         adJobTitle  = new SimpleStringProperty();
         adRefNumber  = new SimpleStringProperty();
@@ -88,6 +93,9 @@ public class VP_CoverLetter {
         paragraphs.add(paragraph);
         startedCoverLetter = false;
         completedCoverLetter = false;
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        String formattedDate = formatter.format(new Date());
+        date.setValue(formattedDate);
     }
     
     /*------------------------------------------------------------------------*
@@ -97,6 +105,7 @@ public class VP_CoverLetter {
      * - No return
      *------------------------------------------------------------------------*/
     protected void revert() {
+        date.setValue(dateStored);
         adSource.setValue(adSourceStored);
         adJobTitle.setValue(adJobTitleStored);
         adRefNumber.setValue(adRefNumberStored);
@@ -127,25 +136,91 @@ public class VP_CoverLetter {
         changes = false;
         completedCoverLetter = false;
         startedCoverLetter = false;
-        adSourceStored = adSource.getValue();
-        adJobTitleStored = adJobTitle.getValue();
-        adRefNumberStored = adRefNumber.getValue();
-        contactFirstNameStored = contactFirstName.getValue();
-        contactMiddleNameStored = contactMiddleName.getValue();
-        contactLastNameStored = contactLastName.getValue();
-        contactTitleStored = contactTitle.getValue();
-        contactCompanyStored = contactCompany.getValue();
-        contactAddress1Stored = contactAddress1.getValue();
-        contactAddress2Stored = contactAddress2.getValue();
-        contactCityStored = contactCity.getValue();
-        contactStateStored = contactState.getValue();
-        contactZipStored = contactZip.getValue();
-        salutationStored = salutation.getValue();
-        closingStored = closing.getValue();
         for (int i = 0; i < numbParagraphs; i++) {
             paragraphsStored.set(i, paragraphs.get(i).getValueSafe());
         }
         
+        // check for changes
+        if ((dateStored != null && !dateStored.equals(date.getValue())) || 
+                (dateStored == null && date.getValue() != null) ) {
+            dateStored = date.getValue();
+            changes = true;
+        }
+        if ((adSourceStored != null && !adSourceStored.equals(adSource.getValue())) || 
+                (adSourceStored == null && adSource.getValue() != null) ) {
+            adSourceStored = adSource.getValue();
+            changes = true;
+        }
+        if ((adJobTitleStored != null && !adJobTitleStored.equals(adJobTitle.getValue())) || 
+                (adJobTitleStored == null && adJobTitle.getValue() != null) ) {
+            adJobTitleStored = adJobTitle.getValue();
+            changes = true;
+        }
+        if ((adRefNumberStored != null && !adRefNumberStored.equals(adRefNumber.getValue())) || 
+                (adRefNumberStored == null && adRefNumber.getValue() != null) ) {
+            adRefNumberStored = adRefNumber.getValue();
+            changes = true;
+        }
+        if ((contactFirstNameStored != null && !contactFirstNameStored.equals(contactFirstName.getValue())) || 
+                (contactFirstNameStored == null && contactFirstName.getValue() != null) ) {
+            contactFirstNameStored = contactFirstName.getValue();
+            changes = true;
+        }
+        if ((contactMiddleNameStored != null && !contactMiddleNameStored.equals(contactMiddleName.getValue())) || 
+                (contactMiddleNameStored == null && contactMiddleName.getValue() != null) ) {
+            contactMiddleNameStored = contactMiddleName.getValue();
+            changes = true;
+        }
+        if ((contactLastNameStored != null && !contactLastNameStored.equals(contactLastName.getValue())) || 
+                (contactLastNameStored == null && contactLastName.getValue() != null) ) {
+            contactLastNameStored = contactLastName.getValue();
+            changes = true;
+        }
+        if ((contactTitleStored != null && !contactTitleStored.equals(contactTitle.getValue())) || 
+                (contactTitleStored == null && contactTitle.getValue() != null) ) {
+            contactTitleStored = contactTitle.getValue();
+            changes = true;
+        }
+        if ((contactCompanyStored != null && !contactCompanyStored.equals(contactCompany.getValue())) || 
+                (contactCompanyStored == null && contactCompany.getValue() != null) ) {
+            contactCompanyStored = contactCompany.getValue();
+            changes = true;
+        }
+        if ((contactAddress1Stored != null && !contactAddress1Stored.equals(contactAddress1.getValue())) || 
+                (contactAddress1Stored == null && contactAddress1.getValue() != null) ) {
+            contactAddress1Stored = contactAddress1.getValue();
+            changes = true;
+        }
+        if ((contactAddress2Stored != null && !contactAddress2Stored.equals(contactAddress2.getValue())) || 
+                (contactAddress2Stored == null && contactAddress2.getValue() != null) ) {
+            contactAddress2Stored = contactAddress2.getValue();
+            changes = true;
+        }
+        if ((contactCityStored != null && !contactCityStored.equals(contactCity.getValue())) || 
+                (contactCityStored == null && contactCity.getValue() != null) ) {
+            contactCityStored = contactCity.getValue();
+            changes = true;
+        }
+        if ((contactStateStored != null && !contactStateStored.equals(contactState.getValue())) || 
+                (contactStateStored == null && contactState.getValue() != null) ) {
+            contactStateStored = contactState.getValue();
+            changes = true;
+        }
+        if ((contactZipStored != null && !contactZipStored.equals(contactZip.getValue())) || 
+                (contactZipStored == null && contactZip.getValue() != null) ) {
+            contactZipStored = contactZip.getValue();
+            changes = true;
+        }
+        if ((salutationStored != null && !salutationStored.equals(salutation.getValue())) || 
+                (salutationStored == null && salutation.getValue() != null) ) {
+            salutationStored = salutation.getValue();
+            changes = true;
+        }
+        if ((closingStored != null && !closingStored.equals(closing.getValue())) || 
+                (closingStored == null && closing.getValue() != null) ) {
+            closingStored = closing.getValue();
+            changes = true;
+        }
         // check for completeness
         if (contactFirstNameStored != null && !contactFirstNameStored.equals("") &&
                 contactLastNameStored != null && !contactLastNameStored.equals("") &&
@@ -154,9 +229,26 @@ public class VP_CoverLetter {
                 contactStateStored != null && !contactStateStored.equals("") &&
                 contactZipStored != null && !contactZipStored.equals("") &&
                 salutationStored != null && !salutationStored.equals("") &&
-                closingStored != null && !closingStored.equals("")) {
+                closingStored != null && !closingStored.equals("") &&
+                paragraphsStored.get(0) != null && !paragraphsStored.get(0).equals("")) {
             startedCoverLetter = true;
             completedCoverLetter = true;
+        } else if (adSource != null ||
+                adJobTitle != null ||
+                adRefNumber != null ||
+                contactFirstNameStored != null ||
+                contactLastNameStored != null ||
+                contactCompanyStored != null ||
+                contactTitleStored != null ||
+                contactAddress1Stored != null ||
+                contactAddress2Stored != null ||
+                contactCityStored != null ||
+                contactStateStored != null ||
+                contactZipStored != null ||
+                salutationStored != null ||
+                closingStored != null ||
+                paragraphsStored.get(0) != null) {
+            startedCoverLetter = true;
         }
         if (changes)
             generateXLS();
@@ -178,6 +270,9 @@ public class VP_CoverLetter {
         xsl = null;
         completedCoverLetter = false;
         startedCoverLetter = false;
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        String formattedDate = formatter.format(new Date());
+        date.setValue(formattedDate);
         adSource.setValue(null);
         adJobTitle.setValue(null);
         adRefNumber.setValue(null);
@@ -193,6 +288,7 @@ public class VP_CoverLetter {
         contactZip.setValue(null);
         salutation.setValue(null);
         closing.setValue(null);
+        dateStored = null;
         adSourceStored = null;
         adJobTitleStored = null;
         adRefNumberStored = null;
@@ -325,5 +421,9 @@ public class VP_CoverLetter {
 
     protected void setId(int id) {
         this.id = id;
+    }
+
+    protected StringProperty getDate() {
+        return date;
     }
 }

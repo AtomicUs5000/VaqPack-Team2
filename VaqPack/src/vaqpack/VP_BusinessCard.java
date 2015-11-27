@@ -69,6 +69,8 @@ public class VP_BusinessCard {
         changes = false;
         completedBusinessCard = false;
         startedBusinessCard = false;
+        
+        // check for changes
         if ((professionStored != null && !professionStored.equals(profession.getValue())) || 
                 (professionStored == null && profession.getValue() != null) ) {
             professionStored = profession.getValue();
@@ -91,7 +93,7 @@ public class VP_BusinessCard {
         }
         
         // check for completeness
-        if (professionStored != null && !professionStored.equals("")) {
+        if (professionStored != null) {
             startedBusinessCard = true;
             completedBusinessCard = true;
         } else if(companyNameStored != null || companySloganStored != null || webPageStored != null) {

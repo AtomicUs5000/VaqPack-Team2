@@ -27,6 +27,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -154,19 +155,19 @@ public class VP_Center extends StackPane {
      *------------------------------------------------------------------------*/
     protected void build() {
         getChildren().addAll(
-                buildLoginScreen(),               // screen 0
-                buildResetPasswordScreen(),       // screen 1
-                buildRegistrationScreen(),        // screen 2
-                buildOverviewScreen(),            // screen 3
-                buildPersonalInfoScreen(),        // screen 4
-                buildBusinessCardScreen(),        // screen 5
-                buildCoverLettersStartScreen(),   // screen 6
-                buildCoverLettersEditScreen(),    // screen 7
-                buildThemesStartScreen(),         // screen 8
-                buildThemesEditScreen(),          // screen 9
-                buildDistributeScreen(),          // screen 10
-                buildResumeStartScreen()          // screen 11
-                );
+                buildLoginScreen(), // screen 0
+                buildResetPasswordScreen(), // screen 1
+                buildRegistrationScreen(), // screen 2
+                buildOverviewScreen(), // screen 3
+                buildPersonalInfoScreen(), // screen 4
+                buildBusinessCardScreen(), // screen 5
+                buildCoverLettersStartScreen(), // screen 6
+                buildCoverLettersEditScreen(), // screen 7
+                buildThemesStartScreen(), // screen 8
+                buildThemesEditScreen(), // screen 9
+                buildDistributeScreen(), // screen 10
+                buildResumeStartScreen() // screen 11
+        );
         showScreen(0);
     }
 
@@ -462,7 +463,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildBusinessCardScreen()
      * - Builds the screen where the user edits the business card.
@@ -471,7 +472,7 @@ public class VP_Center extends StackPane {
      * - Returns a scroller that gets applied to a center stackpane level.
      *------------------------------------------------------------------------*/
     private ScrollPane buildBusinessCardScreen() {
-         //-------- Initialization Start ----------\\
+        //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision bcardPageBox = new VP_PageDivision("BUSINESS CARD");
@@ -485,7 +486,7 @@ public class VP_Center extends StackPane {
                 address2Label = new VP_FieldLabel("*address line 2:", 110),
                 cityLabel = new VP_FieldLabel("city:", 110),
                 stateLabel = new VP_FieldLabel("state:", 110),
-                zipLabel = new VP_FieldLabel("zipcode:", 110), 
+                zipLabel = new VP_FieldLabel("zipcode:", 110),
                 phoneLabel = new VP_FieldLabel("phone:", 110),
                 cellLabel = new VP_FieldLabel("*cell:", 110),
                 emailLabel = new VP_FieldLabel("email:", 110),
@@ -570,7 +571,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildCoverLettersStartScreen()
      * - Builds the screen where the user sees the list of existing cover
@@ -585,9 +586,9 @@ public class VP_Center extends StackPane {
         VBox screenContent = new VBox();
         VP_PageDivision covLetListBox = new VP_PageDivision("COVER LETTERS");
         //-------- Initialization End ------------\\
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        
+
         screenContent.getChildren().addAll(covLetListBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -595,7 +596,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildCoverLettersEditScreen()
      * - Builds the screen where the user edits a selected cover letter. 
@@ -608,25 +609,39 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision covLetEditBox = new VP_PageDivision("EDIT COVER LETTER");
-        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 110),
-                middleNameLabel = new VP_FieldLabel("*middle name:", 110),
-                lastNameLabel = new VP_FieldLabel("last name:", 110),
-                address1Label = new VP_FieldLabel("address line 1:", 110),
-                address2Label = new VP_FieldLabel("*address line 2:", 110),
-                cityLabel = new VP_FieldLabel("city:", 110),
-                stateLabel = new VP_FieldLabel("state:", 110),
-                zipLabel = new VP_FieldLabel("zipcode:", 110),
-                phoneLabel = new VP_FieldLabel("phone:", 110),
-                cellLabel = new VP_FieldLabel("*cell:", 110),
-                emailLabel = new VP_FieldLabel("email:", 110),
-                adSourceLabel = new VP_FieldLabel("*job ad source:", 110),
-                adJobLabel = new VP_FieldLabel("*job position:", 110),
-                adRefLabel = new VP_FieldLabel("*ad reference no:", 110),
-                contactFirstNameLabel = new VP_FieldLabel("contact first name:", 110),
-                contactMiddleNameLabel = new VP_FieldLabel("*contact middle name:", 110),
-                contactLastNameLabel = new VP_FieldLabel("contact last name:", 110)
-                ;
-        ArrayList<VP_TextField> coverLetterEditFields = new ArrayList();
+        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 140),
+                middleNameLabel = new VP_FieldLabel("*middle name:", 140),
+                lastNameLabel = new VP_FieldLabel("last name:", 140),
+                address1Label = new VP_FieldLabel("address line 1:", 140),
+                address2Label = new VP_FieldLabel("*address line 2:", 140),
+                cityLabel = new VP_FieldLabel("city:", 140),
+                stateLabel = new VP_FieldLabel("state:", 140),
+                zipLabel = new VP_FieldLabel("zipcode:", 140),
+                phoneLabel = new VP_FieldLabel("phone:", 140),
+                cellLabel = new VP_FieldLabel("*cell:", 140),
+                emailLabel = new VP_FieldLabel("email:", 140),
+                dateLabel = new VP_FieldLabel("date:", 140),
+                dateValueLabel = new VP_FieldLabel("", 200),
+                adSourceLabel = new VP_FieldLabel("*job ad source:", 140),
+                adJobLabel = new VP_FieldLabel("*job position:", 140),
+                adRefLabel = new VP_FieldLabel("*ad reference no:", 140),
+                contactFirstNameLabel = new VP_FieldLabel("contact first name:", 140),
+                contactMiddleNameLabel = new VP_FieldLabel("*contact middle name:", 140),
+                contactLastNameLabel = new VP_FieldLabel("contact last name:", 140),
+                contactTitleLabel = new VP_FieldLabel("*contact title:", 140),
+                contactCompanyLabel = new VP_FieldLabel("*company name:", 140),
+                contactAddress1Label = new VP_FieldLabel("contact address line 1:", 140),
+                contactAddress2Label = new VP_FieldLabel("*contact address line 2:", 140),
+                contactCityLabel = new VP_FieldLabel("contact city:", 140),
+                contactStateLabel = new VP_FieldLabel("conact state:", 140),
+                contactZipLabel = new VP_FieldLabel("contact zipcode:", 140),
+                salutationLabel = new VP_FieldLabel("salutation:", 140),
+                paragraph1Label = new VP_FieldLabel("paragraph 1:", 140),
+                sigFirstNameLabel = new VP_FieldLabel("first name:", 140),
+                sigMiddleNameLabel = new VP_FieldLabel("*middle name:", 140),
+                sigLastNameLabel = new VP_FieldLabel("last name:", 140);
+        
+        ArrayList<Node> coverLetterEditFields = new ArrayList();
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
@@ -644,8 +659,19 @@ public class VP_Center extends StackPane {
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 48));   // bind this tocover letter
+        coverLetterEditFields.add(new VP_TextField(32, 48));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 254));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 254));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(2, 2));     // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(10, 10));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
+        coverLetterEditFields.add(new TextArea());  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
+        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
+        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
 
-        
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
                 + "Locked fields can be edited by updating your personal info.");
         VP_Button submitBtn = new VP_Button("Submit", new SubmitCovLetEditAction(coverLetterEditFields)),
@@ -661,44 +687,78 @@ public class VP_Center extends StackPane {
                 phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, coverLetterEditFields.get(8)}),
                 cellLine = new VP_DivisionLine(new Node[]{cellLabel, coverLetterEditFields.get(9)}),
                 emailLine = new VP_DivisionLine(new Node[]{emailLabel, coverLetterEditFields.get(10)}),
+                dateLine = new VP_DivisionLine(new Node[]{dateLabel, dateValueLabel}),
                 adSourceLine = new VP_DivisionLine(new Node[]{adSourceLabel, coverLetterEditFields.get(11)}),
                 adJobLine = new VP_DivisionLine(new Node[]{adJobLabel, coverLetterEditFields.get(12)}),
                 adRefLine = new VP_DivisionLine(new Node[]{adRefLabel, coverLetterEditFields.get(13)}),
                 contactFirstNameLine = new VP_DivisionLine(new Node[]{contactFirstNameLabel, coverLetterEditFields.get(14)}),
                 contactMiddleNameLine = new VP_DivisionLine(new Node[]{contactMiddleNameLabel, coverLetterEditFields.get(15)}),
                 contactLastNameLine = new VP_DivisionLine(new Node[]{contactLastNameLabel, coverLetterEditFields.get(16)}),
-                
-                
+                contactTitleLine = new VP_DivisionLine(new Node[]{contactTitleLabel, coverLetterEditFields.get(17)}),
+                contactCompanyLine = new VP_DivisionLine(new Node[]{contactCompanyLabel, coverLetterEditFields.get(18)}),
+                contactAddress1Line = new VP_DivisionLine(new Node[]{contactAddress1Label, coverLetterEditFields.get(19)}),
+                contactAddress2Line = new VP_DivisionLine(new Node[]{contactAddress2Label, coverLetterEditFields.get(20)}),
+                contactCityLine = new VP_DivisionLine(new Node[]{contactCityLabel, coverLetterEditFields.get(21)}),
+                contactStateLine = new VP_DivisionLine(new Node[]{contactStateLabel, coverLetterEditFields.get(22)}),
+                contactZipLine = new VP_DivisionLine(new Node[]{contactZipLabel, coverLetterEditFields.get(23)}),
+                salutationLine = new VP_DivisionLine(new Node[]{salutationLabel, coverLetterEditFields.get(24)}),
+                paragraph1Line = new VP_DivisionLine(new Node[]{paragraph1Label, coverLetterEditFields.get(25)}),
+                sigFirstNameLine = new VP_DivisionLine(new Node[]{sigFirstNameLabel, coverLetterEditFields.get(26)}),
+                sigMiddleNameLine = new VP_DivisionLine(new Node[]{sigMiddleNameLabel, coverLetterEditFields.get(27)}),
+                sigLastNameLine = new VP_DivisionLine(new Node[]{sigLastNameLabel, coverLetterEditFields.get(28)}),
                 buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
         VP_PageSubdivision heading = new VP_PageSubdivision("HEADING", true),
                 name = new VP_PageSubdivision("NAME", false),
                 address = new VP_PageSubdivision("ADDRESS", false),
                 communication = new VP_PageSubdivision("COMMUNICATION", false),
+                dateDivision = new VP_PageSubdivision("", false),
                 adref = new VP_PageSubdivision("AD REFERENCE", false),
-                contact = new VP_PageSubdivision("CONTACT INFORMATION", true);
-        //-------- Initialization End ------------\\
+                contact = new VP_PageSubdivision("CONTACT INFORMATION", true),
+                contactName = new VP_PageSubdivision("CONTACT NAME", false),
+                contactCompany = new VP_PageSubdivision("CONTACT COMPANY", false),
+                contactAddress = new VP_PageSubdivision("CONTACT ADDRESS", false),
+                salutation = new VP_PageSubdivision("", false),
+                body = new VP_PageSubdivision("BODY", false),
+                signature = new VP_PageSubdivision("SIGNATURE", true),
+                sigName = new VP_PageSubdivision("NAME", false);
         
+        //-------- Initialization End ------------\\
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        coverLetterEditFields.get(0).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
-        coverLetterEditFields.get(1).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
-        coverLetterEditFields.get(2).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
-        coverLetterEditFields.get(3).textProperty().bindBidirectional(controller.getCurrentUser().getAddress1());
-        coverLetterEditFields.get(4).textProperty().bindBidirectional(controller.getCurrentUser().getAddress2());
-        coverLetterEditFields.get(5).textProperty().bindBidirectional(controller.getCurrentUser().getCity());
-        coverLetterEditFields.get(6).textProperty().bindBidirectional(controller.getCurrentUser().getState());
-        coverLetterEditFields.get(7).textProperty().bindBidirectional(controller.getCurrentUser().getZip());
-        coverLetterEditFields.get(8).textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
-        coverLetterEditFields.get(9).textProperty().bindBidirectional(controller.getCurrentUser().getCell());
-        coverLetterEditFields.get(10).textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
-        coverLetterEditFields.get(11).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getAdSource());
-        coverLetterEditFields.get(12).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getAdJobTitle());
-        coverLetterEditFields.get(13).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getAdRefNumber());
-        coverLetterEditFields.get(14).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactFirstName());
-        coverLetterEditFields.get(15).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactMiddleName());
-        coverLetterEditFields.get(16).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactLastName());
+        ((VP_TextField)(coverLetterEditFields.get(0))).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
+        ((VP_TextField)(coverLetterEditFields.get(1))).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
+        ((VP_TextField)(coverLetterEditFields.get(2))).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
+        ((VP_TextField)(coverLetterEditFields.get(3))).textProperty().bindBidirectional(controller.getCurrentUser().getAddress1());
+        ((VP_TextField)(coverLetterEditFields.get(4))).textProperty().bindBidirectional(controller.getCurrentUser().getAddress2());
+        ((VP_TextField)(coverLetterEditFields.get(5))).textProperty().bindBidirectional(controller.getCurrentUser().getCity());
+        ((VP_TextField)(coverLetterEditFields.get(6))).textProperty().bindBidirectional(controller.getCurrentUser().getState());
+        ((VP_TextField)(coverLetterEditFields.get(7))).textProperty().bindBidirectional(controller.getCurrentUser().getZip());
+        ((VP_TextField)(coverLetterEditFields.get(8))).textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
+        ((VP_TextField)(coverLetterEditFields.get(9))).textProperty().bindBidirectional(controller.getCurrentUser().getCell());
+        ((VP_TextField)(coverLetterEditFields.get(10))).textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
+        dateValueLabel.textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getDate());
+        ((VP_TextField)(coverLetterEditFields.get(11))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getAdSource());
+        ((VP_TextField)(coverLetterEditFields.get(12))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getAdJobTitle());
+        ((VP_TextField)(coverLetterEditFields.get(13))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getAdRefNumber());
+        ((VP_TextField)(coverLetterEditFields.get(14))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactFirstName());
+        ((VP_TextField)(coverLetterEditFields.get(15))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactMiddleName());
+        ((VP_TextField)(coverLetterEditFields.get(16))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactLastName());
+        ((VP_TextField)(coverLetterEditFields.get(17))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactTitle());
+        ((VP_TextField)(coverLetterEditFields.get(18))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactCompany());
+        ((VP_TextField)(coverLetterEditFields.get(19))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactAddress1());
+        ((VP_TextField)(coverLetterEditFields.get(20))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactAddress2());
+        ((VP_TextField)(coverLetterEditFields.get(21))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactCity());
+        ((VP_TextField)(coverLetterEditFields.get(22))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactState());
+        ((VP_TextField)(coverLetterEditFields.get(23))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getContactZip());
+        ((VP_TextField)(coverLetterEditFields.get(24))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getSalutation());
+        ((TextArea)(coverLetterEditFields.get(25))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getParagraphs().get(0));
+        ((VP_TextField)(coverLetterEditFields.get(26))).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
+        ((VP_TextField)(coverLetterEditFields.get(27))).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
+        ((VP_TextField)(coverLetterEditFields.get(28))).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
+        
         for (int i = 0; i < coverLetterEditFields.size(); i++) {
-            if (i < 11) {
-                coverLetterEditFields.get(i).setEditable(false);
+            if (i < 11 || i > 25) {
+                ((VP_TextField)(coverLetterEditFields.get(i))).setEditable(false);
                 coverLetterEditFields.get(i).setDisable(true);
             }
         }
@@ -708,8 +768,18 @@ public class VP_Center extends StackPane {
         address.getChildren().addAll(address1Line, address2Line, cityLine, stateLine, zipLine);
         communication.getChildren().addAll(phoneLine, cellLine, emailLine);
         heading.getChildren().addAll(name, address, communication);
+        dateDivision.getChildren().addAll(dateLine);
         adref.getChildren().addAll(adSourceLine, adJobLine, adRefLine);
-        covLetEditBox.getChildren().addAll(heading, adref, notes, covletEditErrorLine, buttonsLine);
+        contactName.getChildren().addAll(contactFirstNameLine, contactMiddleNameLine, contactLastNameLine);
+        contactCompany.getChildren().addAll(contactTitleLine, contactCompanyLine);
+        contactAddress.getChildren().addAll(contactAddress1Line, contactAddress2Line, contactCityLine, contactStateLine, contactZipLine);
+        contact.getChildren().addAll(contactName, contactCompany, contactAddress);
+        salutation.getChildren().addAll(salutationLine);
+        body.getChildren().addAll(paragraph1Line);
+        sigName.getChildren().addAll(sigFirstNameLine, sigMiddleNameLine, sigLastNameLine);
+        signature.getChildren().addAll(sigName);
+        covLetEditBox.getChildren().addAll(heading, dateDivision, adref, contact, 
+                salutation, body, signature, notes, covletEditErrorLine, buttonsLine);
         screenContent.getChildren().addAll(covLetEditBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -717,7 +787,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildThemesStartScreen()
      * - Builds the screen where the user sees a list of available themes and 
@@ -731,9 +801,9 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision themesListBox = new VP_PageDivision("DOCUMENT THEMES");
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        
+
         screenContent.getChildren().addAll(themesListBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -741,7 +811,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildThemesEditScreen()
      * - Builds the screen where the user edits a selected custom theme. 
@@ -753,9 +823,9 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision themeEditBox = new VP_PageDivision("EDIT CUSTOM THEME");
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        
+
         screenContent.getChildren().addAll(themeEditBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -763,7 +833,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildDistributeScreen()
      * - Builds the screen where the user selects which documents to send as
@@ -777,9 +847,9 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision distributeBox = new VP_PageDivision("DISTRIBUTE DOCUMENTS");
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        
+
         screenContent.getChildren().addAll(distributeBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -787,7 +857,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeStartScreen()
      * - Builds the screen displaying the completion status of the various 
@@ -801,9 +871,9 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision resumeStatusBox = new VP_PageDivision("RESUME");
-        
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        
+
         screenContent.getChildren().addAll(resumeStatusBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -897,7 +967,7 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         VP_User thisUser = controller.getCurrentUser();
         //-------- Initialization End ------------\\
-        
+
         if (thisUser != null) {
             infoProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
             resumeProgress.getStyleClass().remove(resumeProgress.getStyleClass().size() - 1);
@@ -930,7 +1000,7 @@ public class VP_Center extends StackPane {
                     wizardMainButtons.get(4).setDisable(false);
                     wizardMainButtons.get(5).setDisable(false);
                 } else {
-                    
+
                     overviewInfo.setParaText("You have completed updating your personal information. "
                             + "You may go back to edit this information at any time. Your next step is to "
                             + "complete any document of your choice.");
@@ -968,7 +1038,7 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
+
     protected void cancelActionFunction() {
         VP_Sounds.play(0);
         bcardError.setParaText("");
@@ -978,14 +1048,14 @@ public class VP_Center extends StackPane {
         personalInfoErrorLine.hide();
         controller.getCurrentUser().revert();
     }
-    
+
     protected void cancelActionPreloginFunction() {
         VP_Sounds.play(0);
         resetLoginRegForms();
         resetResetPasswordForms();
         resetRegisterForms();
     }
-    
+
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
@@ -1003,7 +1073,7 @@ public class VP_Center extends StackPane {
             showScreen(3);
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * Subclass SubmitCovLetEditAction
      * - Saves any information changed in the Business Card  page and brings the
@@ -1011,9 +1081,9 @@ public class VP_Center extends StackPane {
      *------------------------------------------------------------------------*/
     private class SubmitCovLetEditAction implements EventHandler<ActionEvent> {
 
-        private final ArrayList<VP_TextField> coverLetterEditFields;
+        private final ArrayList<Node> coverLetterEditFields;
 
-        public SubmitCovLetEditAction(ArrayList<VP_TextField> coverLetterEditFields) {
+        public SubmitCovLetEditAction(ArrayList<Node> coverLetterEditFields) {
             this.coverLetterEditFields = coverLetterEditFields;
         }
 
@@ -1025,31 +1095,31 @@ public class VP_Center extends StackPane {
             Pattern webPattern = Pattern.compile(webRegex);
             Matcher matcher;
             //-------- Initialization End ------------\\
-            
+
             VP_Sounds.play(0);
             if (hasError) {
                 VP_Sounds.play(-1);
                 covletEditErrorLine.show();
             } else {
-        /*
-                bcardError.setParaText("");
-                covletEditErrorLine.hide();
-                controller.getCurrentUser().getCovlet().save();
-                if (controller.getCurrentUser().getCovlet().hasChanges()) {
-                    try {
-                            controller.getDataM().saveCovLetData();
-                    } catch (SQLException ex) {
-                        controller.errorAlert(???, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(???, ex.getMessage());
-                    }
-                }
-        */
+                /*
+                 bcardError.setParaText("");
+                 covletEditErrorLine.hide();
+                 controller.getCurrentUser().getCovlet().save();
+                 if (controller.getCurrentUser().getCovlet().hasChanges()) {
+                 try {
+                 controller.getDataM().saveCovLetData();
+                 } catch (SQLException ex) {
+                 controller.errorAlert(???, ex.getMessage());
+                 } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                 controller.errorAlert(???, ex.getMessage());
+                 }
+                 }
+                 */
                 showScreen(6);
             }
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * Subclass SubmitBCardAction
      * - Saves any information changed in the Business Card  page and brings the
@@ -1071,7 +1141,7 @@ public class VP_Center extends StackPane {
             Pattern webPattern = Pattern.compile(webRegex);
             Matcher matcher;
             //-------- Initialization End ------------\\
-            
+
             VP_Sounds.play(0);
             businessCardFields.get(3).textProperty().setValue(businessCardFields.get(3).textProperty().getValueSafe().trim());
             businessCardFields.get(4).textProperty().setValue(businessCardFields.get(4).textProperty().getValueSafe().trim());
@@ -1081,15 +1151,14 @@ public class VP_Center extends StackPane {
                 hasError = true;
                 businessCardFields.get(3).showInvalid();
                 bcardError.setParaText("Profession cannot be blank");
-            }
-            else if (!businessCardFields.get(14).textProperty().getValueSafe().equals("")) {
-               matcher = webPattern.matcher(businessCardFields.get(14).textProperty().getValueSafe());
-               if (!matcher.matches()) {
+            } else if (!businessCardFields.get(14).textProperty().getValueSafe().equals("")) {
+                matcher = webPattern.matcher(businessCardFields.get(14).textProperty().getValueSafe());
+                if (!matcher.matches()) {
                     hasError = true;
                     businessCardFields.get(14).showInvalid();
                     bcardError.setParaText("The web address is not in valid form. Be sure to include whether "
                             + "the address is http or https");
-               }
+                }
             }
             if (hasError) {
                 VP_Sounds.play(-1);
@@ -1100,7 +1169,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getBcard().save();
                 if (controller.getCurrentUser().getBcard().hasChanges()) {
                     try {
-                            controller.getDataM().saveBCardData();
+                        controller.getDataM().saveBCardData();
                     } catch (SQLException ex) {
                         controller.errorAlert(1414, ex.getMessage());
                     } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
@@ -1112,7 +1181,6 @@ public class VP_Center extends StackPane {
         }
     }
 
-    
     /*------------------------------------------------------------------------*
      * Subclass SubmitPersonalInfoAction
      * - Saves any information changed in the Personal Information page and 
@@ -1136,7 +1204,7 @@ public class VP_Center extends StackPane {
                     phonePattern = Pattern.compile(phoneRegex);
             Matcher matcher;
             //-------- Initialization End ------------\\
-            
+
             VP_Sounds.play(0);
             for (int i = 0; i < personalInfoFields.size(); i++) {
                 personalInfoFields.get(i).textProperty().setValue(personalInfoFields.get(i).textProperty().getValueSafe().trim());
