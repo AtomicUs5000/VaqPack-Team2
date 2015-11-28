@@ -93,14 +93,14 @@ public class VP_BusinessCard {
         }
         
         // check for completeness
-        if (professionStored != null) {
+        if (professionStored != null && !professionStored.equals("")) {
             startedBusinessCard = true;
             completedBusinessCard = true;
         } else if(companyNameStored != null || companySloganStored != null || webPageStored != null) {
             startedBusinessCard = true;
         }
         if (changes && completedBusinessCard) {
-            generateXLS();
+            generateXSL();
         }
     }
     
@@ -125,12 +125,12 @@ public class VP_BusinessCard {
     }
     
     /*------------------------------------------------------------------------*
-     * generateXLS()
+     * generateXSL()
      * - Creates the xml stylesheet to be passed to html conversion.
      * - No parameters
      * - No return
      *------------------------------------------------------------------------*/
-    private void generateXLS() {
+    private void generateXSL() {
         xsl = "<?xml version=\"1.0\"?>\n"
                 + "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" "
                 + "version=\"1.0\">\n"

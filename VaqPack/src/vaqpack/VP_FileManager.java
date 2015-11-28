@@ -167,96 +167,270 @@ public class VP_FileManager {
         bcpdf.deleteOnExit();
         bcxml.deleteOnExit();
         bchtml.deleteOnExit();
-        // write the xml file
-        FileOutputStream outputStream = new FileOutputStream(bcxml);
-        StreamResult xmlStream = new StreamResult(outputStream);
-        icFactory = DocumentBuilderFactory.newInstance();
-        icBuilder = icFactory.newDocumentBuilder();
-        Document document = icBuilder.newDocument();
-        Element root = document.createElement("businesscard");
-        document.appendChild(root);
-        Element name = document.createElement("name");
-        root.appendChild(name);
-        Element company = document.createElement("company");
-        root.appendChild(company);
-        Element address = document.createElement("address");
-        root.appendChild(address);
-        Element communication = document.createElement("communication");
-        root.appendChild(communication);
-        Element firstname = document.createElement("firstname");
-        name.appendChild(firstname);
-        firstname.appendChild(document.createTextNode(user.getFirstName().getValueSafe()));
-        Element middlename = document.createElement("middlename");
-        name.appendChild(middlename);
-        middlename.appendChild(document.createTextNode(user.getMiddleName().getValueSafe()));
-        Element lastname = document.createElement("lastname");
-        name.appendChild(lastname);
-        lastname.appendChild(document.createTextNode(user.getLastName().getValueSafe())); 
-        Element profession = document.createElement("profession");
-        company.appendChild(profession);
-        profession.appendChild(document.createTextNode(user.getBcard().getProfession().getValueSafe()));
-        Element companyname = document.createElement("companyname");
-        company.appendChild(companyname);
-        companyname.appendChild(document.createTextNode(user.getBcard().getCompanyName().getValueSafe()));
-        Element slogan = document.createElement("slogan");
-        company.appendChild(slogan);
-        slogan.appendChild(document.createTextNode(user.getBcard().getCompanySlogan().getValueSafe()));
-        Element line1 = document.createElement("line1");
-        address.appendChild(line1);
-        line1.appendChild(document.createTextNode(user.getAddress1().getValueSafe()));
-        Element line2 = document.createElement("line2");
-        address.appendChild(line2);
-        line2.appendChild(document.createTextNode(user.getAddress2().getValueSafe()));
-        Element city = document.createElement("city");
-        address.appendChild(city);
-        city.appendChild(document.createTextNode(user.getCity().getValueSafe()));
-        Element state = document.createElement("state");
-        address.appendChild(state);
-        state.appendChild(document.createTextNode(user.getState().getValueSafe()));
-        Element zip = document.createElement("zip");
-        address.appendChild(zip);
-        zip.appendChild(document.createTextNode(user.getZip().getValueSafe()));
-        Element phone = document.createElement("phone");
-        communication.appendChild(phone);
-        phone.appendChild(document.createTextNode(user.getPhone().getValueSafe()));
-        Element cell = document.createElement("cell");
-        communication.appendChild(cell);
-        cell.appendChild(document.createTextNode(user.getCell().getValueSafe()));
-        Element email = document.createElement("email");
-        communication.appendChild(email);
-        email.appendChild(document.createTextNode(user.getDocEmail().getValueSafe()));
-        Element web = document.createElement("web");
-        communication.appendChild(web);
-        web.appendChild(document.createTextNode(user.getBcard().getWebPage().getValueSafe()));
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
-        DOMSource source = new DOMSource(document);
-        transformer.transform(source, xmlStream);
-        outputStream.flush();
-        outputStream.close();
-        // write the xsl file
-        outputStream = new FileOutputStream(bcxsl);
-        byte[] xslBytes = user.getBcard().getXsl().getBytes();
-        outputStream.write(xslBytes);
-        outputStream.flush();
-        outputStream.close();
-        // convert to html
-        VP_DataToHtml.convert(bcxml, bcxsl, bchtml);
-        // convert to pdf
-        VP_HtmlToPdf.convert(bchtml, bcpdf);
-        if (bcxsl.exists()) {
-            bcxsl.delete();
-        }
-        if (bcxml.exists()) {
-            bcxml.delete();
-        }
-        if (bchtml.exists()) {
-            bchtml.delete();
+        if (user.getBcard().hasCompletedBusinessCard() == true) {
+            // write the xml file
+            FileOutputStream outputStream = new FileOutputStream(bcxml);
+            StreamResult xmlStream = new StreamResult(outputStream);
+            icFactory = DocumentBuilderFactory.newInstance();
+            icBuilder = icFactory.newDocumentBuilder();
+            Document document = icBuilder.newDocument();
+            Element root = document.createElement("businesscard");
+            document.appendChild(root);
+            Element name = document.createElement("name");
+            root.appendChild(name);
+            Element company = document.createElement("company");
+            root.appendChild(company);
+            Element address = document.createElement("address");
+            root.appendChild(address);
+            Element communication = document.createElement("communication");
+            root.appendChild(communication);
+            Element firstname = document.createElement("firstname");
+            name.appendChild(firstname);
+            firstname.appendChild(document.createTextNode(user.getFirstName().getValueSafe()));
+            Element middlename = document.createElement("middlename");
+            name.appendChild(middlename);
+            middlename.appendChild(document.createTextNode(user.getMiddleName().getValueSafe()));
+            Element lastname = document.createElement("lastname");
+            name.appendChild(lastname);
+            lastname.appendChild(document.createTextNode(user.getLastName().getValueSafe())); 
+            Element profession = document.createElement("profession");
+            company.appendChild(profession);
+            profession.appendChild(document.createTextNode(user.getBcard().getProfession().getValueSafe()));
+            Element companyname = document.createElement("companyname");
+            company.appendChild(companyname);
+            companyname.appendChild(document.createTextNode(user.getBcard().getCompanyName().getValueSafe()));
+            Element slogan = document.createElement("slogan");
+            company.appendChild(slogan);
+            slogan.appendChild(document.createTextNode(user.getBcard().getCompanySlogan().getValueSafe()));
+            Element line1 = document.createElement("line1");
+            address.appendChild(line1);
+            line1.appendChild(document.createTextNode(user.getAddress1().getValueSafe()));
+            Element line2 = document.createElement("line2");
+            address.appendChild(line2);
+            line2.appendChild(document.createTextNode(user.getAddress2().getValueSafe()));
+            Element city = document.createElement("city");
+            address.appendChild(city);
+            city.appendChild(document.createTextNode(user.getCity().getValueSafe()));
+            Element state = document.createElement("state");
+            address.appendChild(state);
+            state.appendChild(document.createTextNode(user.getState().getValueSafe()));
+            Element zip = document.createElement("zip");
+            address.appendChild(zip);
+            zip.appendChild(document.createTextNode(user.getZip().getValueSafe()));
+            Element phone = document.createElement("phone");
+            communication.appendChild(phone);
+            phone.appendChild(document.createTextNode(user.getPhone().getValueSafe()));
+            Element cell = document.createElement("cell");
+            communication.appendChild(cell);
+            cell.appendChild(document.createTextNode(user.getCell().getValueSafe()));
+            Element email = document.createElement("email");
+            communication.appendChild(email);
+            email.appendChild(document.createTextNode(user.getDocEmail().getValueSafe()));
+            Element web = document.createElement("web");
+            communication.appendChild(web);
+            web.appendChild(document.createTextNode(user.getBcard().getWebPage().getValueSafe()));
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
+            DOMSource source = new DOMSource(document);
+            transformer.transform(source, xmlStream);
+            outputStream.flush();
+            outputStream.close();
+            // write the xsl file
+            outputStream = new FileOutputStream(bcxsl);
+            byte[] xslBytes = user.getBcard().getXsl().getBytes();
+            outputStream.write(xslBytes);
+            outputStream.flush();
+            outputStream.close();
+            // convert to html
+            VP_DataToHtml.convert(bcxml, bcxsl, bchtml);
+            // convert to pdf
+            VP_HtmlToPdf.convert(bchtml, bcpdf);
+            if (bcxsl.exists()) {
+                bcxsl.delete();
+            }
+            if (bcxml.exists()) {
+                bcxml.delete();
+            }
+            if (bchtml.exists()) {
+                bchtml.delete();
+            }
+        } else {
+            bcpdf = null;
         }
         return bcpdf;
+    }
+    
+    protected File generateCovLetPDF(VP_User user) throws FileNotFoundException, 
+            TransformerException, ParserConfigurationException, IOException, DocumentException {
+        File clpdf = new File("clpdf.tmp"),
+                clxsl = new File("clxsl.tmp"),
+                clxml = new File("clxml.tmp"),
+                clhtml = new File("clhtml.tmp");
+        clxsl.deleteOnExit();
+        clpdf.deleteOnExit();
+        clxml.deleteOnExit();
+        clhtml.deleteOnExit();
+        if (user.getCovlet().hasCompletedCoverLetter() == true) {
+            // write the xml file
+            FileOutputStream outputStream = new FileOutputStream(clxml);
+            StreamResult xmlStream = new StreamResult(outputStream);
+            icFactory = DocumentBuilderFactory.newInstance();
+            icBuilder = icFactory.newDocumentBuilder();
+            Document document = icBuilder.newDocument();
+            Element root = document.createElement("coverletter");
+            document.appendChild(root);
+            Element heading = document.createElement("heading");
+            root.appendChild(heading);
+            Element date = document.createElement("date");
+            root.appendChild(date);
+            date.appendChild(document.createTextNode(user.getCovlet().getDate().getValueSafe()));
+            Element adref = document.createElement("adreference");
+            root.appendChild(adref);
+            Element contactinfo = document.createElement("contactinformation");
+            root.appendChild(contactinfo);
+            Element salutation = document.createElement("salutation");
+            root.appendChild(salutation);
+            salutation.appendChild(document.createTextNode(user.getCovlet().getSalutation().getValueSafe()));
+            Element body = document.createElement("body");
+            root.appendChild(body);
+            Element closing = document.createElement("closing");
+            root.appendChild(closing);
+            closing.appendChild(document.createTextNode(user.getCovlet().getClosing().getValueSafe()));
+            Element signature = document.createElement("signature");
+            root.appendChild(signature);
+            Element name = document.createElement("name");
+            heading.appendChild(name);
+            Element address = document.createElement("address");
+            heading.appendChild(address);
+            Element communication = document.createElement("communication");
+            heading.appendChild(communication);
+            Element firstname = document.createElement("firstname");
+            name.appendChild(firstname);
+            firstname.appendChild(document.createTextNode(user.getFirstName().getValueSafe()));
+            Element middlename = document.createElement("middlename");
+            name.appendChild(middlename);
+            middlename.appendChild(document.createTextNode(user.getMiddleName().getValueSafe()));
+            Element lastname = document.createElement("lastname");
+            name.appendChild(lastname);
+            lastname.appendChild(document.createTextNode(user.getLastName().getValueSafe())); 
+            Element line1 = document.createElement("line1");
+            address.appendChild(line1);
+            line1.appendChild(document.createTextNode(user.getAddress1().getValueSafe()));
+            Element line2 = document.createElement("line2");
+            address.appendChild(line2);
+            line2.appendChild(document.createTextNode(user.getAddress2().getValueSafe()));
+            Element city = document.createElement("city");
+            address.appendChild(city);
+            city.appendChild(document.createTextNode(user.getCity().getValueSafe()));
+            Element state = document.createElement("state");
+            address.appendChild(state);
+            state.appendChild(document.createTextNode(user.getState().getValueSafe()));
+            Element zip = document.createElement("zip");
+            address.appendChild(zip);
+            zip.appendChild(document.createTextNode(user.getZip().getValueSafe()));
+            Element phone = document.createElement("phone");
+            communication.appendChild(phone);
+            phone.appendChild(document.createTextNode(user.getPhone().getValueSafe()));
+            Element cell = document.createElement("cell");
+            communication.appendChild(cell);
+            cell.appendChild(document.createTextNode(user.getCell().getValueSafe()));
+            Element email = document.createElement("email");
+            communication.appendChild(email);
+            email.appendChild(document.createTextNode(user.getDocEmail().getValueSafe()));
+            Element adsource = document.createElement("source");
+            adref.appendChild(adsource);
+            adsource.appendChild(document.createTextNode(user.getCovlet().getAdSource().getValueSafe()));
+            Element position = document.createElement("position");
+            adref.appendChild(position);
+            position.appendChild(document.createTextNode(user.getCovlet().getAdJobTitle().getValueSafe()));
+            Element refnumber = document.createElement("refnumber");
+            adref.appendChild(refnumber);
+            refnumber.appendChild(document.createTextNode(user.getCovlet().getAdRefNumber().getValueSafe()));
+            Element cname = document.createElement("name");
+            contactinfo.appendChild(cname);
+            Element company = document.createElement("company");
+            contactinfo.appendChild(company);
+            Element caddress = document.createElement("address");
+            contactinfo.appendChild(caddress);
+            Element cfirstname = document.createElement("firstname");
+            cname.appendChild(cfirstname);
+            cfirstname.appendChild(document.createTextNode(user.getCovlet().getContactFirstName().getValueSafe()));
+            Element cmiddlename = document.createElement("middlename");
+            cname.appendChild(cmiddlename);
+            cmiddlename.appendChild(document.createTextNode(user.getCovlet().getContactMiddleName().getValueSafe()));
+            Element clastname = document.createElement("lastname");
+            cname.appendChild(clastname);
+            clastname.appendChild(document.createTextNode(user.getCovlet().getContactLastName().getValueSafe()));
+            Element ctitle = document.createElement("title");
+            company.appendChild(ctitle);
+            ctitle.appendChild(document.createTextNode(user.getCovlet().getContactTitle().getValueSafe()));
+            Element companyname = document.createElement("companyname");
+            company.appendChild(companyname);
+            companyname.appendChild(document.createTextNode(user.getCovlet().getContactCompany().getValueSafe()));
+            Element cline1 = document.createElement("line1");
+            caddress.appendChild(cline1);
+            cline1.appendChild(document.createTextNode(user.getCovlet().getContactAddress1().getValueSafe()));
+            Element cline2 = document.createElement("line2");
+            caddress.appendChild(cline2);
+            cline2.appendChild(document.createTextNode(user.getCovlet().getContactAddress2().getValueSafe()));
+            Element ccity = document.createElement("city");
+            caddress.appendChild(ccity);
+            ccity.appendChild(document.createTextNode(user.getCovlet().getContactCity().getValueSafe()));
+            Element cstate = document.createElement("state");
+            caddress.appendChild(cstate);
+            cstate.appendChild(document.createTextNode(user.getCovlet().getContactState().getValueSafe()));
+            Element czip = document.createElement("zip");
+            caddress.appendChild(czip);
+            czip.appendChild(document.createTextNode(user.getCovlet().getContactZip().getValueSafe()));
+            for (int i = 0; i < 9; i++) {
+                Element paragraph = document.createElement("paragraph" + (i + 1));
+                body.appendChild(paragraph);
+                paragraph.appendChild(document.createTextNode(user.getCovlet().getParagraphs().get(i).getValueSafe()));
+            }
+            Element sfirstname = document.createElement("firstname");
+            signature.appendChild(sfirstname);
+            sfirstname.appendChild(document.createTextNode(user.getFirstName().getValueSafe()));
+            Element smiddlename = document.createElement("middlename");
+            signature.appendChild(smiddlename);
+            smiddlename.appendChild(document.createTextNode(user.getMiddleName().getValueSafe()));
+            Element slastname = document.createElement("lastname");
+            signature.appendChild(slastname);
+            slastname.appendChild(document.createTextNode(user.getLastName().getValueSafe())); 
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
+            DOMSource source = new DOMSource(document);
+            transformer.transform(source, xmlStream);
+            outputStream.flush();
+            outputStream.close();
+            // write the xsl file
+            outputStream = new FileOutputStream(clxsl);
+            byte[] xslBytes = user.getCovlet().getXsl().getBytes();
+            outputStream.write(xslBytes);
+            outputStream.flush();
+            outputStream.close();
+            // convert to html
+            VP_DataToHtml.convert(clxml, clxsl, clhtml);
+            // convert to pdf
+            VP_HtmlToPdf.convert(clhtml, clpdf);
+            if (clxsl.exists()) {
+                clxsl.delete();
+            }
+            if (clxml.exists()) {
+                clxml.delete();
+            }
+            if (clhtml.exists()) {
+                clhtml.delete();
+            }
+        } else {
+            clpdf = null;
+        }
+        return clpdf;
     }
 
     /*------------------------------------------------------------------------*

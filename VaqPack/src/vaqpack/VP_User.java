@@ -21,7 +21,8 @@ public class VP_User {
     private final VP_Resume resume;
     private final VP_CoverLetter covlet;
     private int accessLevel,
-            userID;
+            userID,
+            currentCoverLetterIndex;
     private boolean completedPersonalInfo;
     private final StringProperty email,
             firstName,
@@ -46,6 +47,7 @@ public class VP_User {
             phoneStored,
             cellStored,
             docEmailStored;
+    private final int[] coverLetterIds;
 
     /*------------------------------------------------------------------------*
      * VP_User()
@@ -71,6 +73,12 @@ public class VP_User {
         bcard = new VP_BusinessCard(this);
         resume = new VP_Resume(this);
         covlet = new VP_CoverLetter(this);
+        coverLetterIds = new int[3];
+        coverLetterIds[0] = 0;
+        coverLetterIds[1] = 0;
+        coverLetterIds[2] = 0;
+        currentCoverLetterIndex = 0;
+        covlet.setId(coverLetterIds[currentCoverLetterIndex]);
     }
 
     /*------------------------------------------------------------------------*
@@ -105,6 +113,11 @@ public class VP_User {
         docEmail.setValue(null);
         accessLevel = -1;
         userID = -1;
+        coverLetterIds[0] = 0;
+        coverLetterIds[1] = 0;
+        coverLetterIds[2] = 0;
+        currentCoverLetterIndex = 0;
+        covlet.setId(coverLetterIds[currentCoverLetterIndex]);
         bcard.clear();
         resume.clear();
         covlet.clear();
@@ -240,5 +253,17 @@ public class VP_User {
 
     protected VP_CoverLetter getCovlet() {
         return covlet;
+    }
+
+    protected int[] getCoverLetterIds() {
+        return coverLetterIds;
+    }
+
+    protected int getCurrentCoverLetterIndex() {
+        return currentCoverLetterIndex;
+    }
+
+    protected void setCurrentCoverLetterIndex(int currentCoverLetterIndex) {
+        this.currentCoverLetterIndex = currentCoverLetterIndex;
     }
 }

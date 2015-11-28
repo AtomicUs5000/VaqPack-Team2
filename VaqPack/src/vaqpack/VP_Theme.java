@@ -35,16 +35,19 @@ public final class VP_Theme {
         BC_PHONE_CELL_1(" style=\"font-family:'Times New Roman', Times, serif;\""),
         BC_EMAIL_1(" style=\"font-family:'Times New Roman', Times, serif;font-size: 11pt; display: block;\""),
         BC_WEB_1(" style=\"font-family:'Times New Roman', Times, serif;font-size: 9pt; display: block;\""),
-        CL_NAME_1(" style = \"font-family: 'Times New Roman', Times, serif; font-weight: bold; font-size: 14pt; display: block;\""),
-        CL_ADDRESS1_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
-        CL_ADDRESS2_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
-        CL_CITY_STATE_ZIP_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
-        CL_COMMUNICATION_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
-        CL_AD_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_NAME_1(" style = \"text-align:center; font-family: 'Times New Roman', Times, serif; font-weight: bold; font-size: 14pt; display: block;\""),
+        CL_ADDRESS1_1(" style = \"text-align:center; font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_ADDRESS2_1(" style = \"text-align:center; font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_CITY_STATE_ZIP_1(" style = \"text-align:center; font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_COMMUNICATION_1(" style = \"text-align:center; font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_AD_1(" style = \"float:right; font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
         CL_DATE_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
         CL_CONTACT_NAME_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
         CL_CONTACT_INFO_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
-        CL_LETTER_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_SALUTATION_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_CLOSING_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_PARAGRAPH_1(" style = \"text-indent:1cm; padding:0 0 6px 0; margin:0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
+        CL_SIGNATURE_1(" style = \"font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
         
         NAME_2(""),
         BC_BACKGROUND_2(""),
@@ -67,7 +70,10 @@ public final class VP_Theme {
         CL_DATE_2(""),
         CL_CONTACT_NAME_2(""),
         CL_CONTACT_INFO_2(""),
-        CL_LETTER_2(""),
+        CL_SALUTATION_2(""),
+        CL_CLOSING_2(""),
+        CL_PARAGRAPH_2(""),
+        CL_SIGNATURE_2(""),
         
         NAME_3(""),
         BC_BACKGROUND_3(""),
@@ -90,7 +96,10 @@ public final class VP_Theme {
         CL_DATE_3(""),
         CL_CONTACT_NAME_3(""),
         CL_CONTACT_INFO_3(""),
-        CL_LETTER_3(""),
+        CL_SALUTATION_3(""),
+        CL_CLOSING_3(""),
+        CL_PARAGRAPH_3(""),
+        CL_SIGNATURE_3(""),
         
         NAME_4(""),
         BC_BACKGROUND_4(""),
@@ -113,9 +122,11 @@ public final class VP_Theme {
         CL_DATE_4(""),
         CL_CONTACT_NAME_4(""),
         CL_CONTACT_INFO_4(""),
-        CL_LETTER_4("");
-        
-        
+        CL_SALUTATION_4(""),
+        CL_CLOSING_4(""),
+        CL_PARAGRAPH_4(""),
+        CL_SIGNATURE_4("");
+
         private final String value;
         
         private Default(String value) {

@@ -695,7 +695,7 @@ public class VP_Center extends StackPane {
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
-                + "Locked fields can be edited by updating your personal info.");
+                + "Locked fields can be edited by updating your personal info. You may create up to 9 paragraphs.");
         VP_PageSubdivision heading = new VP_PageSubdivision("HEADING", true),
                 name = new VP_PageSubdivision("NAME", false),
                 address = new VP_PageSubdivision("ADDRESS", false),
@@ -784,7 +784,7 @@ public class VP_Center extends StackPane {
         ((VP_TextField)(coverLetterEditFields.get(29))).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
         
         for (int i = 0; i < coverLetterEditFields.size(); i++) {
-            if (i < 11 || i > 25) {
+            if (i < 11 || i > 26) {
                 ((VP_TextField)(coverLetterEditFields.get(i))).setEditable(false);
                 coverLetterEditFields.get(i).setDisable(true);
             }
@@ -1225,61 +1225,23 @@ public class VP_Center extends StackPane {
                 ((VP_TextArea)(coverLetterEditFields.get(i))).textProperty().setValue(((VP_TextArea)(coverLetterEditFields.get(i))).textProperty().getValueSafe().trim());
             }
             ((VP_TextField)(coverLetterEditFields.get(25 + controller.getCurrentUser().getCovlet().getNumbParagraphs()))).textProperty().setValue(((VP_TextField)(coverLetterEditFields.get(25 + controller.getCurrentUser().getCovlet().getNumbParagraphs()))).textProperty().getValueSafe().trim());
-            if (((VP_TextField)(coverLetterEditFields.get(14))).textProperty().getValueSafe().equals("")) {
-                hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(14))).showInvalid();
-                covletEditError.setParaText("Contact First Name cannot be blank.");
-            } else if (((VP_TextField)(coverLetterEditFields.get(16))).textProperty().getValueSafe().equals("")) {
-                hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(16))).showInvalid();
-                covletEditError.setParaText("Contact Last Name cannot be blank.");
-            } else if (((VP_TextField)(coverLetterEditFields.get(19))).textProperty().getValueSafe().equals("")) {
-                hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(19))).showInvalid();
-                covletEditError.setParaText("Contact Address Line 1 cannot be blank.");
-            } else if (((VP_TextField)(coverLetterEditFields.get(21))).textProperty().getValueSafe().equals("")) {
-                hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(21))).showInvalid();
-                covletEditError.setParaText("Contact City cannot be blank.");
-            } else if (((VP_TextField)(coverLetterEditFields.get(22))).textProperty().getValueSafe().equals("")) {
-                hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(22))).showInvalid();
-                covletEditError.setParaText("Contact State cannot be blank.");
-            }  else if (((VP_TextField)(coverLetterEditFields.get(22))).textProperty().getValueSafe().length() != 2) {
-                hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(22))).showInvalid();
-                covletEditError.setParaText("Contact State must be two characters.");
-            } else if (((VP_TextField)(coverLetterEditFields.get(23))).textProperty().getValueSafe().equals("")) {
+            matcher = zipPattern.matcher(((VP_TextField)(coverLetterEditFields.get(23))).textProperty().getValueSafe());
+            if (!matcher.matches()) {
                 hasError = true;
                 ((VP_TextField)(coverLetterEditFields.get(23))).showInvalid();
-                covletEditError.setParaText("Contact Zipcode cannot be blank.");
-            } else if (((VP_TextField)(coverLetterEditFields.get(24))).textProperty().getValueSafe().equals("")) {
+                covletEditError.setParaText("Contact Zipcode is not in proper form. "
+                        + "Zipcodes can only be in form xxxxx or xxxxx-xxxx");
+            } else if (((VP_TextArea)(coverLetterEditFields.get(25))).textProperty().getValueSafe().equals("")) {
                 hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(24))).showInvalid();
-                covletEditError.setParaText("Salutation cannot be blank.");
-            }  else if (((VP_TextField)(coverLetterEditFields.get(25 + controller.getCurrentUser().getCovlet().getNumbParagraphs()))).textProperty().getValueSafe().equals("")) {
-                hasError = true;
-                ((VP_TextField)(coverLetterEditFields.get(25 + controller.getCurrentUser().getCovlet().getNumbParagraphs()))).showInvalid();
-                covletEditError.setParaText("Closing cannot be blank.");
-            } else {
-                matcher = zipPattern.matcher(((VP_TextField)(coverLetterEditFields.get(23))).textProperty().getValueSafe());
-                if (!matcher.matches()) {
-                    hasError = true;
-                    ((VP_TextField)(coverLetterEditFields.get(23))).showInvalid();
-                    covletEditError.setParaText("Contact Zipcode is not in proper form. "
-                            + "Zipcodes can only be in form xxxxx or xxxxx-xxxx");
-                } else if (((VP_TextArea)(coverLetterEditFields.get(25))).textProperty().getValueSafe().equals("")) {
-                    hasError = true;
-                    ((VP_TextArea)(coverLetterEditFields.get(25))).showInvalid();
-                    covletEditError.setParaText("The first paragraph of the body cannot be blank.");
-                } else if (controller.getCurrentUser().getCovlet().getNumbParagraphs() > 1) {
-                    for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
-                        if (((VP_TextArea)(coverLetterEditFields.get(25 + i))).textProperty().getValueSafe().equals("")) {
-                            hasError = true;
-                            ((VP_TextArea)(coverLetterEditFields.get(25 + i))).showInvalid();
-                            covletEditError.setParaText("Please delete blank paragraphs before submitting.");
-                            break;
-                        }
+                ((VP_TextArea)(coverLetterEditFields.get(25))).showInvalid();
+                covletEditError.setParaText("The first paragraph of the body cannot be blank.");
+            } else if (controller.getCurrentUser().getCovlet().getNumbParagraphs() > 1) {
+                for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
+                    if (((VP_TextArea)(coverLetterEditFields.get(25 + i))).textProperty().getValueSafe().equals("")) {
+                        hasError = true;
+                        ((VP_TextArea)(coverLetterEditFields.get(25 + i))).showInvalid();
+                        covletEditError.setParaText("Please delete blank paragraphs before submitting.");
+                        break;
                     }
                 }
             }
@@ -1348,11 +1310,7 @@ public class VP_Center extends StackPane {
             businessCardFields.get(4).textProperty().setValue(businessCardFields.get(4).textProperty().getValueSafe().trim());
             businessCardFields.get(5).textProperty().setValue(businessCardFields.get(5).textProperty().getValueSafe().trim());
             businessCardFields.get(14).textProperty().setValue(businessCardFields.get(14).textProperty().getValueSafe().trim());
-            if (businessCardFields.get(3).textProperty().getValueSafe() == null) {
-                hasError = true;
-                businessCardFields.get(3).showInvalid();
-                bcardError.setParaText("Profession cannot be blank");
-            } else if (!businessCardFields.get(14).textProperty().getValueSafe().equals("")) {
+            if (!businessCardFields.get(14).textProperty().getValueSafe().equals("")) {
                 matcher = webPattern.matcher(businessCardFields.get(14).textProperty().getValueSafe());
                 if (!matcher.matches()) {
                     hasError = true;
@@ -1369,6 +1327,7 @@ public class VP_Center extends StackPane {
                 bcardErrorLine.hide();
                 controller.getCurrentUser().getBcard().save();
                 if (controller.getCurrentUser().getBcard().hasChanges()) {
+                    controller.updateTree();
                     try {
                         controller.getDataM().saveBCardData();
                     } catch (SQLException ex) {
@@ -1488,6 +1447,7 @@ public class VP_Center extends StackPane {
                 personalInfoError.setParaText("");
                 personalInfoErrorLine.hide();
                 controller.getCurrentUser().save();
+                controller.updateTree();
                 try {
                     controller.getDataM().saveUserData();
                 } catch (SQLException ex) {

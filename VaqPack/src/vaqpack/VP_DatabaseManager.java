@@ -260,28 +260,28 @@ public class VP_DatabaseManager {
         String sql = "CREATE TABLE cover_letter ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
-                + "  source varchar(128) DEFAULT NULL,"
+                + "  adsource varchar(128) DEFAULT NULL,"
                 + "  job_title varchar(128) DEFAULT NULL,"
                 + "  reference_number varchar(128) DEFAULT NULL,"
                 + "  date varchar(32) NOT NULL,"
-                + "  contact_first_name varchar(45) NOT NULL,"
+                + "  contact_first_name varchar(45) DEFAULT NULL,"
                 + "  contact_middle_name varchar(45) DEFAULT NULL,"
-                + "  contact_last_name varchar(45) NOT NULL,"
+                + "  contact_last_name varchar(45) DEFAULT NULL,"
                 + "  contact_title varchar(48) DEFAULT NULL,"
                 + "  contact_company_name varchar(48) DEFAULT NULL,"
-                + "  contact_address_line1 varchar(254) NOT NULL,"
+                + "  contact_address_line1 varchar(254) DEFAULT NULL,"
                 + "  contact_address_line2 varchar(254) DEFAULT NULL,"
-                + "  contact_city varchar(45) NOT NULL,"
-                + "  contact_state varchar(2) NOT NULL,"
-                + "  contact_zipcode varchar(10) NOT NULL,"
-                + "  salutation varchar(128) NOT NULL,"
+                + "  contact_city varchar(45) DEFAULT NULL,"
+                + "  contact_state varchar(2) DEFAULT NULL,"
+                + "  contact_zipcode varchar(10) DEFAULT NULL,"
+                + "  salutation varchar(128) DEFAULT NULL,"
                 + "  numb_paragraphs tinyint(1) unsigned DEFAULT 1,"
                 + "  text longtext,"
-                + "  closing varchar(128) NOT NULL,"
+                + "  closing varchar(128) DEFAULT NULL,"
                 + "  theme tinyint(2) DEFAULT -1,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
-                + "  UNIQUE KEY user_id_UNIQUE (user_id),"
+                + "  UNIQUE KEY user_id_UNIQUE (id, user_id),"
                 + "  CONSTRAINT CovUserID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
@@ -660,6 +660,43 @@ public class VP_DatabaseManager {
                     thisUser.getBcard().setThemeId(rts.getInt("theme"));
                     thisUser.getBcard().save();
                 }
+                sql = "SELECT * FROM cover_letter WHERE user_id = " + userID;
+                rts = stm.executeQuery(sql);
+                if (rts.next()) {
+                    thisUser.getCoverLetterIds()[0] = rts.getInt("id");
+                    thisUser.getCovlet().setId(rts.getInt("id"));
+                    thisUser.getCovlet().getAdSource().setValue(rts.getString("adsource"));
+                    thisUser.getCovlet().getAdJobTitle().setValue(rts.getString("job_title"));
+                    thisUser.getCovlet().getAdRefNumber().setValue(rts.getString("reference_number"));
+                    thisUser.getCovlet().getDate().setValue(rts.getString("date"));
+                    thisUser.getCovlet().getContactFirstName().setValue(rts.getString("contact_first_name"));
+                    thisUser.getCovlet().getContactMiddleName().setValue(rts.getString("contact_middle_name"));
+                    thisUser.getCovlet().getContactLastName().setValue(rts.getString("contact_last_name"));
+                    thisUser.getCovlet().getContactTitle().setValue(rts.getString("contact_title"));
+                    thisUser.getCovlet().getContactCompany().setValue(rts.getString("contact_company_name"));
+                    thisUser.getCovlet().getContactAddress1().setValue(rts.getString("contact_address_line1"));
+                    thisUser.getCovlet().getContactAddress2().setValue(rts.getString("contact_address_line2"));
+                    thisUser.getCovlet().getContactCity().setValue(rts.getString("contact_city"));
+                    thisUser.getCovlet().getContactState().setValue(rts.getString("contact_state"));
+                    thisUser.getCovlet().getContactZip().setValue(rts.getString("contact_zipcode"));
+                    thisUser.getCovlet().getSalutation().setValue(rts.getString("salutation"));
+                    thisUser.getCovlet().setNumbParagraphs(rts.getInt("numb_paragraphs"));
+                    String[] paraText = rts.getString("text").split("@#$");
+                    for (int i = 0; i < thisUser.getCovlet().getNumbParagraphs(); i++) {
+                        thisUser.getCovlet().getParagraphs().get(i).setValue(paraText[i]);
+                    }
+                    thisUser.getCovlet().getClosing().setValue(rts.getString("closing"));
+                    thisUser.getCovlet().setThemeId(rts.getInt("theme"));
+                    thisUser.getCovlet().save();
+                    if (rts.next()) {
+                        thisUser.getCoverLetterIds()[1] = rts.getInt("id");
+                        if (rts.next()) {
+                            thisUser.getCoverLetterIds()[2] = rts.getInt("id");
+                        }
+                    }
+                }
+                // load resume
+                // code here
             }
             
         } else {
@@ -949,7 +986,7 @@ public class VP_DatabaseManager {
         //-------- Initialization Start ----------\\
         int userID = thisUser.getUserID();
         String sql = "SELECT * FROM business_card WHERE user_id = " + userID;
-        FileInputStream inputStream = new FileInputStream(bcpdf);
+        FileInputStream inputStream;
         //-------- Initialization End ------------\\
         
         connect(dbName);
@@ -973,51 +1010,180 @@ public class VP_DatabaseManager {
                     + thisUser.getBcard().getThemeId() + ")";
         }
         stm.executeUpdate(sql);
-        sql = "SELECT * FROM business_card_pdf WHERE user_id = " + userID;
+        if (bcpdf != null) {
+            inputStream = new FileInputStream(bcpdf);
+            sql = "SELECT * FROM business_card_pdf WHERE user_id = " + userID;
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE business_card_pdf SET pdf = ? WHERE user_id = ?")) {
+                    ps.setBinaryStream(1, (InputStream) inputStream, (int)bcpdf.length());
+                    ps.setInt(2, userID);
+                    ps.executeUpdate();
+                    inputStream.close();
+                }
+            }
+            else {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO business_card_pdf (user_id, pdf) values(?,?)")) {
+                    ps.setInt(1, userID);
+                    ps.setBinaryStream(2, (InputStream) inputStream, (int)bcpdf.length());
+                    ps.executeUpdate();
+                    inputStream.close();
+                }
+            }
+            // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
+            sql = "SELECT * FROM business_card_pdf WHERE user_id = " + userID;
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                Blob pdfBlob = rts.getBlob("pdf");
+                File pdf2 = new File("bcpdfLoadedFromDatabaseTest.pdf");
+                InputStream inputStream2 = rts.getBinaryStream("pdf");
+                try (FileOutputStream outputStream = new FileOutputStream(pdf2)) {
+                    int current;
+                    while ((current = inputStream2.read()) > -1) {
+                        outputStream.write(current);
+                    }
+                    inputStream.close();
+                    outputStream.flush();
+                    outputStream.close();
+
+                    String[] ccMail = {};
+                    VP_Mail bcpdfEmail;
+                    String msg = "Pdf send file test.\n\n"
+                        + "This is an automated message from the VaqPack software. Please do not reply.";
+                    bcpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "bcpdfLoadedFromDatabaseTest.pdf", pdf2);
+                    bcpdfEmail.setDaemon(true);
+                    bcpdfEmail.start();
+                }
+            }
+            // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
+        }
+        close();
+    }
+    
+    /*------------------------------------------------------------------------*
+     * storeCovLetData()
+     * - This function stores cover letter data and its pdf file.
+     * - Parameter thisUser is the currently logged in user.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void storeCovLetData(VP_User thisUser, File clpdf) throws SQLException,
+            FileNotFoundException, IOException {
+        //-------- Initialization Start ----------\\
+        int userID = thisUser.getUserID(),
+                remId = thisUser.getCovlet().getId();
+        String sql = "SELECT * FROM cover_letter WHERE user_id = " + userID + " AND id = " + remId;
+        String paraText = "";
+        FileInputStream inputStream;
+        //-------- Initialization End ------------\\
+        
+        for (int i = 0; i < thisUser.getCovlet().getNumbParagraphs(); i++) {
+            paraText += thisUser.getCovlet().getParagraphs().get(i).getValueSafe();
+            if (i != thisUser.getCovlet().getNumbParagraphs() - 1) {
+                paraText += "@#$";
+            }
+        }
+        connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
-            try (PreparedStatement ps = con.prepareStatement("UPDATE business_card_pdf SET pdf = ? WHERE user_id = ?")) {
-                ps.setBinaryStream(1, (InputStream) inputStream, (int)bcpdf.length());
-                ps.setInt(2, userID);
-                ps.executeUpdate();
-                inputStream.close();
-            }
+            sql = "UPDATE business_card SET "
+                    + "adsource = '" + thisUser.getCovlet().getAdSource().getValueSafe() + "', "
+                    + "job_title = '" + thisUser.getCovlet().getAdJobTitle().getValueSafe() + "', "
+                    + "reference_number = '" + thisUser.getCovlet().getAdRefNumber().getValueSafe() + "', "
+                    + "date = '" + thisUser.getCovlet().getDate().getValueSafe() + "', "
+                    + "contact_first_name = '" + thisUser.getCovlet().getContactFirstName().getValueSafe() + "', "
+                    + "contact_middle_name = '" + thisUser.getCovlet().getContactMiddleName().getValueSafe() + "', "
+                    + "contact_last_name = '" + thisUser.getCovlet().getContactLastName().getValueSafe() + "', "
+                    + "contact_title = '" + thisUser.getCovlet().getContactTitle().getValueSafe() + "', "
+                    + "contact_company_name = '" + thisUser.getCovlet().getContactCompany().getValueSafe() + "', "
+                    + "contact_address_line1 = '" + thisUser.getCovlet().getContactAddress1().getValueSafe() + "', "
+                    + "contact_address_line2 = '" + thisUser.getCovlet().getContactAddress2().getValueSafe() + "', "
+                    + "contact_city = '" + thisUser.getCovlet().getContactCity().getValueSafe() + "', "
+                    + "contact_state = '" + thisUser.getCovlet().getContactState().getValueSafe() + "', "
+                    + "contact_zipcode = '" + thisUser.getCovlet().getContactZip().getValueSafe() + "', "
+                    + "salutation = '" + thisUser.getCovlet().getSalutation().getValueSafe() + "', "
+                    + "numb_paragraphs = " + thisUser.getCovlet().getNumbParagraphs() + ", "
+                    + "text = '" + paraText + "', "
+                    + "closing = '" + thisUser.getCovlet().getClosing().getValueSafe() + "', "
+                    + "theme = " + thisUser.getCovlet().getThemeId() + " "
+                    + "WHERE user_id = " + userID + " AND id = " + thisUser.getCovlet().getId();
+            stm.executeUpdate(sql);
         }
         else {
-            try (PreparedStatement ps = con.prepareStatement("INSERT INTO business_card_pdf (user_id, pdf) values(?,?)")) {
-                ps.setInt(1, userID);
-                ps.setBinaryStream(2, (InputStream) inputStream, (int)bcpdf.length());
-                ps.executeUpdate();
-                inputStream.close();
-            }
+            sql = "INSERT INTO cover_letter (user_id, adsource, job_title, reference_number, date, "
+                    + "contact_first_name, contact_middle_name, contact_last_name, contact_title, "
+                    + "contact_company_name, contact_address_line1, contact_address_line2, contact_city, "
+                    + "contact_state, contact_zipcode, salutation, numb_paragraphs, text, "
+                    + "closing, theme) VALUES (" + thisUser.getUserID() + " ,"
+                    + "'" + thisUser.getCovlet().getAdSource().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getAdJobTitle().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getAdRefNumber().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getDate().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactFirstName().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactMiddleName().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactLastName().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactTitle().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactCompany().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactAddress1().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactAddress2().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactCity().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactState().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getContactZip().getValueSafe() + "', "
+                    + "'" + thisUser.getCovlet().getSalutation().getValueSafe() + "', "
+                    + thisUser.getCovlet().getNumbParagraphs() + ", "
+                    + "'" + paraText + "', "
+                    + "'" + thisUser.getCovlet().getClosing().getValueSafe() + "', "
+                    + thisUser.getCovlet().getThemeId() + ")";
+            remId = stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
-        // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
-        sql = "SELECT * FROM business_card_pdf WHERE user_id = " + userID;
-        rts = stm.executeQuery(sql);
-        if (rts.next()) {
-            Blob pdfBlob = rts.getBlob("pdf");
-            File pdf2 = new File("bcpdfLoadedFromDatabaseTest.pdf");
-            InputStream inputStream2 = rts.getBinaryStream("pdf");
-            try (FileOutputStream outputStream = new FileOutputStream(pdf2)) {
-                int current;
-                while ((current = inputStream2.read()) > -1) {
-                    outputStream.write(current);
+        thisUser.getCoverLetterIds()[thisUser.getCurrentCoverLetterIndex()] = remId;
+        thisUser.getCovlet().setId(remId);
+        if (clpdf != null) {
+            inputStream = new FileInputStream(clpdf);
+            sql = "SELECT * FROM cover_letter_pdf WHERE cover_letter_id = " + remId;
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE cover_letter_pdf SET pdf = ? WHERE cover_letter_id = ?")) {
+                    ps.setBinaryStream(1, (InputStream) inputStream, (int)clpdf.length());
+                    ps.setInt(2, remId);
+                    ps.executeUpdate();
+                    inputStream.close();
                 }
-                inputStream.close();
-                outputStream.flush();
-                outputStream.close();
-                
-                String[] ccMail = {};
-                VP_Mail bcpdfEmail;
-                String msg = "Pdf send file test.\n\n"
-                    + "This is an automated message from the VaqPack software. Please do not reply.";
-                bcpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "bcpdfLoadedFromDatabaseTest.pdf", pdf2);
-                bcpdfEmail.setDaemon(true);
-                bcpdfEmail.start();
             }
+            else {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO cover_letter_pdf (cover_letter_id, pdf) values(?,?)")) {
+                    ps.setInt(1, remId);
+                    ps.setBinaryStream(2, (InputStream) inputStream, (int)clpdf.length());
+                    ps.executeUpdate();
+                    inputStream.close();
+                }
+            }
+            // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
+            sql = "SELECT * FROM cover_letter_pdf WHERE cover_letter_id = " + remId;
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                Blob pdfBlob = rts.getBlob("pdf");
+                File pdf2 = new File("clpdfLoadedFromDatabaseTest.pdf");
+                InputStream inputStream2 = rts.getBinaryStream("pdf");
+                try (FileOutputStream outputStream = new FileOutputStream(pdf2)) {
+                    int current;
+                    while ((current = inputStream2.read()) > -1) {
+                        outputStream.write(current);
+                    }
+                    inputStream.close();
+                    outputStream.flush();
+                    outputStream.close();
+
+                    String[] ccMail = {};
+                    VP_Mail clpdfEmail;
+                    String msg = "Pdf send file test.\n\n"
+                        + "This is an automated message from the VaqPack software. Please do not reply.";
+                    clpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "clpdfLoadedFromDatabaseTest.pdf", pdf2);
+                    clpdfEmail.setDaemon(true);
+                    clpdfEmail.start();
+                }
+            }
+            // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
         }
-        // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
-        
         close();
     }
 

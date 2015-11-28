@@ -22,7 +22,7 @@ public class VP_CoverLetter {
     private int themeId = -1,
             numbParagraphs = 1,
             numbParagraphsStored = 1,
-            id;
+            id = 0;
     private final VP_User owner;
     private boolean startedCoverLetter,
             completedCoverLetter,
@@ -265,7 +265,7 @@ public class VP_CoverLetter {
             startedCoverLetter = true;
         }
         if (changes && completedCoverLetter)
-            generateXLS();
+            generateXSL();
     }
     
     /*------------------------------------------------------------------------*
@@ -320,16 +320,128 @@ public class VP_CoverLetter {
         contactZipStored = null;
         salutationStored = null;
         closingStored = null;
+        id = 0;
     }
     
     /*------------------------------------------------------------------------*
-     * generateXLS()
+     * generateXSL()
      * - Creates the xml stylesheet to be passed to html conversion.
      * - No parameters
      * - No return
      *------------------------------------------------------------------------*/
-    private void generateXLS() {
+    private void generateXSL() {
+        xsl = "<?xml version=\"1.0\"?>\n"
+                + "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" "
+                + "version=\"1.0\">\n"
+                + "<xsl:output method=\"xml\" indent=\"yes\"/>\n"
+                + "<xsl:template match=\"/\">\n"
+                + "<html>\n<head>\n<title>Business Card</title>\n</head>\n<body style=\"padding:20px;\">\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_NAME_" + (themeId * -1));
+        }
+        xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"coverletter/heading/name/firstname\"/> ";
+        if (owner.getMiddleName().getValueSafe()!= null) {
+            xsl += " <xsl:value-of select=\"coverletter/heading/name/middlename\"/> ";
+        }
+        xsl += " <xsl:value-of select=\"coverletter/heading/name/lastname\"/></span></div>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_ADDRESS1_" + (themeId * -1));
+        }
+        xsl += "><xsl:value-of select=\"coverletter/heading/address/line1\"/></div>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_ADDRESS2_" + (themeId * -1));
+        }
+        xsl += "><xsl:value-of select=\"coverletter/heading/address/line2\"/></div>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_CITY_STATE_ZIP_" + (themeId * -1));
+        }
+        xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"coverletter/heading/address/city\"/>, "
+                + "  <xsl:value-of select=\"coverletter/heading/address/state\"/> "
+                + "<xsl:value-of select=\"coverletter/heading/address/zip\"/></span></div>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_CITY_STATE_ZIP_" + (themeId * -1));
+        }
+        xsl += "><span xml:space=\"preserve\">phone: <xsl:value-of select=\"coverletter/heading/communication/phone\"/> "
+                + " <span style=\"padding-left:8pt;\">cell: <xsl:value-of select=\"coverletter/heading/communication/cell\"/></span> "
+                + " <span style=\"padding-left:8pt;\"><xsl:value-of select=\"coverletter/heading/communication/email\"/> </span></span></div>\n"
+                + "<hr />\n<br />\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_DATE_" + (themeId * -1));
+        }
+        xsl += "><xsl:value-of select=\"coverletter/date\"/></div>\n<br />\n<br />\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_AD_" + (themeId * -1));
+        }
+        xsl += "><div><xsl:value-of select=\"coverletter/adreference/source\"/></div>"
+                + "<div><xsl:value-of select=\"coverletter/adreference/position\"/></div>"
+                + "<div><xsl:value-of select=\"coverletter/adreference/refnumber\"/></div></div>\n<div";
         
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_CONTACT_NAME_" + (themeId * -1));
+        }
+        xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"coverletter/contactinformation/name/firstname\"/> ";
+        if (contactMiddleNameStored != null) {
+            xsl += " <xsl:value-of select=\"coverletter/contactinformation/name/middlename\"/> ";
+        }
+        xsl += " <xsl:value-of select=\"coverletter/contactinformation/name/lastname\"/></span></div>\n";
+        if (contactTitleStored != null) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("CL_CONTACT_INFO_" + (themeId * -1));
+            }
+            xsl += "><xsl:value-of select=\"coverletter/contactinformation/company/title\"/></div>\n";
+        }
+        if (contactCompanyStored != null) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("CL_CONTACT_INFO_" + (themeId * -1));
+            }
+            xsl += "><xsl:value-of select=\"coverletter/contactinformation/company/companyname\"/></div>\n";
+        }
+        xsl += "<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_CONTACT_INFO_" + (themeId * -1));
+        }
+        xsl += "><xsl:value-of select=\"coverletter/contactinformation/address/line1\"/></div>\n";
+        if (contactAddress2Stored != null) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("CL_CONTACT_INFO_" + (themeId * -1));
+            }
+            xsl += "><xsl:value-of select=\"coverletter/contactinformation/address/line2\"/></div>\n";
+        }
+        xsl += "<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_CONTACT_INFO_" + (themeId * -1));
+        }
+        xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"coverletter/contactinformation/address/city\"/>, "
+                + "  <xsl:value-of select=\"coverletter/contactinformation/address/state\"/> "
+                + "<xsl:value-of select=\"coverletter/contactinformation/address/zip\"/></span></div>\n<br />\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_SALUTATION_" + (themeId * -1));
+        }
+        xsl += "><xsl:value-of select=\"coverletter/salutation\"/>,</div>\n<br />\n";
+        for (int i = 0; i < numbParagraphs; i++) {
+            xsl += "<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("CL_PARAGRAPH_" + (themeId * -1));
+            }
+            xsl += "><xsl:value-of select=\"coverletter/body/paragraph" + (i + 1) + "\"/></p>\n";
+        }
+        xsl += "<br />\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_CLOSING_" + (themeId * -1));
+        }
+        xsl += "><xsl:value-of select=\"coverletter/closing\"/>,</div>\n<br />\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_SIGNATURE_" + (themeId * -1));
+        }
+        xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"coverletter/signature/firstname\"/> ";
+        if (owner.getMiddleName().getValueSafe()!= null) {
+            xsl += " <xsl:value-of select=\"coverletter/heading/name/middlename\"/> ";
+        }
+        xsl += " <xsl:value-of select=\"coverletter/heading/name/lastname\"/></span></div>"
+                + "\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>";
     }
 
     /*##########################################################################
@@ -445,5 +557,9 @@ public class VP_CoverLetter {
 
     protected ArrayList<String> getParagraphsStored() {
         return paragraphsStored;
+    }
+    
+    protected String getXsl() {
+        return xsl;
     }
 }

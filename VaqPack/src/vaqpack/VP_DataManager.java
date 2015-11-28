@@ -454,7 +454,7 @@ public class VP_DataManager {
             DocumentException {
         File bcpdf = fileM.generateBCardPDF(controller.getCurrentUser());
         dbManager.storeBCardData(controller.getCurrentUser(), bcpdf);
-        if (bcpdf.exists()) {
+        if (bcpdf != null && bcpdf.exists()) {
             bcpdf.delete();
         }
     }
@@ -469,11 +469,11 @@ public class VP_DataManager {
     protected void saveCovLetData() throws SQLException, TransformerException,
             ParserConfigurationException, IOException, FileNotFoundException, 
             DocumentException {
-        //File bcpdf = fileM.generateCovLetPDF(controller.getCurrentUser());
-        //dbManager.storeCovLetData(controller.getCurrentUser(), bcpdf);
-        //if (bcpdf.exists()) {
-        //    bcpdf.delete();
-        //}
+        File clpdf = fileM.generateCovLetPDF(controller.getCurrentUser());
+        dbManager.storeCovLetData(controller.getCurrentUser(), clpdf);
+        if (clpdf != null && clpdf.exists()) {
+            clpdf.delete();
+        }
     }
 
     /*------------------------------------------------------------------------*
