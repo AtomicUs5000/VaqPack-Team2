@@ -271,6 +271,14 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 1415:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing cover letter data.\n"
+                        + "VaqPack will atempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
 
             // ID 1500 Originates from VP_Loader
             // ID 1600 Originates from VP_Mail
@@ -297,6 +305,12 @@ public class VP_ErrorHandler {
             case 2901:
                 header = "VaqPack could not create the pdf document for the "
                         + "business card.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 2902:
+                header = "VaqPack could not create the pdf document for the "
+                        + "cover letter.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;

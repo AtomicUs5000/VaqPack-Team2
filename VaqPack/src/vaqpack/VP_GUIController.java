@@ -26,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -122,11 +123,12 @@ public class VP_GUIController {
      *
      * @param wizardNumber Determines the center page number that the user will
      * jump to when clicking a particular node of VP_Tree.
+     * @param position The vertical scroll position of the selected screen.
      * @since 1.0
      */
-    protected void quickJump(int wizardNumber) {
+    protected void quickJump(int wizardNumber, double position) {
         center.cancelActionFunction();
-        center.showScreen(wizardNumber);
+        center.showScreen(wizardNumber, position);
     }
 
     /**
@@ -193,18 +195,24 @@ public class VP_GUIController {
                     VP_TreeItem bc = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(3);
                     ArrayList<VP_TreeItem> BC_Nodes = new ArrayList();
                     BC_Nodes.add(new VP_TreeItem("Name", 5));
+                    BC_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(0).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_N_Nodes = new ArrayList();
                     BC_N_Nodes.add(new VP_TreeItem("First Name", 4));
                     BC_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
                     BC_N_Nodes.add(new VP_TreeItem("Last Name", 4));
                     BC_Nodes.get(0).getChildren().addAll(BC_N_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Company", 5));
+                    BC_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_CY_Nodes = new ArrayList();
                     BC_CY_Nodes.add(new VP_TreeItem("Profession", 5));
+                    BC_CY_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_CY_Nodes.add(new VP_TreeItem("Company Name", 5));
+                    BC_CY_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_CY_Nodes.add(new VP_TreeItem("Slogan", 5));
+                    BC_CY_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_Nodes.get(1).getChildren().addAll(BC_CY_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Address", 5));
+                    BC_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(2).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_A_Nodes = new ArrayList();
                     BC_A_Nodes.add(new VP_TreeItem("Address Line 1", 4));
                     BC_A_Nodes.add(new VP_TreeItem("Address Line 2", 4));
@@ -213,13 +221,16 @@ public class VP_GUIController {
                     BC_A_Nodes.add(new VP_TreeItem("Zip", 4));
                     BC_Nodes.get(2).getChildren().addAll(BC_A_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Communication", 5));
+                    BC_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_CN_Nodes = new ArrayList();
                     BC_CN_Nodes.add(new VP_TreeItem("Phone", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Cell", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Email", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Web Page", 5));
+                    BC_CN_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_Nodes.get(3).getChildren().addAll(BC_CN_Nodes);
                     bc.getChildren().addAll(BC_Nodes);
+                    
                     leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Cover Letter", 6));
                     VP_TreeItem cl = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(4);
                     ArrayList<VP_TreeItem> CL_Nodes = new ArrayList();
@@ -294,19 +305,19 @@ public class VP_GUIController {
                     // update the dynamically added custom nodes, this is not login
 
                     // cover letter paragraphs
-                    VP_TreeItem clBody = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(4).getChildren().get(4);
-                    clBody.getChildren().clear();
-                    ArrayList<VP_TreeItem> CL_B_Nodes = new ArrayList();
-                    for (int i = 1; i <= currentUser.getCovlet().getNumbParagraphs(); i++) {
-                        CL_B_Nodes.add(new VP_TreeItem("Paragraph " + i, 7));
+                    VP_TreeItem clBody = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(4).getChildren().get(5);
+                    while (clBody.getChildren().size() > currentUser.getCovlet().getNumbParagraphs()) {
+                        clBody.getChildren().remove(clBody.getChildren().size() - 1);
                     }
-                    clBody.getChildren().addAll(CL_B_Nodes);
+                    while (clBody.getChildren().size() < currentUser.getCovlet().getNumbParagraphs()) {
+                        clBody.getChildren().add(new VP_TreeItem("Paragraph " + (clBody.getChildren().size() + 1), 7));
+                    }
                 }
-                if (currentUser.getBcard().hasCompletedBusinessCard()
+                if (leftTree.getFalseRoot().getChildren().size() <= 5 && (currentUser.getBcard().hasCompletedBusinessCard()
                         || currentUser.getCovlet().hasCompletedCoverLetter()
-                        || currentUser.getResume().hasCompletedResume()) {
-                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Document Themes", 8));
-                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Distribute Documents", 10));
+                        || currentUser.getResume().hasCompletedResume())) {
+                        leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Document Themes", 8));
+                        leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Distribute Documents", 10));
                 }
             }
         } else {
@@ -328,10 +339,10 @@ public class VP_GUIController {
         if (currentUser.getAccessLevel() == -1) {
             header.getAdminMenu().setVisible(false);
             header.getUserLogout().setVisible(false);
-            center.showScreen(0);
+            center.showScreen(0, 0);
         } else {
             header.getUserLogout().setVisible(true);
-            center.showScreen(3);
+            center.showScreen(3, 0);
             if (currentUser.getAccessLevel() > 0) {
                 header.getMenuBar().getMenus().add(header.getAdminMenu());
             }

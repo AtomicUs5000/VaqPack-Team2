@@ -53,8 +53,9 @@ public class VP_Tree extends VBox {
                 try {
                     VP_Sounds.play(0);
                     int wizardNumber = (int) ((VP_TreeItem)treeView.getSelectionModel().getSelectedItem()).getWizardNumber();
-                    System.out.println("GOOD Node click: " + wizardNumber);
-                    controller.quickJump(wizardNumber);
+                    double position = (double) ((VP_TreeItem)treeView.getSelectionModel().getSelectedItem()).getPositionProp().getValue();
+                    controller.quickJump(wizardNumber, position);
+                    System.out.println("position = " + ((VP_TreeItem)treeView.getSelectionModel().getSelectedItem()).getPositionProp().getValue());
                     
                     // adds a paragraph the the cover letter
                     /*

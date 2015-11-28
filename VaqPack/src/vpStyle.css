@@ -121,6 +121,10 @@
     -fx-focus-color: rgb(0, 135, 81);
 }
 
+#center .text-area {
+    -fx-focus-color: rgb(0, 135, 81);
+}
+
 //footer
 #footer {
     -fx-background-color: 

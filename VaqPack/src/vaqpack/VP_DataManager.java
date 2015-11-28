@@ -443,8 +443,9 @@ public class VP_DataManager {
     }
     
     /*------------------------------------------------------------------------*
-     * saveUserData()
-     * - Calls storeBCardData() in the file manager passing user data.
+     * saveBCardData()
+     * - Calls generateBCardPDF() in the file manager passing user data.
+     *   Then calls storeBCardData in the database manager to store the pdf.
      * - No parameters.
      * - No return.
      *------------------------------------------------------------------------*/
@@ -456,6 +457,23 @@ public class VP_DataManager {
         if (bcpdf.exists()) {
             bcpdf.delete();
         }
+    }
+    
+    /*------------------------------------------------------------------------*
+     * saveCovLetData()
+     * - Calls generateCovLetPDF() in the file manager passing user data.
+     *   Then calls storeCovLetData in the database manager to store the pdf.
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void saveCovLetData() throws SQLException, TransformerException,
+            ParserConfigurationException, IOException, FileNotFoundException, 
+            DocumentException {
+        //File bcpdf = fileM.generateCovLetPDF(controller.getCurrentUser());
+        //dbManager.storeCovLetData(controller.getCurrentUser(), bcpdf);
+        //if (bcpdf.exists()) {
+        //    bcpdf.delete();
+        //}
     }
 
     /*------------------------------------------------------------------------*

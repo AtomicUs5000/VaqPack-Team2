@@ -21,6 +21,7 @@ import javafx.beans.property.StringProperty;
 public class VP_CoverLetter {
     private int themeId = -1,
             numbParagraphs = 1,
+            numbParagraphsStored = 1,
             id;
     private final VP_User owner;
     private boolean startedCoverLetter,
@@ -88,14 +89,20 @@ public class VP_CoverLetter {
         salutation  = new SimpleStringProperty();
         closing  = new SimpleStringProperty();
         paragraphsStored = new ArrayList();
+        for (int i = 0; i < 9; i ++) {
+            paragraphsStored.add("");
+        }
         paragraphs = new ArrayList();
-        StringProperty paragraph = new SimpleStringProperty();
-        paragraphs.add(paragraph);
+        for (int i = 0; i < 9; i ++) {
+            StringProperty paragraph = new SimpleStringProperty();
+            paragraphs.add(paragraph);
+        }
         startedCoverLetter = false;
         completedCoverLetter = false;
         SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
         String formattedDate = formatter.format(new Date());
         date.setValue(formattedDate);
+        dateStored = formattedDate;
     }
     
     /*------------------------------------------------------------------------*
@@ -121,9 +128,10 @@ public class VP_CoverLetter {
         contactZip.setValue(contactZipStored);
         salutation.setValue(salutationStored);
         closing.setValue(closingStored);
-        for (int i = 0; i < numbParagraphs; i++) {
+        for (int i = 0; i < 9; i++) {
             paragraphs.get(i).setValue(paragraphsStored.get(i));
         }
+        numbParagraphs = numbParagraphsStored;
     }
     
     /*------------------------------------------------------------------------*
@@ -136,11 +144,17 @@ public class VP_CoverLetter {
         changes = false;
         completedCoverLetter = false;
         startedCoverLetter = false;
-        for (int i = 0; i < numbParagraphs; i++) {
-            paragraphsStored.set(i, paragraphs.get(i).getValueSafe());
+
+        if (numbParagraphs != numbParagraphsStored) {
+            numbParagraphsStored = numbParagraphs;
+            changes = true;
         }
-        
-        // check for changes
+        for (int i = 0; i < 9; i++) {
+            if (!paragraphsStored.get(i).equals(paragraphs.get(i).getValueSafe())) {
+                paragraphsStored.set(i, paragraphs.get(i).getValueSafe());
+                changes = true;
+            }
+        }
         if ((dateStored != null && !dateStored.equals(date.getValue())) || 
                 (dateStored == null && date.getValue() != null) ) {
             dateStored = date.getValue();
@@ -250,7 +264,7 @@ public class VP_CoverLetter {
                 paragraphsStored.get(0) != null) {
             startedCoverLetter = true;
         }
-        if (changes)
+        if (changes && completedCoverLetter)
             generateXLS();
     }
     
@@ -265,8 +279,10 @@ public class VP_CoverLetter {
         paragraphs.clear();
         paragraphsStored.clear();
         numbParagraphs = 1;
+        numbParagraphsStored = 1;
         StringProperty paragraph = new SimpleStringProperty();
         paragraphs.add(paragraph);
+        paragraphsStored.add("");
         xsl = null;
         completedCoverLetter = false;
         startedCoverLetter = false;
@@ -425,5 +441,9 @@ public class VP_CoverLetter {
 
     protected StringProperty getDate() {
         return date;
+    }
+
+    protected ArrayList<String> getParagraphsStored() {
+        return paragraphsStored;
     }
 }
