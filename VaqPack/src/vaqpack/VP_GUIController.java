@@ -191,6 +191,43 @@ public class VP_GUIController {
                 if (leftTree.getFalseRoot().getChildren().size() == 2) {
                     // user has been here before, load full resume, business card, and cover letters
                     leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Resume", 11));
+                    VP_TreeItem res = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(2);
+                    ArrayList<VP_TreeItem> RES_Nodes = new ArrayList();
+                        RES_Nodes.add(new VP_TreeItem("Heading", 12));
+                        ArrayList<VP_TreeItem> RES_He_Nodes = new ArrayList();
+                            RES_He_Nodes.add(new VP_TreeItem("Name", 12));
+                            ArrayList<VP_TreeItem> RES_N_Nodes = new ArrayList();
+                                RES_N_Nodes.add(new VP_TreeItem("First Name", 4));
+                                RES_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
+                                RES_N_Nodes.add(new VP_TreeItem("Last Name", 4));
+                            RES_He_Nodes.get(0).getChildren().addAll(RES_N_Nodes);
+                            RES_He_Nodes.add(new VP_TreeItem("Address", 12));
+                            ArrayList<VP_TreeItem> RES_HEA_Nodes = new ArrayList();
+                                RES_HEA_Nodes.add(new VP_TreeItem("Address Line 1", 4));
+                                RES_HEA_Nodes.add(new VP_TreeItem("Address Line 2", 4));
+                                RES_HEA_Nodes.add(new VP_TreeItem("City", 4));
+                                RES_HEA_Nodes.add(new VP_TreeItem("State", 4));
+                                RES_HEA_Nodes.add(new VP_TreeItem("Zip", 4));
+                            RES_He_Nodes.get(1).getChildren().addAll(RES_HEA_Nodes);
+                            RES_He_Nodes.add(new VP_TreeItem("Communication", 12));
+                            ArrayList<VP_TreeItem> RES_HEC_Nodes = new ArrayList();
+                                RES_HEC_Nodes.add(new VP_TreeItem("Phone", 4));
+                                RES_HEC_Nodes.add(new VP_TreeItem("Cell", 4));
+                                RES_HEC_Nodes.add(new VP_TreeItem("Email", 4));
+                            RES_He_Nodes.get(2).getChildren().addAll(RES_HEC_Nodes);
+                        RES_Nodes.get(0).getChildren().addAll(RES_He_Nodes);
+                        RES_Nodes.add(new VP_TreeItem("Objective", 12));
+                        RES_Nodes.add(new VP_TreeItem("Education", 13));
+                        RES_Nodes.add(new VP_TreeItem("Work Experience", 14));
+                        RES_Nodes.add(new VP_TreeItem("Achievements", 15));
+                        RES_Nodes.add(new VP_TreeItem("Community", 16));
+                        RES_Nodes.add(new VP_TreeItem("Qualifications", 17));
+                        RES_Nodes.add(new VP_TreeItem("Highlights", 18));
+                        RES_Nodes.add(new VP_TreeItem("Languages", 19));
+                        RES_Nodes.add(new VP_TreeItem("Software", 20));
+                        RES_Nodes.add(new VP_TreeItem("References", 21));
+                    res.getChildren().addAll(RES_Nodes);
+        
                     leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Business Card", 5));
                     VP_TreeItem bc = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(3);
                     ArrayList<VP_TreeItem> BC_Nodes = new ArrayList();

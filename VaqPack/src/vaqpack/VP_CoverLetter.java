@@ -89,13 +89,10 @@ public class VP_CoverLetter {
         salutation  = new SimpleStringProperty();
         closing  = new SimpleStringProperty();
         paragraphsStored = new ArrayList();
-        for (int i = 0; i < 9; i ++) {
-            paragraphsStored.add("");
-        }
         paragraphs = new ArrayList();
         for (int i = 0; i < 9; i ++) {
-            StringProperty paragraph = new SimpleStringProperty();
-            paragraphs.add(paragraph);
+            paragraphsStored.add("");
+            paragraphs.add(new SimpleStringProperty());
         }
         startedCoverLetter = false;
         completedCoverLetter = false;
@@ -554,10 +551,6 @@ public class VP_CoverLetter {
 
     protected StringProperty getDate() {
         return date;
-    }
-
-    protected ArrayList<String> getParagraphsStored() {
-        return paragraphsStored;
     }
     
     protected String getXsl() {
