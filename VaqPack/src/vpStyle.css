@@ -432,3 +432,10 @@
     -fx-background-repeat: no-repeat;
     -fx-font-size: 14px;
 }
+.combo-box {
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-effect: dropshadow(one-pass-box, #444, 20, 0.1, 0, 6);
+    -fx-border-color: rgb(0, 38, 73);
+    -fx-accent: 
+        linear-gradient(rgba(50, 200, 170, 0.0) 0%, rgba(50, 200, 170, 0.5) 10%, rgba(50, 200, 170, 0.5) 90%, rgba(50, 200, 170, 0.0) 100%);
+}

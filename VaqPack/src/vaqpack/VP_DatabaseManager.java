@@ -26,7 +26,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class VP_DatabaseManager {
@@ -62,12 +61,6 @@ public class VP_DatabaseManager {
         con = null;
         stm = null;
         rts = null;
-        
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
-        Date date = new Date();
-        String formattedDate = formatter.format(date);
-        System.out.println("DATE: " + formattedDate);
-        
         //-------- Initialization End ------------\\
     }
 
@@ -504,7 +497,6 @@ public class VP_DatabaseManager {
             while (rts.next()) {
                 regTime = rts.getTimestamp("reg_time");
                 difference = dt.getTime() - regTime.getTime();
-                System.out.println("time difference is " + difference);
                 if (difference >= 3600000) {
                     remId = rts.getInt("id");
                     sql = "DELETE FROM registering_user WHERE id = " + remId;
@@ -602,6 +594,40 @@ public class VP_DatabaseManager {
         }
         close();
     }
+    
+    protected void loadCovLetData(VP_User thisUser, int clID) throws SQLException{
+        int userID = thisUser.getUserID();
+        String sql = "SELECT * FROM cover_letter WHERE user_id = " + userID + " AND id = " + clID;
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            thisUser.getCovlet().setId(rts.getInt("id"));
+            thisUser.getCovlet().getAdSource().setValue(rts.getString("adsource"));
+            thisUser.getCovlet().getAdJobTitle().setValue(rts.getString("job_title"));
+            thisUser.getCovlet().getAdRefNumber().setValue(rts.getString("reference_number"));
+            thisUser.getCovlet().getDate().setValue(rts.getString("date"));
+            thisUser.getCovlet().getContactFirstName().setValue(rts.getString("contact_first_name"));
+            thisUser.getCovlet().getContactMiddleName().setValue(rts.getString("contact_middle_name"));
+            thisUser.getCovlet().getContactLastName().setValue(rts.getString("contact_last_name"));
+            thisUser.getCovlet().getContactTitle().setValue(rts.getString("contact_title"));
+            thisUser.getCovlet().getContactCompany().setValue(rts.getString("contact_company_name"));
+            thisUser.getCovlet().getContactAddress1().setValue(rts.getString("contact_address_line1"));
+            thisUser.getCovlet().getContactAddress2().setValue(rts.getString("contact_address_line2"));
+            thisUser.getCovlet().getContactCity().setValue(rts.getString("contact_city"));
+            thisUser.getCovlet().getContactState().setValue(rts.getString("contact_state"));
+            thisUser.getCovlet().getContactZip().setValue(rts.getString("contact_zipcode"));
+            thisUser.getCovlet().getSalutation().setValue(rts.getString("salutation"));
+            thisUser.getCovlet().setNumbParagraphs(rts.getInt("numb_paragraphs"));
+            String[] paraText = rts.getString("text").split("\\@\\#\\$");
+            for (int i = 0; i < thisUser.getCovlet().getNumbParagraphs(); i++) {
+                thisUser.getCovlet().getParagraphs().get(i).setValue(paraText[i]);
+            }
+            thisUser.getCovlet().getClosing().setValue(rts.getString("closing"));
+            thisUser.getCovlet().setThemeId(rts.getInt("theme"));
+            thisUser.getCovlet().save();
+        }
+        close();
+    }
 
     /*------------------------------------------------------------------------*
      * attemptUserLogin()
@@ -681,7 +707,7 @@ public class VP_DatabaseManager {
                     thisUser.getCovlet().getContactZip().setValue(rts.getString("contact_zipcode"));
                     thisUser.getCovlet().getSalutation().setValue(rts.getString("salutation"));
                     thisUser.getCovlet().setNumbParagraphs(rts.getInt("numb_paragraphs"));
-                    String[] paraText = rts.getString("text").split("@#$");
+                    String[] paraText = rts.getString("text").split("\\@\\#\\$");
                     for (int i = 0; i < thisUser.getCovlet().getNumbParagraphs(); i++) {
                         thisUser.getCovlet().getParagraphs().get(i).setValue(paraText[i]);
                     }
@@ -1085,7 +1111,7 @@ public class VP_DatabaseManager {
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
-            sql = "UPDATE business_card SET "
+            sql = "UPDATE cover_letter SET "
                     + "adsource = '" + thisUser.getCovlet().getAdSource().getValueSafe() + "', "
                     + "job_title = '" + thisUser.getCovlet().getAdJobTitle().getValueSafe() + "', "
                     + "reference_number = '" + thisUser.getCovlet().getAdRefNumber().getValueSafe() + "', "

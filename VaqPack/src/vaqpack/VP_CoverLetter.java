@@ -276,13 +276,14 @@ public class VP_CoverLetter {
      *------------------------------------------------------------------------*/
     protected void clear() {
         themeId = -1;
-        paragraphs.clear();
-        paragraphsStored.clear();
         numbParagraphs = 1;
         numbParagraphsStored = 1;
-        StringProperty paragraph = new SimpleStringProperty();
-        paragraphs.add(paragraph);
-        paragraphsStored.add("");
+        for (int i = 0; i < 9; i ++) {
+            paragraphsStored.set(i, "");
+        }
+        for (int i = 0; i < 9; i ++) {
+            paragraphs.get(i).setValue("");
+        }
         xsl = null;
         completedCoverLetter = false;
         startedCoverLetter = false;

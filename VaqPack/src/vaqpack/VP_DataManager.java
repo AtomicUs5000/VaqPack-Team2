@@ -475,6 +475,14 @@ public class VP_DataManager {
             clpdf.delete();
         }
     }
+    
+    /*------------------------------------------------------------------------*
+     * loadCovLetData()
+     * - 
+     *------------------------------------------------------------------------*/
+    protected void loadCovLet(int clID) throws SQLException {
+        dbManager.loadCovLetData(controller.getCurrentUser(), clID);
+    }
 
     /*------------------------------------------------------------------------*
      * generatAccessCode()

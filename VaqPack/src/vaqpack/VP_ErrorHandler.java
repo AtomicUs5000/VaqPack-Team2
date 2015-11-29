@@ -210,7 +210,7 @@ public class VP_ErrorHandler {
             case 1407:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while logging in a user.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please login again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -218,7 +218,7 @@ public class VP_ErrorHandler {
             case 1408:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while completing the registration of a user.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try confirming your registration again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -226,7 +226,7 @@ public class VP_ErrorHandler {
             case 1409:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while resetting a user password.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try resetting your password again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -234,7 +234,7 @@ public class VP_ErrorHandler {
             case 1410:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while resetting and resending a user registration code.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try resrnding a new code again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -242,7 +242,7 @@ public class VP_ErrorHandler {
             case 1411:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while initiating the password reset sequence.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -250,7 +250,7 @@ public class VP_ErrorHandler {
             case 1412:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while registering a new user.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -258,7 +258,7 @@ public class VP_ErrorHandler {
             case 1413:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while storing user data.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -266,7 +266,7 @@ public class VP_ErrorHandler {
             case 1414:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while storing business card data.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
@@ -274,7 +274,15 @@ public class VP_ErrorHandler {
             case 1415:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while storing cover letter data.\n"
-                        + "VaqPack will atempt to continue.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1416:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while loading cover letter data.\n"
+                        + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;

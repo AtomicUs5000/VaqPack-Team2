@@ -130,10 +130,9 @@ public class VP_Header extends VBox {
      * - Allows the user to enter or exit fullscreen mode
      *------------------------------------------------------------------------*/
     protected class FullScreenToggle implements EventHandler {
-
         @Override
         public void handle(Event event) {
-            primaryStage.setFullScreen(primaryStage.isFullScreen());
+            primaryStage.setFullScreen(!primaryStage.isFullScreen());
         }
     }
 
