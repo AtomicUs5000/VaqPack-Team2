@@ -287,6 +287,14 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 1417:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing resume objective.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
 
             // ID 1500 Originates from VP_Loader
             // ID 1600 Originates from VP_Mail

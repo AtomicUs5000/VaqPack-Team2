@@ -476,6 +476,10 @@ public class VP_DataManager {
         }
     }
     
+    protected void saveResObj() throws SQLException {
+        dbManager.storeResObjData(controller.getCurrentUser());
+    }
+    
     /*------------------------------------------------------------------------*
      * loadCovLetData()
      * - 

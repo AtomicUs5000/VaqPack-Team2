@@ -82,7 +82,8 @@ public class VP_Center extends StackPane {
             bcardErrorLine,
             covletEditErrorLine,
             addParagraphLine,
-            selectCoverLetterLine;
+            selectCoverLetterLine,
+            objectiveErrorLine;
     private final VP_Paragraph loginError,
             accessInstructions,
             resetError,
@@ -93,7 +94,8 @@ public class VP_Center extends StackPane {
             personalInfoError,
             bcardError,
             covletEditError,
-            coverLetterDetails;
+            coverLetterDetails,
+            objectiveError;
     private final VP_Button submitResetBtn,
             startNewBtn;
     private final ComboBox coverLetterSelect;
@@ -131,12 +133,14 @@ public class VP_Center extends StackPane {
         covletEditErrorLine = new VP_DivisionLine();
         addParagraphLine = new VP_DivisionLine();
         selectCoverLetterLine = new VP_DivisionLine();
+        objectiveErrorLine = new VP_DivisionLine();
         loginError = new VP_Paragraph("", true);
         resetError = new VP_Paragraph("", true);
         registerError = new VP_Paragraph("", true);
         personalInfoError = new VP_Paragraph("", true);
         bcardError = new VP_Paragraph("", true);
         covletEditError = new VP_Paragraph("", true);
+        objectiveError = new VP_Paragraph("", true);
         coverLetterDetails = new VP_Paragraph("", false);
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
@@ -1043,13 +1047,83 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeHeadingBox = new VP_PageDivision("RESUME -- HEADING"),
-                resumeObjectiveBox = new VP_PageDivision("RESUME -- OBJECTIVE");
-        
+        VP_PageDivision resumeHOBox = new VP_PageDivision("RESUME -- HEADING and OBJECTIVE");
+        VP_PageSubdivision heading = new VP_PageSubdivision("HEADING", true),
+                objective = new VP_PageSubdivision("OBJECTIVE", false);
+        VP_TextArea objectiveParagraph = new VP_TextArea();
+        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 110),       
+                middleNameLabel = new VP_FieldLabel("*middle name:", 110),
+                lastNameLabel = new VP_FieldLabel("last name:", 110),
+                address1Label = new VP_FieldLabel("address line 1:", 110),
+                address2Label = new VP_FieldLabel("*address line 2:", 110),
+                cityLabel = new VP_FieldLabel("city:", 110),
+                stateLabel = new VP_FieldLabel("state:", 110),
+                zipLabel = new VP_FieldLabel("zipcode:", 110),
+                phoneLabel = new VP_FieldLabel("phone:", 110),
+                cellLabel = new VP_FieldLabel("*cell:", 110),
+                emailLabel = new VP_FieldLabel("email:", 110);
+        ArrayList<VP_TextField> headingFields = new ArrayList();
+        headingFields.add(new VP_TextField(32, 45));   // bind this to user
+        headingFields.add(new VP_TextField(32, 45));   // bind this to user
+        headingFields.add(new VP_TextField(32, 45));   // bind this to user
+        headingFields.add(new VP_TextField(32, 254));  // bind this to user
+        headingFields.add(new VP_TextField(32, 254));  // bind this to user
+        headingFields.add(new VP_TextField(32, 45));   // bind this to user
+        headingFields.add(new VP_TextField(2, 2));     // bind this to user
+        headingFields.add(new VP_TextField(10, 10));   // bind this to suer
+        headingFields.add(new VP_TextField(13, 13));   // bind this to user
+        headingFields.add(new VP_TextField(13, 13));   // bind this to user
+        headingFields.add(new VP_TextField(32, 254));  // bind this to user
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitObjectiveAction(objectiveParagraph)),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, headingFields.get(0)}),
+                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, headingFields.get(1)}),
+                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, headingFields.get(2)}),
+                address1Line = new VP_DivisionLine(new Node[]{address1Label, headingFields.get(3)}),
+                address2Line = new VP_DivisionLine(new Node[]{address2Label, headingFields.get(4)}),
+                cityLine = new VP_DivisionLine(new Node[]{cityLabel, headingFields.get(5)}),
+                stateLine = new VP_DivisionLine(new Node[]{stateLabel, headingFields.get(6)}),
+                zipLine = new VP_DivisionLine(new Node[]{zipLabel, headingFields.get(7)}),
+                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, headingFields.get(8)}),
+                cellLine = new VP_DivisionLine(new Node[]{cellLabel, headingFields.get(9)}),
+                emailLine = new VP_DivisionLine(new Node[]{emailLabel, headingFields.get(10)}),
+                objectiveLine = new VP_DivisionLine(new Node[]{objectiveParagraph}),
+                buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+        VP_PageSubdivision name = new VP_PageSubdivision("NAME", false),
+                address = new VP_PageSubdivision("ADDRESS", false),
+                communication = new VP_PageSubdivision("COMMUNICATION", false);
+        VP_Paragraph hNotes = new VP_Paragraph("Locked fields can be edited by updating your personal info."),
+                oNotes = new VP_Paragraph("Write a short statement that clearly defines your career goals and direction. "
+                        + "The objective section of your resume should be tailored to fit what a specific employer is looking for. "
+                        + "Keep this is mind when sending your resume to multiple employers.");
         //-------- Initialization End ------------\\
-
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeHeadingBox, resumeObjectiveBox);
+        headingFields.get(0).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
+        headingFields.get(1).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
+        headingFields.get(2).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
+        headingFields.get(3).textProperty().bindBidirectional(controller.getCurrentUser().getAddress1());
+        headingFields.get(4).textProperty().bindBidirectional(controller.getCurrentUser().getAddress2());
+        headingFields.get(5).textProperty().bindBidirectional(controller.getCurrentUser().getCity());
+        headingFields.get(6).textProperty().bindBidirectional(controller.getCurrentUser().getState());
+        headingFields.get(7).textProperty().bindBidirectional(controller.getCurrentUser().getZip());
+        headingFields.get(8).textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
+        headingFields.get(9).textProperty().bindBidirectional(controller.getCurrentUser().getCell());
+        headingFields.get(10).textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
+        objectiveParagraph.textProperty().bindBidirectional(controller.getCurrentUser().getResume().getObjective());
+        for (int i = 0; i < headingFields.size(); i++) {
+            headingFields.get(i).setEditable(false);
+            headingFields.get(i).setDisable(true);
+        }
+        name.getChildren().addAll(firstNameLine, middleNameLine, lastNameLine);
+        address.getChildren().addAll(address1Line, address2Line, cityLine, stateLine, zipLine);
+        communication.getChildren().addAll(phoneLine, cellLine, emailLine);
+        heading.getChildren().addAll(name, address, communication, hNotes);
+        objectiveErrorLine.getChildren().addAll(objectiveError);
+        objectiveErrorLine.hide();
+        objective.getChildren().addAll(oNotes, objectiveLine, objectiveErrorLine);
+        resumeHOBox.getChildren().addAll(heading, objective, buttonsLine);
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
+        screenContent.getChildren().addAll(resumeHOBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
         screen.setContent(screenContent);
@@ -1515,6 +1589,11 @@ public class VP_Center extends StackPane {
         covletEditError.setParaText("");
         covletEditErrorLine.hide();
         controller.getCurrentUser().getCovlet().revert();
+        
+        objectiveError.setParaText("");
+        objectiveErrorLine.hide();
+        
+        controller.getCurrentUser().getResume().revert();
         personalInfoError.setParaText("");
         personalInfoErrorLine.hide();
         controller.getCurrentUser().revert();
@@ -1585,8 +1664,8 @@ public class VP_Center extends StackPane {
             if (controller.getCurrentUser().getCovlet().getNumbParagraphs() == 9) {
                 addParagraphLine.hide();
             }
-            controller.updateTree();
         }
+        controller.updateTree();
     }
 
     private void saveCovLetFunction(int type) {
@@ -1650,6 +1729,41 @@ public class VP_Center extends StackPane {
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
+    private class SubmitObjectiveAction implements EventHandler<ActionEvent> {
+        private final VP_TextArea objectiveParagraph;
+        public SubmitObjectiveAction(VP_TextArea objectiveParagraph) {
+            this.objectiveParagraph = objectiveParagraph;
+        }
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            objectiveParagraph.textProperty().setValue(objectiveParagraph.textProperty().getValueSafe().trim());
+            if (objectiveParagraph.textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                objectiveParagraph.showInvalid();
+                objectiveError.setParaText("The objective cannot be blank in your resume.");
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                objectiveErrorLine.show();
+            } else {
+                objectiveError.setParaText("");
+                objectiveErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicFields();
+                    try {
+                        controller.getDataM().saveResObj();
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1417, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+    
     private class LoadCoverLetterAction implements EventHandler<ActionEvent> {
 
         @Override
@@ -1722,6 +1836,8 @@ public class VP_Center extends StackPane {
             cancelActionFunction();
             if (fromPage == 7) {
                 showScreen(6, 0);
+            } else if (fromPage == 11) {
+                showScreen(11, 0);
             } else {
                 showScreen(3, 0);
             }

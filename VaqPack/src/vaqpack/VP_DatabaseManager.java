@@ -294,8 +294,44 @@ public class VP_DatabaseManager {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  user_id int(10) unsigned NOT NULL,\n"
-                + "  data longtext,"
+                + "  user_id int(10) unsigned NOT NULL,"
+                + "  objective text DEFAULT NULL,"
+                + "  numb_education tinyint(1) unsigned DEFAULT 1,"
+                + "  ed_names text DEFAULT NULL,"
+                + "  ed_locs text DEFAULT NULL,"
+                + "  ed_earned text DEFAULT NULL,"
+                + "  ed_gpa text DEFAULT NULL,"
+                + "  ed_start text DEFAULT NULL,"
+                + "  ed_end text DEFAULT NULL,"
+                + "  numb_experience tinyint(1) unsigned DEFAULT 1,"
+                + "  ex_names text DEFAULT NULL,"
+                + "  ex_locs text DEFAULT NULL,"
+                + "  ex_poisitions text DEFAULT NULL,"
+                + "  ex_start text DEFAULT NULL,"
+                + "  ex_end text DEFAULT NULL,"
+                + "  numb_achievements tinyint(1) unsigned DEFAULT 0,"
+                + "  ac_names text DEFAULT NULL,"
+                + "  ac_institutions text DEFAULT NULL,"
+                + "  ac_dates text DEFAULT NULL,"
+                + "  numb_community tinyint(1) unsigned DEFAULT 0,"
+                + "  ev_names text DEFAULT NULL,"
+                + "  ev_locs text DEFAULT NULL,"
+                + "  ev_dates text DEFAULT NULL,"
+                + "  numb_qualifications tinyint(1) unsigned DEFAULT 1,"
+                + "  qualifications text DEFAULT NULL,"
+                + "  numb_highlights tinyint(1) unsigned DEFAULT 1,"
+                + "  highlights text DEFAULT NULL,"
+                + "  numb_languages tinyint(1) unsigned DEFAULT 1,"
+                + "  languages text DEFAULT NULL,"
+                + "  numb_software tinyint(1) unsigned DEFAULT 1,"
+                + "  software text DEFAULT NULL,"
+                + "  numb_references tinyint(1) unsigned DEFAULT 0,"
+                + "  ref_first_names text DEFAULT NULL,"
+                + "  ref_middle_names text DEFAULT NULL,"
+                + "  ref_last_names text DEFAULT NULL,"
+                + "  ref_company text DEFAULT NULL,"
+                + "  ref_phone text DEFAULT NULL,"
+                + "  ref_email text DEFAULT NULL,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY user_id_UNIQUE (user_id),"
@@ -1210,6 +1246,23 @@ public class VP_DatabaseManager {
             }
             // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
         }
+        close();
+    }
+    
+    protected void storeResObjData(VP_User thisUser) throws SQLException {
+        //-------- Initialization Start ----------\\
+        int userID = thisUser.getUserID();
+        String sql = "SELECT id FROM resume WHERE user_id = " + userID;
+        //-------- Initialization End ------------\\
+        connect(dbName);
+        rts = stm.executeQuery(sql);
+        if (rts.next()) {
+            sql = "UPDATE resume SET objective = '" + thisUser.getResume().getObjective().getValueSafe() + "' WHERE  user_id = " + userID;
+        } else {
+            sql = "INSERT INTO resume (user_id, objective) VALUES (" + userID + ", '" + 
+                    thisUser.getResume().getObjective().getValueSafe() + "')";
+        }
+        stm.executeUpdate(sql);
         close();
     }
 

@@ -53,26 +53,28 @@ public class VP_Resume {
             objective;
     private String xsl,
             objectiveStored;
-    private final ArrayList<StringProperty>
+    private final ArrayList<ArrayList<StringProperty>>
             education,
             experience,
             achievements,
             community,
+            references;
+    private final ArrayList<StringProperty>
             qualifications,
             highlights,
             languages,
-            software,
-            references;
-    private final ArrayList<String>
+            software;
+    private final ArrayList<ArrayList<String>>
             educationStored,
             experienceStored,
             achievementsStored,
             communityStored,
+            referencesStored;
+    private final ArrayList<String>
             qualificationsStored,
             highlightsStored,
             languagesStored,
-            softwareStored,
-            referencesStored;
+            softwareStored;
     
     /*------------------------------------------------------------------------*
      * VP_Resume()
@@ -89,7 +91,6 @@ public class VP_Resume {
         startedResume = false;
         completedResume = false;
         objective = new SimpleStringProperty();
-        
         education = new ArrayList();
         educationStored = new ArrayList();
         experience = new ArrayList();
@@ -108,27 +109,47 @@ public class VP_Resume {
         softwareStored = new ArrayList();
         references = new ArrayList();
         referencesStored = new ArrayList();
-        
         for (int i = 0; i < 9; i ++) {
-            educationStored.add("");
-            experienceStored.add("");
-            achievementsStored.add("");
-            communityStored.add("");
+            educationStored.add(new ArrayList());
+            referencesStored.add(new ArrayList());
+            for (int ii = 0; ii < 6; ii++) {
+                educationStored.get(i).add("");
+                referencesStored.get(i).add("");
+            }
+            experienceStored.add(new ArrayList());
+            for (int ii = 0; ii < 5; ii++) {
+                experienceStored.get(i).add("");
+            }
+            achievementsStored.add(new ArrayList());
+            communityStored.add(new ArrayList());
+            for (int ii = 0; ii < 3; ii++) {
+                achievementsStored.get(i).add("");
+                communityStored.get(i).add("");
+            }
             qualificationsStored.add("");
             highlightsStored.add("");
             languagesStored.add("");
             softwareStored.add("");
-            referencesStored.add("");
-            
-            education.add(new SimpleStringProperty());
-            experience.add(new SimpleStringProperty());
-            achievements.add(new SimpleStringProperty());
-            community.add(new SimpleStringProperty());
+            education.add(new ArrayList());
+            references.add(new ArrayList());
+            for (int ii = 0; ii < 6; ii++) {
+                education.get(i).add(new SimpleStringProperty());
+                references.get(i).add(new SimpleStringProperty());
+            }
+            experience.add(new ArrayList());
+            for (int ii = 0; ii < 5; ii++) {
+                experience.get(i).add(new SimpleStringProperty());
+            }
+            achievements.add(new ArrayList());
+            community.add(new ArrayList());
+            for (int ii = 0; ii < 3; ii++) {
+                achievements.get(i).add(new SimpleStringProperty());
+                community.get(i).add(new SimpleStringProperty());
+            }
             qualifications.add(new SimpleStringProperty());
             highlights.add(new SimpleStringProperty());
             languages.add(new SimpleStringProperty());
             software.add(new SimpleStringProperty());
-            references.add(new SimpleStringProperty());
         }
     }
     
@@ -141,15 +162,21 @@ public class VP_Resume {
     protected void revert() {
         objective.setValue(objectiveStored);
         for (int i = 0; i < 9; i++) {
-            education.get(i).setValue(educationStored.get(i));
-            experience.get(i).setValue(experienceStored.get(i));
-            achievements.get(i).setValue(achievementsStored.get(i));
-            community.get(i).setValue(communityStored.get(i));
+            for (int ii = 0; ii < 6; ii++) {
+                education.get(i).get(ii).setValue(educationStored.get(i).get(ii));
+                references.get(i).get(ii).setValue(educationStored.get(i).get(ii));
+            }
+            for (int ii = 0; ii < 5; ii++) {
+                experience.get(i).get(ii).setValue(experienceStored.get(i).get(ii));
+            }
+            for (int ii = 0; ii < 3; ii++) {
+                achievements.get(i).get(ii).setValue(achievementsStored.get(i).get(ii));
+                community.get(i).get(ii).setValue(communityStored.get(i).get(ii));
+            }
             qualifications.get(i).setValue(qualificationsStored.get(i));
             highlights.get(i).setValue(highlightsStored.get(i));
             languages.get(i).setValue(languagesStored.get(i));
             software.get(i).setValue(softwareStored.get(i));
-            references.get(i).setValue(referencesStored.get(i));
         }
         numbEducation = numbEducationStored;
         numbExperience = numbExperienceStored;
@@ -178,9 +205,25 @@ public class VP_Resume {
         completedResume = false;
         startedResume = false;
         
+        if ((objectiveStored != null && !objectiveStored.equals(objective.getValue())) || 
+                (objectiveStored == null && objective.getValue() != null) ) {
+            objectiveStored = objective.getValue();
+            changes = true;
+        }
         
-        
-        generateXLS();
+        // check for completeness
+        if (objectiveStored != null && !objectiveStored.equals("")) {
+            startedResume = true;
+            completedObjective = true;
+        }
+        if (completedObjective && completedEducation && completedWorkExperience 
+                && completedHighlights && completedSoftware) {
+            startedResume = true;
+            completedResume = true;
+        }
+        if (completedResume && changes) {
+            generateXLS();
+        }
     }
     
     /*------------------------------------------------------------------------*
@@ -219,25 +262,36 @@ public class VP_Resume {
         numbSoftwareStored = 1;
         numbReferencesStored = 0;
         for (int i = 0; i < 9; i ++) {
-            educationStored.set(i, "");
-            experienceStored.set(i, "");
-            achievementsStored.set(i, "");
-            communityStored.set(i, "");
+            for (int ii = 0; ii < 6; ii++) {
+                educationStored.get(i).set(ii, "");
+                referencesStored.get(i).set(ii, "");
+            }
+            for (int ii = 0; ii < 5; ii++) {
+                experienceStored.get(i).set(ii, "");
+            }
+            for (int ii = 0; ii < 3; ii++) {
+                achievementsStored.get(i).set(ii, "");
+                communityStored.get(i).set(ii, "");
+            }
             qualificationsStored.set(i, "");
             highlightsStored.set(i, "");
             languagesStored.set(i, "");
             softwareStored.set(i, "");
-            referencesStored.set(i, "");
-            
-            education.get(i).setValue("");
-            experience.get(i).setValue("");
-            achievements.get(i).setValue("");
-            community.get(i).setValue("");
+            for (int ii = 0; ii < 6; ii++) {
+                education.get(i).get(ii).setValue("");
+                references.get(i).get(ii).setValue("");
+            }
+            for (int ii = 0; ii < 5; ii++) {
+                experience.get(i).get(ii).setValue("");
+            }
+            for (int ii = 0; ii < 3; ii++) {
+                achievements.get(i).get(ii).setValue("");
+                community.get(i).get(ii).setValue("");
+            }
             qualifications.get(i).setValue("");
             highlights.get(i).setValue("");
             languages.get(i).setValue("");
             software.get(i).setValue("");
-            references.get(i).setValue("");
         }
     }
     
