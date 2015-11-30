@@ -1440,7 +1440,7 @@ public class VP_DatabaseManager {
             for (int i = 0; i < res.getNumbEducation(); i++) {
                 for (int ii = 0; ii < 6; ii++) {
                     formattedStrings[ii] += res.getEducation().get(i).get(ii).getValueSafe();
-                    if (i != 5) {
+                    if (i != (res.getNumbEducation() - 1)) {
                         formattedStrings[ii] += "@#$";
                     }
                 }
@@ -1449,7 +1449,7 @@ public class VP_DatabaseManager {
             for (int i = 0; i < res.getNumbExperience(); i++) {
                 for (int ii = 0; ii < 5; ii++) {
                     formattedStrings[ii] += res.getExperience().get(i).get(ii).getValueSafe();
-                    if (i != 4) {
+                    if (i != (res.getNumbExperience() - 1)) {
                         formattedStrings[ii] += "@#$";
                     }
                 }
@@ -1458,7 +1458,7 @@ public class VP_DatabaseManager {
             for (int i = 0; i < res.getNumbAchievements(); i++) {
                 for (int ii = 0; ii < 3; ii++) {
                     formattedStrings[ii] += res.getAchievements().get(i).get(ii).getValueSafe();
-                    if (i != 2) {
+                    if (i != (res.getNumbAchievements() - 1)) {
                         formattedStrings[ii] += "@#$";
                     }
                 }
@@ -1467,7 +1467,7 @@ public class VP_DatabaseManager {
             for (int i = 0; i < res.getNumbCommunity(); i++) {
                 for (int ii = 0; ii < 3; ii++) {
                     formattedStrings[ii] += res.getCommunity().get(i).get(ii).getValueSafe();
-                    if (i != 2) {
+                    if (i != (res.getNumbCommunity() - 1)) {
                         formattedStrings[ii] += "@#$";
                     }
                 }
@@ -1504,7 +1504,7 @@ public class VP_DatabaseManager {
             for (int i = 0; i < res.getNumbReferences(); i++) {
                 for (int ii = 0; ii < 6; ii++) {
                     formattedStrings[ii] += res.getReferences().get(i).get(ii).getValueSafe();
-                    if (i != 5) {
+                    if (i != (res.getNumbReferences() - 1)) {
                         formattedStrings[ii] += "@#$";
                     }
                 }

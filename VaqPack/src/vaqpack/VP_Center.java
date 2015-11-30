@@ -42,69 +42,44 @@ import javax.xml.transform.TransformerException;
 public class VP_Center extends StackPane {
 
     private final VP_GUIController controller;
-    private final VP_TextField loginEmail,
-            resetEmail,
-            regLoginAccess,
-            resetCode,
-            registerEmail;
-    private final Label resetPassStrengthLabel,
-            registerPassStrengthLabel,
-            infoProgress,
-            resumeProgress,
-            bcardProgress,
-            covletProgress,
-            resObjProgress,
-            resEduProgress,
-            resExpProgress,
-            resQualProgress,
-            resHighProgress,
-            resLangProgress,
-            resSWProgress;
+    private final VP_TextField loginEmail, resetEmail, regLoginAccess,
+            resetCode, registerEmail;
+    private final Label resetPassStrengthLabel, registerPassStrengthLabel,
+            infoProgress, resumeProgress, bcardProgress, covletProgress,
+            resObjProgress, resEduProgress, resExpProgress, resQualProgress,
+            resHighProgress, resLangProgress, resSWProgress;
     private final VP_PasswordField loginPass,
-            resetNewPass,
-            resetNewPassConfirm,
-            registerPass,
-            registerPassConfirm;
-    private final VP_DivisionLine loginErrorLine,
-            accessInstructionsLine,
-            loginButtonLine,
-            accessLine,
-            resetErrorLine,
-            resetInstructions1Line,
-            resetInstructions2Line,
-            resetNewPassLine,
-            resetNewPassConfirmLine,
-            resetCodeLine,
-            resetButLine,
-            resetPassStrengthLine,
-            registerErrorLine,
-            personalInfoErrorLine,
-            bcardErrorLine,
-            covletEditErrorLine,
-            addParagraphLine,
-            selectCoverLetterLine,
-            objectiveErrorLine;
-    private final VP_Paragraph loginError,
-            accessInstructions,
-            resetError,
-            resetInstructions1,
-            resetInstructions2,
-            registerError,
-            overviewInfo,
-            personalInfoError,
-            bcardError,
-            covletEditError,
-            coverLetterDetails,
-            objectiveError;
-    private final VP_Button submitResetBtn,
-            startNewBtn;
+            resetNewPass, resetNewPassConfirm, registerPass, registerPassConfirm;
+    private final VP_DivisionLine accessInstructionsLine, loginButtonLine,
+            accessLine, resetInstructions1Line, resetInstructions2Line,
+            resetNewPassLine, resetNewPassConfirmLine, resetCodeLine, resetButLine,
+            resetPassStrengthLine, personalInfoErrorLine, selectCoverLetterLine,
+            addParagraphLine, loginErrorLine, resetErrorLine, registerErrorLine,
+            bcardErrorLine, covletEditErrorLine, objectiveErrorLine, educationErrorLine,
+            experienceErrorLine, achievementsErrorLine, communityErrorLine,
+            qualificationsErrorLine, highlightsErrorLine, languagesErrorLine,
+            softwareErrorLine, referencesErrorLine;
+    private final VP_Paragraph accessInstructions, resetInstructions1, resetInstructions2,
+            overviewInfo, coverLetterDetails, loginError, resetError, registerError,
+            personalInfoError, bcardError, covletEditError, objectiveError,
+            educationError, experienceError, achievementsError, communityError,
+            qualificationsError, highlightsError, languagesError, softwareError,
+            referencesError;
+    private final VP_Button submitResetBtn, startNewBtn, addEducationBtn, addExperienceBtn,
+            addAchievementBtn, addCommunityBtn, addQualificationBtn, addHighlightBtn,
+            addLanguageBtn, addSoftwareBtn, addReferenceBtn;
     private final ComboBox coverLetterSelect;
     private final ArrayList<VP_Button> wizardMainButtons;
-    private final ArrayList<VP_PageSubdivision> bcNodes,
-            clNodes;
+    private final ArrayList<VP_PageSubdivision> bcNodes, clNodes;
     private final ArrayList<Node> coverLetterEditFields;
+    private final ArrayList<VP_TextField> educationFields, experienceFields, achievementsFields,
+            communityFields, qualificationsFields, highlightsFields, languagesFields, 
+            softwareFields, referencesFields;
     private final VP_FieldLabel dateValueLabel;
     private final VP_PageSubdivision dynamicBody;
+    private final VP_PageDivision resumeEducationBox, resumeExperienceBox, resumeAchievementsBox,
+            resumeCommunityBox, resumeQualificationsBox, resumeHighlightsBox,
+            resumeLanguagesBox, resumeSoftwareBox, resumeReferencesBox;
 
     /*------------------------------------------------------------------------*
      * VP_Center()
@@ -134,6 +109,15 @@ public class VP_Center extends StackPane {
         addParagraphLine = new VP_DivisionLine();
         selectCoverLetterLine = new VP_DivisionLine();
         objectiveErrorLine = new VP_DivisionLine();
+        educationErrorLine = new VP_DivisionLine();
+        experienceErrorLine = new VP_DivisionLine();
+        achievementsErrorLine = new VP_DivisionLine();
+        communityErrorLine = new VP_DivisionLine();
+        qualificationsErrorLine = new VP_DivisionLine();
+        highlightsErrorLine = new VP_DivisionLine();
+        languagesErrorLine = new VP_DivisionLine();
+        softwareErrorLine = new VP_DivisionLine();
+        referencesErrorLine = new VP_DivisionLine();
         loginError = new VP_Paragraph("", true);
         resetError = new VP_Paragraph("", true);
         registerError = new VP_Paragraph("", true);
@@ -141,6 +125,15 @@ public class VP_Center extends StackPane {
         bcardError = new VP_Paragraph("", true);
         covletEditError = new VP_Paragraph("", true);
         objectiveError = new VP_Paragraph("", true);
+        educationError = new VP_Paragraph("", true);
+        experienceError = new VP_Paragraph("", true);
+        achievementsError = new VP_Paragraph("", true);
+        communityError = new VP_Paragraph("", true);
+        qualificationsError = new VP_Paragraph("", true);
+        highlightsError = new VP_Paragraph("", true);
+        languagesError = new VP_Paragraph("", true);
+        softwareError = new VP_Paragraph("", true);
+        referencesError = new VP_Paragraph("", true);
         coverLetterDetails = new VP_Paragraph("", false);
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
@@ -159,8 +152,6 @@ public class VP_Center extends StackPane {
         resHighProgress = new Label();
         resLangProgress = new Label();
         resSWProgress = new Label();
-        submitResetBtn = new VP_Button("Submit", new SubmitResetAction());
-        startNewBtn = new VP_Button("Start New Cover Letter", new StartNewCoverLetter());
         regLoginAccess = new VP_TextField(16, 16);
         resetCode = new VP_TextField(16, 16);
         loginEmail = new VP_TextField(32, 254);
@@ -177,9 +168,38 @@ public class VP_Center extends StackPane {
         bcNodes = new ArrayList();
         clNodes = new ArrayList();
         coverLetterEditFields = new ArrayList();
+        educationFields = new ArrayList();
+        experienceFields = new ArrayList();
+        achievementsFields = new ArrayList();
+        communityFields = new ArrayList();
+        qualificationsFields = new ArrayList();
+        highlightsFields = new ArrayList();
+        languagesFields = new ArrayList();
+        softwareFields = new ArrayList();
+        referencesFields = new ArrayList();
         dateValueLabel = new VP_FieldLabel("", 200);
         dynamicBody = new VP_PageSubdivision("BODY", false);
         coverLetterSelect = new ComboBox();
+        submitResetBtn = new VP_Button("Submit", new SubmitResetAction());
+        startNewBtn = new VP_Button("Start New Cover Letter", new StartNewCoverLetter());
+        addEducationBtn = new VP_Button("Add Education Entry", new AddEducationAction());
+        addExperienceBtn = new VP_Button("Add Experience", new AddExperienceAction());
+        addAchievementBtn = new VP_Button("Add Achievement", new AddAchievementAction());
+        addCommunityBtn = new VP_Button("Add Event Entry", new AddCommunityAction());
+        addQualificationBtn = new VP_Button("Add Qualification", new AddQualificationAction());
+        addHighlightBtn = new VP_Button("Add Highlight", new AddHighlightAction());
+        addLanguageBtn = new VP_Button("Add Language", new AddLanguageAction());
+        addSoftwareBtn = new VP_Button("Add Software", new AddSoftwareAction());
+        addReferenceBtn = new VP_Button("Add Reference", new AddReferenceAction());
+        resumeEducationBox = new VP_PageDivision("RESUME -- EDUCATION");
+        resumeExperienceBox = new VP_PageDivision("RESUME -- WORK EXPERIENCE");
+        resumeAchievementsBox = new VP_PageDivision("RESUME -- AWARDS AND ACHIEVEMENTS");
+        resumeCommunityBox = new VP_PageDivision("RESUME -- COMMUNITY");
+        resumeQualificationsBox = new VP_PageDivision("RESUME -- QUALIFICATIONS");
+        resumeHighlightsBox = new VP_PageDivision("RESUME -- HIGHLIGHTS");
+        resumeLanguagesBox = new VP_PageDivision("RESUME -- LANGUAGES");
+        resumeSoftwareBox = new VP_PageDivision("RESUME -- SOFTWARE");
+        resumeReferencesBox = new VP_PageDivision("RESUME -- REFERENCES");
         //-------- Initialization End ------------\\
 
         this.setId("center");
@@ -216,7 +236,7 @@ public class VP_Center extends StackPane {
                 buildResumeAchievementsScreen(), //...screen 15
                 buildResumeCommunityScreen(), //......screen 16
                 buildResumeQualificationsScreen(), //.screen 17
-                buildResumeHighlightsScreen(), //......screen 18
+                buildResumeHighlightsScreen(), //.....screen 18
                 buildResumeLanguagesScreen(), //......screen 19
                 buildResumeSoftwareScreen(), //.......screen 20
                 buildResumeReferencesScreen() //......screen 21
@@ -1143,10 +1163,40 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeEducationBox = new VP_PageDivision("RESUME -- EDUCATION");
-        
+        VP_PageSubdivision educationDiv = new VP_PageSubdivision("EDUCATION ENTRY #1", false);
+        VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
+                label1 = new VP_FieldLabel("institution location:", 130),
+                label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
+                label3 = new VP_FieldLabel("*GPA:", 130),
+                label4 = new VP_FieldLabel("start date", 130),
+                label5 = new VP_FieldLabel("end date", 130);
+        educationFields.add(new VP_TextField(32, 128));
+        educationFields.add(new VP_TextField(32, 128));
+        educationFields.add(new VP_TextField(32, 128));
+        educationFields.add(new VP_TextField(32, 128));
+        educationFields.add(new VP_TextField(32, 128));
+        educationFields.add(new VP_TextField(32, 128));
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitEducationAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2)}),
+                line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3)}),
+                line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4)}),
+                line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addEducationBtn, cancelBtn});
+        VP_Paragraph notes1 = new VP_Paragraph("(*) denotes an optional field."),
+                notes2 = new VP_Paragraph("At least one education entry must exist for your resume. "
+                        + "The entries can be schools, colleges, or training centers. The GPA field is "
+                        + "optional. You may include up to 9 total education entries in your resume.");
         //-------- Initialization End ------------\\
-
+        for (int i = 0; i < educationFields.size(); i++) {
+            educationFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(0).get(i));
+        }
+        educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5);
+        educationErrorLine.getChildren().addAll(educationError);
+        educationErrorLine.hide();
+        resumeEducationBox.getChildren().addAll(notes2, educationDiv, notes1, educationErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeEducationBox);
         screenContent.setSpacing(30);
@@ -1168,10 +1218,37 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeExperienceBox = new VP_PageDivision("RESUME -- WORK EXPERIENCE");
-        
+        VP_PageSubdivision experienceDiv = new VP_PageSubdivision("EXPERIENCE ENTRY #1", false);
+        VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),       
+                label1 = new VP_FieldLabel("institution location:", 130),
+                label2 = new VP_FieldLabel("position held:", 130),
+                label3 = new VP_FieldLabel("start date", 130),
+                label4 = new VP_FieldLabel("end date", 130);
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitExperienceAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        experienceFields.add(new VP_TextField(32, 128));
+        experienceFields.add(new VP_TextField(32, 128));
+        experienceFields.add(new VP_TextField(32, 128));
+        experienceFields.add(new VP_TextField(32, 128));
+        experienceFields.add(new VP_TextField(32, 128));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{label2, experienceFields.get(2)}),
+                line3 = new VP_DivisionLine(new Node[]{label3, experienceFields.get(3)}),
+                line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addExperienceBtn, cancelBtn});
+        VP_Paragraph notes = new VP_Paragraph("At least one experience entry must exist for your resume. "
+                + "The entries are not limited to employers. Entries may also be internships or research studies, "
+                + "for example. You may include up to 9 total experience entries in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < experienceFields.size(); i++) {
+            experienceFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(0).get(i));
+        }
+        experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4);
+        experienceErrorLine.getChildren().addAll(experienceError);
+        experienceErrorLine.hide();
+        resumeExperienceBox.getChildren().addAll(notes, experienceDiv, experienceErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeExperienceBox);
         screenContent.setSpacing(30);
@@ -1182,7 +1259,7 @@ public class VP_Center extends StackPane {
     }
     
     /*------------------------------------------------------------------------*
-     * buildResumeExperienceScreen()
+     * buildResumeAchievementsScreen()
      * - Builds the screen displaying the Awards and Achievements section of the
      *   resume.
      *   A.K.A. screen 15
@@ -1193,10 +1270,31 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeAchievementsBox = new VP_PageDivision("RESUME -- AWARDS AND ACHIEVEMENTS");
-        
+        VP_PageSubdivision achievementsDiv = new VP_PageSubdivision("AWARD/ACHIEVEMENT ENTRY #1", false);
+        VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),       
+                label1 = new VP_FieldLabel("given by:", 130),
+                label2 = new VP_FieldLabel("date:", 130);
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitAchievementsAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        achievementsFields.add(new VP_TextField(32, 128));
+        achievementsFields.add(new VP_TextField(32, 128));
+        achievementsFields.add(new VP_TextField(32, 128));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addAchievementBtn, cancelBtn});
+        VP_Paragraph notes = new VP_Paragraph("This section of your resume is optional. "
+                + "Each entry can be an award that you have won, induction into a society, or some other "
+                + "achievement. You may include up to 9 total achievements in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < achievementsFields.size(); i++) {
+            achievementsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(0).get(i));
+        }
+        achievementsDiv.getChildren().addAll(line0, line1, line2);
+        achievementsErrorLine.getChildren().addAll(achievementsError);
+        achievementsErrorLine.hide();
+        resumeAchievementsBox.getChildren().addAll(notes, achievementsDiv, achievementsErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeAchievementsBox);
         screenContent.setSpacing(30);
@@ -1218,10 +1316,31 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeCommunityBox = new VP_PageDivision("RESUME -- COMMUNITY");
-        
+        VP_PageSubdivision communityDiv = new VP_PageSubdivision("EVENT ENTRY #1", false);
+        VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),       
+                label1 = new VP_FieldLabel("event location:", 130),
+                label2 = new VP_FieldLabel("date:", 130);
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitCommunityAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        communityFields.add(new VP_TextField(32, 128));
+        communityFields.add(new VP_TextField(32, 128));
+        communityFields.add(new VP_TextField(32, 128));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addCommunityBtn, cancelBtn});
+        VP_Paragraph notes = new VP_Paragraph("This section of your resume is optional. "
+                + "Each entry represents a community service event or volunteer work that you "
+                + "have participated in. You may include up to 9 total events in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < communityFields.size(); i++) {
+            communityFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(0).get(i));
+        }
+        communityDiv.getChildren().addAll(line0, line1, line2);
+        communityErrorLine.getChildren().addAll(communityError);
+        communityErrorLine.hide();
+        resumeCommunityBox.getChildren().addAll(notes, communityDiv, communityErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeCommunityBox);
         screenContent.setSpacing(30);
@@ -1243,10 +1362,24 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeQualificationsBox = new VP_PageDivision("RESUME -- QUALIFICATIONS");
-        
+        VP_PageSubdivision qualificationsDiv = new VP_PageSubdivision("QUALIFICATION #1", false);
+        qualificationsFields.add(new VP_TextField(50, 128));
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitQualificationsAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(0)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addQualificationBtn, cancelBtn});
+        VP_Paragraph notes = new VP_Paragraph("List your skills that are relevant to the job position "
+                + "you are applying for. At least one qualification must exist for your resume, although "
+                + "you really should have more. You may include up to 9 total qualifications in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < qualificationsFields.size(); i++) {
+            qualificationsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(i));
+        }
+        qualificationsDiv.getChildren().addAll(line0);
+        qualificationsErrorLine.getChildren().addAll(qualificationsError);
+        qualificationsErrorLine.hide();
+        resumeQualificationsBox.getChildren().addAll(notes, qualificationsDiv, qualificationsErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeQualificationsBox);
         screenContent.setSpacing(30);
@@ -1268,10 +1401,25 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeHighlightsBox = new VP_PageDivision("RESUME -- HIGHLIGHTS");
-        
+        VP_PageSubdivision highlightsDiv = new VP_PageSubdivision("PERSONAL QUALITY #1", false);
+        highlightsFields.add(new VP_TextField(50, 128));
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitHighlightsAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(0)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addHighlightBtn, cancelBtn});
+        VP_Paragraph notes = new VP_Paragraph("List some personal qualities or personality traits "
+                + "that you feel would be beneficial to an employer. At least one highlight must "
+                + "exist for your resume, although you really should have more. "
+                + "You may include up to 9 total highlights in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < highlightsFields.size(); i++) {
+            highlightsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(i));
+        }
+        highlightsDiv.getChildren().addAll(line0);
+        highlightsErrorLine.getChildren().addAll(highlightsError);
+        highlightsErrorLine.hide();
+        resumeHighlightsBox.getChildren().addAll(notes, highlightsDiv, highlightsErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeHighlightsBox);
         screenContent.setSpacing(30);
@@ -1293,10 +1441,24 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeLanguagesBox = new VP_PageDivision("RESUME -- LANGUAGES");
-        
+        VP_PageSubdivision languagesDiv = new VP_PageSubdivision("PRIMARY LANGUAGE", false);
+        languagesFields.add(new VP_TextField(50, 128));
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitLanguagesAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(0)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addLanguageBtn, cancelBtn});
+        VP_Paragraph notes = new VP_Paragraph("List the languages that you know. "
+                + "The primary language must exist for your resume. "
+                + "You may include up to 8 additional secondary languages in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < languagesFields.size(); i++) {
+            languagesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(i));
+        }
+        languagesDiv.getChildren().addAll(line0);
+        languagesErrorLine.getChildren().addAll(languagesError);
+        languagesErrorLine.hide();
+        resumeLanguagesBox.getChildren().addAll(notes, languagesDiv, languagesErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeLanguagesBox);
         screenContent.setSpacing(30);
@@ -1318,10 +1480,25 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeSoftwareBox = new VP_PageDivision("RESUME -- SOFTWARE");
-        
+        VP_PageSubdivision softwareDiv = new VP_PageSubdivision("SOFTWARE PRODUCT #1", false);
+        softwareFields.add(new VP_TextField(50, 128));
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitSoftwareAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(0)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addSoftwareBtn, cancelBtn});
+        VP_Paragraph notes = new VP_Paragraph("List the software products that you "
+                + "are familiar with and are relevant to the job you are applying for. "
+                + "At least one software product must exist for your resume. "
+                + "You may include up to 9 total products in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < softwareFields.size(); i++) {
+            softwareFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(i));
+        }
+        softwareDiv.getChildren().addAll(line0);
+        softwareErrorLine.getChildren().addAll(softwareError);
+        softwareErrorLine.hide();
+        resumeSoftwareBox.getChildren().addAll(notes, softwareDiv, softwareErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeSoftwareBox);
         screenContent.setSpacing(30);
@@ -1343,10 +1520,42 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision resumeReferencesBox = new VP_PageDivision("RESUME -- REFERENCES");
-        
+        VP_PageSubdivision referenceDiv = new VP_PageSubdivision("REFERENCE #1", false);
+        VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),       
+                label1 = new VP_FieldLabel("*middle name:", 130),
+                label2 = new VP_FieldLabel("last name:", 130),
+                label3 = new VP_FieldLabel("company or\ninstitution:", 130),
+                label4 = new VP_FieldLabel("phone:", 130),
+                label5 = new VP_FieldLabel("*email", 130);
+        VP_Button submitBtn = new VP_Button("Submit", new SubmitReferencesAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        referencesFields.add(new VP_TextField(32, 128));
+        referencesFields.add(new VP_TextField(32, 128));
+        referencesFields.add(new VP_TextField(32, 128));
+        referencesFields.add(new VP_TextField(32, 128));
+        referencesFields.add(new VP_TextField(32, 128));
+        referencesFields.add(new VP_TextField(32, 128));
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2)}),
+                line3 = new VP_DivisionLine(new Node[]{label3, referencesFields.get(3)}),
+                line4 = new VP_DivisionLine(new Node[]{label4, referencesFields.get(4)}),
+                line5 = new VP_DivisionLine(new Node[]{label5, referencesFields.get(5)}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addReferenceBtn, cancelBtn});
+        VP_Paragraph notes1 = new VP_Paragraph("(*) denotes an optional field."),
+                notes2 = new VP_Paragraph("This section of your resume is optional. "
+                + "When you do not include any references, the resume will be generated with "
+                + "text stating that \"References are available upon request.\" You may"
+                + "include up to 9 total references in your resume.");
         //-------- Initialization End ------------\\
 
+        for (int i = 0; i < referencesFields.size(); i++) {
+            referencesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(0).get(i));
+        }
+        referenceDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5);
+        referencesErrorLine.getChildren().addAll(referencesError);
+        referencesErrorLine.hide();
+        resumeReferencesBox.getChildren().addAll(notes2, referenceDiv, notes1, referencesErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeReferencesBox);
         screenContent.setSpacing(30);
@@ -1610,8 +1819,25 @@ public class VP_Center extends StackPane {
     protected void updateDynamicFields() {
         int numbLetters = 0;
         startNewBtn.setVisible(true);
+        addEducationBtn.setVisible(true);
+        addExperienceBtn.setVisible(true);
+        addAchievementBtn.setVisible(true);
+        addCommunityBtn.setVisible(true);
+        addQualificationBtn.setVisible(true);
+        addHighlightBtn.setVisible(true);
+        addLanguageBtn.setVisible(true);
+        addSoftwareBtn.setVisible(true);
+        addReferenceBtn.setVisible(true);
         startNewBtn.setManaged(true);
-        selectCoverLetterLine.show();
+        addEducationBtn.setManaged(true);
+        addExperienceBtn.setManaged(true);
+        addAchievementBtn.setManaged(true);
+        addCommunityBtn.setManaged(true);
+        addQualificationBtn.setManaged(true);
+        addHighlightBtn.setManaged(true);
+        addLanguageBtn.setManaged(true);
+        addSoftwareBtn.setManaged(true);
+        addReferenceBtn.setManaged(true);
         coverLetterSelect.getItems().clear();
         List<String> clChoices = new ArrayList<>();
         clChoices.add("Cover Letter #1");
@@ -1663,6 +1889,47 @@ public class VP_Center extends StackPane {
             addParagraphLine.show();
             if (controller.getCurrentUser().getCovlet().getNumbParagraphs() == 9) {
                 addParagraphLine.hide();
+            }
+        }
+        // education
+        if ((resumeEducationBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbEducation()) {
+            while ((resumeEducationBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbEducation()) {
+                resumeEducationBox.getChildren().remove(3);
+                for (int i = 0; i < 6; i++) {
+                    educationFields.remove(controller.getCurrentUser().getResume().getNumbEducation() * 6);
+                }
+            }
+        } else {
+            while ((resumeEducationBox.getChildren().size() - 5) < controller.getCurrentUser().getResume().getNumbEducation()) {
+                int newNumb = resumeEducationBox.getChildren().size() - 4;
+                VP_PageSubdivision educationDiv = new VP_PageSubdivision("EDUCATION ENTRY #" + newNumb, false);
+                VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
+                    label1 = new VP_FieldLabel("institution location:", 130),
+                    label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
+                    label3 = new VP_FieldLabel("*GPA:", 130),
+                    label4 = new VP_FieldLabel("start date", 130),
+                    label5 = new VP_FieldLabel("end date", 130);
+                educationFields.add(new VP_TextField(32, 128));
+                educationFields.add(new VP_TextField(32, 128));
+                educationFields.add(new VP_TextField(32, 128));
+                educationFields.add(new VP_TextField(32, 128));
+                educationFields.add(new VP_TextField(32, 128));
+                educationFields.add(new VP_TextField(32, 128));
+                VP_Button delBtn = new VP_Button("Delete", new DeleteEducationAction(newNumb));
+                VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0 + (6 * (newNumb - 1)))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * (newNumb - 1)))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * (newNumb - 1)))}),
+                    line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * (newNumb - 1)))}),
+                    line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * (newNumb - 1)))}),
+                    line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * (newNumb - 1)))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+                educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
+                resumeEducationBox.getChildren().add(resumeEducationBox.getChildren().size() - 3, educationDiv);
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbEducation(); i++) {
+                for (int ii = 0; ii < 6; ii ++) {
+                    educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
+                }
             }
         }
         controller.updateTree();
@@ -1729,6 +1996,260 @@ public class VP_Center extends StackPane {
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
+    private class DeleteEducationAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        public DeleteEducationAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < educationFields.size(); i++) {
+                educationFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbEducation(controller.getCurrentUser().getResume().getNumbEducation() - 1);
+            for (int i = 0; i < 6; i++) {
+                educationFields.remove((entryNumber - 1) * 6);
+            }
+            resumeEducationBox.getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getEducation().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getEducation().add(new ArrayList());
+            for (int i = 0; i < 6; i++) {
+                controller.getCurrentUser().getResume().getEducation().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbEducation(); i++) {
+                if (i > 0) {
+                    ((Label)(((VP_PageSubdivision)(resumeEducationBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EDUCATION ENTRY #" + (i + 1));
+                    ((VP_Button)(((VP_DivisionLine)((VP_PageSubdivision)(resumeEducationBox.getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteEducationAction(i + 1));
+                }
+                for (int ii = 0; ii < 6; ii ++) {
+                    educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
+                }
+            }
+            addEducationBtn.setVisible(true);
+            addEducationBtn.setManaged(true);
+        }
+    }
+    
+    private class AddEducationAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbEducation() + 1;
+            VP_PageSubdivision educationDiv = new VP_PageSubdivision("EDUCATION ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
+                    label1 = new VP_FieldLabel("institution location:", 130),
+                    label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
+                    label3 = new VP_FieldLabel("*GPA:", 130),
+                    label4 = new VP_FieldLabel("start date", 130),
+                    label5 = new VP_FieldLabel("end date", 130);
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteEducationAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                delline = new VP_DivisionLine(new Node[]{delBtn});
+            educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
+            resumeEducationBox.getChildren().add(resumeEducationBox.getChildren().size() - 3, educationDiv);
+            int ii = 0;
+            for (int i = 6 * controller.getCurrentUser().getResume().getNumbEducation(); i < educationFields.size(); i++) {
+                educationFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(controller.getCurrentUser().getResume().getNumbEducation()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbEducation(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbEducation() == 9) {
+                addEducationBtn.setVisible(false);
+                addEducationBtn.setManaged(false);
+            }
+        }
+    }
+    
+    private class SubmitEducationAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < educationFields.size(); i++) {
+                educationFields.get(i).textProperty().setValue(educationFields.get(i).textProperty().getValueSafe().trim());
+                if (educationFields.get(i).textProperty().getValueSafe().equals("")) {
+                    if (i % 6 == 0) {
+                        educationError.setParaText("The institution name cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        hasError = true;
+                        educationFields.get(i).showInvalid();
+                        break;
+                    } else if (i % 6 == 1) {
+                        educationError.setParaText("The institution location cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        hasError = true;
+                        educationFields.get(i).showInvalid();
+                        break;
+                    } else if (i % 6 == 2) {
+                        educationError.setParaText("The degree, certification, or training field cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        hasError = true;
+                        educationFields.get(i).showInvalid();
+                        break;
+                    } else if (i % 6 == 4) {
+                        educationError.setParaText("The start date cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        hasError = true;
+                        educationFields.get(i).showInvalid();
+                        break;
+                    } else if (i % 6 == 5) {
+                        educationError.setParaText("The end date cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        hasError = true;
+                        educationFields.get(i).showInvalid();
+                        break;
+                    }
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                educationErrorLine.show();
+            } else {
+                educationError.setParaText("");
+                educationErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicFields();
+                    try {
+                        controller.getDataM().saveResume(1);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1418, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+    private class AddExperienceAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitExperienceAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < experienceFields.size(); i++) {
+                experienceFields.get(i).textProperty().setValue(experienceFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
+    private class AddAchievementAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitAchievementsAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < achievementsFields.size(); i++) {
+                achievementsFields.get(i).textProperty().setValue(achievementsFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
+    private class AddCommunityAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitCommunityAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < communityFields.size(); i++) {
+                communityFields.get(i).textProperty().setValue(communityFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
+    private class AddQualificationAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitQualificationsAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < qualificationsFields.size(); i++) {
+                qualificationsFields.get(i).textProperty().setValue(qualificationsFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
+    private class AddHighlightAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitHighlightsAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < highlightsFields.size(); i++) {
+                highlightsFields.get(i).textProperty().setValue(highlightsFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
+    private class AddLanguageAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitLanguagesAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < languagesFields.size(); i++) {
+                languagesFields.get(i).textProperty().setValue(languagesFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
+    private class AddSoftwareAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitSoftwareAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < softwareFields.size(); i++) {
+                softwareFields.get(i).textProperty().setValue(softwareFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
+    private class AddReferenceAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+    private class SubmitReferencesAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < referencesFields.size(); i++) {
+                referencesFields.get(i).textProperty().setValue(referencesFields.get(i).textProperty().getValueSafe().trim());
+            }
+        }
+    }
     private class SubmitObjectiveAction implements EventHandler<ActionEvent> {
         private final VP_TextArea objectiveParagraph;
         public SubmitObjectiveAction(VP_TextArea objectiveParagraph) {

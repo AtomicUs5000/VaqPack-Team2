@@ -491,6 +491,7 @@ public class VP_DataManager {
             if (resFiles[1] != null && resFiles[1].exists()) {
                 resFiles[1].delete();
             }
+            System.out.println("this is where files should have been converted");
         }
     }
     

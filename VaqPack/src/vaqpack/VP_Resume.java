@@ -200,15 +200,106 @@ public class VP_Resume {
         completedObjective = false;
         completedEducation = false;
         completedWorkExperience = false;
+        completedQualifications = false;
         completedHighlights = false;
+        completedLanguages = false;
         completedSoftware = false;
         completedResume = false;
         startedResume = false;
         
+        if (numbEducation != numbEducationStored) {
+            numbEducationStored = numbEducation;
+            changes = true;
+        }
+        if (numbExperience != numbExperienceStored) {
+            numbExperienceStored = numbExperience;
+            changes = true;
+        }
+        if (numbAchievements != numbAchievementsStored) {
+            numbAchievementsStored = numbAchievements;
+            changes = true;
+        }
+        if (numbCommunity != numbCommunityStored) {
+            numbCommunityStored = numbCommunity;
+            changes = true;
+        }
+        if (numbQualification != numbQualificationStored) {
+            numbQualificationStored = numbQualification;
+            changes = true;
+        }
+        if (numbHighlights != numbHighlightsStored) {
+            numbHighlightsStored = numbHighlights;
+            changes = true;
+        }
+        if (numbLanguages != numbLanguagesStored) {
+            numbLanguagesStored = numbLanguages;
+            changes = true;
+        }
+        if (numbSoftware != numbSoftwareStored) {
+            numbSoftwareStored = numbSoftware;
+            changes = true;
+        }
+        if (numbReferences != numbReferencesStored) {
+            numbReferencesStored = numbReferences;
+            changes = true;
+        }
         if ((objectiveStored != null && !objectiveStored.equals(objective.getValue())) || 
                 (objectiveStored == null && objective.getValue() != null) ) {
             objectiveStored = objective.getValue();
             changes = true;
+        }
+        for (int i = 0; i < 9; i++) {
+            for (int ii = 0; ii < 6; ii++) {
+                if ((educationStored.get(i).get(ii) != null && !educationStored.get(i).get(ii).equals(education.get(i).get(ii).getValue())) || 
+                    (educationStored.get(i).get(ii) == null && education.get(i).get(ii).getValue() != null) ) {
+                educationStored.get(i).set(ii, education.get(i).get(ii).getValue());
+                changes = true;
+                }
+                if ((referencesStored.get(i).get(ii) != null && !referencesStored.get(i).get(ii).equals(references.get(i).get(ii).getValue())) || 
+                    (referencesStored.get(i).get(ii) == null && references.get(i).get(ii).getValue() != null) ) {
+                referencesStored.get(i).set(ii, references.get(i).get(ii).getValue());
+                changes = true;
+                }
+            }
+            for (int ii = 0; ii < 5; ii++) {
+                if ((experienceStored.get(i).get(ii) != null && !experienceStored.get(i).get(ii).equals(experience.get(i).get(ii).getValue())) || 
+                    (experienceStored.get(i).get(ii) == null && experience.get(i).get(ii).getValue() != null) ) {
+                experienceStored.get(i).set(ii, experience.get(i).get(ii).getValue());
+                changes = true;
+                }
+            }
+            for (int ii = 0; ii < 3; ii++) {
+                if ((achievementsStored.get(i).get(ii) != null && !achievementsStored.get(i).get(ii).equals(achievements.get(i).get(ii).getValue())) || 
+                    (achievementsStored.get(i).get(ii) == null && achievements.get(i).get(ii).getValue() != null) ) {
+                achievementsStored.get(i).set(ii, achievements.get(i).get(ii).getValue());
+                changes = true;
+                }
+                if ((communityStored.get(i).get(ii) != null && !communityStored.get(i).get(ii).equals(community.get(i).get(ii).getValue())) || 
+                    (communityStored.get(i).get(ii) == null && community.get(i).get(ii).getValue() != null) ) {
+                communityStored.get(i).set(ii, community.get(i).get(ii).getValue());
+                changes = true;
+                }
+            }
+            if ((qualificationsStored.get(i) != null && !qualificationsStored.get(i).equals(qualifications.get(i).getValue())) || 
+                    (qualificationsStored.get(i) == null && qualifications.get(i).getValue() != null) ) {
+                qualificationsStored.set(i, qualifications.get(i).getValue());
+                changes = true;
+            }
+            if ((highlightsStored.get(i) != null && !highlightsStored.get(i).equals(highlights.get(i).getValue())) || 
+                    (highlightsStored.get(i) == null && highlights.get(i).getValue() != null) ) {
+                highlightsStored.set(i, highlights.get(i).getValue());
+                changes = true;
+            }
+            if ((languagesStored.get(i) != null && !languagesStored.get(i).equals(languages.get(i).getValue())) || 
+                    (languagesStored.get(i) == null && languages.get(i).getValue() != null) ) {
+                languagesStored.set(i, languages.get(i).getValue());
+                changes = true;
+            }
+            if ((softwareStored.get(i) != null && !softwareStored.get(i).equals(software.get(i).getValue())) || 
+                    (softwareStored.get(i) == null && software.get(i).getValue() != null) ) {
+                softwareStored.set(i, software.get(i).getValue());
+                changes = true;
+            }
         }
         
         // check for completeness
@@ -216,8 +307,42 @@ public class VP_Resume {
             startedResume = true;
             completedObjective = true;
         }
+        if (educationStored.get(0).get(0) != null && !educationStored.get(0).get(0).equals("")
+                && educationStored.get(0).get(1) != null && !educationStored.get(0).get(1).equals("")
+                && educationStored.get(0).get(2) != null && !educationStored.get(0).get(2).equals("")
+                && educationStored.get(0).get(3) != null && !educationStored.get(0).get(3).equals("")
+                && educationStored.get(0).get(4) != null && !educationStored.get(0).get(4).equals("")
+                && educationStored.get(0).get(5) != null && !educationStored.get(0).get(5).equals("")) {
+            startedResume = true;
+            completedEducation = true;
+        }
+        if (experienceStored.get(0).get(0) != null && !experienceStored.get(0).get(0).equals("")
+                && experienceStored.get(0).get(1) != null && !experienceStored.get(0).get(1).equals("")
+                && experienceStored.get(0).get(2) != null && !experienceStored.get(0).get(2).equals("")
+                && experienceStored.get(0).get(3) != null && !experienceStored.get(0).get(3).equals("")
+                && experienceStored.get(0).get(4) != null && !experienceStored.get(0).get(4).equals("")) {
+            startedResume = true;
+            completedWorkExperience = true;
+        }
+        if (qualificationsStored.get(0) != null && !qualificationsStored.get(0).equals("")) {
+            startedResume = true;
+            completedQualifications = true;
+        }
+        if (highlightsStored.get(0) != null && !highlightsStored.get(0).equals("")) {
+            startedResume = true;
+            completedHighlights = true;
+        }
+        if (languagesStored.get(0) != null && !languagesStored.get(0).equals("")) {
+            startedResume = true;
+            completedLanguages = true;
+        }
+        if (softwareStored.get(0) != null && !softwareStored.get(0).equals("")) {
+            startedResume = true;
+            completedSoftware = true;
+        }
         if (completedObjective && completedEducation && completedWorkExperience 
-                && completedHighlights && completedSoftware) {
+                && completedQualifications && completedHighlights
+                && completedLanguages && completedSoftware) {
             startedResume = true;
             completedResume = true;
         }
