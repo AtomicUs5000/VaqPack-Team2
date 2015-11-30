@@ -73,7 +73,7 @@ public class VP_Center extends StackPane {
     private final ArrayList<VP_PageSubdivision> bcNodes, clNodes;
     private final ArrayList<Node> coverLetterEditFields;
     private final ArrayList<VP_TextField> educationFields, experienceFields, achievementsFields,
-            communityFields, qualificationsFields, highlightsFields, languagesFields, 
+            communityFields, qualificationsFields, highlightsFields, languagesFields,
             softwareFields, referencesFields;
     private final VP_FieldLabel dateValueLabel;
     private final VP_PageSubdivision dynamicBody;
@@ -240,7 +240,7 @@ public class VP_Center extends StackPane {
                 buildResumeLanguagesScreen(), //......screen 19
                 buildResumeSoftwareScreen(), //.......screen 20
                 buildResumeReferencesScreen() //......screen 21
-                );
+        );
         showScreen(0, 0);
     }
 
@@ -261,11 +261,11 @@ public class VP_Center extends StackPane {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(1);
         } else if (screenNumber == 5) {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(3);
-        }  else if (screenNumber == 6) {
+        } else if (screenNumber == 6) {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(4);
-        }  else if (screenNumber == 8) {
+        } else if (screenNumber == 8) {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(5);
-        }  else if (screenNumber == 10) {
+        } else if (screenNumber == 10) {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(6);
         } else if (screenNumber == 11) {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(2);
@@ -694,7 +694,7 @@ public class VP_Center extends StackPane {
         selectCoverLetterLine.setPadding(new Insets(30, 0, 30, 100));
         selectCoverLetterLine.getChildren().addAll(coverLetterSelect, selectCoverLetterButton);
         selectCoverLetterLine.hide();
-        
+
         buttonLine.getChildren().addAll(startNewBtn, cancelBtn);
         covLetListBox.getChildren().addAll(coverLetterDetails, selectCoverLetterLine, buttonLine);
         screenContent.getChildren().addAll(covLetListBox);
@@ -952,8 +952,6 @@ public class VP_Center extends StackPane {
         VBox screenContent = new VBox();
         VP_PageDivision themeEditBox = new VP_PageDivision("EDIT CUSTOM THEME");
 
-        
-        
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(themeEditBox);
         screenContent.setSpacing(30);
@@ -1054,7 +1052,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeObjectiveScreen()
      * - Builds the screen displaying the Heading and Objective sections of the
@@ -1071,7 +1069,7 @@ public class VP_Center extends StackPane {
         VP_PageSubdivision heading = new VP_PageSubdivision("HEADING", true),
                 objective = new VP_PageSubdivision("OBJECTIVE", false);
         VP_TextArea objectiveParagraph = new VP_TextArea();
-        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 110),       
+        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 110),
                 middleNameLabel = new VP_FieldLabel("*middle name:", 110),
                 lastNameLabel = new VP_FieldLabel("last name:", 110),
                 address1Label = new VP_FieldLabel("address line 1:", 110),
@@ -1150,7 +1148,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeEducationScreen()
      * - Builds the screen displaying the Education section of the
@@ -1168,8 +1166,8 @@ public class VP_Center extends StackPane {
                 label1 = new VP_FieldLabel("institution location:", 130),
                 label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
                 label3 = new VP_FieldLabel("*GPA:", 130),
-                label4 = new VP_FieldLabel("start date", 130),
-                label5 = new VP_FieldLabel("end date", 130);
+                label4 = new VP_FieldLabel("start date:", 130),
+                label5 = new VP_FieldLabel("end date:", 130);
         educationFields.add(new VP_TextField(32, 128));
         educationFields.add(new VP_TextField(32, 128));
         educationFields.add(new VP_TextField(32, 128));
@@ -1205,7 +1203,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeExperienceScreen()
      * - Builds the screen displaying the Work Experience section of the
@@ -1219,11 +1217,11 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision experienceDiv = new VP_PageSubdivision("EXPERIENCE ENTRY #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),       
+        VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
                 label1 = new VP_FieldLabel("institution location:", 130),
                 label2 = new VP_FieldLabel("position held:", 130),
-                label3 = new VP_FieldLabel("start date", 130),
-                label4 = new VP_FieldLabel("end date", 130);
+                label3 = new VP_FieldLabel("start date:", 130),
+                label4 = new VP_FieldLabel("end date:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitExperienceAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         experienceFields.add(new VP_TextField(32, 128));
@@ -1237,7 +1235,8 @@ public class VP_Center extends StackPane {
                 line3 = new VP_DivisionLine(new Node[]{label3, experienceFields.get(3)}),
                 line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4)}),
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addExperienceBtn, cancelBtn});
-        VP_Paragraph notes = new VP_Paragraph("At least one experience entry must exist for your resume. "
+        VP_Paragraph notes1 = new VP_Paragraph(""),
+                notes2 = new VP_Paragraph("At least one experience entry must exist for your resume. "
                 + "The entries are not limited to employers. Entries may also be internships or research studies, "
                 + "for example. You may include up to 9 total experience entries in your resume.");
         //-------- Initialization End ------------\\
@@ -1248,7 +1247,7 @@ public class VP_Center extends StackPane {
         experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4);
         experienceErrorLine.getChildren().addAll(experienceError);
         experienceErrorLine.hide();
-        resumeExperienceBox.getChildren().addAll(notes, experienceDiv, experienceErrorLine, buttonLine);
+        resumeExperienceBox.getChildren().addAll(notes2, experienceDiv, notes1, experienceErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeExperienceBox);
         screenContent.setSpacing(30);
@@ -1257,7 +1256,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeAchievementsScreen()
      * - Builds the screen displaying the Awards and Achievements section of the
@@ -1271,7 +1270,7 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision achievementsDiv = new VP_PageSubdivision("AWARD/ACHIEVEMENT ENTRY #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),       
+        VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),
                 label1 = new VP_FieldLabel("given by:", 130),
                 label2 = new VP_FieldLabel("date:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitAchievementsAction()),
@@ -1283,7 +1282,8 @@ public class VP_Center extends StackPane {
                 line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1)}),
                 line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2)}),
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addAchievementBtn, cancelBtn});
-        VP_Paragraph notes = new VP_Paragraph("This section of your resume is optional. "
+        VP_Paragraph notes1 = new VP_Paragraph(""),
+                notes2 = new VP_Paragraph("This section of your resume is optional. "
                 + "Each entry can be an award that you have won, induction into a society, or some other "
                 + "achievement. You may include up to 9 total achievements in your resume.");
         //-------- Initialization End ------------\\
@@ -1294,7 +1294,7 @@ public class VP_Center extends StackPane {
         achievementsDiv.getChildren().addAll(line0, line1, line2);
         achievementsErrorLine.getChildren().addAll(achievementsError);
         achievementsErrorLine.hide();
-        resumeAchievementsBox.getChildren().addAll(notes, achievementsDiv, achievementsErrorLine, buttonLine);
+        resumeAchievementsBox.getChildren().addAll(notes2, achievementsDiv, notes1, achievementsErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeAchievementsBox);
         screenContent.setSpacing(30);
@@ -1303,7 +1303,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeCommunityScreen()
      * - Builds the screen displaying the Community section of the
@@ -1317,7 +1317,7 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision communityDiv = new VP_PageSubdivision("EVENT ENTRY #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),       
+        VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),
                 label1 = new VP_FieldLabel("event location:", 130),
                 label2 = new VP_FieldLabel("date:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitCommunityAction()),
@@ -1329,7 +1329,8 @@ public class VP_Center extends StackPane {
                 line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1)}),
                 line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2)}),
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addCommunityBtn, cancelBtn});
-        VP_Paragraph notes = new VP_Paragraph("This section of your resume is optional. "
+        VP_Paragraph notes1 = new VP_Paragraph(""),
+                notes2 = new VP_Paragraph("This section of your resume is optional. "
                 + "Each entry represents a community service event or volunteer work that you "
                 + "have participated in. You may include up to 9 total events in your resume.");
         //-------- Initialization End ------------\\
@@ -1340,7 +1341,7 @@ public class VP_Center extends StackPane {
         communityDiv.getChildren().addAll(line0, line1, line2);
         communityErrorLine.getChildren().addAll(communityError);
         communityErrorLine.hide();
-        resumeCommunityBox.getChildren().addAll(notes, communityDiv, communityErrorLine, buttonLine);
+        resumeCommunityBox.getChildren().addAll(notes2, communityDiv, notes1, communityErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeCommunityBox);
         screenContent.setSpacing(30);
@@ -1349,7 +1350,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeQualificationsScreen()
      * - Builds the screen displaying the Qualifications section of the
@@ -1368,7 +1369,8 @@ public class VP_Center extends StackPane {
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(0)}),
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addQualificationBtn, cancelBtn});
-        VP_Paragraph notes = new VP_Paragraph("List your skills that are relevant to the job position "
+        VP_Paragraph notes1 = new VP_Paragraph(""),
+                notes2 = new VP_Paragraph("List your skills that are relevant to the job position "
                 + "you are applying for. At least one qualification must exist for your resume, although "
                 + "you really should have more. You may include up to 9 total qualifications in your resume.");
         //-------- Initialization End ------------\\
@@ -1379,7 +1381,7 @@ public class VP_Center extends StackPane {
         qualificationsDiv.getChildren().addAll(line0);
         qualificationsErrorLine.getChildren().addAll(qualificationsError);
         qualificationsErrorLine.hide();
-        resumeQualificationsBox.getChildren().addAll(notes, qualificationsDiv, qualificationsErrorLine, buttonLine);
+        resumeQualificationsBox.getChildren().addAll(notes2, qualificationsDiv, notes1, qualificationsErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeQualificationsBox);
         screenContent.setSpacing(30);
@@ -1388,7 +1390,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeHighlightsScreen()
      * - Builds the screen displaying the Highlights section of the
@@ -1407,7 +1409,8 @@ public class VP_Center extends StackPane {
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(0)}),
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addHighlightBtn, cancelBtn});
-        VP_Paragraph notes = new VP_Paragraph("List some personal qualities or personality traits "
+        VP_Paragraph notes1 = new VP_Paragraph(""),
+                notes2 = new VP_Paragraph("List some personal qualities or personality traits "
                 + "that you feel would be beneficial to an employer. At least one highlight must "
                 + "exist for your resume, although you really should have more. "
                 + "You may include up to 9 total highlights in your resume.");
@@ -1419,7 +1422,7 @@ public class VP_Center extends StackPane {
         highlightsDiv.getChildren().addAll(line0);
         highlightsErrorLine.getChildren().addAll(highlightsError);
         highlightsErrorLine.hide();
-        resumeHighlightsBox.getChildren().addAll(notes, highlightsDiv, highlightsErrorLine, buttonLine);
+        resumeHighlightsBox.getChildren().addAll(notes2, highlightsDiv, notes1, highlightsErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeHighlightsBox);
         screenContent.setSpacing(30);
@@ -1428,7 +1431,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeLanguagesScreen()
      * - Builds the screen displaying the Languages section of the
@@ -1447,7 +1450,8 @@ public class VP_Center extends StackPane {
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(0)}),
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addLanguageBtn, cancelBtn});
-        VP_Paragraph notes = new VP_Paragraph("List the languages that you know. "
+        VP_Paragraph notes1 = new VP_Paragraph(""),
+                notes2 = new VP_Paragraph("List the languages that you know. "
                 + "The primary language must exist for your resume. "
                 + "You may include up to 8 additional secondary languages in your resume.");
         //-------- Initialization End ------------\\
@@ -1458,7 +1462,7 @@ public class VP_Center extends StackPane {
         languagesDiv.getChildren().addAll(line0);
         languagesErrorLine.getChildren().addAll(languagesError);
         languagesErrorLine.hide();
-        resumeLanguagesBox.getChildren().addAll(notes, languagesDiv, languagesErrorLine, buttonLine);
+        resumeLanguagesBox.getChildren().addAll(notes2, languagesDiv, notes1, languagesErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeLanguagesBox);
         screenContent.setSpacing(30);
@@ -1467,7 +1471,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeSoftwareScreen()
      * - Builds the screen displaying the Software section of the
@@ -1486,7 +1490,8 @@ public class VP_Center extends StackPane {
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(0)}),
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addSoftwareBtn, cancelBtn});
-        VP_Paragraph notes = new VP_Paragraph("List the software products that you "
+        VP_Paragraph notes1 = new VP_Paragraph(""),
+                notes2 = new VP_Paragraph("List the software products that you "
                 + "are familiar with and are relevant to the job you are applying for. "
                 + "At least one software product must exist for your resume. "
                 + "You may include up to 9 total products in your resume.");
@@ -1498,7 +1503,7 @@ public class VP_Center extends StackPane {
         softwareDiv.getChildren().addAll(line0);
         softwareErrorLine.getChildren().addAll(softwareError);
         softwareErrorLine.hide();
-        resumeSoftwareBox.getChildren().addAll(notes, softwareDiv, softwareErrorLine, buttonLine);
+        resumeSoftwareBox.getChildren().addAll(notes2, softwareDiv, notes1, softwareErrorLine, buttonLine);
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(resumeSoftwareBox);
         screenContent.setSpacing(30);
@@ -1507,7 +1512,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /*------------------------------------------------------------------------*
      * buildResumeReferencesScreen()
      * - Builds the screen displaying the References section of the
@@ -1521,20 +1526,20 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision referenceDiv = new VP_PageSubdivision("REFERENCE #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),       
+        VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),
                 label1 = new VP_FieldLabel("*middle name:", 130),
                 label2 = new VP_FieldLabel("last name:", 130),
                 label3 = new VP_FieldLabel("company or\ninstitution:", 130),
                 label4 = new VP_FieldLabel("phone:", 130),
-                label5 = new VP_FieldLabel("*email", 130);
+                label5 = new VP_FieldLabel("*email:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitReferencesAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
+        referencesFields.add(new VP_TextField(32, 45));
+        referencesFields.add(new VP_TextField(32, 45));
+        referencesFields.add(new VP_TextField(32, 45));
         referencesFields.add(new VP_TextField(32, 128));
-        referencesFields.add(new VP_TextField(32, 128));
-        referencesFields.add(new VP_TextField(32, 128));
-        referencesFields.add(new VP_TextField(32, 128));
-        referencesFields.add(new VP_TextField(32, 128));
-        referencesFields.add(new VP_TextField(32, 128));
+        referencesFields.add(new VP_TextField(13, 13));
+        referencesFields.add(new VP_TextField(32, 254));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0)}),
                 line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1)}),
                 line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2)}),
@@ -1544,9 +1549,9 @@ public class VP_Center extends StackPane {
                 buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addReferenceBtn, cancelBtn});
         VP_Paragraph notes1 = new VP_Paragraph("(*) denotes an optional field."),
                 notes2 = new VP_Paragraph("This section of your resume is optional. "
-                + "When you do not include any references, the resume will be generated with "
-                + "text stating that \"References are available upon request.\" You may"
-                + "include up to 9 total references in your resume.");
+                        + "When you do not include any references, the resume will be generated with "
+                        + "text stating that \"References are available upon request.\" You may"
+                        + "include up to 9 total references in your resume.");
         //-------- Initialization End ------------\\
 
         for (int i = 0; i < referencesFields.size(); i++) {
@@ -1798,10 +1803,26 @@ public class VP_Center extends StackPane {
         covletEditError.setParaText("");
         covletEditErrorLine.hide();
         controller.getCurrentUser().getCovlet().revert();
-        
         objectiveError.setParaText("");
         objectiveErrorLine.hide();
-        
+        educationError.setParaText("");
+        educationErrorLine.hide();
+        experienceError.setParaText("");
+        experienceErrorLine.hide();
+        achievementsError.setParaText("");
+        achievementsErrorLine.hide();
+        communityError.setParaText("");
+        communityErrorLine.hide();
+        qualificationsError.setParaText("");
+        qualificationsErrorLine.hide();
+        highlightsError.setParaText("");
+        highlightsErrorLine.hide();
+        languagesError.setParaText("");
+        languagesErrorLine.hide();
+        softwareError.setParaText("");
+        softwareErrorLine.hide();
+        referencesError.setParaText("");
+        referencesErrorLine.hide();  
         controller.getCurrentUser().getResume().revert();
         personalInfoError.setParaText("");
         personalInfoErrorLine.hide();
@@ -1904,11 +1925,11 @@ public class VP_Center extends StackPane {
                 int newNumb = resumeEducationBox.getChildren().size() - 4;
                 VP_PageSubdivision educationDiv = new VP_PageSubdivision("EDUCATION ENTRY #" + newNumb, false);
                 VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
-                    label1 = new VP_FieldLabel("institution location:", 130),
-                    label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
-                    label3 = new VP_FieldLabel("*GPA:", 130),
-                    label4 = new VP_FieldLabel("start date", 130),
-                    label5 = new VP_FieldLabel("end date", 130);
+                        label1 = new VP_FieldLabel("institution location:", 130),
+                        label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
+                        label3 = new VP_FieldLabel("*GPA:", 130),
+                        label4 = new VP_FieldLabel("start date:", 130),
+                        label5 = new VP_FieldLabel("end date:", 130);
                 educationFields.add(new VP_TextField(32, 128));
                 educationFields.add(new VP_TextField(32, 128));
                 educationFields.add(new VP_TextField(32, 128));
@@ -1917,18 +1938,161 @@ public class VP_Center extends StackPane {
                 educationFields.add(new VP_TextField(32, 128));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteEducationAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0 + (6 * (newNumb - 1)))}),
-                    line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * (newNumb - 1)))}),
-                    line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * (newNumb - 1)))}),
-                    line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * (newNumb - 1)))}),
-                    line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * (newNumb - 1)))}),
-                    line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * (newNumb - 1)))}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
+                        line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * (newNumb - 1)))}),
+                        line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * (newNumb - 1)))}),
+                        line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * (newNumb - 1)))}),
+                        line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * (newNumb - 1)))}),
+                        line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * (newNumb - 1)))}),
+                        delline = new VP_DivisionLine(new Node[]{delBtn});
                 educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
                 resumeEducationBox.getChildren().add(resumeEducationBox.getChildren().size() - 3, educationDiv);
             }
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbEducation(); i++) {
-                for (int ii = 0; ii < 6; ii ++) {
+                for (int ii = 0; ii < 6; ii++) {
                     educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
+                }
+            }
+        }
+        // experience
+        if ((resumeExperienceBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbExperience()) {
+            while ((resumeExperienceBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbExperience()) {
+                resumeExperienceBox.getChildren().remove(3);
+                for (int i = 0; i < 5; i++) {
+                    experienceFields.remove(controller.getCurrentUser().getResume().getNumbExperience() * 5);
+                }
+            }
+        } else {
+            while ((resumeExperienceBox.getChildren().size() - 5) < controller.getCurrentUser().getResume().getNumbExperience()) {
+                int newNumb = resumeExperienceBox.getChildren().size() - 4;
+                VP_PageSubdivision experienceDiv = new VP_PageSubdivision("EXPERIENCE ENTRY #" + newNumb, false);
+                VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
+                        label1 = new VP_FieldLabel("institution location:", 130),
+                        label2 = new VP_FieldLabel("position held:", 130),
+                        label3 = new VP_FieldLabel("start date:", 130),
+                        label4 = new VP_FieldLabel("end date:", 130);
+                experienceFields.add(new VP_TextField(32, 128));
+                experienceFields.add(new VP_TextField(32, 128));
+                experienceFields.add(new VP_TextField(32, 128));
+                experienceFields.add(new VP_TextField(32, 128));
+                experienceFields.add(new VP_TextField(32, 128));
+                VP_Button delBtn = new VP_Button("Delete", new DeleteExperienceAction(newNumb));
+                VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0 + (5 * (newNumb - 1)))}),
+                        line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1 + (5 * (newNumb - 1)))}),
+                        line2 = new VP_DivisionLine(new Node[]{label2, experienceFields.get(2 + (5 * (newNumb - 1)))}),
+                        line3 = new VP_DivisionLine(new Node[]{label3, experienceFields.get(3 + (5 * (newNumb - 1)))}),
+                        line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4 + (5 * (newNumb - 1)))}),
+                        delline = new VP_DivisionLine(new Node[]{delBtn});
+                experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4, delline);
+                resumeExperienceBox.getChildren().add(resumeExperienceBox.getChildren().size() - 3, experienceDiv);
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbExperience(); i++) {
+                for (int ii = 0; ii < 5; ii++) {
+                    experienceFields.get((5 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(i).get(ii));
+                }
+            }
+        }
+        // references
+        if ((resumeReferencesBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbReferences()) {
+            while ((resumeReferencesBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbReferences()) {
+                resumeReferencesBox.getChildren().remove(3);
+                for (int i = 0; i < 6; i++) {
+                    referencesFields.remove(controller.getCurrentUser().getResume().getNumbReferences() * 6);
+                }
+            }
+        } else {
+            while ((resumeReferencesBox.getChildren().size() - 5) < controller.getCurrentUser().getResume().getNumbReferences()) {
+                int newNumb = resumeReferencesBox.getChildren().size() - 4;
+                VP_PageSubdivision referenceDiv = new VP_PageSubdivision("REFERENCE #" + newNumb, false);
+                VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),
+                    label1 = new VP_FieldLabel("*middle name:", 130),
+                    label2 = new VP_FieldLabel("last name:", 130),
+                    label3 = new VP_FieldLabel("company or\ninstitution:", 130),
+                    label4 = new VP_FieldLabel("phone:", 130),
+                    label5 = new VP_FieldLabel("*email:", 130);
+                referencesFields.add(new VP_TextField(32, 45));
+                referencesFields.add(new VP_TextField(32, 45));
+                referencesFields.add(new VP_TextField(32, 45));
+                referencesFields.add(new VP_TextField(32, 128));
+                referencesFields.add(new VP_TextField(13, 13));
+                referencesFields.add(new VP_TextField(32, 254));
+                VP_Button delBtn = new VP_Button("Delete", new DeleteReferenceAction(newNumb));
+                VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0 + (6 * (newNumb - 1)))}),
+                        line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1 + (6 * (newNumb - 1)))}),
+                        line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2 + (6 * (newNumb - 1)))}),
+                        line3 = new VP_DivisionLine(new Node[]{label3, referencesFields.get(3 + (6 * (newNumb - 1)))}),
+                        line4 = new VP_DivisionLine(new Node[]{label4, referencesFields.get(4 + (6 * (newNumb - 1)))}),
+                        line5 = new VP_DivisionLine(new Node[]{label5, referencesFields.get(5 + (6 * (newNumb - 1)))}),
+                        delline = new VP_DivisionLine(new Node[]{delBtn});
+                referenceDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
+                resumeReferencesBox.getChildren().add(resumeReferencesBox.getChildren().size() - 3, referenceDiv);
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbReferences(); i++) {
+                for (int ii = 0; ii < 6; ii++) {
+                    referencesFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(i).get(ii));
+                }
+            }
+        }
+        // achievements
+        if ((resumeAchievementsBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbAchievements()) {
+            while ((resumeAchievementsBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbAchievements()) {
+                resumeAchievementsBox.getChildren().remove(3);
+                for (int i = 0; i < 3; i++) {
+                    achievementsFields.remove(controller.getCurrentUser().getResume().getNumbAchievements() * 3);
+                }
+            }
+        } else {
+            while ((resumeAchievementsBox.getChildren().size() - 5) < controller.getCurrentUser().getResume().getNumbAchievements()) {
+                int newNumb = resumeAchievementsBox.getChildren().size() - 4;
+                VP_PageSubdivision achievementDiv = new VP_PageSubdivision("AWARD/ACHIEVEMENT ENTRY #" + newNumb, false);
+                VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),
+                    label1 = new VP_FieldLabel("given by:", 130),
+                    label2 = new VP_FieldLabel("date:", 130);
+                achievementsFields.add(new VP_TextField(32, 128));
+                achievementsFields.add(new VP_TextField(32, 128));
+                achievementsFields.add(new VP_TextField(32, 128));
+                VP_Button delBtn = new VP_Button("Delete", new DeleteAchievementAction(newNumb));
+                VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0 + (3 * (newNumb - 1)))}),
+                        line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1 + (3 * (newNumb - 1)))}),
+                        line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2 + (3 * (newNumb - 1)))}),
+                        delline = new VP_DivisionLine(new Node[]{delBtn});
+                achievementDiv.getChildren().addAll(line0, line1, line2, delline);
+                resumeAchievementsBox.getChildren().add(resumeAchievementsBox.getChildren().size() - 3, achievementDiv);
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbAchievements(); i++) {
+                for (int ii = 0; ii < 3; ii++) {
+                    achievementsFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(i).get(ii));
+                }
+            }
+        }
+        // community
+        if ((resumeCommunityBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbCommunity()) {
+            while ((resumeCommunityBox.getChildren().size() - 5) > controller.getCurrentUser().getResume().getNumbCommunity()) {
+                resumeCommunityBox.getChildren().remove(3);
+                for (int i = 0; i < 3; i++) {
+                    communityFields.remove(controller.getCurrentUser().getResume().getNumbCommunity() * 3);
+                }
+            }
+        } else {
+            while ((resumeCommunityBox.getChildren().size() - 5) < controller.getCurrentUser().getResume().getNumbCommunity()) {
+                int newNumb = resumeCommunityBox.getChildren().size() - 4;
+                VP_PageSubdivision communityDiv = new VP_PageSubdivision("EVENT ENTRY #" + newNumb, false);
+                VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),
+                    label1 = new VP_FieldLabel("event location:", 130),
+                    label2 = new VP_FieldLabel("date:", 130);
+                    communityFields.add(new VP_TextField(32, 128));
+                    communityFields.add(new VP_TextField(32, 128));
+                    communityFields.add(new VP_TextField(32, 128));
+                VP_Button delBtn = new VP_Button("Delete", new DeleteCommunityAction(newNumb));
+                VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0 + (3 * (newNumb - 1)))}),
+                        line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1 + (3 * (newNumb - 1)))}),
+                        line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2 + (3 * (newNumb - 1)))}),
+                        delline = new VP_DivisionLine(new Node[]{delBtn});
+                communityDiv.getChildren().addAll(line0, line1, line2, delline);
+                resumeCommunityBox.getChildren().add(resumeCommunityBox.getChildren().size() - 3, communityDiv);
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbCommunity(); i++) {
+                for (int ii = 0; ii < 3; ii++) {
+                    communityFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(i).get(ii));
                 }
             }
         }
@@ -2022,10 +2186,10 @@ public class VP_Center extends StackPane {
             }
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbEducation(); i++) {
                 if (i > 0) {
-                    ((Label)(((VP_PageSubdivision)(resumeEducationBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EDUCATION ENTRY #" + (i + 1));
-                    ((VP_Button)(((VP_DivisionLine)((VP_PageSubdivision)(resumeEducationBox.getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteEducationAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (resumeEducationBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EDUCATION ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeEducationBox.getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteEducationAction(i + 1));
                 }
-                for (int ii = 0; ii < 6; ii ++) {
+                for (int ii = 0; ii < 6; ii++) {
                     educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
                 }
             }
@@ -2033,8 +2197,9 @@ public class VP_Center extends StackPane {
             addEducationBtn.setManaged(true);
         }
     }
-    
+
     private class AddEducationAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
@@ -2054,12 +2219,12 @@ public class VP_Center extends StackPane {
             educationFields.add(new VP_TextField(32, 128));
             VP_Button delBtn = new VP_Button("Delete", new DeleteEducationAction(newNumb));
             VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                delline = new VP_DivisionLine(new Node[]{delBtn});
+                    line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
             educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
             resumeEducationBox.getChildren().add(resumeEducationBox.getChildren().size() - 3, educationDiv);
             int ii = 0;
@@ -2074,8 +2239,9 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
+
     private class SubmitEducationAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2084,28 +2250,22 @@ public class VP_Center extends StackPane {
                 educationFields.get(i).textProperty().setValue(educationFields.get(i).textProperty().getValueSafe().trim());
                 if (educationFields.get(i).textProperty().getValueSafe().equals("")) {
                     if (i % 6 == 0) {
-                        educationError.setParaText("The institution name cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        educationError.setParaText("The institution name cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
-                        educationFields.get(i).showInvalid();
-                        break;
                     } else if (i % 6 == 1) {
-                        educationError.setParaText("The institution location cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        educationError.setParaText("The institution location cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
-                        educationFields.get(i).showInvalid();
-                        break;
                     } else if (i % 6 == 2) {
-                        educationError.setParaText("The degree, certification, or training field cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        educationError.setParaText("The degree, certification, or training field cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
-                        educationFields.get(i).showInvalid();
-                        break;
                     } else if (i % 6 == 4) {
-                        educationError.setParaText("The start date cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        educationError.setParaText("The start date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
-                        educationFields.get(i).showInvalid();
-                        break;
                     } else if (i % 6 == 5) {
-                        educationError.setParaText("The end date cannot be blank in education entry #" + (((int)(i / 6)) + 1) + ".");
+                        educationError.setParaText("The end date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
+                    }
+                    if (hasError) {
                         educationFields.get(i).showInvalid();
                         break;
                     }
@@ -2130,27 +2290,208 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    private class AddExperienceAction implements EventHandler<ActionEvent> {
+
+    private class DeleteExperienceAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        public DeleteExperienceAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
         @Override
         public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < experienceFields.size(); i++) {
+                experienceFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbExperience(controller.getCurrentUser().getResume().getNumbExperience() - 1);
+            for (int i = 0; i < 5; i++) {
+                experienceFields.remove((entryNumber - 1) * 5);
+            }
+            resumeExperienceBox.getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getExperience().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getExperience().add(new ArrayList());
+            for (int i = 0; i < 5; i++) {
+                controller.getCurrentUser().getResume().getExperience().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbExperience(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (resumeExperienceBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EXPERIENCE ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeExperienceBox.getChildren().get(i + 2))).getChildren().get(6))).getChildren().get(0)).setOnAction(new DeleteExperienceAction(i + 1));
+                }
+                for (int ii = 0; ii < 5; ii++) {
+                    experienceFields.get((5 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(i).get(ii));
+                }
+            }
+            addExperienceBtn.setVisible(true);
+            addExperienceBtn.setManaged(true);
         }
     }
+    
+    private class AddExperienceAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbExperience() + 1;
+            VP_PageSubdivision experienceDiv = new VP_PageSubdivision("EXPERIENCE ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
+                    label1 = new VP_FieldLabel("institution location:", 130),
+                    label2 = new VP_FieldLabel("position held:", 130),
+                    label3 = new VP_FieldLabel("start date", 130),
+                    label4 = new VP_FieldLabel("end date", 130);
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteExperienceAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, experienceFields.get(2 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line3 = new VP_DivisionLine(new Node[]{label3, experienceFields.get(3 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4, delline);
+            resumeExperienceBox.getChildren().add(resumeExperienceBox.getChildren().size() - 3, experienceDiv);
+            int ii = 0;
+            for (int i = 5 * controller.getCurrentUser().getResume().getNumbExperience(); i < experienceFields.size(); i++) {
+                experienceFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(controller.getCurrentUser().getResume().getNumbExperience()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbExperience(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbExperience() == 9) {
+                addExperienceBtn.setVisible(false);
+                addExperienceBtn.setManaged(false);
+            }
+        }
+    }
+
     private class SubmitExperienceAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
             VP_Sounds.play(0);
             for (int i = 0; i < experienceFields.size(); i++) {
                 experienceFields.get(i).textProperty().setValue(experienceFields.get(i).textProperty().getValueSafe().trim());
+                if (experienceFields.get(i).textProperty().getValueSafe().equals("")) {
+                    if (i % 5 == 0) {
+                        experienceError.setParaText("The institution name cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 1) {
+                        experienceError.setParaText("The institution location cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 2) {
+                        experienceError.setParaText("The position held cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 3) {
+                        experienceError.setParaText("The start date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 4) {
+                        experienceError.setParaText("The end date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    }
+                    if (hasError) {
+                        experienceFields.get(i).showInvalid();
+                        break;
+                    }
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                experienceErrorLine.show();
+            } else {
+                experienceError.setParaText("");
+                experienceErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicFields();
+                    try {
+                        controller.getDataM().saveResume(2);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1419, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
             }
         }
     }
-    private class AddAchievementAction implements EventHandler<ActionEvent> {
+
+    private class DeleteAchievementAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        public DeleteAchievementAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
         @Override
         public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < achievementsFields.size(); i++) {
+                achievementsFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbAchievements(controller.getCurrentUser().getResume().getNumbAchievements() - 1);
+            for (int i = 0; i < 3; i++) {
+                achievementsFields.remove((entryNumber - 1) * 3);
+            }
+            resumeAchievementsBox.getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getAchievements().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getAchievements().add(new ArrayList());
+            for (int i = 0; i < 3; i++) {
+                controller.getCurrentUser().getResume().getAchievements().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbAchievements(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (resumeAchievementsBox.getChildren().get(i + 2))).getChildren().get(0))).setText("AWARD/ACHIEVEMENT ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeAchievementsBox.getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteAchievementAction(i + 1));
+                }
+                for (int ii = 0; ii < 3; ii++) {
+                    achievementsFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(i).get(ii));
+                }
+            }
+            addAchievementBtn.setVisible(true);
+            addAchievementBtn.setManaged(true);
         }
     }
+    
+    private class AddAchievementAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbAchievements() + 1;
+            VP_PageSubdivision achievementDiv = new VP_PageSubdivision("AWARD/ACHIEVEMENT ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),
+                label1 = new VP_FieldLabel("given by:", 130),
+                label2 = new VP_FieldLabel("date:", 130);
+            achievementsFields.add(new VP_TextField(32, 128));
+            achievementsFields.add(new VP_TextField(32, 128));
+            achievementsFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteAchievementAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            achievementDiv.getChildren().addAll(line0, line1, line2, delline);
+            resumeAchievementsBox.getChildren().add(resumeAchievementsBox.getChildren().size() - 3, achievementDiv);
+            int ii = 0;
+            for (int i = 3 * controller.getCurrentUser().getResume().getNumbAchievements(); i < achievementsFields.size(); i++) {
+                achievementsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(controller.getCurrentUser().getResume().getNumbAchievements()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbAchievements(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbAchievements() == 9) {
+                addAchievementBtn.setVisible(false);
+                addAchievementBtn.setManaged(false);
+            }
+        }
+    }
+
     private class SubmitAchievementsAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2158,14 +2499,119 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < achievementsFields.size(); i++) {
                 achievementsFields.get(i).textProperty().setValue(achievementsFields.get(i).textProperty().getValueSafe().trim());
             }
+            boolean endReached = false;
+            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbAchievements(); ii++) {
+                int count = 0;
+                for (int i = 0 + (ii * 3); i < 3 + (ii * 3); i++) {
+                    if (!achievementsFields.get(i).textProperty().getValueSafe().equals("")) {
+                        count += 1;
+                    }
+                }
+                if (count == 0 && !endReached) {
+                    endReached = true;
+                } else if (endReached && count > 0) {
+                    achievementsError.setParaText("You cannot have blank achievements in between entries. See achievement #" + (ii));
+                    hasError = true;
+                    break;
+                } else if (count < 3 && count > 0) {
+                    achievementsError.setParaText("Not all mandatory fields for an achievement are complete for entry #" + (ii + 1));
+                    hasError = true;
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                achievementsErrorLine.show();
+            } else {
+                achievementsError.setParaText("");
+                achievementsErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicFields();
+                    try {
+                        controller.getDataM().saveResume(3);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1421, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
         }
     }
-    private class AddCommunityAction implements EventHandler<ActionEvent> {
+    
+    private class DeleteCommunityAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        public DeleteCommunityAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
         @Override
         public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < communityFields.size(); i++) {
+                communityFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbCommunity(controller.getCurrentUser().getResume().getNumbCommunity() - 1);
+            for (int i = 0; i < 3; i++) {
+                communityFields.remove((entryNumber - 1) * 3);
+            }
+            resumeCommunityBox.getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getCommunity().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getCommunity().add(new ArrayList());
+            for (int i = 0; i < 3; i++) {
+                controller.getCurrentUser().getResume().getCommunity().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbCommunity(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (resumeCommunityBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EVENT ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeCommunityBox.getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteCommunityAction(i + 1));
+                }
+                for (int ii = 0; ii < 3; ii++) {
+                    communityFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(i).get(ii));
+                }
+            }
+            addCommunityBtn.setVisible(true);
+            addCommunityBtn.setManaged(true);
         }
     }
+
+    private class AddCommunityAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbCommunity() + 1;
+            VP_PageSubdivision communityDiv = new VP_PageSubdivision("EVENT ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),
+                    label1 = new VP_FieldLabel("event location:", 130),
+                    label2 = new VP_FieldLabel("date:", 130);
+            communityFields.add(new VP_TextField(32, 128));
+            communityFields.add(new VP_TextField(32, 128));
+            communityFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteCommunityAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            communityDiv.getChildren().addAll(line0, line1, line2, delline);
+            resumeCommunityBox.getChildren().add(resumeCommunityBox.getChildren().size() - 3, communityDiv);
+            int ii = 0;
+            for (int i = 3 * controller.getCurrentUser().getResume().getNumbCommunity(); i < communityFields.size(); i++) {
+                communityFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(controller.getCurrentUser().getResume().getNumbCommunity()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbCommunity(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbCommunity() == 9) {
+                addCommunityBtn.setVisible(false);
+                addCommunityBtn.setManaged(false);
+            }
+        }
+    }
+
     private class SubmitCommunityAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2173,14 +2619,55 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < communityFields.size(); i++) {
                 communityFields.get(i).textProperty().setValue(communityFields.get(i).textProperty().getValueSafe().trim());
             }
+            boolean endReached = false;
+            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbCommunity(); ii++) {
+                int count = 0;
+                for (int i = 0 + (ii * 3); i < 3 + (ii * 3); i++) {
+                    if (!communityFields.get(i).textProperty().getValueSafe().equals("")) {
+                        count += 1;
+                    }
+                }
+                if (count == 0 && !endReached) {
+                    endReached = true;
+                } else if (endReached && count > 0) {
+                    communityError.setParaText("You cannot have blank events in between entries. See entry #" + (ii));
+                    hasError = true;
+                    break;
+                } else if (count < 3 && count > 0) {
+                    communityError.setParaText("Not all mandatory fields for an event are complete for entry #" + (ii + 1));
+                    hasError = true;
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                communityErrorLine.show();
+            } else {
+                communityError.setParaText("");
+                communityErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicFields();
+                    try {
+                        controller.getDataM().saveResume(4);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1422, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
         }
     }
+
     private class AddQualificationAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
         }
     }
+
     private class SubmitQualificationsAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2190,12 +2677,16 @@ public class VP_Center extends StackPane {
             }
         }
     }
+
     private class AddHighlightAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
         }
     }
+
     private class SubmitHighlightsAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2205,12 +2696,16 @@ public class VP_Center extends StackPane {
             }
         }
     }
+
     private class AddLanguageAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
         }
     }
+
     private class SubmitLanguagesAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2220,12 +2715,16 @@ public class VP_Center extends StackPane {
             }
         }
     }
+
     private class AddSoftwareAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
         }
     }
+
     private class SubmitSoftwareAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2235,26 +2734,172 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    private class AddReferenceAction implements EventHandler<ActionEvent> {
+    
+    private class DeleteReferenceAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        public DeleteReferenceAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
         @Override
         public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < referencesFields.size(); i++) {
+                referencesFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbReferences(controller.getCurrentUser().getResume().getNumbReferences() - 1);
+            for (int i = 0; i < 6; i++) {
+                referencesFields.remove((entryNumber - 1) * 6);
+            }
+            resumeReferencesBox.getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getReferences().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getReferences().add(new ArrayList());
+            for (int i = 0; i < 6; i++) {
+                controller.getCurrentUser().getResume().getReferences().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbReferences(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (resumeReferencesBox.getChildren().get(i + 2))).getChildren().get(0))).setText("REFERENCE #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeReferencesBox.getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteReferenceAction(i + 1));
+                }
+                for (int ii = 0; ii < 6; ii++) {
+                    referencesFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(i).get(ii));
+                }
+            }
+            addReferenceBtn.setVisible(true);
+            addReferenceBtn.setManaged(true);
         }
     }
+
+    private class AddReferenceAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbReferences() + 1;
+            VP_PageSubdivision referenceDiv = new VP_PageSubdivision("REFERENCE #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),
+                    label1 = new VP_FieldLabel("*middle name:", 130),
+                    label2 = new VP_FieldLabel("last name:", 130),
+                    label3 = new VP_FieldLabel("company or\ninstitution:", 130),
+                    label4 = new VP_FieldLabel("phone:", 130),
+                    label5 = new VP_FieldLabel("*email:", 130);
+        referencesFields.add(new VP_TextField(32, 45));
+        referencesFields.add(new VP_TextField(32, 45));
+        referencesFields.add(new VP_TextField(32, 45));
+        referencesFields.add(new VP_TextField(32, 128));
+        referencesFields.add(new VP_TextField(13, 13));
+        referencesFields.add(new VP_TextField(32, 254));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteReferenceAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line3 = new VP_DivisionLine(new Node[]{label3, referencesFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line4 = new VP_DivisionLine(new Node[]{label4, referencesFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line5 = new VP_DivisionLine(new Node[]{label5, referencesFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            referenceDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
+            resumeReferencesBox.getChildren().add(resumeReferencesBox.getChildren().size() - 3, referenceDiv);
+            int ii = 0;
+            for (int i = 6 * controller.getCurrentUser().getResume().getNumbReferences(); i < referencesFields.size(); i++) {
+                referencesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(controller.getCurrentUser().getResume().getNumbReferences()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbReferences(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbReferences() == 9) {
+                addReferenceBtn.setVisible(false);
+                addReferenceBtn.setManaged(false);
+            }
+        }
+    }
+
     private class SubmitReferencesAction implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
+            String phoneRegex = "\\([0-9]{3}\\)[0-9]{3}\\-[0-9]{4}$";
+            Pattern phonePattern = Pattern.compile(phoneRegex);
+            Matcher matcher;
             VP_Sounds.play(0);
             for (int i = 0; i < referencesFields.size(); i++) {
                 referencesFields.get(i).textProperty().setValue(referencesFields.get(i).textProperty().getValueSafe().trim());
             }
+            boolean endReached = false;
+            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbReferences(); ii++) {
+                int count = 0, optionalCount = 0;
+                for (int i = 0 + (ii * 6); i < 6 + (ii * 6); i++) {
+                    if (!referencesFields.get(i).textProperty().getValueSafe().equals("")) {
+                        if (i % 6 == 1 || i % 6 == 5) {
+                            optionalCount += 1;
+                            if (i % 6 == 5) {
+                                hasError = (!controller.getDataM().checkEmail(referencesFields.get(i).textProperty().getValueSafe()));
+                                if (hasError) {
+                                    referencesFields.get(i).showInvalid();
+                                    referencesError.setParaText("Email is not in valid form in reference #" + (ii + 1) + ".");
+                                }
+                            }
+                        } else {
+                            count += 1;
+                            if (i % 6 == 4) {
+                                matcher = phonePattern.matcher(referencesFields.get(i).textProperty().getValueSafe());
+                                if (!matcher.matches()) {
+                                    hasError = true;
+                                    referencesFields.get(i).showInvalid();
+                                    referencesError.setParaText("Phone numbers must be in form "
+                                            + "(xxx)xxx-xxxx for reference #" + (ii + 1) + ".");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!hasError) {
+                    if (count == 0 && optionalCount == 0 && !endReached) {
+                        endReached = true;
+                    } else if (endReached && (count > 0 || optionalCount > 0)) {
+                        referencesError.setParaText("You cannot have blank references in between entries. See reference #" + (ii));
+                        hasError = true;
+                        break;
+                    } else if ((count < 4 && count > 0) || (count == 0 && optionalCount > 0)) {
+                        referencesError.setParaText("Not all mandatory fields for a reference are complete for entry #" + (ii + 1));
+                        hasError = true;
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                referencesErrorLine.show();
+            } else {
+                referencesError.setParaText("");
+                referencesErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicFields();
+                    try {
+                        controller.getDataM().saveResume(9);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(1420, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
         }
     }
+
     private class SubmitObjectiveAction implements EventHandler<ActionEvent> {
+
         private final VP_TextArea objectiveParagraph;
+
         public SubmitObjectiveAction(VP_TextArea objectiveParagraph) {
             this.objectiveParagraph = objectiveParagraph;
         }
+
         @Override
         public void handle(ActionEvent event) {
             boolean hasError = false;
@@ -2284,7 +2929,7 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
+
     private class LoadCoverLetterAction implements EventHandler<ActionEvent> {
 
         @Override

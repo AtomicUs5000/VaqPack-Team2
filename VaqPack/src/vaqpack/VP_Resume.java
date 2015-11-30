@@ -21,22 +21,22 @@ public class VP_Resume {
             themeId = -1,
             numbEducation = 1,
             numbExperience = 1,
-            numbAchievements = 0,
-            numbCommunity = 0,
+            numbAchievements = 1,
+            numbCommunity = 1,
             numbQualification = 1,
             numbHighlights = 1,
             numbLanguages = 1,
             numbSoftware = 1,
-            numbReferences = 0,
+            numbReferences = 1,
             numbEducationStored = 1,
             numbExperienceStored = 1,
-            numbAchievementsStored = 0,
-            numbCommunityStored = 0,
+            numbAchievementsStored = 1,
+            numbCommunityStored = 1,
             numbQualificationStored = 1,
             numbHighlightsStored = 1,
             numbLanguagesStored = 1,
             numbSoftwareStored = 1,
-            numbReferencesStored = 0;
+            numbReferencesStored = 1;
     private final VP_User owner;
     private boolean
             changes,
@@ -164,7 +164,7 @@ public class VP_Resume {
         for (int i = 0; i < 9; i++) {
             for (int ii = 0; ii < 6; ii++) {
                 education.get(i).get(ii).setValue(educationStored.get(i).get(ii));
-                references.get(i).get(ii).setValue(educationStored.get(i).get(ii));
+                references.get(i).get(ii).setValue(referencesStored.get(i).get(ii));
             }
             for (int ii = 0; ii < 5; ii++) {
                 experience.get(i).get(ii).setValue(experienceStored.get(i).get(ii));
@@ -347,7 +347,7 @@ public class VP_Resume {
             completedResume = true;
         }
         if (completedResume && changes) {
-            generateXLS();
+            generateXSL();
         }
     }
     
@@ -370,22 +370,22 @@ public class VP_Resume {
         startedResume = false;
         numbEducation = 1;
         numbExperience = 1;
-        numbAchievements = 0;
-        numbCommunity = 0;
+        numbAchievements = 1;
+        numbCommunity = 1;
         numbQualification = 1;
         numbHighlights = 1;
         numbLanguages = 1;
         numbSoftware = 1;
-        numbReferences = 0;
+        numbReferences = 1;
         numbEducationStored = 1;
         numbExperienceStored = 1;
-        numbAchievementsStored = 0;
-        numbCommunityStored = 0;
+        numbAchievementsStored = 1;
+        numbCommunityStored = 1;
         numbQualificationStored = 1;
         numbHighlightsStored = 1;
         numbLanguagesStored = 1;
         numbSoftwareStored = 1;
-        numbReferencesStored = 0;
+        numbReferencesStored = 1;
         for (int i = 0; i < 9; i ++) {
             for (int ii = 0; ii < 6; ii++) {
                 educationStored.get(i).set(ii, "");
@@ -421,12 +421,12 @@ public class VP_Resume {
     }
     
     /*------------------------------------------------------------------------*
-     * generateXLS()
+     * generateXSL()
      * - Creates the xml stylesheet to be passed to html conversion.
      * - No parameters
      * - No return
      *------------------------------------------------------------------------*/
-    private void generateXLS() {
+    private void generateXSL() {
         
     }
 
@@ -595,5 +595,9 @@ public class VP_Resume {
 
     protected ArrayList<StringProperty> getSoftware() {
         return software;
+    }
+
+    protected String getXsl() {
+        return xsl;
     }
 }

@@ -303,7 +303,38 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
-            // ID 1500 Originates from VP_Loader
+            case 1419:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing resume experience fields.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1420:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing resume references.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1421:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing resume achievements.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1422:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing the resume community section.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
             // ID 1600 Originates from VP_Mail
             case 1601:
                 header = "VaqPack could not send the email due to \n"
@@ -311,19 +342,6 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
-
-            // ID 1700 Originates from VP_Header
-            // ID 1800 Originates from VP_Tree
-            // ID 1900 Originates from VP_Center
-            // ID 2000 Originates from VP_Footer
-            // ID 2100 Originates from VP_BusinessCard
-            // ID 2200 Originates from VP_CoverLetter
-            // ID 2300 Originates from VP_Resume
-            // ID 2400 Originates from VP_User
-            // ID 2500 Originates from VP_Theme
-            // ID 2600 Originates from VP_Contact
-            // ID 2700 Originates from VP_Textfield
-            // ID 2800 Originates from VP_PasswordField
             // ID 2900 Originates from VP_DataToHtml
             case 2901:
                 header = "VaqPack could not create the pdf document for the "
@@ -337,8 +355,6 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
-            // ID 3000 Originates from VP_HtmlToPdf
-            // ID 3100 Originates from VP_SoundManager
             // General Error, perhaps invalid code in constructor
             default:
                 header = "An unknown error has occured.";

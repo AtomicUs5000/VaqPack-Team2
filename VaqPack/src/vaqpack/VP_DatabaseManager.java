@@ -309,11 +309,11 @@ public class VP_DatabaseManager {
                 + "  ex_positions text DEFAULT NULL,"
                 + "  ex_start text DEFAULT NULL,"
                 + "  ex_end text DEFAULT NULL,"
-                + "  numb_achievements tinyint(1) unsigned DEFAULT 0,"
+                + "  numb_achievements tinyint(1) unsigned DEFAULT 1,"
                 + "  ac_names text DEFAULT NULL,"
                 + "  ac_institutions text DEFAULT NULL,"
                 + "  ac_dates text DEFAULT NULL,"
-                + "  numb_community tinyint(1) unsigned DEFAULT 0,"
+                + "  numb_community tinyint(1) unsigned DEFAULT 1,"
                 + "  ev_names text DEFAULT NULL,"
                 + "  ev_locs text DEFAULT NULL,"
                 + "  ev_dates text DEFAULT NULL,"
@@ -325,7 +325,7 @@ public class VP_DatabaseManager {
                 + "  languages text DEFAULT NULL,"
                 + "  numb_software tinyint(1) unsigned DEFAULT 1,"
                 + "  software text DEFAULT NULL,"
-                + "  numb_references tinyint(1) unsigned DEFAULT 0,"
+                + "  numb_references tinyint(1) unsigned DEFAULT 1,"
                 + "  ref_first_names text DEFAULT NULL,"
                 + "  ref_middle_names text DEFAULT NULL,"
                 + "  ref_last_names text DEFAULT NULL,"
@@ -1521,39 +1521,39 @@ public class VP_DatabaseManager {
                         + "ed_gpa = '" + formattedStrings[3] + "', "
                         + "ed_start = '" + formattedStrings[4] + "', "
                         + "ed_end = '" + formattedStrings[5] + "' "
-                        + "WHERE  user_id = " + userID;
+                        + "WHERE user_id = " + userID;
             } else if (section == 2) {
                 sql = "UPDATE resume SET numb_experience = " + res.getNumbExperience() + ", "
                         + "ex_names = '" + formattedStrings[0] + "', "
                         + "ex_locs = '" + formattedStrings[1] + "', "
                         + "ex_positions = '" + formattedStrings[2] + "', "
                         + "ex_start = '" + formattedStrings[3] + "', "
-                        + "ex_end = '" + formattedStrings[4] + "', "
-                        + "WHERE  user_id = " + userID;
+                        + "ex_end = '" + formattedStrings[4] + "' "
+                        + "WHERE user_id = " + userID;
             } else if (section == 3) {
                 sql = "UPDATE resume SET numb_achievements = " + res.getNumbAchievements() + ", "
                         + "ac_names = '" + formattedStrings[0] + "', "
                         + "ac_institutions = '" + formattedStrings[1] + "', "
-                        + "ac_dates = '" + formattedStrings[2] + "', "
-                        + "WHERE  user_id = " + userID;
+                        + "ac_dates = '" + formattedStrings[2] + "' "
+                        + "WHERE user_id = " + userID;
             } else if (section == 4) {
                 sql = "UPDATE resume SET numb_community = " + res.getNumbCommunity() + ", "
                         + "ev_names = '" + formattedStrings[0] + "', "
                         + "ev_locs = '" + formattedStrings[1] + "', "
-                        + "ev_dates = '" + formattedStrings[2] + "', "
-                        + "WHERE  user_id = " + userID;
+                        + "ev_dates = '" + formattedStrings[2] + "' "
+                        + "WHERE user_id = " + userID;
             } else if (section == 5) {
                 sql = "UPDATE resume SET numb_qualifications = " + res.getNumbQualification() + ", "
-                        + "qualifications = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+                        + "qualifications = '" + formattedStrings[0] + "' WHERE user_id = " + userID;
             } else if (section == 6) {
                 sql = "UPDATE resume SET numb_highlights = " + res.getNumbHighlights() + ", "
-                        + "highlights = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+                        + "highlights = '" + formattedStrings[0] + "' WHERE user_id = " + userID;
             } else if (section == 7) {
                 sql = "UPDATE resume SET numb_languages = " + res.getNumbLanguages() + ", "
-                        + "languages = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+                        + "languages = '" + formattedStrings[0] + "' WHERE user_id = " + userID;
             } else if (section == 8) {
                 sql = "UPDATE resume SET numb_software = " + res.getNumbSoftware() + ", "
-                        + "software = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+                        + "software = '" + formattedStrings[0] + "' WHERE user_id = " + userID;
             } else if (section == 9) {
                 sql = "UPDATE resume SET numb_references = " + res.getNumbReferences() + ", "
                         + "ref_first_names = '" + formattedStrings[0] + "', "
@@ -1562,7 +1562,7 @@ public class VP_DatabaseManager {
                         + "ref_company = '" + formattedStrings[3] + "', "
                         + "ref_phone = '" + formattedStrings[4] + "', "
                         + "ref_email = '" + formattedStrings[5] + "' "
-                        + "WHERE  user_id = " + userID;
+                        + "WHERE user_id = " + userID;
             }
         } else {
             if (section == 0) {
