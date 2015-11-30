@@ -476,8 +476,22 @@ public class VP_DataManager {
         }
     }
     
-    protected void saveResObj() throws SQLException {
-        dbManager.storeResObjData(controller.getCurrentUser());
+    protected void saveResume(int section) throws SQLException {
+        dbManager.storeResumeData(controller.getCurrentUser(), section);
+        if (controller.getCurrentUser().getResume().hasCompletedResume()) {
+            File[] resFiles = new File[2];
+            /*
+            resFiles = fileM.generateResHTMLandPDF(controller.getCurrentUser());
+            dbManager.storeResHTML(controller.getCurrentUser(), resFiles[0]);
+            dbManager.storeResPDF(controller.getCurrentUser(), resFiles[1]);
+            */
+            if (resFiles[0] != null && resFiles[0].exists()) {
+                resFiles[0].delete();
+            }
+            if (resFiles[1] != null && resFiles[1].exists()) {
+                resFiles[1].delete();
+            }
+        }
     }
     
     /*------------------------------------------------------------------------*

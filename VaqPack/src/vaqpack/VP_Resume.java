@@ -435,4 +435,40 @@ public class VP_Resume {
     protected boolean hasChanges() {
         return changes;
     }
+
+    protected ArrayList<ArrayList<StringProperty>> getEducation() {
+        return education;
+    }
+
+    protected ArrayList<ArrayList<StringProperty>> getExperience() {
+        return experience;
+    }
+
+    protected ArrayList<ArrayList<StringProperty>> getAchievements() {
+        return achievements;
+    }
+
+    protected ArrayList<ArrayList<StringProperty>> getCommunity() {
+        return community;
+    }
+
+    protected ArrayList<ArrayList<StringProperty>> getReferences() {
+        return references;
+    }
+
+    protected ArrayList<StringProperty> getQualifications() {
+        return qualifications;
+    }
+
+    protected ArrayList<StringProperty> getHighlights() {
+        return highlights;
+    }
+
+    protected ArrayList<StringProperty> getLanguages() {
+        return languages;
+    }
+
+    protected ArrayList<StringProperty> getSoftware() {
+        return software;
+    }
 }

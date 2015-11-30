@@ -306,7 +306,7 @@ public class VP_DatabaseManager {
                 + "  numb_experience tinyint(1) unsigned DEFAULT 1,"
                 + "  ex_names text DEFAULT NULL,"
                 + "  ex_locs text DEFAULT NULL,"
-                + "  ex_poisitions text DEFAULT NULL,"
+                + "  ex_positions text DEFAULT NULL,"
                 + "  ex_start text DEFAULT NULL,"
                 + "  ex_end text DEFAULT NULL,"
                 + "  numb_achievements tinyint(1) unsigned DEFAULT 0,"
@@ -332,6 +332,7 @@ public class VP_DatabaseManager {
                 + "  ref_company text DEFAULT NULL,"
                 + "  ref_phone text DEFAULT NULL,"
                 + "  ref_email text DEFAULT NULL,"
+                + "  theme tinyint(2) DEFAULT -1,"
                 + "  PRIMARY KEY (id),"
                 + "  UNIQUE KEY id_UNIQUE (id),"
                 + "  UNIQUE KEY user_id_UNIQUE (user_id),"
@@ -630,8 +631,8 @@ public class VP_DatabaseManager {
         }
         close();
     }
-    
-    protected void loadCovLetData(VP_User thisUser, int clID) throws SQLException{
+
+    protected void loadCovLetData(VP_User thisUser, int clID) throws SQLException {
         int userID = thisUser.getUserID();
         String sql = "SELECT * FROM cover_letter WHERE user_id = " + userID + " AND id = " + clID;
         connect(dbName);
@@ -684,7 +685,10 @@ public class VP_DatabaseManager {
         long newMS;
         Date dt;
         String sql = "SELECT * FROM user WHERE email = '" + cred[0] + "' AND "
-                + "password = '" + cred[1] + "'";
+                + "password = '" + cred[1] + "'", temp;
+        VP_BusinessCard bc = thisUser.getBcard();
+        VP_CoverLetter cl = thisUser.getCovlet();
+        VP_Resume res = thisUser.getResume();
         //-------- Initialization End ------------\\
         connect(dbName);
         rts = stm.executeQuery(sql);
@@ -715,41 +719,41 @@ public class VP_DatabaseManager {
                 sql = "SELECT * FROM business_card WHERE user_id = " + userID;
                 rts = stm.executeQuery(sql);
                 if (rts.next()) {
-                    thisUser.getBcard().getProfession().setValue(rts.getString("profession"));
-                    thisUser.getBcard().getCompanyName().setValue(rts.getString("company_name"));
-                    thisUser.getBcard().getCompanySlogan().setValue(rts.getString("company_slogan"));
-                    thisUser.getBcard().getWebPage().setValue(rts.getString("webpage"));
-                    thisUser.getBcard().setThemeId(rts.getInt("theme"));
-                    thisUser.getBcard().save();
+                    bc.getProfession().setValue(rts.getString("profession"));
+                    bc.getCompanyName().setValue(rts.getString("company_name"));
+                    bc.getCompanySlogan().setValue(rts.getString("company_slogan"));
+                    bc.getWebPage().setValue(rts.getString("webpage"));
+                    bc.setThemeId(rts.getInt("theme"));
+                    bc.save();
                 }
                 sql = "SELECT * FROM cover_letter WHERE user_id = " + userID;
                 rts = stm.executeQuery(sql);
                 if (rts.next()) {
                     thisUser.getCoverLetterIds()[0] = rts.getInt("id");
-                    thisUser.getCovlet().setId(rts.getInt("id"));
-                    thisUser.getCovlet().getAdSource().setValue(rts.getString("adsource"));
-                    thisUser.getCovlet().getAdJobTitle().setValue(rts.getString("job_title"));
-                    thisUser.getCovlet().getAdRefNumber().setValue(rts.getString("reference_number"));
-                    thisUser.getCovlet().getDate().setValue(rts.getString("date"));
-                    thisUser.getCovlet().getContactFirstName().setValue(rts.getString("contact_first_name"));
-                    thisUser.getCovlet().getContactMiddleName().setValue(rts.getString("contact_middle_name"));
-                    thisUser.getCovlet().getContactLastName().setValue(rts.getString("contact_last_name"));
-                    thisUser.getCovlet().getContactTitle().setValue(rts.getString("contact_title"));
-                    thisUser.getCovlet().getContactCompany().setValue(rts.getString("contact_company_name"));
-                    thisUser.getCovlet().getContactAddress1().setValue(rts.getString("contact_address_line1"));
-                    thisUser.getCovlet().getContactAddress2().setValue(rts.getString("contact_address_line2"));
-                    thisUser.getCovlet().getContactCity().setValue(rts.getString("contact_city"));
-                    thisUser.getCovlet().getContactState().setValue(rts.getString("contact_state"));
-                    thisUser.getCovlet().getContactZip().setValue(rts.getString("contact_zipcode"));
-                    thisUser.getCovlet().getSalutation().setValue(rts.getString("salutation"));
-                    thisUser.getCovlet().setNumbParagraphs(rts.getInt("numb_paragraphs"));
+                    cl.setId(rts.getInt("id"));
+                    cl.getAdSource().setValue(rts.getString("adsource"));
+                    cl.getAdJobTitle().setValue(rts.getString("job_title"));
+                    cl.getAdRefNumber().setValue(rts.getString("reference_number"));
+                    cl.getDate().setValue(rts.getString("date"));
+                    cl.getContactFirstName().setValue(rts.getString("contact_first_name"));
+                    cl.getContactMiddleName().setValue(rts.getString("contact_middle_name"));
+                    cl.getContactLastName().setValue(rts.getString("contact_last_name"));
+                    cl.getContactTitle().setValue(rts.getString("contact_title"));
+                    cl.getContactCompany().setValue(rts.getString("contact_company_name"));
+                    cl.getContactAddress1().setValue(rts.getString("contact_address_line1"));
+                    cl.getContactAddress2().setValue(rts.getString("contact_address_line2"));
+                    cl.getContactCity().setValue(rts.getString("contact_city"));
+                    cl.getContactState().setValue(rts.getString("contact_state"));
+                    cl.getContactZip().setValue(rts.getString("contact_zipcode"));
+                    cl.getSalutation().setValue(rts.getString("salutation"));
+                    cl.setNumbParagraphs(rts.getInt("numb_paragraphs"));
                     String[] paraText = rts.getString("text").split("\\@\\#\\$");
-                    for (int i = 0; i < thisUser.getCovlet().getNumbParagraphs(); i++) {
-                        thisUser.getCovlet().getParagraphs().get(i).setValue(paraText[i]);
+                    for (int i = 0; i < cl.getNumbParagraphs(); i++) {
+                        cl.getParagraphs().get(i).setValue(paraText[i]);
                     }
-                    thisUser.getCovlet().getClosing().setValue(rts.getString("closing"));
-                    thisUser.getCovlet().setThemeId(rts.getInt("theme"));
-                    thisUser.getCovlet().save();
+                    cl.getClosing().setValue(rts.getString("closing"));
+                    cl.setThemeId(rts.getInt("theme"));
+                    cl.save();
                     if (rts.next()) {
                         thisUser.getCoverLetterIds()[1] = rts.getInt("id");
                         if (rts.next()) {
@@ -757,10 +761,186 @@ public class VP_DatabaseManager {
                         }
                     }
                 }
-                // load resume
-                // code here
+                sql = "SELECT * FROM resume WHERE user_id = " + userID;
+                rts = stm.executeQuery(sql);
+                if (rts.next()) {
+                    res.getObjective().setValue(rts.getString("objective"));
+                    res.setNumbEducation(rts.getInt("numb_education"));
+                    res.setNumbExperience(rts.getInt("numb_experience"));
+                    res.setNumbAchievements(rts.getInt("numb_achievements"));
+                    res.setNumbCommunity(rts.getInt("numb_community"));
+                    res.setNumbQualification(rts.getInt("numb_qualifications"));
+                    res.setNumbHighlights(rts.getInt("numb_highlights"));
+                    res.setNumbLanguages(rts.getInt("numb_languages"));
+                    res.setNumbSoftware(rts.getInt("numb_software"));
+                    res.setNumbReferences(rts.getInt("numb_references"));
+                    String[] paraText0 = new String[9];
+                    String[] paraText1 = new String[9];
+                    String[] paraText2 = new String[9];
+                    String[] paraText3 = new String[9];
+                    String[] paraText4 = new String[9];
+                    String[] paraText5 = new String[9];
+                    // education
+                    if (rts.getString("ed_names") != null) {
+                        paraText0 = rts.getString("ed_names").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ed_locs") != null) {
+                        paraText1 = rts.getString("ed_locs").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ed_earned") != null) {
+                        paraText2 = rts.getString("ed_earned").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ed_gpa") != null) {
+                        paraText3 = rts.getString("ed_gpa").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ed_start") != null) {
+                        paraText4 = rts.getString("ed_start").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ed_end") != null) {
+                        paraText5 = rts.getString("ed_end").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbEducation(); i++) {
+                        res.getEducation().get(i).get(0).setValue(paraText0[i]);
+                        res.getEducation().get(i).get(1).setValue(paraText1[i]);
+                        res.getEducation().get(i).get(2).setValue(paraText2[i]);
+                        res.getEducation().get(i).get(3).setValue(paraText3[i]);
+                        res.getEducation().get(i).get(4).setValue(paraText4[i]);
+                        res.getEducation().get(i).get(5).setValue(paraText5[i]);
+                    }
+                    paraText0 = new String[9];
+                    paraText1 = new String[9];
+                    paraText2 = new String[9];
+                    paraText3 = new String[9];
+                    paraText4 = new String[9];
+                    paraText5 = new String[9];
+                    // work experience
+                    if (rts.getString("ex_names") != null) {
+                        paraText0 = rts.getString("ex_names").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ex_locs") != null) {
+                        paraText1 = rts.getString("ex_locs").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ex_positions") != null) {
+                        paraText2 = rts.getString("ex_positions").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ex_start") != null) {
+                        paraText3 = rts.getString("ex_start").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ex_end") != null) {
+                        paraText4 = rts.getString("ex_end").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbExperience(); i++) {
+                        res.getExperience().get(i).get(0).setValue(paraText0[i]);
+                        res.getExperience().get(i).get(1).setValue(paraText1[i]);
+                        res.getExperience().get(i).get(2).setValue(paraText2[i]);
+                        res.getExperience().get(i).get(3).setValue(paraText3[i]);
+                        res.getExperience().get(i).get(4).setValue(paraText4[i]);
+                    }
+                    paraText0 = new String[9];
+                    paraText1 = new String[9];
+                    paraText2 = new String[9];
+                    paraText3 = new String[9];
+                    paraText4 = new String[9];
+                    // achievements and awards
+                    if (rts.getString("ac_names") != null) {
+                        paraText0 = rts.getString("ac_names").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ac_institutions") != null) {
+                        paraText1 = rts.getString("ac_institutions").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ac_dates") != null) {
+                        paraText2 = rts.getString("ac_dates").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbAchievements(); i++) {
+                        res.getAchievements().get(i).get(0).setValue(paraText0[i]);
+                        res.getAchievements().get(i).get(1).setValue(paraText1[i]);
+                        res.getAchievements().get(i).get(2).setValue(paraText2[i]);
+                    }
+                    paraText0 = new String[9];
+                    paraText1 = new String[9];
+                    paraText2 = new String[9];
+                    // community services or volunteer work
+                    if (rts.getString("ev_names") != null) {
+                        paraText0 = rts.getString("ev_names").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ev_locs") != null) {
+                        paraText1 = rts.getString("ev_locs").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ev_dates") != null) {
+                        paraText2 = rts.getString("ev_dates").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbCommunity(); i++) {
+                        res.getCommunity().get(i).get(0).setValue(paraText0[i]);
+                        res.getCommunity().get(i).get(1).setValue(paraText1[i]);
+                        res.getCommunity().get(i).get(2).setValue(paraText2[i]);
+                    }
+                    paraText0 = new String[9];
+                    paraText1 = new String[9];
+                    paraText2 = new String[9];
+                    //qualifications
+                    if (rts.getString("qualifications") != null) {
+                        paraText0 = rts.getString("qualifications").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbQualification(); i++) {
+                        res.getQualifications().get(i).setValue(paraText0[i]);
+                    }
+                    paraText0 = new String[9];
+                    // highlights
+                    if (rts.getString("highlights") != null) {
+                        paraText0 = rts.getString("highlights").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbHighlights(); i++) {
+                        res.getHighlights().get(i).setValue(paraText0[i]);
+                    }
+                    paraText0 = new String[9];
+                    // languages
+                    if (rts.getString("languages") != null) {
+                        paraText0 = rts.getString("languages").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbLanguages(); i++) {
+                        res.getLanguages().get(i).setValue(paraText0[i]);
+                    }
+                    paraText0 = new String[9];
+                    // software
+                    if (rts.getString("software") != null) {
+                        paraText0 = rts.getString("software").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbSoftware(); i++) {
+                        res.getSoftware().get(i).setValue(paraText0[i]);
+                    }
+                    paraText0 = new String[9];
+                    // references
+                    if (rts.getString("ref_first_names") != null) {
+                        paraText0 = rts.getString("ref_first_names").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ref_middle_names") != null) {
+                        paraText1 = rts.getString("ref_middle_names").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ref_last_names") != null) {
+                        paraText2 = rts.getString("ref_last_names").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ref_company") != null) {
+                        paraText3 = rts.getString("ref_company").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ref_phone") != null) {
+                        paraText4 = rts.getString("ref_phone").split("\\@\\#\\$");
+                    }
+                    if (rts.getString("ref_email") != null) {
+                        paraText5 = rts.getString("ref_email").split("\\@\\#\\$");
+                    }
+                    for (int i = 0; i < res.getNumbReferences(); i++) {
+                        res.getReferences().get(i).get(0).setValue(paraText0[i]);
+                        res.getReferences().get(i).get(1).setValue(paraText1[i]);
+                        res.getReferences().get(i).get(2).setValue(paraText2[i]);
+                        res.getReferences().get(i).get(3).setValue(paraText3[i]);
+                        res.getReferences().get(i).get(4).setValue(paraText4[i]);
+                        res.getReferences().get(i).get(5).setValue(paraText5[i]);
+                    }
+                    res.setThemeId(rts.getInt("theme"));
+                    res.save();
+                }
             }
-            
+
         } else {
             sql = "SELECT * FROM registering_user WHERE email = '" + cred[0] + "' AND "
                     + "password = '" + cred[1] + "'";
@@ -987,7 +1167,7 @@ public class VP_DatabaseManager {
         close();
         return registerStatus;
     }
-    
+
     /*------------------------------------------------------------------------*
      * storeUserData()
      * - This function stores user personal information.
@@ -999,7 +1179,7 @@ public class VP_DatabaseManager {
         int userID = thisUser.getUserID();
         String sql = "SELECT * FROM user_data WHERE user_id = " + userID;
         //-------- Initialization End ------------\\
-        
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -1016,8 +1196,7 @@ public class VP_DatabaseManager {
                     + "cell = '" + thisUser.getCell().getValueSafe() + "', "
                     + "email = '" + thisUser.getDocEmail().getValueSafe() + "' "
                     + "WHERE user_id = " + userID;
-        }
-        else {
+        } else {
             sql = "INSERT INTO user_data (user_id, first_name, middle_name, last_name,  "
                     + "address_line1, address_line2, city, state, zipcode, phone, "
                     + "cell, email) VALUES (" + thisUser.getUserID() + " ,"
@@ -1036,7 +1215,7 @@ public class VP_DatabaseManager {
         stm.executeUpdate(sql);
         close();
     }
-    
+
     /*------------------------------------------------------------------------*
      * storeBCardData()
      * - This function stores business card data and its pdf file.
@@ -1050,7 +1229,7 @@ public class VP_DatabaseManager {
         String sql = "SELECT * FROM business_card WHERE user_id = " + userID;
         FileInputStream inputStream;
         //-------- Initialization End ------------\\
-        
+
         connect(dbName);
         rts = stm.executeQuery(sql);
         if (rts.next()) {
@@ -1061,8 +1240,7 @@ public class VP_DatabaseManager {
                     + "webpage = '" + thisUser.getBcard().getWebPage().getValueSafe() + "', "
                     + "theme = " + thisUser.getBcard().getThemeId() + " "
                     + "WHERE user_id = " + userID;
-        }
-        else {
+        } else {
             sql = "INSERT INTO business_card (user_id, profession, company_name, "
                     + "company_slogan, webpage, theme) VALUES (" + thisUser.getUserID() + " ,"
                     + "'" + thisUser.getBcard().getProfession().getValueSafe() + "', "
@@ -1078,16 +1256,15 @@ public class VP_DatabaseManager {
             rts = stm.executeQuery(sql);
             if (rts.next()) {
                 try (PreparedStatement ps = con.prepareStatement("UPDATE business_card_pdf SET pdf = ? WHERE user_id = ?")) {
-                    ps.setBinaryStream(1, (InputStream) inputStream, (int)bcpdf.length());
+                    ps.setBinaryStream(1, (InputStream) inputStream, (int) bcpdf.length());
                     ps.setInt(2, userID);
                     ps.executeUpdate();
                     inputStream.close();
                 }
-            }
-            else {
+            } else {
                 try (PreparedStatement ps = con.prepareStatement("INSERT INTO business_card_pdf (user_id, pdf) values(?,?)")) {
                     ps.setInt(1, userID);
-                    ps.setBinaryStream(2, (InputStream) inputStream, (int)bcpdf.length());
+                    ps.setBinaryStream(2, (InputStream) inputStream, (int) bcpdf.length());
                     ps.executeUpdate();
                     inputStream.close();
                 }
@@ -1111,7 +1288,7 @@ public class VP_DatabaseManager {
                     String[] ccMail = {};
                     VP_Mail bcpdfEmail;
                     String msg = "Pdf send file test.\n\n"
-                        + "This is an automated message from the VaqPack software. Please do not reply.";
+                            + "This is an automated message from the VaqPack software. Please do not reply.";
                     bcpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "bcpdfLoadedFromDatabaseTest.pdf", pdf2);
                     bcpdfEmail.setDaemon(true);
                     bcpdfEmail.start();
@@ -1121,7 +1298,7 @@ public class VP_DatabaseManager {
         }
         close();
     }
-    
+
     /*------------------------------------------------------------------------*
      * storeCovLetData()
      * - This function stores cover letter data and its pdf file.
@@ -1137,7 +1314,7 @@ public class VP_DatabaseManager {
         String paraText = "";
         FileInputStream inputStream;
         //-------- Initialization End ------------\\
-        
+
         for (int i = 0; i < thisUser.getCovlet().getNumbParagraphs(); i++) {
             paraText += thisUser.getCovlet().getParagraphs().get(i).getValueSafe();
             if (i != thisUser.getCovlet().getNumbParagraphs() - 1) {
@@ -1169,8 +1346,7 @@ public class VP_DatabaseManager {
                     + "theme = " + thisUser.getCovlet().getThemeId() + " "
                     + "WHERE user_id = " + userID + " AND id = " + thisUser.getCovlet().getId();
             stm.executeUpdate(sql);
-        }
-        else {
+        } else {
             sql = "INSERT INTO cover_letter (user_id, adsource, job_title, reference_number, date, "
                     + "contact_first_name, contact_middle_name, contact_last_name, contact_title, "
                     + "contact_company_name, contact_address_line1, contact_address_line2, contact_city, "
@@ -1205,16 +1381,15 @@ public class VP_DatabaseManager {
             rts = stm.executeQuery(sql);
             if (rts.next()) {
                 try (PreparedStatement ps = con.prepareStatement("UPDATE cover_letter_pdf SET pdf = ? WHERE cover_letter_id = ?")) {
-                    ps.setBinaryStream(1, (InputStream) inputStream, (int)clpdf.length());
+                    ps.setBinaryStream(1, (InputStream) inputStream, (int) clpdf.length());
                     ps.setInt(2, remId);
                     ps.executeUpdate();
                     inputStream.close();
                 }
-            }
-            else {
+            } else {
                 try (PreparedStatement ps = con.prepareStatement("INSERT INTO cover_letter_pdf (cover_letter_id, pdf) values(?,?)")) {
                     ps.setInt(1, remId);
-                    ps.setBinaryStream(2, (InputStream) inputStream, (int)clpdf.length());
+                    ps.setBinaryStream(2, (InputStream) inputStream, (int) clpdf.length());
                     ps.executeUpdate();
                     inputStream.close();
                 }
@@ -1238,7 +1413,7 @@ public class VP_DatabaseManager {
                     String[] ccMail = {};
                     VP_Mail clpdfEmail;
                     String msg = "Pdf send file test.\n\n"
-                        + "This is an automated message from the VaqPack software. Please do not reply.";
+                            + "This is an automated message from the VaqPack software. Please do not reply.";
                     clpdfEmail = new VP_Mail(controller, thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg, "clpdfLoadedFromDatabaseTest.pdf", pdf2);
                     clpdfEmail.setDaemon(true);
                     clpdfEmail.start();
@@ -1248,19 +1423,211 @@ public class VP_DatabaseManager {
         }
         close();
     }
-    
-    protected void storeResObjData(VP_User thisUser) throws SQLException {
+
+    protected void storeResumeData(VP_User thisUser, int section) throws SQLException {
         //-------- Initialization Start ----------\\
         int userID = thisUser.getUserID();
+        VP_Resume res = thisUser.getResume();
         String sql = "SELECT id FROM resume WHERE user_id = " + userID;
+        String[] formattedStrings = new String[6];
+        for (int i = 0; i < 6; i++) {
+            formattedStrings[i] = "";
+        }
         //-------- Initialization End ------------\\
         connect(dbName);
         rts = stm.executeQuery(sql);
+        if (section == 1) {
+            for (int i = 0; i < res.getNumbEducation(); i++) {
+                for (int ii = 0; ii < 6; ii++) {
+                    formattedStrings[ii] += res.getEducation().get(i).get(ii).getValueSafe();
+                    if (i != 5) {
+                        formattedStrings[ii] += "@#$";
+                    }
+                }
+            }
+        } else if (section == 2) {
+            for (int i = 0; i < res.getNumbExperience(); i++) {
+                for (int ii = 0; ii < 5; ii++) {
+                    formattedStrings[ii] += res.getExperience().get(i).get(ii).getValueSafe();
+                    if (i != 4) {
+                        formattedStrings[ii] += "@#$";
+                    }
+                }
+            }
+        } else if (section == 3) {
+            for (int i = 0; i < res.getNumbAchievements(); i++) {
+                for (int ii = 0; ii < 3; ii++) {
+                    formattedStrings[ii] += res.getAchievements().get(i).get(ii).getValueSafe();
+                    if (i != 2) {
+                        formattedStrings[ii] += "@#$";
+                    }
+                }
+            }
+        } else if (section == 4) {
+            for (int i = 0; i < res.getNumbCommunity(); i++) {
+                for (int ii = 0; ii < 3; ii++) {
+                    formattedStrings[ii] += res.getCommunity().get(i).get(ii).getValueSafe();
+                    if (i != 2) {
+                        formattedStrings[ii] += "@#$";
+                    }
+                }
+            }
+        } else if (section == 5) {
+            for (int i = 0; i < res.getNumbQualification(); i++) {
+                formattedStrings[0] += res.getQualifications().get(i).getValueSafe();
+                if (i != res.getNumbQualification() - 1) {
+                    formattedStrings[0] += "@#$";
+                }
+            }
+        } else if (section == 6) {
+            for (int i = 0; i < res.getNumbHighlights(); i++) {
+                formattedStrings[0] += res.getHighlights().get(i).getValueSafe();
+                if (i != res.getNumbHighlights() - 1) {
+                    formattedStrings[0] += "@#$";
+                }
+            }
+        } else if (section == 7) {
+            for (int i = 0; i < res.getNumbLanguages(); i++) {
+                formattedStrings[0] += res.getLanguages().get(i).getValueSafe();
+                if (i != res.getNumbLanguages() - 1) {
+                    formattedStrings[0] += "@#$";
+                }
+            }
+        } else if (section == 8) {
+            for (int i = 0; i < res.getNumbSoftware(); i++) {
+                formattedStrings[0] += res.getSoftware().get(i).getValueSafe();
+                if (i != res.getNumbSoftware() - 1) {
+                    formattedStrings[0] += "@#$";
+                }
+            }
+        } else if (section == 9) {
+            for (int i = 0; i < res.getNumbReferences(); i++) {
+                for (int ii = 0; ii < 6; ii++) {
+                    formattedStrings[ii] += res.getReferences().get(i).get(ii).getValueSafe();
+                    if (i != 5) {
+                        formattedStrings[ii] += "@#$";
+                    }
+                }
+            }
+        }
         if (rts.next()) {
-            sql = "UPDATE resume SET objective = '" + thisUser.getResume().getObjective().getValueSafe() + "' WHERE  user_id = " + userID;
+            if (section == 0) {
+                sql = "UPDATE resume SET objective = '" + res.getObjective().getValueSafe() + "' WHERE  user_id = " + userID;
+            } else if (section == 1) {
+                sql = "UPDATE resume SET numb_education = " + res.getNumbEducation() + ", "
+                        + "ed_names = '" + formattedStrings[0] + "', "
+                        + "ed_locs = '" + formattedStrings[1] + "', "
+                        + "ed_earned = '" + formattedStrings[2] + "', "
+                        + "ed_gpa = '" + formattedStrings[3] + "', "
+                        + "ed_start = '" + formattedStrings[4] + "', "
+                        + "ed_end = '" + formattedStrings[5] + "' "
+                        + "WHERE  user_id = " + userID;
+            } else if (section == 2) {
+                sql = "UPDATE resume SET numb_experience = " + res.getNumbExperience() + ", "
+                        + "ex_names = '" + formattedStrings[0] + "', "
+                        + "ex_locs = '" + formattedStrings[1] + "', "
+                        + "ex_positions = '" + formattedStrings[2] + "', "
+                        + "ex_start = '" + formattedStrings[3] + "', "
+                        + "ex_end = '" + formattedStrings[4] + "', "
+                        + "WHERE  user_id = " + userID;
+            } else if (section == 3) {
+                sql = "UPDATE resume SET numb_achievements = " + res.getNumbAchievements() + ", "
+                        + "ac_names = '" + formattedStrings[0] + "', "
+                        + "ac_institutions = '" + formattedStrings[1] + "', "
+                        + "ac_dates = '" + formattedStrings[2] + "', "
+                        + "WHERE  user_id = " + userID;
+            } else if (section == 4) {
+                sql = "UPDATE resume SET numb_community = " + res.getNumbCommunity() + ", "
+                        + "ev_names = '" + formattedStrings[0] + "', "
+                        + "ev_locs = '" + formattedStrings[1] + "', "
+                        + "ev_dates = '" + formattedStrings[2] + "', "
+                        + "WHERE  user_id = " + userID;
+            } else if (section == 5) {
+                sql = "UPDATE resume SET numb_qualifications = " + res.getNumbQualification() + ", "
+                        + "qualifications = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+            } else if (section == 6) {
+                sql = "UPDATE resume SET numb_highlights = " + res.getNumbHighlights() + ", "
+                        + "highlights = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+            } else if (section == 7) {
+                sql = "UPDATE resume SET numb_languages = " + res.getNumbLanguages() + ", "
+                        + "languages = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+            } else if (section == 8) {
+                sql = "UPDATE resume SET numb_software = " + res.getNumbSoftware() + ", "
+                        + "software = '" + formattedStrings[0] + "' WHERE  user_id = " + userID;
+            } else if (section == 9) {
+                sql = "UPDATE resume SET numb_references = " + res.getNumbReferences() + ", "
+                        + "ref_first_names = '" + formattedStrings[0] + "', "
+                        + "ref_middle_names = '" + formattedStrings[1] + "', "
+                        + "ref_last_names = '" + formattedStrings[2] + "', "
+                        + "ref_company = '" + formattedStrings[3] + "', "
+                        + "ref_phone = '" + formattedStrings[4] + "', "
+                        + "ref_email = '" + formattedStrings[5] + "' "
+                        + "WHERE  user_id = " + userID;
+            }
         } else {
-            sql = "INSERT INTO resume (user_id, objective) VALUES (" + userID + ", '" + 
-                    thisUser.getResume().getObjective().getValueSafe() + "')";
+            if (section == 0) {
+                sql = "INSERT INTO resume (user_id, objective) VALUES (" + userID + ", '"
+                        + res.getObjective().getValueSafe() + "')";
+            } else if (section == 1) {
+                sql = "INSERT INTO resume (user_id, numb_education, ed_names, "
+                        + "ed_locs, ed_earned, ed_gpa, ed_start, ed_end) VALUES (" + userID
+                        + ", " + res.getNumbEducation()
+                        + ", '" + formattedStrings[0] + "'"
+                        + ", '" + formattedStrings[1] + "'"
+                        + ", '" + formattedStrings[2] + "'"
+                        + ", '" + formattedStrings[3] + "'"
+                        + ", '" + formattedStrings[4] + "'"
+                        + ", '" + formattedStrings[5] + "')";
+            } else if (section == 2) {
+                sql = "INSERT INTO resume (user_id, numb_experience, ex_names, "
+                        + "ex_locs, ex_positions, ex_start, ex_end) VALUES (" + userID
+                        + ", " + res.getNumbExperience()
+                        + ", '" + formattedStrings[0] + "'"
+                        + ", '" + formattedStrings[1] + "'"
+                        + ", '" + formattedStrings[2] + "'"
+                        + ", '" + formattedStrings[3] + "'"
+                        + ", '" + formattedStrings[4] + "')";
+            } else if (section == 3) {
+                sql = "INSERT INTO resume (user_id, numb_achievements, ac_names, "
+                        + "ac_institutions, ac_dates) VALUES (" + userID
+                        + ", " + res.getNumbAchievements()
+                        + ", '" + formattedStrings[0] + "'"
+                        + ", '" + formattedStrings[1] + "'"
+                        + ", '" + formattedStrings[2] + "')";
+            } else if (section == 4) {
+                sql = "INSERT INTO resume (user_id, numb_community, ev_names, "
+                        + "ev_locs, ev_dates) VALUES (" + userID
+                        + ", " + res.getNumbCommunity()
+                        + ", '" + formattedStrings[0] + "'"
+                        + ", '" + formattedStrings[1] + "'"
+                        + ", '" + formattedStrings[2] + "')";
+            } else if (section == 5) {
+                sql = "INSERT INTO resume (user_id, numb_qualifications, qualifications) VALUES (" + userID
+                        + ", " + res.getNumbQualification()
+                        + ", '" + formattedStrings[0] + "')";
+            } else if (section == 6) {
+                sql = "INSERT INTO resume (user_id, numb_highlights, highlights) VALUES (" + userID
+                        + ", " + res.getNumbHighlights()
+                        + ", '" + formattedStrings[0] + "')";
+            } else if (section == 7) {
+                sql = "INSERT INTO resume (user_id, numb_languages, languages) VALUES (" + userID
+                        + ", " + res.getNumbLanguages()
+                        + ", '" + formattedStrings[0] + "')";
+            } else if (section == 8) {
+                sql = "INSERT INTO resume (user_id, numb_software, software) VALUES (" + userID
+                        + ", " + res.getNumbSoftware()
+                        + ", '" + formattedStrings[0] + "')";
+            } else if (section == 9) {
+                sql = "INSERT INTO resume (user_id, numb_references, ref_first_names, "
+                        + "ref_middle_names, ref_last_names, ref_company, ref_phone, ref_email) VALUES (" + userID
+                        + ", " + res.getNumbReferences()
+                        + ", '" + formattedStrings[0] + "'"
+                        + ", '" + formattedStrings[1] + "'"
+                        + ", '" + formattedStrings[2] + "'"
+                        + ", '" + formattedStrings[3] + "'"
+                        + ", '" + formattedStrings[4] + "'"
+                        + ", '" + formattedStrings[5] + "')";
+            }
         }
         stm.executeUpdate(sql);
         close();

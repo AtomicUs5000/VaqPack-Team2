@@ -1754,7 +1754,7 @@ public class VP_Center extends StackPane {
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
                     try {
-                        controller.getDataM().saveResObj();
+                        controller.getDataM().saveResume(0);
                     } catch (SQLException ex) {
                         controller.errorAlert(1417, ex.getMessage());
                     }
