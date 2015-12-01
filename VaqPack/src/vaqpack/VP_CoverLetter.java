@@ -333,7 +333,7 @@ public class VP_CoverLetter {
                 + "version=\"1.0\">\n"
                 + "<xsl:output method=\"xml\" indent=\"yes\"/>\n"
                 + "<xsl:template match=\"/\">\n"
-                + "<html>\n<head>\n<title>Business Card</title>\n</head>\n<body style=\"padding:20px;\">\n<div";
+                + "<html>\n<head>\n<title>Cover Letter</title>\n</head>\n<body style=\"padding:20px;\">\n<div";
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("CL_NAME_" + (themeId * -1));
         }

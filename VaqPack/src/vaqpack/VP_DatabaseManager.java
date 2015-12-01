@@ -680,7 +680,8 @@ public class VP_DatabaseManager {
         //-------- Initialization Start ----------\\
         int loginStatus = -1,
                 userID = -1,
-                id;
+                id,
+                iterations;
         Timestamp regTime;
         long newMS;
         Date dt;
@@ -749,7 +750,11 @@ public class VP_DatabaseManager {
                     cl.setNumbParagraphs(rts.getInt("numb_paragraphs"));
                     String[] paraText = rts.getString("text").split("\\@\\#\\$");
                     for (int i = 0; i < cl.getNumbParagraphs(); i++) {
-                        cl.getParagraphs().get(i).setValue(paraText[i]);
+                        if (paraText[i] != null) {
+                            cl.getParagraphs().get(i).setValue(paraText[i]);
+                        } else {
+                            cl.getParagraphs().get(i).setValue("");
+                        }
                     }
                     cl.getClosing().setValue(rts.getString("closing"));
                     cl.setThemeId(rts.getInt("theme"));
@@ -799,14 +804,39 @@ public class VP_DatabaseManager {
                     if (rts.getString("ed_end") != null) {
                         paraText5 = rts.getString("ed_end").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbEducation(); i++) {
-                        res.getEducation().get(i).get(0).setValue(paraText0[i]);
-                        res.getEducation().get(i).get(1).setValue(paraText1[i]);
-                        res.getEducation().get(i).get(2).setValue(paraText2[i]);
-                        res.getEducation().get(i).get(3).setValue(paraText3[i]);
-                        res.getEducation().get(i).get(4).setValue(paraText4[i]);
-                        res.getEducation().get(i).get(5).setValue(paraText5[i]);
+                    iterations = 0;
+                    try {
+                        for (int i = 0; i < res.getNumbEducation(); i++) {
+                            if (paraText0[i] != null)
+                                res.getEducation().get(i).get(0).setValue(paraText0[i]);
+                            else
+                                res.getEducation().get(i).get(0).setValue("");
+                            if (paraText1[i] != null)
+                                res.getEducation().get(i).get(1).setValue(paraText1[i]);
+                            else
+                                res.getEducation().get(i).get(1).setValue("");
+                            if (paraText2[i] != null)
+                                res.getEducation().get(i).get(2).setValue(paraText2[i]);
+                            else
+                                res.getEducation().get(i).get(2).setValue("");
+                            if (paraText3[i] != null)
+                                res.getEducation().get(i).get(3).setValue(paraText3[i]);
+                            else
+                                res.getEducation().get(i).get(3).setValue("");
+                            if (paraText4[i] != null)
+                                res.getEducation().get(i).get(4).setValue(paraText4[i]);
+                            else
+                                res.getEducation().get(i).get(4).setValue("");
+                            if (paraText5[i] != null)
+                                res.getEducation().get(i).get(5).setValue(paraText5[i]);
+                            else
+                                res.getEducation().get(i).get(5).setValue("");
+                            iterations++;
+                        }
+                    } catch (Exception e) {
+                        res.setNumbEducation(iterations);
                     }
+                    
                     paraText0 = new String[9];
                     paraText1 = new String[9];
                     paraText2 = new String[9];
@@ -829,12 +859,31 @@ public class VP_DatabaseManager {
                     if (rts.getString("ex_end") != null) {
                         paraText4 = rts.getString("ex_end").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbExperience(); i++) {
-                        res.getExperience().get(i).get(0).setValue(paraText0[i]);
-                        res.getExperience().get(i).get(1).setValue(paraText1[i]);
-                        res.getExperience().get(i).get(2).setValue(paraText2[i]);
-                        res.getExperience().get(i).get(3).setValue(paraText3[i]);
-                        res.getExperience().get(i).get(4).setValue(paraText4[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbExperience(); i++) {
+                            if (paraText0[i] != null)
+                                res.getExperience().get(i).get(0).setValue(paraText0[i]);
+                            else
+                                res.getExperience().get(i).get(0).setValue("");
+                            if (paraText1[i] != null)
+                                res.getExperience().get(i).get(1).setValue(paraText1[i]);
+                            else
+                                res.getExperience().get(i).get(1).setValue("");
+                            if (paraText2[i] != null)
+                                res.getExperience().get(i).get(2).setValue(paraText2[i]);
+                            else
+                                res.getExperience().get(i).get(2).setValue("");
+                            if (paraText3[i] != null)
+                                res.getExperience().get(i).get(3).setValue(paraText3[i]);
+                            else
+                                res.getExperience().get(i).get(3).setValue("");
+                            if (paraText4[i] != null)
+                                res.getExperience().get(i).get(4).setValue(paraText4[i]);
+                            else
+                                res.getExperience().get(i).get(4).setValue("");
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     paraText0 = new String[9];
                     paraText1 = new String[9];
@@ -851,10 +900,24 @@ public class VP_DatabaseManager {
                     if (rts.getString("ac_dates") != null) {
                         paraText2 = rts.getString("ac_dates").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbAchievements(); i++) {
-                        res.getAchievements().get(i).get(0).setValue(paraText0[i]);
-                        res.getAchievements().get(i).get(1).setValue(paraText1[i]);
-                        res.getAchievements().get(i).get(2).setValue(paraText2[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbAchievements(); i++) {
+                            System.out.println("i = " + i);
+                            if (paraText0[i] != null)
+                                res.getAchievements().get(i).get(0).setValue(paraText0[i]);
+                            else
+                                res.getAchievements().get(i).get(0).setValue("");
+                            if (paraText1[i] != null)
+                                res.getAchievements().get(i).get(1).setValue(paraText1[i]);
+                            else
+                                res.getAchievements().get(i).get(1).setValue("");
+                            if (paraText2[i] != null)
+                                res.getAchievements().get(i).get(2).setValue(paraText2[i]);
+                            else
+                                res.getAchievements().get(i).get(2).setValue("");
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     paraText0 = new String[9];
                     paraText1 = new String[9];
@@ -869,10 +932,14 @@ public class VP_DatabaseManager {
                     if (rts.getString("ev_dates") != null) {
                         paraText2 = rts.getString("ev_dates").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbCommunity(); i++) {
-                        res.getCommunity().get(i).get(0).setValue(paraText0[i]);
-                        res.getCommunity().get(i).get(1).setValue(paraText1[i]);
-                        res.getCommunity().get(i).get(2).setValue(paraText2[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbCommunity(); i++) {
+                            res.getCommunity().get(i).get(0).setValue(paraText0[i]);
+                            res.getCommunity().get(i).get(1).setValue(paraText1[i]);
+                            res.getCommunity().get(i).get(2).setValue(paraText2[i]);
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     paraText0 = new String[9];
                     paraText1 = new String[9];
@@ -881,32 +948,48 @@ public class VP_DatabaseManager {
                     if (rts.getString("qualifications") != null) {
                         paraText0 = rts.getString("qualifications").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbQualification(); i++) {
-                        res.getQualifications().get(i).setValue(paraText0[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbQualification(); i++) {
+                            res.getQualifications().get(i).setValue(paraText0[i]);
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     paraText0 = new String[9];
                     // highlights
                     if (rts.getString("highlights") != null) {
                         paraText0 = rts.getString("highlights").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbHighlights(); i++) {
-                        res.getHighlights().get(i).setValue(paraText0[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbHighlights(); i++) {
+                            res.getHighlights().get(i).setValue(paraText0[i]);
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     paraText0 = new String[9];
                     // languages
                     if (rts.getString("languages") != null) {
                         paraText0 = rts.getString("languages").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbLanguages(); i++) {
-                        res.getLanguages().get(i).setValue(paraText0[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbLanguages(); i++) {
+                            res.getLanguages().get(i).setValue(paraText0[i]);
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     paraText0 = new String[9];
                     // software
                     if (rts.getString("software") != null) {
                         paraText0 = rts.getString("software").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbSoftware(); i++) {
-                        res.getSoftware().get(i).setValue(paraText0[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbSoftware(); i++) {
+                            res.getSoftware().get(i).setValue(paraText0[i]);
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     paraText0 = new String[9];
                     // references
@@ -928,13 +1011,17 @@ public class VP_DatabaseManager {
                     if (rts.getString("ref_email") != null) {
                         paraText5 = rts.getString("ref_email").split("\\@\\#\\$");
                     }
-                    for (int i = 0; i < res.getNumbReferences(); i++) {
-                        res.getReferences().get(i).get(0).setValue(paraText0[i]);
-                        res.getReferences().get(i).get(1).setValue(paraText1[i]);
-                        res.getReferences().get(i).get(2).setValue(paraText2[i]);
-                        res.getReferences().get(i).get(3).setValue(paraText3[i]);
-                        res.getReferences().get(i).get(4).setValue(paraText4[i]);
-                        res.getReferences().get(i).get(5).setValue(paraText5[i]);
+                    try {
+                        for (int i = 0; i < res.getNumbReferences(); i++) {
+                            res.getReferences().get(i).get(0).setValue(paraText0[i]);
+                            res.getReferences().get(i).get(1).setValue(paraText1[i]);
+                            res.getReferences().get(i).get(2).setValue(paraText2[i]);
+                            res.getReferences().get(i).get(3).setValue(paraText3[i]);
+                            res.getReferences().get(i).get(4).setValue(paraText4[i]);
+                            res.getReferences().get(i).get(5).setValue(paraText5[i]);
+                        }
+                    } catch (Exception e) {
+                        // do nothing, just a safeguard
                     }
                     res.setThemeId(rts.getInt("theme"));
                     res.save();

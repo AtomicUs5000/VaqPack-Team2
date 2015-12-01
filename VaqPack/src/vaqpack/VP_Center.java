@@ -1860,6 +1860,7 @@ public class VP_Center extends StackPane {
         addLanguageBtn.setManaged(true);
         addSoftwareBtn.setManaged(true);
         addReferenceBtn.setManaged(true);
+        selectCoverLetterLine.show();
         if (thisRes.getNumbEducation() == 9) {
             addEducationBtn.setVisible(false);
             addEducationBtn.setManaged(false);

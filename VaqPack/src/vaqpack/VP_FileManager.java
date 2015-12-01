@@ -424,9 +424,11 @@ public class VP_FileManager {
             if (clxml.exists()) {
                 clxml.delete();
             }
+            /*
             if (clhtml.exists()) {
                 clhtml.delete();
             }
+            */
         } else {
             clpdf = null;
         }
