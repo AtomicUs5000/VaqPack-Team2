@@ -335,6 +335,38 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 1423:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing the resume qualifications.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1424:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing the resume highlights.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1425:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing the resume languages.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1426:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while storing the resume software section.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
             // ID 1600 Originates from VP_Mail
             case 1601:
                 header = "VaqPack could not send the email due to \n"

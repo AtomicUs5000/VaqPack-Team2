@@ -17,8 +17,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class VP_Resume {
-    private int
-            themeId = -1,
+
+    private int themeId = -1,
             numbEducation = 1,
             numbExperience = 1,
             numbAchievements = 1,
@@ -38,8 +38,7 @@ public class VP_Resume {
             numbSoftwareStored = 1,
             numbReferencesStored = 1;
     private final VP_User owner;
-    private boolean
-            changes,
+    private boolean changes,
             completedObjective,
             completedEducation,
             completedWorkExperience,
@@ -49,33 +48,28 @@ public class VP_Resume {
             completedSoftware,
             startedResume,
             completedResume;
-    private final StringProperty
-            objective;
+    private final StringProperty objective;
     private String xsl,
             objectiveStored;
-    private final ArrayList<ArrayList<StringProperty>>
-            education,
+    private final ArrayList<ArrayList<StringProperty>> education,
             experience,
             achievements,
             community,
             references;
-    private final ArrayList<StringProperty>
-            qualifications,
+    private final ArrayList<StringProperty> qualifications,
             highlights,
             languages,
             software;
-    private final ArrayList<ArrayList<String>>
-            educationStored,
+    private final ArrayList<ArrayList<String>> educationStored,
             experienceStored,
             achievementsStored,
             communityStored,
             referencesStored;
-    private final ArrayList<String>
-            qualificationsStored,
+    private final ArrayList<String> qualificationsStored,
             highlightsStored,
             languagesStored,
             softwareStored;
-    
+
     /*------------------------------------------------------------------------*
      * VP_Resume()
      * - Constructor.
@@ -109,7 +103,7 @@ public class VP_Resume {
         softwareStored = new ArrayList();
         references = new ArrayList();
         referencesStored = new ArrayList();
-        for (int i = 0; i < 9; i ++) {
+        for (int i = 0; i < 9; i++) {
             educationStored.add(new ArrayList());
             referencesStored.add(new ArrayList());
             for (int ii = 0; ii < 6; ii++) {
@@ -152,7 +146,7 @@ public class VP_Resume {
             software.add(new SimpleStringProperty());
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * revert()
      * - Reverts bound properties to the last stored value
@@ -188,7 +182,7 @@ public class VP_Resume {
         numbSoftware = numbSoftwareStored;
         numbReferences = numbReferencesStored;
     }
-    
+
     /*------------------------------------------------------------------------*
      * save()
      * - Stored values are set to the current bound properties.
@@ -206,7 +200,7 @@ public class VP_Resume {
         completedSoftware = false;
         completedResume = false;
         startedResume = false;
-        
+
         if (numbEducation != numbEducationStored) {
             numbEducationStored = numbEducation;
             changes = true;
@@ -243,65 +237,65 @@ public class VP_Resume {
             numbReferencesStored = numbReferences;
             changes = true;
         }
-        if ((objectiveStored != null && !objectiveStored.equals(objective.getValue())) || 
-                (objectiveStored == null && objective.getValue() != null) ) {
+        if ((objectiveStored != null && !objectiveStored.equals(objective.getValue()))
+                || (objectiveStored == null && objective.getValue() != null)) {
             objectiveStored = objective.getValue();
             changes = true;
         }
         for (int i = 0; i < 9; i++) {
             for (int ii = 0; ii < 6; ii++) {
-                if ((educationStored.get(i).get(ii) != null && !educationStored.get(i).get(ii).equals(education.get(i).get(ii).getValue())) || 
-                    (educationStored.get(i).get(ii) == null && education.get(i).get(ii).getValue() != null) ) {
-                educationStored.get(i).set(ii, education.get(i).get(ii).getValue());
-                changes = true;
+                if ((educationStored.get(i).get(ii) != null && !educationStored.get(i).get(ii).equals(education.get(i).get(ii).getValue()))
+                        || (educationStored.get(i).get(ii) == null && education.get(i).get(ii).getValue() != null)) {
+                    educationStored.get(i).set(ii, education.get(i).get(ii).getValue());
+                    changes = true;
                 }
-                if ((referencesStored.get(i).get(ii) != null && !referencesStored.get(i).get(ii).equals(references.get(i).get(ii).getValue())) || 
-                    (referencesStored.get(i).get(ii) == null && references.get(i).get(ii).getValue() != null) ) {
-                referencesStored.get(i).set(ii, references.get(i).get(ii).getValue());
-                changes = true;
+                if ((referencesStored.get(i).get(ii) != null && !referencesStored.get(i).get(ii).equals(references.get(i).get(ii).getValue()))
+                        || (referencesStored.get(i).get(ii) == null && references.get(i).get(ii).getValue() != null)) {
+                    referencesStored.get(i).set(ii, references.get(i).get(ii).getValue());
+                    changes = true;
                 }
             }
             for (int ii = 0; ii < 5; ii++) {
-                if ((experienceStored.get(i).get(ii) != null && !experienceStored.get(i).get(ii).equals(experience.get(i).get(ii).getValue())) || 
-                    (experienceStored.get(i).get(ii) == null && experience.get(i).get(ii).getValue() != null) ) {
-                experienceStored.get(i).set(ii, experience.get(i).get(ii).getValue());
-                changes = true;
+                if ((experienceStored.get(i).get(ii) != null && !experienceStored.get(i).get(ii).equals(experience.get(i).get(ii).getValue()))
+                        || (experienceStored.get(i).get(ii) == null && experience.get(i).get(ii).getValue() != null)) {
+                    experienceStored.get(i).set(ii, experience.get(i).get(ii).getValue());
+                    changes = true;
                 }
             }
             for (int ii = 0; ii < 3; ii++) {
-                if ((achievementsStored.get(i).get(ii) != null && !achievementsStored.get(i).get(ii).equals(achievements.get(i).get(ii).getValue())) || 
-                    (achievementsStored.get(i).get(ii) == null && achievements.get(i).get(ii).getValue() != null) ) {
-                achievementsStored.get(i).set(ii, achievements.get(i).get(ii).getValue());
-                changes = true;
+                if ((achievementsStored.get(i).get(ii) != null && !achievementsStored.get(i).get(ii).equals(achievements.get(i).get(ii).getValue()))
+                        || (achievementsStored.get(i).get(ii) == null && achievements.get(i).get(ii).getValue() != null)) {
+                    achievementsStored.get(i).set(ii, achievements.get(i).get(ii).getValue());
+                    changes = true;
                 }
-                if ((communityStored.get(i).get(ii) != null && !communityStored.get(i).get(ii).equals(community.get(i).get(ii).getValue())) || 
-                    (communityStored.get(i).get(ii) == null && community.get(i).get(ii).getValue() != null) ) {
-                communityStored.get(i).set(ii, community.get(i).get(ii).getValue());
-                changes = true;
+                if ((communityStored.get(i).get(ii) != null && !communityStored.get(i).get(ii).equals(community.get(i).get(ii).getValue()))
+                        || (communityStored.get(i).get(ii) == null && community.get(i).get(ii).getValue() != null)) {
+                    communityStored.get(i).set(ii, community.get(i).get(ii).getValue());
+                    changes = true;
                 }
             }
-            if ((qualificationsStored.get(i) != null && !qualificationsStored.get(i).equals(qualifications.get(i).getValue())) || 
-                    (qualificationsStored.get(i) == null && qualifications.get(i).getValue() != null) ) {
+            if ((qualificationsStored.get(i) != null && !qualificationsStored.get(i).equals(qualifications.get(i).getValue()))
+                    || (qualificationsStored.get(i) == null && qualifications.get(i).getValue() != null)) {
                 qualificationsStored.set(i, qualifications.get(i).getValue());
                 changes = true;
             }
-            if ((highlightsStored.get(i) != null && !highlightsStored.get(i).equals(highlights.get(i).getValue())) || 
-                    (highlightsStored.get(i) == null && highlights.get(i).getValue() != null) ) {
+            if ((highlightsStored.get(i) != null && !highlightsStored.get(i).equals(highlights.get(i).getValue()))
+                    || (highlightsStored.get(i) == null && highlights.get(i).getValue() != null)) {
                 highlightsStored.set(i, highlights.get(i).getValue());
                 changes = true;
             }
-            if ((languagesStored.get(i) != null && !languagesStored.get(i).equals(languages.get(i).getValue())) || 
-                    (languagesStored.get(i) == null && languages.get(i).getValue() != null) ) {
+            if ((languagesStored.get(i) != null && !languagesStored.get(i).equals(languages.get(i).getValue()))
+                    || (languagesStored.get(i) == null && languages.get(i).getValue() != null)) {
                 languagesStored.set(i, languages.get(i).getValue());
                 changes = true;
             }
-            if ((softwareStored.get(i) != null && !softwareStored.get(i).equals(software.get(i).getValue())) || 
-                    (softwareStored.get(i) == null && software.get(i).getValue() != null) ) {
+            if ((softwareStored.get(i) != null && !softwareStored.get(i).equals(software.get(i).getValue()))
+                    || (softwareStored.get(i) == null && software.get(i).getValue() != null)) {
                 softwareStored.set(i, software.get(i).getValue());
                 changes = true;
             }
         }
-        
+
         // check for completeness
         if (objectiveStored != null && !objectiveStored.equals("")) {
             startedResume = true;
@@ -340,7 +334,7 @@ public class VP_Resume {
             startedResume = true;
             completedSoftware = true;
         }
-        if (completedObjective && completedEducation && completedWorkExperience 
+        if (completedObjective && completedEducation && completedWorkExperience
                 && completedQualifications && completedHighlights
                 && completedLanguages && completedSoftware) {
             startedResume = true;
@@ -350,7 +344,7 @@ public class VP_Resume {
             generateXSL();
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * clear()
      * - Clears all data in the resume for the next user
@@ -386,7 +380,7 @@ public class VP_Resume {
         numbLanguagesStored = 1;
         numbSoftwareStored = 1;
         numbReferencesStored = 1;
-        for (int i = 0; i < 9; i ++) {
+        for (int i = 0; i < 9; i++) {
             for (int ii = 0; ii < 6; ii++) {
                 educationStored.get(i).set(ii, "");
                 referencesStored.get(i).set(ii, "");
@@ -419,7 +413,7 @@ public class VP_Resume {
             software.get(i).setValue("");
         }
     }
-    
+
     /*------------------------------------------------------------------------*
      * generateXSL()
      * - Creates the xml stylesheet to be passed to html conversion.
@@ -427,7 +421,7 @@ public class VP_Resume {
      * - No return
      *------------------------------------------------------------------------*/
     private void generateXSL() {
-        
+
     }
 
     /*##########################################################################
@@ -436,7 +430,6 @@ public class VP_Resume {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
-
     protected boolean hasStartedResume() {
         return startedResume;
     }

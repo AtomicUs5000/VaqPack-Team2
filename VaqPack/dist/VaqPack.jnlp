@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="VaqPack.jar" size="4062391" download="eager" />
+    <jar href="VaqPack.jar" size="4066559" download="eager" />
     <jar href="lib\core-renderer.jar" size="1079323" download="eager" />
     <jar href="lib\iText-2.0.8.jar" size="1213150" download="eager" />
     <jar href="lib\javax.mail.jar" size="582024" download="eager" />
