@@ -4,6 +4,15 @@
  */
 package vaqpack;
 
+import vaqpack.peripherals.VP_Sounds;
+import vaqpack.peripherals.VP_Loader;
+import vaqpack.peripherals.VP_ErrorHandler;
+import vaqpack.data.VP_DataManager;
+import vaqpack.user.VP_User;
+import vaqpack.components.VP_PageDivision;
+import vaqpack.components.VP_PasswordField;
+import vaqpack.components.VP_TreeItem;
+import vaqpack.components.VP_TextField;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -55,7 +64,7 @@ public class VP_GUIController {
     private final VP_Loader loader;
     private final VP_DataManager dataM;
     private final VP_Header header;
-    private final VP_Tree leftTree;
+    private final VP_Left leftTree;
     private final VP_Center center;
     private final VP_Footer footer;
     private ArrayList<Runnable> guiTasks,
@@ -89,7 +98,7 @@ public class VP_GUIController {
         loader = new VP_Loader(sceneWidth, sceneHeight);
         dataM = new VP_DataManager(this);
         header = new VP_Header(this, primaryStage);
-        leftTree = new VP_Tree(this);
+        leftTree = new VP_Left(this);
         center = new VP_Center(this);
         footer = new VP_Footer(this);
         primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
@@ -122,7 +131,7 @@ public class VP_GUIController {
      * of the wizard.
      *
      * @param wizardNumber Determines the center page number that the user will
-     * jump to when clicking a particular node of VP_Tree.
+     * jump to when clicking a particular node of VP_Left.
      * @param position The vertical scroll position of the selected screen.
      * @since 1.0
      */
@@ -140,7 +149,7 @@ public class VP_GUIController {
      * happens to call an exception. Can be an empty string.
      * @since 1.0
      */
-    protected void errorAlert(int errorCode, String exceptionString) {
+    public void errorAlert(int errorCode, String exceptionString) {
         //-------- Initialization Start ----------\\
         VP_ErrorHandler eh = new VP_ErrorHandler(errorCode, exceptionString);
         VPErrorAlert errorAlert = new VPErrorAlert(AlertType.ERROR);
@@ -193,63 +202,63 @@ public class VP_GUIController {
                     leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Resume", 11));
                     VP_TreeItem res = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(2);
                     ArrayList<VP_TreeItem> RES_Nodes = new ArrayList();
-                        RES_Nodes.add(new VP_TreeItem("Heading", 12));
-                        ArrayList<VP_TreeItem> RES_He_Nodes = new ArrayList();
-                            RES_He_Nodes.add(new VP_TreeItem("Name", 12));
-                            ArrayList<VP_TreeItem> RES_N_Nodes = new ArrayList();
-                                RES_N_Nodes.add(new VP_TreeItem("First Name", 4));
-                                RES_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
-                                RES_N_Nodes.add(new VP_TreeItem("Last Name", 4));
-                            RES_He_Nodes.get(0).getChildren().addAll(RES_N_Nodes);
-                            RES_He_Nodes.add(new VP_TreeItem("Address", 12));
-                            ArrayList<VP_TreeItem> RES_HEA_Nodes = new ArrayList();
-                                RES_HEA_Nodes.add(new VP_TreeItem("Address Line 1", 4));
-                                RES_HEA_Nodes.add(new VP_TreeItem("Address Line 2", 4));
-                                RES_HEA_Nodes.add(new VP_TreeItem("City", 4));
-                                RES_HEA_Nodes.add(new VP_TreeItem("State", 4));
-                                RES_HEA_Nodes.add(new VP_TreeItem("Zip", 4));
-                            RES_He_Nodes.get(1).getChildren().addAll(RES_HEA_Nodes);
-                            RES_He_Nodes.add(new VP_TreeItem("Communication", 12));
-                            ArrayList<VP_TreeItem> RES_HEC_Nodes = new ArrayList();
-                                RES_HEC_Nodes.add(new VP_TreeItem("Phone", 4));
-                                RES_HEC_Nodes.add(new VP_TreeItem("Cell", 4));
-                                RES_HEC_Nodes.add(new VP_TreeItem("Email", 4));
-                            RES_He_Nodes.get(2).getChildren().addAll(RES_HEC_Nodes);
-                        RES_Nodes.get(0).getChildren().addAll(RES_He_Nodes);
-                        RES_Nodes.add(new VP_TreeItem("Objective", 12));
-                        RES_Nodes.add(new VP_TreeItem("Education", 13));
-                        RES_Nodes.add(new VP_TreeItem("Work Experience", 14));
-                        RES_Nodes.add(new VP_TreeItem("Achievements", 15));
-                        RES_Nodes.add(new VP_TreeItem("Community", 16));
-                        RES_Nodes.add(new VP_TreeItem("Qualifications", 17));
-                        RES_Nodes.add(new VP_TreeItem("Highlights", 18));
-                        RES_Nodes.add(new VP_TreeItem("Languages", 19));
-                        RES_Nodes.add(new VP_TreeItem("Software", 20));
-                        RES_Nodes.add(new VP_TreeItem("References", 21));
+                    RES_Nodes.add(new VP_TreeItem("Heading", 12));
+                    ArrayList<VP_TreeItem> RES_He_Nodes = new ArrayList();
+                    RES_He_Nodes.add(new VP_TreeItem("Name", 12));
+                    ArrayList<VP_TreeItem> RES_N_Nodes = new ArrayList();
+                    RES_N_Nodes.add(new VP_TreeItem("First Name", 4));
+                    RES_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
+                    RES_N_Nodes.add(new VP_TreeItem("Last Name", 4));
+                    RES_He_Nodes.get(0).getChildren().addAll(RES_N_Nodes);
+                    RES_He_Nodes.add(new VP_TreeItem("Address", 12));
+                    ArrayList<VP_TreeItem> RES_HEA_Nodes = new ArrayList();
+                    RES_HEA_Nodes.add(new VP_TreeItem("Address Line 1", 4));
+                    RES_HEA_Nodes.add(new VP_TreeItem("Address Line 2", 4));
+                    RES_HEA_Nodes.add(new VP_TreeItem("City", 4));
+                    RES_HEA_Nodes.add(new VP_TreeItem("State", 4));
+                    RES_HEA_Nodes.add(new VP_TreeItem("Zip", 4));
+                    RES_He_Nodes.get(1).getChildren().addAll(RES_HEA_Nodes);
+                    RES_He_Nodes.add(new VP_TreeItem("Communication", 12));
+                    ArrayList<VP_TreeItem> RES_HEC_Nodes = new ArrayList();
+                    RES_HEC_Nodes.add(new VP_TreeItem("Phone", 4));
+                    RES_HEC_Nodes.add(new VP_TreeItem("Cell", 4));
+                    RES_HEC_Nodes.add(new VP_TreeItem("Email", 4));
+                    RES_He_Nodes.get(2).getChildren().addAll(RES_HEC_Nodes);
+                    RES_Nodes.get(0).getChildren().addAll(RES_He_Nodes);
+                    RES_Nodes.add(new VP_TreeItem("Objective", 12));
+                    RES_Nodes.add(new VP_TreeItem("Education", 13));
+                    RES_Nodes.add(new VP_TreeItem("Work Experience", 14));
+                    RES_Nodes.add(new VP_TreeItem("Achievements", 15));
+                    RES_Nodes.add(new VP_TreeItem("Community", 16));
+                    RES_Nodes.add(new VP_TreeItem("Qualifications", 17));
+                    RES_Nodes.add(new VP_TreeItem("Highlights", 18));
+                    RES_Nodes.add(new VP_TreeItem("Languages", 19));
+                    RES_Nodes.add(new VP_TreeItem("Software", 20));
+                    RES_Nodes.add(new VP_TreeItem("References", 21));
                     res.getChildren().addAll(RES_Nodes);
-        
+
                     leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Business Card", 5));
                     VP_TreeItem bc = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(3);
                     ArrayList<VP_TreeItem> BC_Nodes = new ArrayList();
                     BC_Nodes.add(new VP_TreeItem("Name", 5));
-                    BC_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(0).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(0).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_N_Nodes = new ArrayList();
                     BC_N_Nodes.add(new VP_TreeItem("First Name", 4));
                     BC_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
                     BC_N_Nodes.add(new VP_TreeItem("Last Name", 4));
                     BC_Nodes.get(0).getChildren().addAll(BC_N_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Company", 5));
-                    BC_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_CY_Nodes = new ArrayList();
                     BC_CY_Nodes.add(new VP_TreeItem("Profession", 5));
-                    BC_CY_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CY_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_CY_Nodes.add(new VP_TreeItem("Company Name", 5));
-                    BC_CY_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CY_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_CY_Nodes.add(new VP_TreeItem("Slogan", 5));
-                    BC_CY_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CY_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_Nodes.get(1).getChildren().addAll(BC_CY_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Address", 5));
-                    BC_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(2).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(2).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_A_Nodes = new ArrayList();
                     BC_A_Nodes.add(new VP_TreeItem("Address Line 1", 4));
                     BC_A_Nodes.add(new VP_TreeItem("Address Line 2", 4));
@@ -258,31 +267,31 @@ public class VP_GUIController {
                     BC_A_Nodes.add(new VP_TreeItem("Zip", 4));
                     BC_Nodes.get(2).getChildren().addAll(BC_A_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Communication", 5));
-                    BC_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_CN_Nodes = new ArrayList();
                     BC_CN_Nodes.add(new VP_TreeItem("Phone", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Cell", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Email", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Web Page", 5));
-                    BC_CN_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CN_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     BC_Nodes.get(3).getChildren().addAll(BC_CN_Nodes);
                     bc.getChildren().addAll(BC_Nodes);
-                    
+
                     leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Cover Letter", 6));
                     VP_TreeItem cl = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(4);
                     ArrayList<VP_TreeItem> CL_Nodes = new ArrayList();
                     CL_Nodes.add(new VP_TreeItem("Heading", 7));
-                    CL_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(0).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(0).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_H_Nodes = new ArrayList();
                     CL_H_Nodes.add(new VP_TreeItem("Name", 7));
-                    CL_H_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_H_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_HN_Nodes = new ArrayList();
                     CL_HN_Nodes.add(new VP_TreeItem("First Name", 4));
                     CL_HN_Nodes.add(new VP_TreeItem("Middle name", 4));
                     CL_HN_Nodes.add(new VP_TreeItem("Last Name", 4));
                     CL_H_Nodes.get(0).getChildren().addAll(CL_HN_Nodes);
                     CL_H_Nodes.add(new VP_TreeItem("Address", 7));
-                    CL_H_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(2).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_H_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(2).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_HA_Nodes = new ArrayList();
                     CL_HA_Nodes.add(new VP_TreeItem("Address Line 1", 4));
                     CL_HA_Nodes.add(new VP_TreeItem("Address Line 2", 4));
@@ -291,7 +300,7 @@ public class VP_GUIController {
                     CL_HA_Nodes.add(new VP_TreeItem("Zip", 4));
                     CL_H_Nodes.get(1).getChildren().addAll(CL_HA_Nodes);
                     CL_H_Nodes.add(new VP_TreeItem("Communication", 7));
-                    CL_H_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_H_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_HC_Nodes = new ArrayList();
                     CL_HC_Nodes.add(new VP_TreeItem("Phone", 4));
                     CL_HC_Nodes.add(new VP_TreeItem("Cell", 4));
@@ -299,32 +308,32 @@ public class VP_GUIController {
                     CL_H_Nodes.get(2).getChildren().addAll(CL_HC_Nodes);
                     CL_Nodes.get(0).getChildren().addAll(CL_H_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Date", 7));
-                    CL_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(4).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(4).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     CL_Nodes.add(new VP_TreeItem("Ad Reference", 7));
-                    CL_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(5).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(5).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_A_Nodes = new ArrayList();
                     CL_A_Nodes.add(new VP_TreeItem("Source", 7));
                     CL_A_Nodes.add(new VP_TreeItem("Job Position", 7));
                     CL_A_Nodes.add(new VP_TreeItem("Reference Number", 7));
                     CL_Nodes.get(2).getChildren().addAll(CL_A_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Contact Information", 7));
-                    CL_Nodes.get(3).getPositionProp().bind(center.getClNodes().get(6).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(3).getPositionProp().bind(center.getClNodes().get(6).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_C_Nodes = new ArrayList();
                     CL_C_Nodes.add(new VP_TreeItem("Name", 7));
-                    CL_C_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(7).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_C_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(7).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_CN_Nodes = new ArrayList();
                     CL_CN_Nodes.add(new VP_TreeItem("First Name", 7));
                     CL_CN_Nodes.add(new VP_TreeItem("Middle name", 7));
                     CL_CN_Nodes.add(new VP_TreeItem("Last Name", 7));
                     CL_C_Nodes.get(0).getChildren().addAll(CL_CN_Nodes);
                     CL_C_Nodes.add(new VP_TreeItem("Company", 7));
-                    CL_C_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(8).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_C_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(8).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_CC_Nodes = new ArrayList();
                     CL_CC_Nodes.add(new VP_TreeItem("Contact Title", 7));
                     CL_CC_Nodes.add(new VP_TreeItem("Company Name", 7));
                     CL_C_Nodes.get(1).getChildren().addAll(CL_CC_Nodes);
                     CL_C_Nodes.add(new VP_TreeItem("Address", 7));
-                    CL_C_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(9).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_C_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(9).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_CA_Nodes = new ArrayList();
                     CL_CA_Nodes.add(new VP_TreeItem("Address Line 1", 7));
                     CL_CA_Nodes.add(new VP_TreeItem("Address Line 2", 7));
@@ -334,24 +343,24 @@ public class VP_GUIController {
                     CL_C_Nodes.get(2).getChildren().addAll(CL_CA_Nodes);
                     CL_Nodes.get(3).getChildren().addAll(CL_C_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Salutation", 7));
-                    CL_Nodes.get(4).getPositionProp().bind(center.getClNodes().get(10).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(4).getPositionProp().bind(center.getClNodes().get(10).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     CL_Nodes.add(new VP_TreeItem("Body", 7));
-                    CL_Nodes.get(5).getPositionProp().bind(center.getClNodes().get(11).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(5).getPositionProp().bind(center.getClNodes().get(11).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_B_Nodes = new ArrayList();
                     for (int i = 1; i <= currentUser.getCovlet().getNumbParagraphs(); i++) {
                         CL_B_Nodes.add(new VP_TreeItem("Paragraph " + i, 7));
-                        CL_B_Nodes.get(i - 1).getPositionProp().bind(center.getClNodes().get(11).layoutYProperty().subtract(20).add(i*50).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                        CL_B_Nodes.get(i - 1).getPositionProp().bind(center.getClNodes().get(11).layoutYProperty().subtract(20).add(i * 50).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     }
                     CL_Nodes.get(5).getChildren().addAll(CL_B_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Closing", 7));
-                    CL_Nodes.get(6).getPositionProp().bind(center.getClNodes().get(12).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(6).getPositionProp().bind(center.getClNodes().get(12).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     CL_Nodes.add(new VP_TreeItem("Signature", 7));
-                    CL_Nodes.get(7).getPositionProp().bind(center.getClNodes().get(13).layoutYProperty().subtract(20).divide(((VP_PageDivision)(((VBox)(((ScrollPane)(center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(7).getPositionProp().bind(center.getClNodes().get(13).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_S_Nodes = new ArrayList();
-                        CL_S_Nodes.add(new VP_TreeItem("First Name", 4));
-                        CL_S_Nodes.add(new VP_TreeItem("Middle Name", 4));
-                        CL_S_Nodes.add(new VP_TreeItem("Last Name", 4));
-                        CL_Nodes.get(7).getChildren().addAll(CL_S_Nodes);
+                    CL_S_Nodes.add(new VP_TreeItem("First Name", 4));
+                    CL_S_Nodes.add(new VP_TreeItem("Middle Name", 4));
+                    CL_S_Nodes.add(new VP_TreeItem("Last Name", 4));
+                    CL_Nodes.get(7).getChildren().addAll(CL_S_Nodes);
                     cl.getChildren().addAll(CL_Nodes);
                 } else if (leftTree.getFalseRoot().getChildren().size() > 2) {
                     // update the dynamically added custom nodes, this is not login
@@ -368,8 +377,8 @@ public class VP_GUIController {
                 if (leftTree.getFalseRoot().getChildren().size() <= 5 && (currentUser.getBcard().hasCompletedBusinessCard()
                         || currentUser.getCovlet().hasCompletedCoverLetter()
                         || currentUser.getResume().hasCompletedResume())) {
-                        leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Document Themes", 8));
-                        leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Distribute Documents", 10));
+                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Document Themes", 8));
+                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Distribute Documents", 10));
                 }
             }
         } else {
@@ -384,7 +393,7 @@ public class VP_GUIController {
      * - No parameters.
      * - No return.
      *------------------------------------------------------------------------*/
-    protected void newUserSet() {
+    public void newUserSet() {
         if (header.getMenuBar().getMenus().size() > 3) {
             header.getMenuBar().getMenus().remove(3);
         }
@@ -770,11 +779,11 @@ public class VP_GUIController {
                                         latch.countDown();
                                     }
                                 } catch (IOException ex2) {
-                                    Platform.runLater(() -> errorAlert(1301 + stage, ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(3201 + stage, ex2.getMessage()));
                                 } catch (NoSuchAlgorithmException | NoSuchPaddingException |
                                         InvalidKeyException | InvalidAlgorithmParameterException |
                                         IllegalBlockSizeException | BadPaddingException ex2) {
-                                    Platform.runLater(() -> errorAlert(1303 + stage, ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(3203 + stage, ex2.getMessage()));
                                 }
                             });
                             try {
@@ -785,11 +794,11 @@ public class VP_GUIController {
                                 latch.countDown();
                             }
                         } catch (IOException ex) {
-                            Platform.runLater(() -> errorAlert(1301 + stage, ex.getMessage()));
+                            Platform.runLater(() -> errorAlert(3201 + stage, ex.getMessage()));
                         } catch (NoSuchAlgorithmException | NoSuchPaddingException |
                                 InvalidKeyException | InvalidAlgorithmParameterException |
                                 IllegalBlockSizeException | BadPaddingException ex) {
-                            Platform.runLater(() -> errorAlert(1303 + stage, ex.getMessage()));
+                            Platform.runLater(() -> errorAlert(3203 + stage, ex.getMessage()));
                         }
                     }
                     try {
@@ -813,11 +822,11 @@ public class VP_GUIController {
                                         latch.countDown();
                                     }
                                 } catch (IOException ex2) {
-                                    Platform.runLater(() -> errorAlert(1301 + stage, ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(3201 + stage, ex2.getMessage()));
                                 } catch (NoSuchAlgorithmException | NoSuchPaddingException |
                                         InvalidKeyException | InvalidAlgorithmParameterException |
                                         IllegalBlockSizeException | BadPaddingException ex2) {
-                                    Platform.runLater(() -> errorAlert(1303 + stage, ex2.getMessage()));
+                                    Platform.runLater(() -> errorAlert(3203 + stage, ex2.getMessage()));
                                 } finally {
                                     latch.countDown();
                                 }
@@ -832,7 +841,7 @@ public class VP_GUIController {
                         } else if (stage == 1 && ex.getErrorCode() == 1007) {
                             complete = true;
                         } else {
-                            Platform.runLater(() -> errorAlert(1401 + stage, ex.getMessage()));
+                            Platform.runLater(() -> errorAlert(3101 + stage, ex.getMessage()));
                         }
                     }
                 }
@@ -845,9 +854,9 @@ public class VP_GUIController {
                     }
                 } catch (SQLException ex) {
                     if (ex.getErrorCode() != 1050 && stage != 3) {
-                        Platform.runLater(() -> errorAlert(1403, ex.getMessage()));
+                        Platform.runLater(() -> errorAlert(3103, ex.getMessage()));
                     } else if (ex.getErrorCode() != 1050 && stage == 3) {
-                        Platform.runLater(() -> errorAlert(1404, ex.getMessage()));
+                        Platform.runLater(() -> errorAlert(3104, ex.getMessage()));
                     }
                 }
             } else if (stage == 17) {
@@ -858,7 +867,7 @@ public class VP_GUIController {
                     try {
                         adminExists = dataM.searchForVPAdmin();
                     } catch (SQLException ex) {
-                        Platform.runLater(() -> errorAlert(1405, ex.getMessage()));
+                        Platform.runLater(() -> errorAlert(3105, ex.getMessage()));
                     }
                     if (!adminExists) {
                         Platform.runLater(() -> {
@@ -866,9 +875,9 @@ public class VP_GUIController {
                                 adminCheck = dataM.createVPAdmin(requestVPAdmin(0));
                                 adminlatch.countDown();
                             } catch (SQLException ex) {
-                                Platform.runLater(() -> errorAlert(1406, ex.getMessage()));
+                                Platform.runLater(() -> errorAlert(3106, ex.getMessage()));
                             } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                                Platform.runLater(() -> errorAlert(1201, ex.getMessage()));
+                                Platform.runLater(() -> errorAlert(3001, ex.getMessage()));
                             }
                         });
                     } else {
@@ -887,9 +896,9 @@ public class VP_GUIController {
                                     adminCheck = dataM.createVPAdmin(requestVPAdmin(1));
                                     adminlatch.countDown();
                                 } catch (SQLException ex) {
-                                    Platform.runLater(() -> errorAlert(1306, ex.getMessage()));
+                                    Platform.runLater(() -> errorAlert(3206, ex.getMessage()));
                                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                                    Platform.runLater(() -> errorAlert(1201, ex.getMessage()));
+                                    Platform.runLater(() -> errorAlert(3001, ex.getMessage()));
                                 }
                             });
                             try {
@@ -1065,17 +1074,17 @@ public class VP_GUIController {
      * @return The current VP_User object.
      * @since 1.0
      */
-    protected VP_User getCurrentUser() {
+    public VP_User getCurrentUser() {
         return currentUser;
     }
 
     /**
      * Accessor method.
      *
-     * @return The VP_Tree object.
+     * @return The VP_Left object.
      * @since 1.0
      */
-    protected VP_Tree getLeftTree() {
+    protected VP_Left getLeftTree() {
         return leftTree;
     }
 }

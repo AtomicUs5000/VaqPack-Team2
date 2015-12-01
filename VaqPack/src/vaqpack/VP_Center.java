@@ -8,10 +8,22 @@
  * -- Nathanael Carr
  * -- Erik Lopez
  * -- Raul Saavedra
- * FILE ID 1900
+ * FILE ID 1200
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import vaqpack.peripherals.VP_Sounds;
+import vaqpack.user.VP_User;
+import vaqpack.user.VP_Resume;
+import vaqpack.components.VP_Button;
+import vaqpack.components.VP_DivisionLine;
+import vaqpack.components.VP_Paragraph;
+import vaqpack.components.VP_PageDivision;
+import vaqpack.components.VP_PageSubdivision;
+import vaqpack.components.VP_PasswordField;
+import vaqpack.components.VP_TextArea;
+import vaqpack.components.VP_FieldLabel;
+import vaqpack.components.VP_TextField;
 import com.lowagie.text.DocumentException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -1799,10 +1811,8 @@ public class VP_Center extends StackPane {
         VP_Sounds.play(0);
         bcardError.setParaText("");
         bcardErrorLine.hide();
-        controller.getCurrentUser().getBcard().revert();
         covletEditError.setParaText("");
         covletEditErrorLine.hide();
-        controller.getCurrentUser().getCovlet().revert();
         objectiveError.setParaText("");
         objectiveErrorLine.hide();
         educationError.setParaText("");
@@ -1823,9 +1833,11 @@ public class VP_Center extends StackPane {
         softwareErrorLine.hide();
         referencesError.setParaText("");
         referencesErrorLine.hide();
-        controller.getCurrentUser().getResume().revert();
         personalInfoError.setParaText("");
         personalInfoErrorLine.hide();
+        controller.getCurrentUser().getResume().revert();
+        controller.getCurrentUser().getCovlet().revert();
+        controller.getCurrentUser().getBcard().revert();
         controller.getCurrentUser().revert();
         updateDynamicFields();
     }
@@ -2270,9 +2282,9 @@ public class VP_Center extends StackPane {
                 try {
                     controller.getDataM().saveCovLetData();
                 } catch (SQLException ex) {
-                    controller.errorAlert(1415, ex.getMessage());
+                    controller.errorAlert(3115, ex.getMessage());
                 } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                    controller.errorAlert(2901, ex.getMessage());
+                    controller.errorAlert(3302, ex.getMessage());
                 }
             }
             showScreen(3, 0);
@@ -2405,7 +2417,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(1);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1418, ex.getMessage());
+                        controller.errorAlert(3118, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2533,7 +2545,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(2);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1419, ex.getMessage());
+                        controller.errorAlert(3119, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2653,7 +2665,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(3);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1421, ex.getMessage());
+                        controller.errorAlert(3121, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2773,7 +2785,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(4);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1422, ex.getMessage());
+                        controller.errorAlert(3122, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2861,7 +2873,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(5);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1423, ex.getMessage());
+                        controller.errorAlert(3123, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2949,7 +2961,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(6);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1424, ex.getMessage());
+                        controller.errorAlert(3124, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3041,7 +3053,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(7);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1425, ex.getMessage());
+                        controller.errorAlert(3125, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3129,7 +3141,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(8);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1426, ex.getMessage());
+                        controller.errorAlert(3126, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3286,7 +3298,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(9);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1420, ex.getMessage());
+                        controller.errorAlert(3120, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3324,7 +3336,7 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveResume(0);
                     } catch (SQLException ex) {
-                        controller.errorAlert(1417, ex.getMessage());
+                        controller.errorAlert(3117, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3355,7 +3367,7 @@ public class VP_Center extends StackPane {
                 showScreen(7, 0);
 
             } catch (SQLException ex) {
-                controller.errorAlert(1416, ex.getMessage());
+                controller.errorAlert(3116, ex.getMessage());
             }
         }
     }
@@ -3554,9 +3566,9 @@ public class VP_Center extends StackPane {
                     try {
                         controller.getDataM().saveBCardData();
                     } catch (SQLException ex) {
-                        controller.errorAlert(1414, ex.getMessage());
+                        controller.errorAlert(3114, ex.getMessage());
                     } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(2901, ex.getMessage());
+                        controller.errorAlert(3301, ex.getMessage());
                     }
                 }
                 showScreen(3, 0);
@@ -3674,7 +3686,7 @@ public class VP_Center extends StackPane {
                 try {
                     controller.getDataM().saveUserData();
                 } catch (SQLException ex) {
-                    controller.errorAlert(1413, ex.getMessage());
+                    controller.errorAlert(3113, ex.getMessage());
                 } finally {
                     showScreen(3, 0);
                 }
@@ -3777,9 +3789,9 @@ public class VP_Center extends StackPane {
                         showScreen(3, 0);
                     }
                 } catch (SQLException ex) {
-                    controller.errorAlert(1407, ex.getMessage());
+                    controller.errorAlert(3107, ex.getMessage());
                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                    controller.errorAlert(1202, ex.getMessage());
+                    controller.errorAlert(3002, ex.getMessage());
                 }
             } else {
                 loginError.setParaText("The email provided is invalid. Please try again.");
@@ -3811,9 +3823,9 @@ public class VP_Center extends StackPane {
                         + "If you do not receive an email, verify that you have "
                         + "entered in the correct email address.");
             } catch (SQLException ex) {
-                controller.errorAlert(1410, ex.getMessage());
+                controller.errorAlert(3110, ex.getMessage());
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                controller.errorAlert(1205, ex.getMessage());
+                controller.errorAlert(3005, ex.getMessage());
             }
         }
     }
@@ -3850,9 +3862,9 @@ public class VP_Center extends StackPane {
                     VP_Sounds.play(-1);
                 }
             } catch (SQLException ex) {
-                controller.errorAlert(1408, ex.getMessage());
+                controller.errorAlert(3108, ex.getMessage());
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                controller.errorAlert(1203, ex.getMessage());
+                controller.errorAlert(3003, ex.getMessage());
             }
         }
     }
@@ -3916,7 +3928,7 @@ public class VP_Center extends StackPane {
                         resetButLine.show();
                     }
                 } catch (SQLException ex) {
-                    controller.errorAlert(1411, ex.getMessage());
+                    controller.errorAlert(3111, ex.getMessage());
                 }
             } else {
                 resetError.setParaText("The email provided is invalid. Please try again.");
@@ -3975,9 +3987,9 @@ public class VP_Center extends StackPane {
                         VP_Sounds.play(-1);
                     }
                 } catch (SQLException ex) {
-                    controller.errorAlert(1409, ex.getMessage());
+                    controller.errorAlert(3109, ex.getMessage());
                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                    controller.errorAlert(1204, ex.getMessage());
+                    controller.errorAlert(3004, ex.getMessage());
                 }
             }
         }
@@ -4037,9 +4049,9 @@ public class VP_Center extends StackPane {
                             VP_Sounds.play(-1);
                         }
                     } catch (SQLException ex) {
-                        controller.errorAlert(1412, ex.getMessage());
+                        controller.errorAlert(3112, ex.getMessage());
                     } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                        controller.errorAlert(1206, ex.getMessage());
+                        controller.errorAlert(3006, ex.getMessage());
                     }
                 }
             } else {
