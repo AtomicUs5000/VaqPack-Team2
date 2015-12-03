@@ -131,6 +131,14 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 3007:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to change a password.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try submitting your new password again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
             
             // ID 3100 Originates from VP_DatabaseManager
             case 3101:
@@ -324,6 +332,14 @@ public class VP_ErrorHandler {
             case 3126:
                 header = "VaqPack has encountered a MySQL error \n"
                         + "while storing the resume software section.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 3127:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while attempting to change a user password.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;

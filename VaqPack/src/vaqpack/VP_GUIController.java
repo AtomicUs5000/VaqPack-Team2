@@ -394,18 +394,19 @@ public class VP_GUIController {
      * - No return.
      *------------------------------------------------------------------------*/
     public void newUserSet() {
-        if (header.getMenuBar().getMenus().size() > 3) {
-            header.getMenuBar().getMenus().remove(3);
-        }
+        header.getAdminMenu().setDisable(true);
+        header.getAdminMenu().setText("");
         if (currentUser.getAccessLevel() == -1) {
-            header.getAdminMenu().setVisible(false);
             header.getUserLogout().setVisible(false);
+            header.getChangePass().setVisible(false);
             center.showScreen(0, 0);
         } else {
             header.getUserLogout().setVisible(true);
+            header.getChangePass().setVisible(true);
             center.showScreen(3, 0);
             if (currentUser.getAccessLevel() > 0) {
-                header.getMenuBar().getMenus().add(header.getAdminMenu());
+                header.getAdminMenu().setDisable(false);
+                header.getAdminMenu().setText("Admin");
             }
             sessionSeconds = USER_INACTIVITY_LIMIT;
             timer = new java.util.Timer();
@@ -953,7 +954,7 @@ public class VP_GUIController {
             } else if (stage == 1) {
                 Platform.runLater(() -> getLeftTree().build());
             } else if (stage == 2) {
-                Platform.runLater(() -> center.build());
+                Platform.runLater(() -> getCenter().build());
             } else if (stage == 3) {
                 Platform.runLater(() -> footer.build());
             }
@@ -1086,5 +1087,9 @@ public class VP_GUIController {
      */
     protected VP_Left getLeftTree() {
         return leftTree;
+    }
+
+    protected VP_Center getCenter() {
+        return center;
     }
 }

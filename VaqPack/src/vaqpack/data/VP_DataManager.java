@@ -359,6 +359,30 @@ public class VP_DataManager {
         }
         return userStatus;
     }
+    
+    public boolean checkCurrentPassword(String password) throws SQLException, 
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        return(dbManager.checkPassword(hashPassword(password)));
+    }
+    
+    public void changePass(String password) throws SQLException, 
+            NoSuchAlgorithmException, UnsupportedEncodingException {
+        //-------- Initialization Start ----------\\
+        String msg;
+        String[] ccMail = {};
+        VP_Mail changePassEmail;
+        //-------- Initialization End ------------\\
+        
+        dbManager.changePassword(hashPassword(password));
+        msg = "This message is to inform you that your password has recently been changed for the VaqPack account "
+                + "associated with this email address.\nIf you have not changed your password, your VaqPack account might have "
+                + "been compromised and you should contact the VaqPack administrator.\n\n"
+                + "This is an automated message from the VaqPack software. Please do not reply.";
+        changePassEmail = new VP_Mail(controller, controller.getCurrentUser().getEmail().getValueSafe(),
+                ccMail, "VaqPack Administration", msg, null, null);
+        changePassEmail.setDaemon(true);
+        changePassEmail.start();
+    }
 
     /*------------------------------------------------------------------------*
      * resetPass()

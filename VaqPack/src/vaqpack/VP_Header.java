@@ -34,7 +34,7 @@ public class VP_Header extends VBox {
     private final Pane headerLogo;
     private final Label headerCaption;
     private final Menu adminMenu;
-    private final MenuItem userLogout;
+    private final MenuItem userLogout, changePass;
 
     /*------------------------------------------------------------------------*
      * VP_Header()
@@ -51,6 +51,7 @@ public class VP_Header extends VBox {
         headerCaption = new Label();
         adminMenu = new Menu("Admin");
         userLogout = new MenuItem("Logout");
+        changePass = new MenuItem("Change Your Password");
         //-------- Initialization End ------------\\
         menuBar.setId("menuBar");
         headerBar.setId("headerBar");
@@ -82,21 +83,21 @@ public class VP_Header extends VBox {
         userLogout.setOnAction(new LogoutAction());
         exitVP.setOnAction(controller.new ClosingSequence());
         toggleFull.setOnAction(new FullScreenToggle());
-        //userLogin.setOnAction(...);
-        //exitVP.setOnAction(...);
+        changePass.setOnAction(controller.getCenter().new WizardMainAction(22));
         //gettingStarted.setOnAction(...);
         //aboutHelp.setOnAction(...);
-        //fullScreen.setOnAction(...fullScreenToggle());
 
         // Menu building
         homeMenu.getItems().addAll(userLogout,
                 new SeparatorMenuItem(), exitVP);
-        optionsMenu.getItems().addAll(toggleFull);
+        optionsMenu.getItems().addAll(toggleFull, changePass);
         adminMenu.getItems().addAll(adminItem);
         helpMenu.getItems().addAll(gettingStarted, aboutHelp);
-        menuBar.getMenus().addAll(homeMenu, optionsMenu, helpMenu);
+        menuBar.getMenus().addAll(homeMenu, optionsMenu, helpMenu, adminMenu);
+        adminMenu.setDisable(true);
+        adminMenu.setText("");
         userLogout.setVisible(false);
-
+        changePass.setVisible(false);
         // Logo header construction
         headerBar.setPrefHeight(50);
         headerBar.setAlignment(Pos.CENTER_LEFT);
@@ -129,7 +130,7 @@ public class VP_Header extends VBox {
      * Subclass FullScreenToggle
      * - Allows the user to enter or exit fullscreen mode
      *------------------------------------------------------------------------*/
-    protected class FullScreenToggle implements EventHandler {
+    private class FullScreenToggle implements EventHandler {
         @Override
         public void handle(Event event) {
             primaryStage.setFullScreen(!primaryStage.isFullScreen());
@@ -149,5 +150,9 @@ public class VP_Header extends VBox {
 
     protected MenuBar getMenuBar() {
         return menuBar;
+    }
+
+    protected MenuItem getChangePass() {
+        return changePass;
     }
 }

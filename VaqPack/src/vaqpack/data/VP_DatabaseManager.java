@@ -1101,8 +1101,7 @@ public class VP_DatabaseManager {
      *   credentials match but the code has expired, and returns a 2 if the
      *   password reset was a success.
      *------------------------------------------------------------------------*/
-    protected int resetPassword(String[] cred)
-            throws SQLException {
+    protected int resetPassword(String[] cred) throws SQLException {
         //-------- Initialization Start ----------\\
         int resetStatus = 0, remID;
         long difference;
@@ -1141,6 +1140,36 @@ public class VP_DatabaseManager {
         }
         close();
         return resetStatus;
+    }
+    
+    protected boolean checkPassword(String hashedPass) throws SQLException {
+        //-------- Initialization Start ----------\\
+        boolean success = false;
+        //-------- Initialization End ------------\\
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM user "
+                + "WHERE id = ? AND password = ?")) {
+            ps.setInt(1, dataM.getController().getCurrentUser().getUserID());
+            ps.setString(2, hashedPass);
+            ps.executeQuery();
+            rts = ps.getResultSet();
+            if (rts.next()) {
+                success = true;
+            }
+        }
+        close();
+        return success;
+    }
+    
+    protected void changePassword(String hashedPass) throws SQLException {
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement("UPDATE user SET "
+                + "password = ? WHERE id = ?")) {
+            ps.setString(1, hashedPass);
+            ps.setInt(2, dataM.getController().getCurrentUser().getUserID());
+            ps.executeUpdate();
+        }
+        close();
     }
 
     /*------------------------------------------------------------------------*

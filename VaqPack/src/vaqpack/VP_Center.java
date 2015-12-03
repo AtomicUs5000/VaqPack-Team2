@@ -41,6 +41,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -57,11 +58,12 @@ public class VP_Center extends StackPane {
     private final VP_TextField loginEmail, resetEmail, regLoginAccess,
             resetCode, registerEmail;
     private final Label resetPassStrengthLabel, registerPassStrengthLabel,
-            infoProgress, resumeProgress, bcardProgress, covletProgress,
-            resObjProgress, resEduProgress, resExpProgress, resQualProgress,
-            resHighProgress, resLangProgress, resSWProgress;
+            changePassStrengthLabel, infoProgress, resumeProgress, bcardProgress,
+            covletProgress, resObjProgress, resEduProgress, resExpProgress,
+            resQualProgress, resHighProgress, resLangProgress, resSWProgress;
     private final VP_PasswordField loginPass,
-            resetNewPass, resetNewPassConfirm, registerPass, registerPassConfirm;
+            resetNewPass, resetNewPassConfirm, registerPass, registerPassConfirm,
+            oldPass, newPass, newPassConfirm;
     private final VP_DivisionLine accessInstructionsLine, loginButtonLine,
             accessLine, resetInstructions1Line, resetInstructions2Line,
             resetNewPassLine, resetNewPassConfirmLine, resetCodeLine, resetButLine,
@@ -70,13 +72,13 @@ public class VP_Center extends StackPane {
             bcardErrorLine, covletEditErrorLine, objectiveErrorLine, educationErrorLine,
             experienceErrorLine, achievementsErrorLine, communityErrorLine,
             qualificationsErrorLine, highlightsErrorLine, languagesErrorLine,
-            softwareErrorLine, referencesErrorLine;
+            softwareErrorLine, referencesErrorLine, changePassErrorLine;
     private final VP_Paragraph accessInstructions, resetInstructions1, resetInstructions2,
             overviewInfo, coverLetterDetails, loginError, resetError, registerError,
             personalInfoError, bcardError, covletEditError, objectiveError,
             educationError, experienceError, achievementsError, communityError,
             qualificationsError, highlightsError, languagesError, softwareError,
-            referencesError;
+            referencesError, changePassError;
     private final VP_Button submitResetBtn, startNewBtn, addEducationBtn, addExperienceBtn,
             addAchievementBtn, addCommunityBtn, addQualificationBtn, addHighlightBtn,
             addLanguageBtn, addSoftwareBtn, addReferenceBtn;
@@ -130,6 +132,7 @@ public class VP_Center extends StackPane {
         languagesErrorLine = new VP_DivisionLine();
         softwareErrorLine = new VP_DivisionLine();
         referencesErrorLine = new VP_DivisionLine();
+        changePassErrorLine = new VP_DivisionLine();
         loginError = new VP_Paragraph("", true);
         resetError = new VP_Paragraph("", true);
         registerError = new VP_Paragraph("", true);
@@ -146,6 +149,7 @@ public class VP_Center extends StackPane {
         languagesError = new VP_Paragraph("", true);
         softwareError = new VP_Paragraph("", true);
         referencesError = new VP_Paragraph("", true);
+        changePassError = new VP_Paragraph("", true);
         coverLetterDetails = new VP_Paragraph("", false);
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
@@ -153,6 +157,7 @@ public class VP_Center extends StackPane {
         overviewInfo = new VP_Paragraph();
         resetPassStrengthLabel = new Label();
         registerPassStrengthLabel = new Label();
+        changePassStrengthLabel = new Label();
         infoProgress = new Label();
         resumeProgress = new Label();
         bcardProgress = new Label();
@@ -176,6 +181,10 @@ public class VP_Center extends StackPane {
                 controller.getUSER_PASSWORD_MINIMUM(), registerPassStrengthLabel);
         resetNewPassConfirm = new VP_PasswordField(32, 32, 0, null);
         registerPassConfirm = new VP_PasswordField(32, 32, 0, null);
+        oldPass = new VP_PasswordField(32, 32, 0, null);
+        newPass = new VP_PasswordField(32, 32,
+                controller.getUSER_PASSWORD_MINIMUM(), changePassStrengthLabel);
+        newPassConfirm = new VP_PasswordField(32, 32, 0, null);
         wizardMainButtons = new ArrayList();
         bcNodes = new ArrayList();
         clNodes = new ArrayList();
@@ -251,7 +260,8 @@ public class VP_Center extends StackPane {
                 buildResumeHighlightsScreen(), //.....screen 18
                 buildResumeLanguagesScreen(), //......screen 19
                 buildResumeSoftwareScreen(), //.......screen 20
-                buildResumeReferencesScreen() //......screen 21
+                buildResumeReferencesScreen(), //.....screen 21
+                buildChangePasswordScreen() // .......screen 22
         );
         showScreen(0, 0);
     }
@@ -786,7 +796,7 @@ public class VP_Center extends StackPane {
         coverLetterEditFields.add(new VP_TextField(2, 2));     // bind this to cover letter
         coverLetterEditFields.add(new VP_TextField(10, 10));   // bind this to cover letter
         coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextArea());  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextArea());          // bind this to cover letter
         coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
@@ -1581,6 +1591,37 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
+    
+    private ScrollPane buildChangePasswordScreen() {
+        //-------- Initialization Start ----------\\
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision changePassBox = new VP_PageDivision("CHANGE YOUR PASSWORD");
+        VP_FieldLabel oldPassLabel = new VP_FieldLabel("old password:", 100),
+                newPassLabel = new VP_FieldLabel("new password:", 100),
+                newPassConfirmLabel = new VP_FieldLabel("confirm new\npassword:", 100);
+        VP_Button submitBtn = new VP_Button("Submit", new ChangePassAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(22));
+        VP_DivisionLine
+                oldPassLine = new VP_DivisionLine(new Node[]{oldPassLabel, oldPass}),
+                newPassLine = new VP_DivisionLine(new Node[]{newPassLabel, newPass}),
+                changePassStrengthLine = new VP_DivisionLine(new Node[]{changePassStrengthLabel}),
+                newPassConfirmLine = new VP_DivisionLine(new Node[]{newPassConfirmLabel, newPassConfirm}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+        //-------- Initialization End ------------\\
+
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
+        changePassStrengthLabel.getStyleClass().add("inputLabel");
+        changePassErrorLine.getChildren().addAll(changePassError);
+        changePassBox.getChildren().addAll(oldPassLine, newPassLine, changePassStrengthLine,
+                newPassConfirmLine, changePassErrorLine, buttonLine);
+        screenContent.getChildren().addAll(changePassBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
 
     /*------------------------------------------------------------------------*
      * resetLoginRegForms()
@@ -1835,10 +1876,19 @@ public class VP_Center extends StackPane {
         referencesErrorLine.hide();
         personalInfoError.setParaText("");
         personalInfoErrorLine.hide();
+        changePassError.setParaText("");
+        changePassErrorLine.hide();
         controller.getCurrentUser().getResume().revert();
         controller.getCurrentUser().getCovlet().revert();
         controller.getCurrentUser().getBcard().revert();
         controller.getCurrentUser().revert();
+        changePassStrengthLabel.setText("");
+        oldPass.showValid();
+        newPass.showValid();
+        newPassConfirm.showValid();
+        oldPass.setText("");
+        newPass.setText("");
+        newPassConfirm.setText("");
         updateDynamicFields();
     }
 
@@ -3726,7 +3776,7 @@ public class VP_Center extends StackPane {
      * Subclass WizardMainAction
      * - Brings the user to one of the main wizard pages
      *------------------------------------------------------------------------*/
-    private class WizardMainAction implements EventHandler<ActionEvent> {
+    protected class WizardMainAction implements EventHandler<ActionEvent> {
 
         private final int wizardPage;
 
@@ -4018,6 +4068,62 @@ public class VP_Center extends StackPane {
                     controller.errorAlert(3109, ex.getMessage());
                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                     controller.errorAlert(3004, ex.getMessage());
+                }
+            }
+        }
+    }
+    
+    private class ChangePassAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            String[] cred = {oldPass.getText(), newPass.getText(), newPassConfirm.getText()};
+            //-------- Initialization End ------------\\
+            VP_Sounds.play(0);
+            changePassError.setText("");
+            changePassErrorLine.hide();
+            if (cred[0].length() < controller.getUSER_PASSWORD_MINIMUM()) {
+                oldPass.showInvalid();
+                changePassError.setText("The old password is incorrect. Please try again.");
+                changePassErrorLine.show();
+                VP_Sounds.play(-1);
+            } else if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM())
+                    {
+                newPass.showInvalid();
+                newPassConfirm.showInvalid();
+                changePassError.setText("The new password is not long enough. Please try again.");
+                changePassErrorLine.show();
+                VP_Sounds.play(-1);
+            } else {
+                try {
+                    if (controller.getDataM().checkCurrentPassword(cred[0])) {
+                        if (cred[1].equals(cred[2])) {
+                            controller.getDataM().changePass(cred[1]);
+                            // showandwait an alert then switch the screen
+                            Alert passChanged = new Alert(Alert.AlertType.INFORMATION);
+                            passChanged.setTitle("PASSWORD CHANGED");
+                            passChanged.setContentText("Your password has been changed successfully.\n"
+                                    + "Use your new password the next time you log in.");
+                            passChanged.showAndWait();
+                            cancelActionFunction();
+                            showScreen(3, 0);
+                        } else {
+                            newPass.showInvalid();
+                            newPassConfirm.showInvalid();
+                            changePassError.setText("The new passwords do not match each other.");
+                            changePassErrorLine.show();
+                            VP_Sounds.play(-1);
+                        }
+                    } else {
+                        oldPass.showInvalid();
+                        changePassError.setText("The old password is incorrect. Please try again.");
+                        changePassErrorLine.show();
+                        VP_Sounds.play(-1);
+                    }
+                } catch (SQLException ex) {
+                    controller.errorAlert(3127, ex.getMessage());
+                } catch (NoSuchAlgorithmException |UnsupportedEncodingException ex) {
+                    controller.errorAlert(3007, ex.getMessage());
                 }
             }
         }
