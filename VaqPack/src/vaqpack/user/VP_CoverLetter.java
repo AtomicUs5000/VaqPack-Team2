@@ -261,7 +261,7 @@ public class VP_CoverLetter {
                 paragraphsStored.get(0) != null) {
             startedCoverLetter = true;
         }
-        if (changes && completedCoverLetter)
+        if (completedCoverLetter)
             generateXSL();
     }
     

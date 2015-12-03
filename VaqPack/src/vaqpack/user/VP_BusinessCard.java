@@ -99,7 +99,7 @@ public class VP_BusinessCard {
         } else if(companyNameStored != null || companySloganStored != null || webPageStored != null) {
             startedBusinessCard = true;
         }
-        if (changes && completedBusinessCard) {
+        if (completedBusinessCard) {
             generateXSL();
         }
     }

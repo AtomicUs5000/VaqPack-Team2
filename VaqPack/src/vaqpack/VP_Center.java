@@ -3311,6 +3311,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    showScreen(11, 0);
                     try {
                         controller.getDataM().saveResume(9);
                     } catch (SQLException ex) {
@@ -3318,8 +3319,9 @@ public class VP_Center extends StackPane {
                     } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
                         controller.errorAlert(3303, ex.getMessage());
                     }
+                } else {
+                    showScreen(11, 0);
                 }
-                showScreen(11, 0);
             }
         }
     }
@@ -3351,6 +3353,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    showScreen(11, 0);
                     try {
                         controller.getDataM().saveResume(0);
                     } catch (SQLException ex) {
@@ -3358,8 +3361,9 @@ public class VP_Center extends StackPane {
                     } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
                         controller.errorAlert(3303, ex.getMessage());
                     }
+                } else {
+                    showScreen(11, 0);
                 }
-                showScreen(11, 0);
             }
         }
     }
@@ -3583,6 +3587,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getBcard().save();
                 if (controller.getCurrentUser().getBcard().hasChanges()) {
                     updateDynamicFields();
+                    showScreen(3, 0);
                     try {
                         controller.getDataM().saveBCardData();
                     } catch (SQLException ex) {
@@ -3590,8 +3595,9 @@ public class VP_Center extends StackPane {
                     } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
                         controller.errorAlert(3301, ex.getMessage());
                     }
+                } else {
+                    showScreen(3, 0);
                 }
-                showScreen(3, 0);
             }
         }
     }
@@ -3703,12 +3709,14 @@ public class VP_Center extends StackPane {
                 personalInfoErrorLine.hide();
                 controller.getCurrentUser().save();
                 updateDynamicFields();
+                showScreen(3, 0);
                 try {
                     controller.getDataM().saveUserData();
+                    controller.getCurrentUser().getCovlet().save();
+                    controller.getCurrentUser().getResume().save();
+                    controller.getCurrentUser().getBcard().save();
                 } catch (SQLException ex) {
                     controller.errorAlert(3113, ex.getMessage());
-                } finally {
-                    showScreen(3, 0);
                 }
             }
         }

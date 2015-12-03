@@ -340,7 +340,7 @@ public class VP_Resume {
             startedResume = true;
             completedResume = true;
         }
-        if (completedResume && changes) {
+        if (completedResume) {
             generateXSL();
         }
     }
@@ -546,8 +546,8 @@ public class VP_Resume {
             if (themeId < 0) {
                 xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
             }
-            xsl += "><xsl:value-of select=\"resume/education/institution" + i + "/start\"/> - "
-                    + "<xsl:value-of select=\"resume/education/institution" + i + "/end\"/></p>\n</div>\n";
+            xsl += "><xsl:value-of select=\"resume/experience/institution" + i + "/start\"/> - "
+                    + "<xsl:value-of select=\"resume/experience/institution" + i + "/end\"/></p>\n</div>\n";
         }
         xsl += "<br/>\n";
         if (achievements.get(0).get(0).getValueSafe() != null) {

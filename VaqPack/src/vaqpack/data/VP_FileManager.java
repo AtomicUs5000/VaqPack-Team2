@@ -260,11 +260,9 @@ public class VP_FileManager {
             if (bcxml.exists()) {
                 bcxml.delete();
             }
-            /*
             if (bchtml.exists()) {
                 bchtml.delete();
             }
-            */
         } else {
             bcpdf = null;
         }
@@ -434,11 +432,9 @@ public class VP_FileManager {
             if (clxml.exists()) {
                 clxml.delete();
             }
-            /*
             if (clhtml.exists()) {
                 clhtml.delete();
             }
-            */
         } else {
             clpdf = null;
         }
