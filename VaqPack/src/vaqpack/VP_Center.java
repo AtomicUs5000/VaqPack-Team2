@@ -41,7 +41,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -51,6 +51,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import vaqpack.components.VP_Dialog;
 
 public class VP_Center extends StackPane {
 
@@ -4100,10 +4101,10 @@ public class VP_Center extends StackPane {
                         if (cred[1].equals(cred[2])) {
                             controller.getDataM().changePass(cred[1]);
                             // showandwait an alert then switch the screen
-                            Alert passChanged = new Alert(Alert.AlertType.INFORMATION);
-                            passChanged.setTitle("PASSWORD CHANGED");
-                            passChanged.setContentText("Your password has been changed successfully.\n"
-                                    + "Use your new password the next time you log in.");
+                            VP_Dialog passChanged = new VP_Dialog("PASSWORD CHANGED");
+                            passChanged.setHeaderText("Your password has been changed successfully.");
+                            passChanged.getDialogShell().add(new Label("Use your new password the next time you log in."), 0, 0);
+                            passChanged.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
                             passChanged.showAndWait();
                             cancelActionFunction();
                             showScreen(3, 0);

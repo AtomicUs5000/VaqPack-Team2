@@ -33,17 +33,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import vaqpack.components.VP_Dialog;
 
 /**
  * Events triggered by or altering the VaqPak GUI.
@@ -537,10 +536,10 @@ public class VP_GUIController {
         }
         urlField.setText(loc[0]);
         portField.setText(loc[1]);
-        requestLoc.dialogShell.add(urlLabel, 0, 0);
-        requestLoc.dialogShell.add(urlField, 1, 0);
-        requestLoc.dialogShell.add(portLabel, 0, 1);
-        requestLoc.dialogShell.add(portField, 1, 1);
+        requestLoc.getDialogShell().add(urlLabel, 0, 0);
+        requestLoc.getDialogShell().add(urlField, 1, 0);
+        requestLoc.getDialogShell().add(portLabel, 0, 1);
+        requestLoc.getDialogShell().add(portField, 1, 1);
         requestLoc.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         result = requestLoc.showAndWait();
         if (result.get() == ButtonType.OK) {
@@ -582,10 +581,10 @@ public class VP_GUIController {
             userField.showInvalid();
             passField.showInvalid();
         }
-        requestCred.dialogShell.add(userLabel, 0, 0);
-        requestCred.dialogShell.add(userField, 1, 0);
-        requestCred.dialogShell.add(passLabel, 0, 1);
-        requestCred.dialogShell.add(passField, 1, 1);
+        requestCred.getDialogShell().add(userLabel, 0, 0);
+        requestCred.getDialogShell().add(userField, 1, 0);
+        requestCred.getDialogShell().add(passLabel, 0, 1);
+        requestCred.getDialogShell().add(passField, 1, 1);
         requestCred.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         result = requestCred.showAndWait();
         if (result.get() == ButtonType.OK) {
@@ -644,18 +643,18 @@ public class VP_GUIController {
             userField.showInvalid();
             passField.showInvalid();
         }
-        requestCred.dialogShell.add(userLabel, 0, 0);
-        requestCred.dialogShell.add(userField, 1, 0);
-        requestCred.dialogShell.add(passLabel, 0, 1);
-        requestCred.dialogShell.add(passField, 1, 1);
-        requestCred.dialogShell.add(emailLabel, 0, 2);
-        requestCred.dialogShell.add(emailField, 1, 2);
-        requestCred.dialogShell.add(passLabel2, 0, 3);
-        requestCred.dialogShell.add(passField2, 1, 3);
-        requestCred.dialogShell.add(passStrengthLabel, 0, 4);
-        requestCred.dialogShell.add(passStrengthLevel, 1, 4);
-        requestCred.dialogShell.add(passLabel3, 0, 5);
-        requestCred.dialogShell.add(passField3, 1, 5);
+        requestCred.getDialogShell().add(userLabel, 0, 0);
+        requestCred.getDialogShell().add(userField, 1, 0);
+        requestCred.getDialogShell().add(passLabel, 0, 1);
+        requestCred.getDialogShell().add(passField, 1, 1);
+        requestCred.getDialogShell().add(emailLabel, 0, 2);
+        requestCred.getDialogShell().add(emailField, 1, 2);
+        requestCred.getDialogShell().add(passLabel2, 0, 3);
+        requestCred.getDialogShell().add(passField2, 1, 3);
+        requestCred.getDialogShell().add(passStrengthLabel, 0, 4);
+        requestCred.getDialogShell().add(passStrengthLevel, 1, 4);
+        requestCred.getDialogShell().add(passLabel3, 0, 5);
+        requestCred.getDialogShell().add(passField3, 1, 5);
         requestCred.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         while (!passwordsOK || !emailOK || !lengthOK) {
             result = requestCred.showAndWait();
@@ -984,37 +983,6 @@ public class VP_GUIController {
                     Platform.runLater(() -> errorAlert(1101, ex.getMessage()));
                 }
             }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass VP_Dialog
-     * - Custom-styled JavaFX Dialog.
-     *------------------------------------------------------------------------*/
-    private class VP_Dialog extends Dialog {
-
-        private final GridPane dialogShell;
-        /*---------------------------------------------------------------------*
-         * VPDialog()
-         * - Constructor.
-         * - Parameter title is the string title of the window.
-         *---------------------------------------------------------------------*/
-
-        public VP_Dialog(String title) {
-            //-------- Initialization Start ----------\\
-            VBox shellPad = new VBox();
-            //-------- Initialization End ------------\\
-
-            this.getDialogPane().getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
-            this.setTitle(title);
-            this.dialogShell = new GridPane();
-            this.dialogShell.setAlignment(Pos.CENTER_LEFT);
-            this.dialogShell.setVgap(20);
-            this.dialogShell.setHgap(20);
-            this.dialogShell.getStyleClass().add("dialogGrid");
-            shellPad.getChildren().add(dialogShell);
-            shellPad.getStyleClass().add("dialogPad");
-            this.getDialogPane().setContent(shellPad);
         }
     }
 
