@@ -55,7 +55,7 @@ public final class VP_Theme {
         RES_COMMUNICATION_1(" style=\"text-align:center; font-family: 'Times New Roman', Times, serif; font-size: 12pt; display: block;\""),
         RES_PARAGRAPHS_1(" style=\"text-indent:1cm;padding:0 0 6px 0;margin:0; font-family: 'Times New Roman', Times, serif; font-size: 12pt;\""),
         RES_TITLES_1(" style=\"font-family: 'Times New Roman', Times, serif; font-weight: bold; font-size: 13pt; display: block;\""),
-        RES_LISTS_1(" style=\"font-family: 'Times New Roman', Times, serif; font-size: 12pt;"),
+        RES_LISTS_1(" style=\"font-family: 'Times New Roman', Times, serif; font-size: 12pt;\""),
         RES_CONTAINERS_1(" style = \"margin-bottom: 14pt\""),
         RES_DIVIDERS_1(" style =\"margin-top: 3px\""),
         

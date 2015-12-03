@@ -370,14 +370,20 @@ public class VP_ErrorHandler {
                 
             // ID 3300 Originates from VP_DataToHtml
             case 3301:
-                header = "VaqPack could not create the pdf document for the "
+                header = "VaqPack could not create the PDF document for the "
                         + "business card.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
             case 3302:
-                header = "VaqPack could not create the pdf document for the "
+                header = "VaqPack could not create the PDF document for the "
                         + "cover letter.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 3303:
+                header = "VaqPack could not create the HTML and PDF documents for the "
+                        + "resume.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;

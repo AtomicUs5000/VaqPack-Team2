@@ -421,7 +421,327 @@ public class VP_Resume {
      * - No return
      *------------------------------------------------------------------------*/
     private void generateXSL() {
-
+        String currentTheme = String.valueOf(themeId * -1);
+        xsl = "<?xml version=\"1.0\"?>\n"
+                + "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" "
+                + "version=\"1.0\">\n"
+                + "<xsl:output method=\"xml\" indent=\"yes\"/>\n"
+                + "<xsl:template match=\"/\">\n"
+                + "<html>\n<head>\n<title>Resume -- <xsl:value-of select=\"resume/heading/name/lastname\"/></title>\n</head>\n<body style=\"padding:20px;\">"
+                + "<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_NAME_" + currentTheme);
+        }
+        xsl += "><xsl:value-of select=\"resume/heading/name/firstname\"/> ";
+        if (owner.getMiddleName().getValueSafe()!= null) {
+            xsl += "<xsl:value-of select=\"resume/heading/name/middlename\"/> ";
+        }
+        xsl += "<xsl:value-of select=\"resume/heading/name/lastname\"/></div>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_ADDRESS1_" + currentTheme);
+        }
+        xsl += "><xsl:value-of select=\"resume/heading/address/line1\"/></div>\n";
+        if (owner.getAddress2().getValueSafe() != null) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_ADDRESS2_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/heading/address/line2\"/></div>\n";
+        }
+        xsl += "<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_CITY_STATE_ZIP_" + currentTheme);
+        }
+        xsl += "><xsl:value-of select=\"resume/heading/address/city\"/>, "
+                + "<xsl:value-of select=\"resume/heading/address/state\"/> "
+                + "<xsl:value-of select=\"resume/heading/address/zip\"/></div>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_COMMUNICATION_" + currentTheme);
+        }
+        xsl += ">phone: <xsl:value-of select=\"resume/heading/communication/phone\"/>  ";
+        if (owner.getCell().getValueSafe() != null) {
+            xsl += "<span style=\"padding-left:8pt;\">cell: (956)876-5432</span>  ";
+        }
+        xsl += "<span style=\"padding-left:8pt;\"><xsl:value-of select=\"resume/heading/communication/email\"/>"
+                + "</span></div>\n<br/>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">OBJECTIVE</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n<p";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+        }
+        xsl += ">\n<xsl:value-of select=\"resume/objective\"/>\n</p>\n<br />\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">EDUCATION</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n";
+        for (int i = 1; i <= numbEducation; i++) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_CONTAINERS_" + currentTheme);
+            }
+            xsl += ">\n<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/education/institution" + i + "/name\"/></p>\n<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/education/institution" + i + "/location\"/></p>\n<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/education/institution" + i + "/earned\"/></p>\n";
+            if (education.get(i - 1).get(3).getValueSafe() != null) {
+                xsl += "<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += ">GPA: <xsl:value-of select=\"resume/education/institution" + i + "/gpa\"/></p>\n";
+            }
+            xsl += "<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/education/institution" + i + "/start\"/> - "
+                    + "<xsl:value-of select=\"resume/education/institution" + i + "/end\"/></p>\n</div>\n";
+        }
+        xsl += "<br/>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">EXPERIENCE</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n";
+        for (int i = 1; i <= numbExperience; i++) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_CONTAINERS_" + currentTheme);
+            }
+            xsl += ">\n<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/experience/institution" + i + "/name\"/></p>\n<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/experience/institution" + i + "/location\"/></p>\n<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/experience/institution" + i + "/position\"/></p>\n<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/education/institution" + i + "/start\"/> - "
+                    + "<xsl:value-of select=\"resume/education/institution" + i + "/end\"/></p>\n</div>\n";
+        }
+        xsl += "<br/>\n";
+        if (achievements.get(0).get(0).getValueSafe() != null) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+            }
+            xsl += ">ACHIEVEMENTS</div>\n<hr";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+            }
+            xsl += "/>\n";
+            for (int i = 1; i <= numbAchievements; i++) {
+                xsl += "<div";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_CONTAINERS_" + currentTheme);
+                }
+                xsl += ">\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/achievements/award" + i + "/name\"/></p>\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/achievements/award" + i + "/from\"/></p>\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/achievements/award" + i + "/date\"/></p>\n</div>\n";
+            }
+            xsl += "<br/>\n";
+        }
+        if (community.get(0).get(0).getValueSafe() != null) {
+            xsl += "<div";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+            }
+            xsl += ">COMMUNITY</div>\n<hr";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+            }
+            xsl += "/>\n";
+            for (int i = 1; i <= numbCommunity; i++) {
+                xsl += "<div";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_CONTAINERS_" + currentTheme);
+                }
+                xsl += ">\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/community/event" + i + "/name\"/></p>\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/community/event" + i + "/location\"/></p>\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/community/event" + i + "/date\"/></p>\n</div>\n";
+            }
+            xsl += "<br/>\n";
+        }
+        xsl += "<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">QUALIFICATIONS</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n<ul>\n";
+        for (int i = 1; i <= numbQualification; i++) {
+            xsl += "<li";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_LISTS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/qualifications/skill" + i + "\"/></li>\n";
+        }
+        xsl += "</ul>\n<br/>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">HIGHLIGHTS</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n<ul>\n";
+        for (int i = 1; i <= numbHighlights; i++) {
+            xsl += "<li";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_LISTS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/highlights/quality" + i + "\"/></li>\n";
+        }
+        xsl += "</ul>\n<br/>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">LANGUAGES</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n<ul>\n<li";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_LISTS_" + currentTheme);
+        }
+        xsl += ">Primary:\n<ul>\n<li";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_LISTS_" + currentTheme);
+        }
+        xsl +=  "><xsl:value-of select=\"resume/languages/lang1\"/></li>\n</ul>\n</li>\n";
+        if (numbLanguages > 1) {
+            xsl += "<li";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_LISTS_" + currentTheme);
+            }
+            xsl += ">Secondary:\n<ul>\n";
+            for (int i = 2; i <= numbLanguages; i++) {
+                xsl += "<li";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_LISTS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/languages/lang" + i + "\"/></li>\n";
+            }
+            xsl += "</ul>\n</li>\n";
+        }
+        xsl += "</ul>\n<br/>\n<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">SOFTWARE</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n<ul>\n";
+        for (int i = 1; i <= numbSoftware; i++) {
+            xsl += "<li";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_LISTS_" + currentTheme);
+            }
+            xsl += "><xsl:value-of select=\"resume/software/product" + i + "\"/></li>\n";
+        }
+        xsl += "</ul>\n<br/>\n";
+        xsl += "<div";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_TITLES_" + currentTheme);
+        }
+        xsl += ">REFERENCES</div>\n<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_DIVIDERS_" + currentTheme);
+        }
+        xsl += "/>\n";
+        if (references.get(0).get(0).getValueSafe() == null) {
+            xsl += "<p";
+            if (themeId < 0) {
+                xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+            }
+            xsl += ">\nReferences are available upon request.\n</p>\n";
+        } else {
+            for (int i = 1; i <= numbReferences; i ++) {
+                xsl += "<div";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_CONTAINERS_" + currentTheme);
+                }
+                xsl += "><p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/references/ref" + i + "/firstname\"/> ";
+                if (references.get(i - 1).get(1).getValueSafe() != null) {
+                    xsl += "<xsl:value-of select=\"resume/references/ref" + i + "/middlename\"/> ";
+                }
+                xsl += "<xsl:value-of select=\"resume/references/ref" + i + "/lastname\"/></p>\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/references/ref" + i + "/company\"/></p>\n<p";
+                if (themeId < 0) {
+                    xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                }
+                xsl += "><xsl:value-of select=\"resume/references/ref" + i + "/phone\"/></p>\n";
+                if (references.get(i - 1).get(5).getValueSafe() != null) {
+                    xsl += "<p";
+                    if (themeId < 0) {
+                        xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
+                    }
+                    xsl += "><xsl:value-of select=\"resume/references/ref" + i + "/email\"/></p>\n";
+                }
+                xsl += "</div>\n";
+            }
+        }
+        xsl += "</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>";
     }
 
     /*##########################################################################
@@ -590,7 +910,7 @@ public class VP_Resume {
         return software;
     }
 
-    protected String getXsl() {
+    public String getXsl() {
         return xsl;
     }
 }

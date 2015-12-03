@@ -2418,6 +2418,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(1);
                     } catch (SQLException ex) {
                         controller.errorAlert(3118, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2546,6 +2548,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(2);
                     } catch (SQLException ex) {
                         controller.errorAlert(3119, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2666,6 +2670,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(3);
                     } catch (SQLException ex) {
                         controller.errorAlert(3121, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2786,6 +2792,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(4);
                     } catch (SQLException ex) {
                         controller.errorAlert(3122, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2874,6 +2882,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(5);
                     } catch (SQLException ex) {
                         controller.errorAlert(3123, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -2962,6 +2972,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(6);
                     } catch (SQLException ex) {
                         controller.errorAlert(3124, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3054,6 +3066,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(7);
                     } catch (SQLException ex) {
                         controller.errorAlert(3125, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3142,6 +3156,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(8);
                     } catch (SQLException ex) {
                         controller.errorAlert(3126, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3299,6 +3315,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(9);
                     } catch (SQLException ex) {
                         controller.errorAlert(3120, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);
@@ -3337,6 +3355,8 @@ public class VP_Center extends StackPane {
                         controller.getDataM().saveResume(0);
                     } catch (SQLException ex) {
                         controller.errorAlert(3117, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
                     }
                 }
                 showScreen(11, 0);

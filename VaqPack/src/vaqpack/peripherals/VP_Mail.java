@@ -40,10 +40,11 @@ public class VP_Mail extends Thread {
             password,
             recipient,
             subject,
-            message,
-            filename;
-    private final String[] ccEmails;
-    private final File attachment;
+            message;
+    private final String[]
+            ccEmails,
+            filenames;
+    private final File[] attachments;
 
     /*------------------------------------------------------------------------*
      * VP_Mail()
@@ -53,19 +54,20 @@ public class VP_Mail extends Thread {
      * - Paramater string subject is the subject or title of the email.
      * - Parameter string message is the email's message body.
      *------------------------------------------------------------------------*/
-    public VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message, String filename, File attachment) {
+    public VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message,
+            String[] filenames, File[] attachments) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
         this.recipient = recipient;
         this.ccEmails = ccEmails;
         this.subject = subject;
         this.message = message;
-        this.attachment = attachment;
+        this.attachments = attachments;
         port = "465";
         host = "smtp.gamil.com";
         userName = "vaqpackt2";
         password = "!vpMaiL3340?";
-        this.filename = filename;
+        this.filenames = filenames;
         //-------- Initialization End ------------\\
     }
 
@@ -109,16 +111,18 @@ public class VP_Mail extends Thread {
             msg.setSentDate(new Date());
 
             // attachment
-            if (!filename.equals("") && attachment != null) {
+            if (filenames != null && attachments !=null && !filenames[0].equals("") && attachments[0] != null) {
                 msgbody = new MimeBodyPart();
                 msgbody.setText(message);
-                attach = new MimeMultipart();
+                attach = new MimeMultipart("mixed");
                 attach.addBodyPart(msgbody);
-                msgbody = new MimeBodyPart();
-                source = new FileDataSource(attachment);
-                msgbody.setDataHandler(new DataHandler(source));
-                msgbody.setFileName(filename);
-                attach.addBodyPart(msgbody);
+                for (int i = 0; i < attachments.length; i++){
+                    msgbody = new MimeBodyPart();
+                    source = new FileDataSource(attachments[i]);
+                    msgbody.setDataHandler(new DataHandler(source));
+                    msgbody.setFileName(filenames[i]);
+                    attach.addBodyPart(msgbody);
+                }
                 msg.setContent(attach);
             } else {
                 msg.setText(message, "utf-8");
@@ -127,9 +131,11 @@ public class VP_Mail extends Thread {
             transPort.connect("smtp.gmail.com", userName, password);
             transPort.sendMessage(msg, msg.getAllRecipients());
             transPort.close();
-            if (!filename.equals("") && attachment != null) {
-                if (attachment.exists()) {
-                    attachment.delete();
+            if (filenames != null && attachments !=null && !filenames[0].equals("") && attachments[0] != null) {
+                for (int i = 0; i < attachments.length; i++) {
+                    if (attachments[i] != null && attachments[i].exists()) {
+                        attachments[i].delete();
+                    }
                 }
             }  
         } catch (MessagingException ex) {

@@ -251,7 +251,7 @@ public class VP_DataManager {
                 + "the system administrator will have to set up your account again.\n"
                 + "The code only needs to be entered once to activate your account.\n\n"
                 + "This is an automated message from the VaqPack software. Please do not reply.";
-        VP_Mail regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg, "", null);
+        VP_Mail regEmail = new VP_Mail(controller, cred[2], ccMail, "VaqPack Registration", msg, null, null);
         //-------- Initialization End ------------\\
 
         regEmail.setDaemon(true);
@@ -323,7 +323,7 @@ public class VP_DataManager {
                     + "you will have to register your account again.\n"
                     + "The code only needs to be entered once to activate your account.\n\n"
                     + "This is an automated message from the VaqPack software. Please do not reply.";
-            regEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg, "", null);
+            regEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg, null, null);
             regEmail.setDaemon(true);
             regEmail.start();
         }
@@ -353,7 +353,7 @@ public class VP_DataManager {
                     + code + "\n\n"
                     + "The code will expire in 1 hour.\n\n"
                     + "This is an automated message from the VaqPack software. Please do not reply.";
-            resetEmail = new VP_Mail(controller, email, ccMail, "VaqPack Password Reset", msg, "", null);
+            resetEmail = new VP_Mail(controller, email, ccMail, "VaqPack Password Reset", msg, null, null);
             resetEmail.setDaemon(true);
             resetEmail.start();
         }
@@ -400,7 +400,7 @@ public class VP_DataManager {
                     + "you will have to register your account again.\n"
                     + "The code only needs to be entered once to activate your account.\n\n"
                     + "This is an automated message from the VaqPack software. Please do not reply.";
-            registerEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg, "", null);
+            registerEmail = new VP_Mail(controller, cred[0], ccMail, "VaqPack Registration", msg, null, null);
             registerEmail.setDaemon(true);
             registerEmail.start();
         }
@@ -478,22 +478,21 @@ public class VP_DataManager {
         }
     }
 
-    public void saveResume(int section) throws SQLException {
+    public void saveResume(int section) throws SQLException, TransformerException,
+            ParserConfigurationException, IOException, FileNotFoundException,
+            DocumentException {
         dbManager.storeResumeData(section);
         if (controller.getCurrentUser().getResume().hasCompletedResume()) {
             File[] resFiles = new File[2];
-            /*
              resFiles = fileM.generateResHTMLandPDF();
              dbManager.storeResHTML(resFiles[0]);
              dbManager.storeResPDF(resFiles[1]);
-             */
             if (resFiles[0] != null && resFiles[0].exists()) {
                 resFiles[0].delete();
             }
             if (resFiles[1] != null && resFiles[1].exists()) {
                 resFiles[1].delete();
             }
-            System.out.println("this is where files should have been converted");
         }
     }
 

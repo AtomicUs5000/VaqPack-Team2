@@ -46,6 +46,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import vaqpack.user.VP_CoverLetter;
+import vaqpack.user.VP_Resume;
 
 public class VP_FileManager {
 
@@ -258,9 +260,11 @@ public class VP_FileManager {
             if (bcxml.exists()) {
                 bcxml.delete();
             }
+            /*
             if (bchtml.exists()) {
                 bchtml.delete();
             }
+            */
         } else {
             bcpdf = null;
         }
@@ -270,6 +274,7 @@ public class VP_FileManager {
     protected File generateCovLetPDF() throws FileNotFoundException, 
             TransformerException, ParserConfigurationException, IOException, DocumentException {
         VP_User user = dataM.getController().getCurrentUser();
+        VP_CoverLetter covlet = user.getCovlet();
         File clpdf = new File("clpdf.tmp"),
                 clxsl = new File("clxsl.tmp"),
                 clxml = new File("clxml.tmp"),
@@ -291,19 +296,19 @@ public class VP_FileManager {
             root.appendChild(heading);
             Element date = document.createElement("date");
             root.appendChild(date);
-            date.appendChild(document.createTextNode(user.getCovlet().getDate().getValueSafe()));
+            date.appendChild(document.createTextNode(covlet.getDate().getValueSafe()));
             Element adref = document.createElement("adreference");
             root.appendChild(adref);
             Element contactinfo = document.createElement("contactinformation");
             root.appendChild(contactinfo);
             Element salutation = document.createElement("salutation");
             root.appendChild(salutation);
-            salutation.appendChild(document.createTextNode(user.getCovlet().getSalutation().getValueSafe()));
+            salutation.appendChild(document.createTextNode(covlet.getSalutation().getValueSafe()));
             Element body = document.createElement("body");
             root.appendChild(body);
             Element closing = document.createElement("closing");
             root.appendChild(closing);
-            closing.appendChild(document.createTextNode(user.getCovlet().getClosing().getValueSafe()));
+            closing.appendChild(document.createTextNode(covlet.getClosing().getValueSafe()));
             Element signature = document.createElement("signature");
             root.appendChild(signature);
             Element name = document.createElement("name");
@@ -347,13 +352,13 @@ public class VP_FileManager {
             email.appendChild(document.createTextNode(user.getDocEmail().getValueSafe()));
             Element adsource = document.createElement("source");
             adref.appendChild(adsource);
-            adsource.appendChild(document.createTextNode(user.getCovlet().getAdSource().getValueSafe()));
+            adsource.appendChild(document.createTextNode(covlet.getAdSource().getValueSafe()));
             Element position = document.createElement("position");
             adref.appendChild(position);
-            position.appendChild(document.createTextNode(user.getCovlet().getAdJobTitle().getValueSafe()));
+            position.appendChild(document.createTextNode(covlet.getAdJobTitle().getValueSafe()));
             Element refnumber = document.createElement("refnumber");
             adref.appendChild(refnumber);
-            refnumber.appendChild(document.createTextNode(user.getCovlet().getAdRefNumber().getValueSafe()));
+            refnumber.appendChild(document.createTextNode(covlet.getAdRefNumber().getValueSafe()));
             Element cname = document.createElement("name");
             contactinfo.appendChild(cname);
             Element company = document.createElement("company");
@@ -362,38 +367,38 @@ public class VP_FileManager {
             contactinfo.appendChild(caddress);
             Element cfirstname = document.createElement("firstname");
             cname.appendChild(cfirstname);
-            cfirstname.appendChild(document.createTextNode(user.getCovlet().getContactFirstName().getValueSafe()));
+            cfirstname.appendChild(document.createTextNode(covlet.getContactFirstName().getValueSafe()));
             Element cmiddlename = document.createElement("middlename");
             cname.appendChild(cmiddlename);
-            cmiddlename.appendChild(document.createTextNode(user.getCovlet().getContactMiddleName().getValueSafe()));
+            cmiddlename.appendChild(document.createTextNode(covlet.getContactMiddleName().getValueSafe()));
             Element clastname = document.createElement("lastname");
             cname.appendChild(clastname);
-            clastname.appendChild(document.createTextNode(user.getCovlet().getContactLastName().getValueSafe()));
+            clastname.appendChild(document.createTextNode(covlet.getContactLastName().getValueSafe()));
             Element ctitle = document.createElement("title");
             company.appendChild(ctitle);
-            ctitle.appendChild(document.createTextNode(user.getCovlet().getContactTitle().getValueSafe()));
+            ctitle.appendChild(document.createTextNode(covlet.getContactTitle().getValueSafe()));
             Element companyname = document.createElement("companyname");
             company.appendChild(companyname);
-            companyname.appendChild(document.createTextNode(user.getCovlet().getContactCompany().getValueSafe()));
+            companyname.appendChild(document.createTextNode(covlet.getContactCompany().getValueSafe()));
             Element cline1 = document.createElement("line1");
             caddress.appendChild(cline1);
-            cline1.appendChild(document.createTextNode(user.getCovlet().getContactAddress1().getValueSafe()));
+            cline1.appendChild(document.createTextNode(covlet.getContactAddress1().getValueSafe()));
             Element cline2 = document.createElement("line2");
             caddress.appendChild(cline2);
-            cline2.appendChild(document.createTextNode(user.getCovlet().getContactAddress2().getValueSafe()));
+            cline2.appendChild(document.createTextNode(covlet.getContactAddress2().getValueSafe()));
             Element ccity = document.createElement("city");
             caddress.appendChild(ccity);
-            ccity.appendChild(document.createTextNode(user.getCovlet().getContactCity().getValueSafe()));
+            ccity.appendChild(document.createTextNode(covlet.getContactCity().getValueSafe()));
             Element cstate = document.createElement("state");
             caddress.appendChild(cstate);
-            cstate.appendChild(document.createTextNode(user.getCovlet().getContactState().getValueSafe()));
+            cstate.appendChild(document.createTextNode(covlet.getContactState().getValueSafe()));
             Element czip = document.createElement("zip");
             caddress.appendChild(czip);
-            czip.appendChild(document.createTextNode(user.getCovlet().getContactZip().getValueSafe()));
-            for (int i = 0; i < 9; i++) {
-                Element paragraph = document.createElement("paragraph" + (i + 1));
+            czip.appendChild(document.createTextNode(covlet.getContactZip().getValueSafe()));
+            for (int i = 1; i <= 9; i++) {
+                Element paragraph = document.createElement("paragraph" + i);
                 body.appendChild(paragraph);
-                paragraph.appendChild(document.createTextNode(user.getCovlet().getParagraphs().get(i).getValueSafe()));
+                paragraph.appendChild(document.createTextNode(covlet.getParagraphs().get(i - 1).getValueSafe()));
             }
             Element sfirstname = document.createElement("firstname");
             signature.appendChild(sfirstname);
@@ -415,7 +420,7 @@ public class VP_FileManager {
             outputStream.close();
             // write the xsl file
             outputStream = new FileOutputStream(clxsl);
-            byte[] xslBytes = user.getCovlet().getXsl().getBytes();
+            byte[] xslBytes = covlet.getXsl().getBytes();
             outputStream.write(xslBytes);
             outputStream.flush();
             outputStream.close();
@@ -438,6 +443,224 @@ public class VP_FileManager {
             clpdf = null;
         }
         return clpdf;
+    }
+    
+    protected File[] generateResHTMLandPDF() throws FileNotFoundException, 
+            TransformerException, ParserConfigurationException, IOException, DocumentException {
+        VP_User user = dataM.getController().getCurrentUser();
+        VP_Resume res = user.getResume();
+        File respdf = new File("respdf.tmp"),
+                resxsl = new File("resxsl.tmp"),
+                resxml = new File("resxml.tmp"),
+                reshtml = new File("reshtml.tmp");
+        resxsl.deleteOnExit();
+        respdf.deleteOnExit();
+        resxml.deleteOnExit();
+        reshtml.deleteOnExit();
+        if (user.getResume().hasCompletedResume() == true) {
+            // write the xml file
+            FileOutputStream outputStream = new FileOutputStream(resxml);
+            StreamResult xmlStream = new StreamResult(outputStream);
+            icFactory = DocumentBuilderFactory.newInstance();
+            icBuilder = icFactory.newDocumentBuilder();
+            Document document = icBuilder.newDocument();
+            Element root = document.createElement("resume");
+            document.appendChild(root);
+            Element heading = document.createElement("heading");
+            root.appendChild(heading);
+            Element objective = document.createElement("objective");
+            objective.appendChild(document.createTextNode(res.getObjective().getValueSafe())); 
+            root.appendChild(objective);
+            Element education = document.createElement("education");
+            root.appendChild(education);
+            Element experience = document.createElement("experience");
+            root.appendChild(experience);
+            Element achievements = document.createElement("achievements");
+            root.appendChild(achievements);
+            Element community = document.createElement("community");
+            root.appendChild(community);
+            Element qualifications = document.createElement("qualifications");
+            root.appendChild(qualifications);
+            Element highlights = document.createElement("highlights");
+            root.appendChild(highlights);
+            Element languages = document.createElement("languages");
+            root.appendChild(languages);
+            Element software = document.createElement("software");
+            root.appendChild(software);
+            Element references = document.createElement("references");
+            root.appendChild(references);
+            Element name = document.createElement("name");
+            heading.appendChild(name);
+            Element address = document.createElement("address");
+            heading.appendChild(address);
+            Element communication = document.createElement("communication");
+            heading.appendChild(communication);
+            Element firstname = document.createElement("firstname");
+            name.appendChild(firstname);
+            firstname.appendChild(document.createTextNode(user.getFirstName().getValueSafe()));
+            Element middlename = document.createElement("middlename");
+            name.appendChild(middlename);
+            middlename.appendChild(document.createTextNode(user.getMiddleName().getValueSafe()));
+            Element lastname = document.createElement("lastname");
+            name.appendChild(lastname);
+            lastname.appendChild(document.createTextNode(user.getLastName().getValueSafe())); 
+            Element line1 = document.createElement("line1");
+            address.appendChild(line1);
+            line1.appendChild(document.createTextNode(user.getAddress1().getValueSafe()));
+            Element line2 = document.createElement("line2");
+            address.appendChild(line2);
+            line2.appendChild(document.createTextNode(user.getAddress2().getValueSafe()));
+            Element city = document.createElement("city");
+            address.appendChild(city);
+            city.appendChild(document.createTextNode(user.getCity().getValueSafe()));
+            Element state = document.createElement("state");
+            address.appendChild(state);
+            state.appendChild(document.createTextNode(user.getState().getValueSafe()));
+            Element zip = document.createElement("zip");
+            address.appendChild(zip);
+            zip.appendChild(document.createTextNode(user.getZip().getValueSafe()));
+            Element phone = document.createElement("phone");
+            communication.appendChild(phone);
+            phone.appendChild(document.createTextNode(user.getPhone().getValueSafe()));
+            Element cell = document.createElement("cell");
+            communication.appendChild(cell);
+            cell.appendChild(document.createTextNode(user.getCell().getValueSafe()));
+            Element email = document.createElement("email");
+            communication.appendChild(email);
+            email.appendChild(document.createTextNode(user.getDocEmail().getValueSafe()));
+            for (int i = 1; i <= 9; i++) {
+                int oneLess = i - 1;
+                // education
+                Element edinstitution = document.createElement("institution" + i);
+                Element edname = document.createElement("name");
+                edname.appendChild(document.createTextNode(res.getEducation().get(oneLess).get(0).getValueSafe()));
+                Element edloc = document.createElement("location");
+                edloc.appendChild(document.createTextNode(res.getEducation().get(oneLess).get(1).getValueSafe()));
+                Element edearned = document.createElement("earned");
+                edearned.appendChild(document.createTextNode(res.getEducation().get(oneLess).get(2).getValueSafe()));
+                Element edgpa = document.createElement("gpa");
+                edgpa.appendChild(document.createTextNode(res.getEducation().get(oneLess).get(3).getValueSafe()));
+                Element edstart = document.createElement("start");
+                edstart.appendChild(document.createTextNode(res.getEducation().get(oneLess).get(4).getValueSafe()));
+                Element edend = document.createElement("end");
+                edend.appendChild(document.createTextNode(res.getEducation().get(oneLess).get(5).getValueSafe()));
+                edinstitution.appendChild(edname);
+                edinstitution.appendChild(edloc);
+                edinstitution.appendChild(edearned);
+                edinstitution.appendChild(edgpa);
+                edinstitution.appendChild(edstart);
+                edinstitution.appendChild(edend);
+                education.appendChild(edinstitution);
+                // experience
+                Element exinstitution = document.createElement("institution" + i);
+                Element exname = document.createElement("name");
+                exname.appendChild(document.createTextNode(res.getExperience().get(oneLess).get(0).getValueSafe()));
+                Element exloc = document.createElement("location");
+                exloc.appendChild(document.createTextNode(res.getExperience().get(oneLess).get(1).getValueSafe()));
+                Element exposition = document.createElement("position");
+                exposition.appendChild(document.createTextNode(res.getExperience().get(oneLess).get(2).getValueSafe()));
+                Element exstart = document.createElement("start");
+                exstart.appendChild(document.createTextNode(res.getExperience().get(oneLess).get(3).getValueSafe()));
+                Element exend = document.createElement("end");
+                exend.appendChild(document.createTextNode(res.getExperience().get(oneLess).get(4).getValueSafe()));
+                exinstitution.appendChild(exname);
+                exinstitution.appendChild(exloc);
+                exinstitution.appendChild(exposition);
+                exinstitution.appendChild(exstart);
+                exinstitution.appendChild(exend);
+                experience.appendChild(exinstitution);
+                // achievements
+                Element acaward = document.createElement("award" + i);
+                Element acname = document.createElement("name");
+                acname.appendChild(document.createTextNode(res.getAchievements().get(oneLess).get(0).getValueSafe()));
+                Element acfrom = document.createElement("from");
+                acfrom.appendChild(document.createTextNode(res.getAchievements().get(oneLess).get(1).getValueSafe()));
+                Element acdate = document.createElement("date");
+                acdate.appendChild(document.createTextNode(res.getAchievements().get(oneLess).get(2).getValueSafe()));
+                acaward.appendChild(acname);
+                acaward.appendChild(acfrom);
+                acaward.appendChild(acdate);
+                achievements.appendChild(acaward);
+                // community
+                Element comevent = document.createElement("event" + i);
+                Element comname = document.createElement("name");
+                comname.appendChild(document.createTextNode(res.getCommunity().get(oneLess).get(0).getValueSafe()));
+                Element comloc = document.createElement("location");
+                comloc.appendChild(document.createTextNode(res.getCommunity().get(oneLess).get(1).getValueSafe()));
+                Element comdate = document.createElement("date");
+                comdate.appendChild(document.createTextNode(res.getCommunity().get(oneLess).get(2).getValueSafe()));
+                comevent.appendChild(comname);
+                comevent.appendChild(comloc);
+                comevent.appendChild(comdate);
+                community.appendChild(comevent);
+                // qualifications
+                Element skill = document.createElement("skill" + i);
+                skill.appendChild(document.createTextNode(res.getQualifications().get(oneLess).getValueSafe()));
+                qualifications.appendChild(skill);
+                // highlights
+                Element quality = document.createElement("quality" + i);
+                quality.appendChild(document.createTextNode(res.getHighlights().get(oneLess).getValueSafe()));
+                highlights.appendChild(quality);
+                // languagess
+                Element lang = document.createElement("lang" + i);
+                lang.appendChild(document.createTextNode(res.getLanguages().get(oneLess).getValueSafe()));
+                languages.appendChild(lang);
+                // software
+                Element product = document.createElement("product" + i);
+                product.appendChild(document.createTextNode(res.getSoftware().get(oneLess).getValueSafe()));
+                software.appendChild(product);
+                // references
+                Element ref = document.createElement("ref" + i);
+                Element reffirstname = document.createElement("firstname");
+                reffirstname.appendChild(document.createTextNode(res.getReferences().get(oneLess).get(0).getValueSafe()));
+                Element refmiddlename = document.createElement("middlename");
+                refmiddlename.appendChild(document.createTextNode(res.getReferences().get(oneLess).get(1).getValueSafe()));
+                Element reflastname = document.createElement("lastname");
+                reflastname.appendChild(document.createTextNode(res.getReferences().get(oneLess).get(2).getValueSafe()));
+                Element refcompany = document.createElement("company");
+                refcompany.appendChild(document.createTextNode(res.getReferences().get(oneLess).get(3).getValueSafe()));
+                Element refphone = document.createElement("phone");
+                refphone.appendChild(document.createTextNode(res.getReferences().get(oneLess).get(4).getValueSafe()));
+                Element refemail = document.createElement("email");
+                refemail.appendChild(document.createTextNode(res.getReferences().get(oneLess).get(5).getValueSafe()));
+                ref.appendChild(reffirstname);
+                ref.appendChild(refmiddlename);
+                ref.appendChild(reflastname);
+                ref.appendChild(refcompany);
+                ref.appendChild(refphone);
+                ref.appendChild(refemail);
+                references.appendChild(ref);
+            }
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
+            DOMSource source = new DOMSource(document);
+            transformer.transform(source, xmlStream);
+            outputStream.flush();
+            outputStream.close();
+            // write the xsl file
+            outputStream = new FileOutputStream(resxsl);
+            byte[] xslBytes = user.getResume().getXsl().getBytes();
+            outputStream.write(xslBytes);
+            outputStream.flush();
+            outputStream.close();
+            // convert to html
+            VP_DataToHtml.convert(resxml, resxsl, reshtml);
+            // convert to pdf
+            VP_HtmlToPdf.convert(reshtml, respdf);
+            if (resxsl.exists()) {
+                resxsl.delete();
+            }
+            if (resxml.exists()) {
+                resxml.delete();
+            }
+        } else {
+            reshtml = null;
+            respdf = null;
+        }
+        return new File[]{reshtml, respdf};
     }
 
     /*------------------------------------------------------------------------*
