@@ -12,9 +12,11 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack;
 
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -24,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import vaqpack.components.VP_Dialog;
 
 public class VP_Header extends VBox {
 
@@ -84,8 +87,8 @@ public class VP_Header extends VBox {
         exitVP.setOnAction(controller.new ClosingSequence());
         toggleFull.setOnAction(new FullScreenToggle());
         changePass.setOnAction(controller.getCenter().new WizardMainAction(22));
-        //gettingStarted.setOnAction(...);
-        //aboutHelp.setOnAction(...);
+        gettingStarted.setOnAction(new HelpAction());
+        aboutHelp.setOnAction(new AboutAction());
 
         // Menu building
         homeMenu.getItems().addAll(userLogout,
@@ -134,6 +137,24 @@ public class VP_Header extends VBox {
         @Override
         public void handle(Event event) {
             primaryStage.setFullScreen(!primaryStage.isFullScreen());
+        }
+    }
+    
+    private class HelpAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Dialog helpDialog = new VP_Dialog("Getting Started with VaqPack");
+            helpDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            helpDialog.show();
+        }
+    }
+    
+    private class AboutAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Dialog aboutDialog = new VP_Dialog("About VaqPack");
+            aboutDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            aboutDialog.showAndWait();
         }
     }
 

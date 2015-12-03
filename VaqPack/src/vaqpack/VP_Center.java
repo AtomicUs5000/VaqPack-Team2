@@ -4103,7 +4103,9 @@ public class VP_Center extends StackPane {
                             // showandwait an alert then switch the screen
                             VP_Dialog passChanged = new VP_Dialog("PASSWORD CHANGED");
                             passChanged.setHeaderText("Your password has been changed successfully.");
-                            passChanged.getDialogShell().add(new Label("Use your new password the next time you log in."), 0, 0);
+                            Label passChangedLabel = new Label("Use your new password the next time you log in.");
+                            passChangedLabel.setPadding(new Insets(50, 20, 50, 20));
+                            passChanged.getDialogShell().add(passChangedLabel, 0, 0);
                             passChanged.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
                             passChanged.showAndWait();
                             cancelActionFunction();
