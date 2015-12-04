@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,6 +34,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -303,6 +305,7 @@ public class VP_Center extends StackPane {
      * @since 1.0
      */
     protected void showScreen(int screenNumber, double position) {
+        controller.setChanges(false);
         for (int i = 0; i < getChildren().size(); i++) {
             getChildren().get(i).setVisible(false);
         }
@@ -525,6 +528,33 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
+    
+    /**
+     * Opens a confirmation dialog, asking the user if it is desired to remain on the 
+     * page to save changes or leave the page;
+     * 
+     * @return Whether or not the user wants to remain on the page.
+     * @since 1.0
+     */
+    protected boolean confirmLeavePage() {
+        //-------- Initialization Start ----------\\
+        boolean staying = false;
+        Optional result;
+        VP_Dialog changesDialog = new VP_Dialog("Save Changes?");
+        Label changesLabel = new Label("Would you like to stay on the page to submit changes or continue with the desired action?");
+        ButtonType saveBtn = new ButtonType("Stay Here", ButtonBar.ButtonData.YES),
+                continueBtn = new ButtonType("Continue", ButtonBar.ButtonData.NO);
+        //-------- Initialization End ------------\\
+        changesDialog.setHeaderText("You have not submitted your changes.");
+        changesLabel.setPadding(new Insets(50, 20, 50, 20));
+        changesDialog.getDialogShell().add(changesLabel, 0, 0);
+        changesDialog.getDialogPane().getButtonTypes().addAll(saveBtn, continueBtn);
+        result = changesDialog.showAndWait();
+        if (result.get() == saveBtn) {
+            staying = true;
+        }
+        return staying;
+    }
 
     /**
      * Builds the screen where the user inputs personal information. A.K.A
@@ -550,21 +580,21 @@ public class VP_Center extends StackPane {
                 cellLabel = new VP_FieldLabel("*cell:", 100),
                 emailLabel = new VP_FieldLabel("*email:", 100);
         ArrayList<VP_TextField> personalInfoFields = new ArrayList();
-        personalInfoFields.add(new VP_TextField(32, 45));
-        personalInfoFields.add(new VP_TextField(32, 45));
-        personalInfoFields.add(new VP_TextField(32, 45));
-        personalInfoFields.add(new VP_TextField(32, 254));
-        personalInfoFields.add(new VP_TextField(32, 254));
-        personalInfoFields.add(new VP_TextField(32, 45));
-        personalInfoFields.add(new VP_TextField(2, 2));
-        personalInfoFields.add(new VP_TextField(10, 10));
-        personalInfoFields.add(new VP_TextField(13, 13));
-        personalInfoFields.add(new VP_TextField(13, 13));
-        personalInfoFields.add(new VP_TextField(32, 254));
+        personalInfoFields.add(new VP_TextField(32, 45, controller));
+        personalInfoFields.add(new VP_TextField(32, 45, controller));
+        personalInfoFields.add(new VP_TextField(32, 45, controller));
+        personalInfoFields.add(new VP_TextField(32, 254, controller));
+        personalInfoFields.add(new VP_TextField(32, 254, controller));
+        personalInfoFields.add(new VP_TextField(32, 45, controller));
+        personalInfoFields.add(new VP_TextField(2, 2, controller));
+        personalInfoFields.add(new VP_TextField(10, 10, controller));
+        personalInfoFields.add(new VP_TextField(13, 13, controller));
+        personalInfoFields.add(new VP_TextField(13, 13, controller));
+        personalInfoFields.add(new VP_TextField(32, 254, controller));
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
                 + "Leave email blank to use your VaqPack account login email address.");
         VP_Button submitBtn = new VP_Button("Submit", new SubmitPersonalInfoAction(personalInfoFields)),
-                cancelBtn = new VP_Button("Cancel", new CancelAction());
+                cancelBtn = new VP_Button("Cancel", new CancelAction(4));
         VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, personalInfoFields.get(0)}),
                 middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, personalInfoFields.get(1)}),
                 lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, personalInfoFields.get(2)}),
@@ -650,7 +680,7 @@ public class VP_Center extends StackPane {
         businessCardFields.add(new VP_TextField(13, 13));   // bind this to user
         businessCardFields.add(new VP_TextField(13, 13));   // bind this to user
         businessCardFields.add(new VP_TextField(32, 254));  // bind this to user
-        businessCardFields.add(new VP_TextField(32, 48));   // bind this to card
+        businessCardFields.add(new VP_TextField(32, 48, controller));   // bind this to card
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
                 + "Locked fields can be edited by updating your personal info.");
         VP_Button submitBtn = new VP_Button("Submit", new SubmitBCardAction(businessCardFields)),
@@ -753,8 +783,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen where the user edits a selected cover letter. 
-     * A.K.A Screen 7
+     * Builds the screen where the user edits a selected cover letter. A.K.A
+     * Screen 7
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -806,22 +836,22 @@ public class VP_Center extends StackPane {
         coverLetterEditFields.add(new VP_TextField(13, 13));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(13, 13));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 254));  // bind this to user
-        coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 48));   // bind this tocover letter
-        coverLetterEditFields.add(new VP_TextField(32, 48));   // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 254));  // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 254));  // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(2, 2));     // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(10, 10));   // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextArea());          // bind this to cover letter
-        coverLetterEditFields.add(new VP_TextField(32, 128));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 128, controller));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 128, controller));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 128, controller));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 45, controller));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 45, controller));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 45, controller));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 48, controller));   // bind this tocover letter
+        coverLetterEditFields.add(new VP_TextField(32, 48, controller));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 254, controller));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 254, controller));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 45, controller));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(2, 2, controller));     // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(10, 10, controller));   // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 128, controller));  // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextArea(controller));          // bind this to cover letter
+        coverLetterEditFields.add(new VP_TextField(32, 128, controller));  // bind this to cover letter
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
@@ -963,10 +993,9 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen where the user sees a list of available themes and 
-     *   applies them to documents. From here, a user may select to build a
-     *   custom theme. 
-     *   A.K.A Screen 8
+     * Builds the screen where the user sees a list of available themes and
+     * applies them to documents. From here, a user may select to build a custom
+     * theme. A.K.A Screen 8
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -985,10 +1014,10 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /**
-     * Builds the screen where the user edits a selected custom theme. 
-     *   A.K.A Screen 9
+     * Builds the screen where the user edits a selected custom theme. A.K.A
+     * Screen 9
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1008,9 +1037,8 @@ public class VP_Center extends StackPane {
 
     /**
      * Builds the screen where the user selects which documents to send as
-     *   attachments to a selected contact. User may also edit the list of
-     *   stored contacts.
-     *   A.K.A Screen 10
+     * attachments to a selected contact. User may also edit the list of stored
+     * contacts. A.K.A Screen 10
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1029,10 +1057,9 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the completion status of the various 
-     *   resume sections. From here, the user navigates to these sections to
-     *   edit them, or may choose to create a custom section.
-     *   A.K.A Screen 11
+     * Builds the screen displaying the completion status of the various resume
+     * sections. From here, the user navigates to these sections to edit them,
+     * or may choose to create a custom section. A.K.A Screen 11
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1095,11 +1122,10 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /**
      * Builds the screen displaying the Heading and Objective sections of the
-     *   resume.
-     *   A.K.A. screen 12
+     * resume. A.K.A. screen 12
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1193,9 +1219,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the Education section of the
-     *   resume.
-     *   A.K.A. screen 13
+     * Builds the screen displaying the Education section of the resume. A.K.A.
+     * screen 13
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1211,12 +1236,12 @@ public class VP_Center extends StackPane {
                 label3 = new VP_FieldLabel("*GPA:", 130),
                 label4 = new VP_FieldLabel("start date:", 130),
                 label5 = new VP_FieldLabel("end date:", 130);
-        educationFields.add(new VP_TextField(32, 128));
-        educationFields.add(new VP_TextField(32, 128));
-        educationFields.add(new VP_TextField(32, 128));
-        educationFields.add(new VP_TextField(32, 128));
-        educationFields.add(new VP_TextField(32, 128));
-        educationFields.add(new VP_TextField(32, 128));
+        educationFields.add(new VP_TextField(32, 128, controller));
+        educationFields.add(new VP_TextField(32, 128, controller));
+        educationFields.add(new VP_TextField(32, 128, controller));
+        educationFields.add(new VP_TextField(32, 128, controller));
+        educationFields.add(new VP_TextField(32, 128, controller));
+        educationFields.add(new VP_TextField(32, 128, controller));
         VP_Button submitBtn = new VP_Button("Submit", new SubmitEducationAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0)}),
@@ -1248,9 +1273,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the Work Experience section of the
-     *   resume.
-     *   A.K.A. screen 14
+     * Builds the screen displaying the Work Experience section of the resume.
+     * A.K.A. screen 14
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1267,11 +1291,11 @@ public class VP_Center extends StackPane {
                 label4 = new VP_FieldLabel("end date:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitExperienceAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
-        experienceFields.add(new VP_TextField(32, 128));
-        experienceFields.add(new VP_TextField(32, 128));
-        experienceFields.add(new VP_TextField(32, 128));
-        experienceFields.add(new VP_TextField(32, 128));
-        experienceFields.add(new VP_TextField(32, 128));
+        experienceFields.add(new VP_TextField(32, 128, controller));
+        experienceFields.add(new VP_TextField(32, 128, controller));
+        experienceFields.add(new VP_TextField(32, 128, controller));
+        experienceFields.add(new VP_TextField(32, 128, controller));
+        experienceFields.add(new VP_TextField(32, 128, controller));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0)}),
                 line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1)}),
                 line2 = new VP_DivisionLine(new Node[]{label2, experienceFields.get(2)}),
@@ -1302,8 +1326,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Builds the screen displaying the Awards and Achievements section of the
-     *   resume.
-     *   A.K.A. screen 15
+     * resume. A.K.A. screen 15
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1318,9 +1341,9 @@ public class VP_Center extends StackPane {
                 label2 = new VP_FieldLabel("date:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitAchievementsAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
-        achievementsFields.add(new VP_TextField(32, 128));
-        achievementsFields.add(new VP_TextField(32, 128));
-        achievementsFields.add(new VP_TextField(32, 128));
+        achievementsFields.add(new VP_TextField(32, 128, controller));
+        achievementsFields.add(new VP_TextField(32, 128, controller));
+        achievementsFields.add(new VP_TextField(32, 128, controller));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0)}),
                 line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1)}),
                 line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2)}),
@@ -1348,9 +1371,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the Community section of the
-     *   resume.
-     *   A.K.A. screen 16
+     * Builds the screen displaying the Community section of the resume. A.K.A.
+     * screen 16
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1365,9 +1387,9 @@ public class VP_Center extends StackPane {
                 label2 = new VP_FieldLabel("date:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitCommunityAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
-        communityFields.add(new VP_TextField(32, 128));
-        communityFields.add(new VP_TextField(32, 128));
-        communityFields.add(new VP_TextField(32, 128));
+        communityFields.add(new VP_TextField(32, 128, controller));
+        communityFields.add(new VP_TextField(32, 128, controller));
+        communityFields.add(new VP_TextField(32, 128, controller));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0)}),
                 line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1)}),
                 line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2)}),
@@ -1395,9 +1417,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the Qualifications section of the
-     *   resume.
-     *   A.K.A. screen 17
+     * Builds the screen displaying the Qualifications section of the resume.
+     * A.K.A. screen 17
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1407,7 +1428,7 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision qualificationsDiv = new VP_PageSubdivision("QUALIFICATION #1", false);
-        qualificationsFields.add(new VP_TextField(50, 128));
+        qualificationsFields.add(new VP_TextField(50, 128, controller));
         VP_Button submitBtn = new VP_Button("Submit", new SubmitQualificationsAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(0)}),
@@ -1435,9 +1456,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the Highlights section of the
-     *   resume.
-     *   A.K.A. screen 18
+     * Builds the screen displaying the Highlights section of the resume. A.K.A.
+     * screen 18
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1447,7 +1467,7 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision highlightsDiv = new VP_PageSubdivision("PERSONAL QUALITY #1", false);
-        highlightsFields.add(new VP_TextField(50, 128));
+        highlightsFields.add(new VP_TextField(50, 128, controller));
         VP_Button submitBtn = new VP_Button("Submit", new SubmitHighlightsAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(0)}),
@@ -1476,9 +1496,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the Languages section of the
-     *   resume.
-     *   A.K.A. screen 19
+     * Builds the screen displaying the Languages section of the resume. A.K.A.
+     * screen 19
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1488,7 +1507,7 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision languagesDiv = new VP_PageSubdivision("PRIMARY LANGUAGE", false);
-        languagesFields.add(new VP_TextField(50, 128));
+        languagesFields.add(new VP_TextField(50, 128, controller));
         VP_Button submitBtn = new VP_Button("Submit", new SubmitLanguagesAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(0)}),
@@ -1514,11 +1533,10 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
     /**
-     * Builds the screen displaying the Software section of the
-     *   resume.
-     *   A.K.A. screen 20
+     * Builds the screen displaying the Software section of the resume. A.K.A.
+     * screen 20
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1528,7 +1546,7 @@ public class VP_Center extends StackPane {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageSubdivision softwareDiv = new VP_PageSubdivision("SOFTWARE PRODUCT #1", false);
-        softwareFields.add(new VP_TextField(50, 128));
+        softwareFields.add(new VP_TextField(50, 128, controller));
         VP_Button submitBtn = new VP_Button("Submit", new SubmitSoftwareAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(0)}),
@@ -1557,9 +1575,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the References section of the
-     *   resume.
-     *   A.K.A. screen 21
+     * Builds the screen displaying the References section of the resume. A.K.A.
+     * screen 21
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1577,12 +1594,12 @@ public class VP_Center extends StackPane {
                 label5 = new VP_FieldLabel("*email:", 130);
         VP_Button submitBtn = new VP_Button("Submit", new SubmitReferencesAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(11));
-        referencesFields.add(new VP_TextField(32, 45));
-        referencesFields.add(new VP_TextField(32, 45));
-        referencesFields.add(new VP_TextField(32, 45));
-        referencesFields.add(new VP_TextField(32, 128));
-        referencesFields.add(new VP_TextField(13, 13));
-        referencesFields.add(new VP_TextField(32, 254));
+        referencesFields.add(new VP_TextField(32, 45, controller));
+        referencesFields.add(new VP_TextField(32, 45, controller));
+        referencesFields.add(new VP_TextField(32, 45, controller));
+        referencesFields.add(new VP_TextField(32, 128, controller));
+        referencesFields.add(new VP_TextField(13, 13, controller));
+        referencesFields.add(new VP_TextField(32, 254, controller));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0)}),
                 line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1)}),
                 line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2)}),
@@ -1614,8 +1631,8 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Builds the screen displaying the fields for password changing.
-     *   A.K.A. screen 22
+     * Builds the screen displaying the fields for password changing. A.K.A.
+     * screen 22
      *
      * @return A ScrollPane that gets applied to a center StackPane level.
      * @since 1.0
@@ -1652,7 +1669,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Restores the login page back to its original state.
-     * 
+     *
      * @since 1.0
      */
     private void resetLoginRegForms() {
@@ -1675,7 +1692,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Restores the reset password page back to its original state.
-     * 
+     *
      * @since 1.0
      */
     private void resetResetPasswordForms() {
@@ -1708,7 +1725,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Restores the registration page back to its original state.
-     * 
+     *
      * @since 1.0
      */
     private void resetRegisterForms() {
@@ -1724,7 +1741,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adjusts the resume status page depending on what the user has completed.
-     * 
+     *
      * @since 1.0
      */
     private void updateResumeStatus() {
@@ -1791,7 +1808,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adjusts the overview page depending on what the user has completed.
-     * 
+     *
      * @since 1.0
      */
     private void updateOverview() {
@@ -1872,11 +1889,12 @@ public class VP_Center extends StackPane {
 
     /**
      * Resets fields and bound data when a user cancels.
-     * 
+     *
      * @since 1.0
      */
     protected void cancelActionFunction() {
         VP_Sounds.play(0);
+        controller.setChanges(false);
         bcardError.setParaText("");
         bcardErrorLine.hide();
         covletEditError.setParaText("");
@@ -1920,13 +1938,13 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Changes visibility and text values of various components base don recent 
-     * user activity. Also, this function adds or removes components from various pages 
-     * depending on what has been added or removed by the user. This function must 
-     * be called whenever a user logs out, a new user logs in, or a user loads a different
-     * cover letter to work on.
-     * This function does not update the tree view.
-     * 
+     * Changes visibility and text values of various components base don recent
+     * user activity. Also, this function adds or removes components from
+     * various pages depending on what has been added or removed by the user.
+     * This function must be called whenever a user logs out, a new user logs
+     * in, or a user loads a different cover letter to work on. This function
+     * does not update the tree view.
+     *
      * @since 1.0
      */
     protected void updateDynamicContent() {
@@ -2027,7 +2045,7 @@ public class VP_Center extends StackPane {
                 while ((dynamicBody.getChildren().size() - 2) < controller.getCurrentUser().getCovlet().getNumbParagraphs()) {
                     VP_FieldLabel newParaLabel = new VP_FieldLabel("paragraph " + (dynamicBody.getChildren().size() - 1) + ":", 140);
                     VP_Button delParaBtn = new VP_Button("Delete", new DeleteParagraphAction(dynamicBody.getChildren().size() - 1));
-                    coverLetterEditFields.add(23 + dynamicBody.getChildren().size(), new VP_TextArea());
+                    coverLetterEditFields.add(23 + dynamicBody.getChildren().size(), new VP_TextArea(controller));
                     VP_DivisionLine newParaLine = new VP_DivisionLine(new Node[]{newParaLabel, coverLetterEditFields.get(23 + dynamicBody.getChildren().size()), delParaBtn});
                     dynamicBody.getChildren().add(dynamicBody.getChildren().size() - 1, newParaLine);
                     dynamicBody.layout();
@@ -2062,12 +2080,12 @@ public class VP_Center extends StackPane {
                         label3 = new VP_FieldLabel("*GPA:", 130),
                         label4 = new VP_FieldLabel("start date:", 130),
                         label5 = new VP_FieldLabel("end date:", 130);
-                educationFields.add(new VP_TextField(32, 128));
-                educationFields.add(new VP_TextField(32, 128));
-                educationFields.add(new VP_TextField(32, 128));
-                educationFields.add(new VP_TextField(32, 128));
-                educationFields.add(new VP_TextField(32, 128));
-                educationFields.add(new VP_TextField(32, 128));
+                educationFields.add(new VP_TextField(32, 128, controller));
+                educationFields.add(new VP_TextField(32, 128, controller));
+                educationFields.add(new VP_TextField(32, 128, controller));
+                educationFields.add(new VP_TextField(32, 128, controller));
+                educationFields.add(new VP_TextField(32, 128, controller));
+                educationFields.add(new VP_TextField(32, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteEducationAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0 + (6 * (newNumb - 1)))}),
                         line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * (newNumb - 1)))}),
@@ -2102,11 +2120,11 @@ public class VP_Center extends StackPane {
                         label2 = new VP_FieldLabel("position held:", 130),
                         label3 = new VP_FieldLabel("start date:", 130),
                         label4 = new VP_FieldLabel("end date:", 130);
-                experienceFields.add(new VP_TextField(32, 128));
-                experienceFields.add(new VP_TextField(32, 128));
-                experienceFields.add(new VP_TextField(32, 128));
-                experienceFields.add(new VP_TextField(32, 128));
-                experienceFields.add(new VP_TextField(32, 128));
+                experienceFields.add(new VP_TextField(32, 128, controller));
+                experienceFields.add(new VP_TextField(32, 128, controller));
+                experienceFields.add(new VP_TextField(32, 128, controller));
+                experienceFields.add(new VP_TextField(32, 128, controller));
+                experienceFields.add(new VP_TextField(32, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteExperienceAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0 + (5 * (newNumb - 1)))}),
                         line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1 + (5 * (newNumb - 1)))}),
@@ -2141,12 +2159,12 @@ public class VP_Center extends StackPane {
                         label3 = new VP_FieldLabel("company or\ninstitution:", 130),
                         label4 = new VP_FieldLabel("phone:", 130),
                         label5 = new VP_FieldLabel("*email:", 130);
-                referencesFields.add(new VP_TextField(32, 45));
-                referencesFields.add(new VP_TextField(32, 45));
-                referencesFields.add(new VP_TextField(32, 45));
-                referencesFields.add(new VP_TextField(32, 128));
-                referencesFields.add(new VP_TextField(13, 13));
-                referencesFields.add(new VP_TextField(32, 254));
+                referencesFields.add(new VP_TextField(32, 45, controller));
+                referencesFields.add(new VP_TextField(32, 45, controller));
+                referencesFields.add(new VP_TextField(32, 45, controller));
+                referencesFields.add(new VP_TextField(32, 128, controller));
+                referencesFields.add(new VP_TextField(13, 13, controller));
+                referencesFields.add(new VP_TextField(32, 254, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteReferenceAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0 + (6 * (newNumb - 1)))}),
                         line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1 + (6 * (newNumb - 1)))}),
@@ -2179,9 +2197,9 @@ public class VP_Center extends StackPane {
                 VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),
                         label1 = new VP_FieldLabel("given by:", 130),
                         label2 = new VP_FieldLabel("date:", 130);
-                achievementsFields.add(new VP_TextField(32, 128));
-                achievementsFields.add(new VP_TextField(32, 128));
-                achievementsFields.add(new VP_TextField(32, 128));
+                achievementsFields.add(new VP_TextField(32, 128, controller));
+                achievementsFields.add(new VP_TextField(32, 128, controller));
+                achievementsFields.add(new VP_TextField(32, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteAchievementAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0 + (3 * (newNumb - 1)))}),
                         line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1 + (3 * (newNumb - 1)))}),
@@ -2211,9 +2229,9 @@ public class VP_Center extends StackPane {
                 VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),
                         label1 = new VP_FieldLabel("event location:", 130),
                         label2 = new VP_FieldLabel("date:", 130);
-                communityFields.add(new VP_TextField(32, 128));
-                communityFields.add(new VP_TextField(32, 128));
-                communityFields.add(new VP_TextField(32, 128));
+                communityFields.add(new VP_TextField(32, 128, controller));
+                communityFields.add(new VP_TextField(32, 128, controller));
+                communityFields.add(new VP_TextField(32, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteCommunityAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0 + (3 * (newNumb - 1)))}),
                         line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1 + (3 * (newNumb - 1)))}),
@@ -2238,7 +2256,7 @@ public class VP_Center extends StackPane {
             while ((resumeQualificationsBox.getChildren().size() - 5) < thisRes.getNumbQualification()) {
                 int newNumb = resumeQualificationsBox.getChildren().size() - 4;
                 VP_PageSubdivision qualificationDiv = new VP_PageSubdivision("QUALIFICATION #" + newNumb, false);
-                qualificationsFields.add(new VP_TextField(50, 128));
+                qualificationsFields.add(new VP_TextField(50, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteQualificationAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(newNumb - 1)}),
                         delline = new VP_DivisionLine(new Node[]{delBtn});
@@ -2259,7 +2277,7 @@ public class VP_Center extends StackPane {
             while ((resumeHighlightsBox.getChildren().size() - 5) < thisRes.getNumbHighlights()) {
                 int newNumb = resumeHighlightsBox.getChildren().size() - 4;
                 VP_PageSubdivision highlightDiv = new VP_PageSubdivision("PERSONAL QUALITY #" + newNumb, false);
-                highlightsFields.add(new VP_TextField(50, 128));
+                highlightsFields.add(new VP_TextField(50, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteHighlightAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(newNumb - 1)}),
                         delline = new VP_DivisionLine(new Node[]{delBtn});
@@ -2280,7 +2298,7 @@ public class VP_Center extends StackPane {
             while ((resumeLanguagesBox.getChildren().size() - 5) < thisRes.getNumbLanguages()) {
                 int newNumb = resumeLanguagesBox.getChildren().size() - 4;
                 VP_PageSubdivision languageDiv = new VP_PageSubdivision("SECONDARY LANGUAGE #" + (newNumb - 1), false);
-                languagesFields.add(new VP_TextField(50, 128));
+                languagesFields.add(new VP_TextField(50, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteLanguageAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(newNumb - 1)}),
                         delline = new VP_DivisionLine(new Node[]{delBtn});
@@ -2301,7 +2319,7 @@ public class VP_Center extends StackPane {
             while ((resumeSoftwareBox.getChildren().size() - 5) < thisRes.getNumbSoftware()) {
                 int newNumb = resumeSoftwareBox.getChildren().size() - 4;
                 VP_PageSubdivision softwareDiv = new VP_PageSubdivision("SOFTWARE PRODUCT #" + newNumb, false);
-                softwareFields.add(new VP_TextField(50, 128));
+                softwareFields.add(new VP_TextField(50, 128, controller));
                 VP_Button delBtn = new VP_Button("Delete", new DeleteSoftwareAction(newNumb));
                 VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(newNumb - 1)}),
                         delline = new VP_DivisionLine(new Node[]{delBtn});
@@ -2316,10 +2334,10 @@ public class VP_Center extends StackPane {
 
     /**
      * Saves the currently loaded cover letter. Called when a user submits
-     * changes to a cover letter or called when the user selects to add a new 
+     * changes to a cover letter or called when the user selects to add a new
      * cover letter.
-     * 
-     * @param type If type is 1, this means that changes to a cover letter have 
+     *
+     * @param type If type is 1, this means that changes to a cover letter have
      * been made and this function should use field input verification.
      * @since 1.0
      */
@@ -2387,20 +2405,23 @@ public class VP_Center extends StackPane {
      *########################################################################*/
     /**
      * Brings the user to one of the main wizard pages.
-     * 
+     *
      * @since 1.0
      */
     protected class WizardMainAction implements EventHandler<ActionEvent> {
 
         private final int wizardPage;
+
         /**
          * Constructor. Stores the page number to send the suer to.
+         *
          * @param wizardPage The Screen number or StackPane layer to be viewed.
          * @since 1.0
          */
         public WizardMainAction(int wizardPage) {
             this.wizardPage = wizardPage;
         }
+
         /**
          * @param event An ActionEvent triggered by a button.
          * @since 1.0
@@ -2413,14 +2434,14 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Action event for the cancel button on pages before login or involving 
-     * login. Calls functions that reset the forms involving login or 
-     * registration. 
-     * 
+     * Action event for the cancel button on pages before login or involving
+     * login. Calls functions that reset the forms involving login or
+     * registration.
+     *
      * @since 1.0
      */
     private class CancelActionPrelogin implements EventHandler<ActionEvent> {
-        
+
         /**
          * @param event An ActionEvent triggered by a cancel button.
          * @since 1.0
@@ -2435,9 +2456,9 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Reverts any information changed in post-login forms back to the 
-     * user's saved values and brings the user back to the Overview page.
-     * 
+     * Reverts any information changed in post-login forms back to the user's
+     * saved values and brings the user back to the Overview page.
+     *
      * @since 1.0
      */
     private class CancelAction implements EventHandler<ActionEvent> {
@@ -2445,8 +2466,9 @@ public class VP_Center extends StackPane {
         private final int fromPage;
 
         /**
-         * Default Constructor. Sets the fromPage member to 3, representing the 
+         * Default Constructor. Sets the fromPage member to 3, representing the
          * overview page of the wizard.
+         *
          * @since 1.0
          */
         public CancelAction() {
@@ -2455,6 +2477,7 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Sets the fromPage member.
+         *
          * @param fromPage Represents the current wizard page of the user.
          * @since 1.0
          */
@@ -2463,26 +2486,37 @@ public class VP_Center extends StackPane {
         }
 
         /**
-         * @param event  An ActionEvent triggered by a cancel button.
+         * @param event An ActionEvent triggered by a cancel button.
          * @since 1.0
          */
         @Override
         public void handle(ActionEvent event) {
-            cancelActionFunction();
-            if (fromPage == 7) {
-                showScreen(6, 0);
-            } else if (fromPage == 11) {
-                showScreen(11, 0);
+            boolean saving = false;
+            // check for changes
+            if (controller.hasChanges()) {
+                saving = confirmLeavePage();
+            }
+            if (!saving) {
+                cancelActionFunction();
+                if (fromPage == 7) {
+                    showScreen(6, 0);
+                } else if (fromPage == 11) {
+                    showScreen(11, 0);
+                } else {
+                    showScreen(3, 0);
+                }
             } else {
-                showScreen(3, 0);
+                if (fromPage == 4) {
+
+                }
             }
         }
     }
 
     /**
-     * Action event for the 'forgot password?' link on page 0. Switches the 
+     * Action event for the 'forgot password?' link on page 0. Switches the
      * center StackPane to show level 1.
-     * 
+     *
      * @since 1.0
      */
     private class ForgotPassAction implements EventHandler<MouseEvent> {
@@ -2502,7 +2536,7 @@ public class VP_Center extends StackPane {
     /**
      * Action event for the 'need an account?' link on page 0. Switches the
      * center StackPane to show level 2, user registration.
-     * 
+     *
      * @since 1.0
      */
     private class NeedAccountAction implements EventHandler<MouseEvent> {
@@ -2521,11 +2555,11 @@ public class VP_Center extends StackPane {
 
     /**
      * Action event for the login button on wizard page 0.
-     * 
+     *
      * @since 1.0
      */
     private class LoginAction implements EventHandler<ActionEvent> {
-        
+
         /**
          * @param event An ActionEvent for the login button.
          * @since 1.0
@@ -2582,7 +2616,7 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
+
     /**
      * Action event for the submit button on wizard page 2 to save user
      * registration credentials. Checks if the provided email is not already
@@ -2659,12 +2693,13 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Action event for the resend code button on page 0 to assign a new access 
+     * Action event for the resend code button on page 0 to assign a new access
      * code for the user and send it to the user's email.
-     * 
+     *
      * @since 1.0
      */
     private class ResendAccessAction implements EventHandler<ActionEvent> {
+
         /**
          * @param event An ActionEvent triggered by the resend button.
          * @since 1.0
@@ -2692,9 +2727,9 @@ public class VP_Center extends StackPane {
     }
 
     /**
-     * Action event for the submit button on page 0 which submits the 
+     * Action event for the submit button on page 0 which submits the
      * registration access code.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitAccessAction implements EventHandler<ActionEvent> {
@@ -2859,21 +2894,22 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
+
     /**
-     * Saves any information changed in the Personal Information page and brings 
+     * Saves any information changed in the Personal Information page and brings
      * the user back to the Overview page.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitPersonalInfoAction implements EventHandler<ActionEvent> {
 
         private final ArrayList<VP_TextField> personalInfoFields;
-        
+
         /**
-         * Constructor. Loads the input fields for personal information for reference.
-         * 
-         * @param personalInfoFields 
+         * Constructor. Loads the input fields for personal information for
+         * reference.
+         *
+         * @param personalInfoFields
          * @since 1.0
          */
         public SubmitPersonalInfoAction(ArrayList<VP_TextField> personalInfoFields) {
@@ -2991,10 +3027,10 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
+
     /**
      * Saves the user's personal information, entered in wizard page 4.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitObjectiveAction implements EventHandler<ActionEvent> {
@@ -3003,7 +3039,7 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the objective paragraph field for reference;
-         * 
+         *
          * @param objectiveParagraph The cover letter objective paragraph field.
          * @since 1.0
          */
@@ -3012,7 +3048,8 @@ public class VP_Center extends StackPane {
         }
 
         /**
-         * @param event An ActionEvent, triggered by the cover letter submit button.
+         * @param event An ActionEvent, triggered by the cover letter submit
+         * button.
          * @since 1.0
          */
         @Override
@@ -3049,10 +3086,10 @@ public class VP_Center extends StackPane {
             }
         }
     }
-    
+
     /**
      * Deletes a field from the resume education section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteEducationAction implements EventHandler<ActionEvent> {
@@ -3061,8 +3098,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteEducationAction(int entryNumber) {
@@ -3098,6 +3135,7 @@ public class VP_Center extends StackPane {
                     educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
                 }
             }
+            controller.setChanges(true);
             addEducationBtn.setVisible(true);
             addEducationBtn.setManaged(true);
         }
@@ -3105,7 +3143,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume education section.
-     * 
+     *
      * @since 1.0
      */
     private class AddEducationAction implements EventHandler<ActionEvent> {
@@ -3156,7 +3194,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume education section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitEducationAction implements EventHandler<ActionEvent> {
@@ -3219,7 +3257,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume experience section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteExperienceAction implements EventHandler<ActionEvent> {
@@ -3228,8 +3266,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteExperienceAction(int entryNumber) {
@@ -3265,6 +3303,7 @@ public class VP_Center extends StackPane {
                     experienceFields.get((5 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(i).get(ii));
                 }
             }
+            controller.setChanges(true);
             addExperienceBtn.setVisible(true);
             addExperienceBtn.setManaged(true);
         }
@@ -3272,7 +3311,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume experience section.
-     * 
+     *
      * @since 1.0
      */
     private class AddExperienceAction implements EventHandler<ActionEvent> {
@@ -3320,7 +3359,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume experience section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitExperienceAction implements EventHandler<ActionEvent> {
@@ -3383,7 +3422,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume achievements section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteAchievementAction implements EventHandler<ActionEvent> {
@@ -3392,8 +3431,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteAchievementAction(int entryNumber) {
@@ -3429,6 +3468,7 @@ public class VP_Center extends StackPane {
                     achievementsFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(i).get(ii));
                 }
             }
+            controller.setChanges(true);
             addAchievementBtn.setVisible(true);
             addAchievementBtn.setManaged(true);
         }
@@ -3436,7 +3476,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume achievements section.
-     * 
+     *
      * @since 1.0
      */
     private class AddAchievementAction implements EventHandler<ActionEvent> {
@@ -3478,7 +3518,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume achievements section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitAchievementsAction implements EventHandler<ActionEvent> {
@@ -3539,7 +3579,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume community section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteCommunityAction implements EventHandler<ActionEvent> {
@@ -3548,8 +3588,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteCommunityAction(int entryNumber) {
@@ -3585,6 +3625,7 @@ public class VP_Center extends StackPane {
                     communityFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(i).get(ii));
                 }
             }
+            controller.setChanges(true);
             addCommunityBtn.setVisible(true);
             addCommunityBtn.setManaged(true);
         }
@@ -3592,7 +3633,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume community section.
-     * 
+     *
      * @since 1.0
      */
     private class AddCommunityAction implements EventHandler<ActionEvent> {
@@ -3634,7 +3675,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume community section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitCommunityAction implements EventHandler<ActionEvent> {
@@ -3695,7 +3736,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume qualifications section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteQualificationAction implements EventHandler<ActionEvent> {
@@ -3704,8 +3745,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteQualificationAction(int entryNumber) {
@@ -3734,6 +3775,7 @@ public class VP_Center extends StackPane {
                 }
                 qualificationsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(i));
             }
+            controller.setChanges(true);
             addQualificationBtn.setVisible(true);
             addQualificationBtn.setManaged(true);
         }
@@ -3741,7 +3783,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume qualifications section.
-     * 
+     *
      * @since 1.0
      */
     private class AddQualificationAction implements EventHandler<ActionEvent> {
@@ -3772,7 +3814,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume qualifications section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitQualificationsAction implements EventHandler<ActionEvent> {
@@ -3819,7 +3861,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume highlights section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteHighlightAction implements EventHandler<ActionEvent> {
@@ -3828,8 +3870,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteHighlightAction(int entryNumber) {
@@ -3858,6 +3900,7 @@ public class VP_Center extends StackPane {
                 }
                 highlightsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(i));
             }
+            controller.setChanges(true);
             addHighlightBtn.setVisible(true);
             addHighlightBtn.setManaged(true);
         }
@@ -3865,7 +3908,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume highlights section.
-     * 
+     *
      * @since 1.0
      */
     private class AddHighlightAction implements EventHandler<ActionEvent> {
@@ -3896,7 +3939,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume highlights section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitHighlightsAction implements EventHandler<ActionEvent> {
@@ -3943,7 +3986,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume languages section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteLanguageAction implements EventHandler<ActionEvent> {
@@ -3952,8 +3995,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteLanguageAction(int entryNumber) {
@@ -3982,6 +4025,7 @@ public class VP_Center extends StackPane {
                 }
                 languagesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(i));
             }
+            controller.setChanges(true);
             addLanguageBtn.setVisible(true);
             addLanguageBtn.setManaged(true);
         }
@@ -3989,7 +4033,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume languages section.
-     * 
+     *
      * @since 1.0
      */
     private class AddLanguageAction implements EventHandler<ActionEvent> {
@@ -4020,7 +4064,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume languages section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitLanguagesAction implements EventHandler<ActionEvent> {
@@ -4071,7 +4115,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume software section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteSoftwareAction implements EventHandler<ActionEvent> {
@@ -4080,8 +4124,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteSoftwareAction(int entryNumber) {
@@ -4110,6 +4154,7 @@ public class VP_Center extends StackPane {
                 }
                 softwareFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(i));
             }
+            controller.setChanges(true);
             addSoftwareBtn.setVisible(true);
             addSoftwareBtn.setManaged(true);
         }
@@ -4117,7 +4162,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume software section.
-     * 
+     *
      * @since 1.0
      */
     private class AddSoftwareAction implements EventHandler<ActionEvent> {
@@ -4148,7 +4193,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume software section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitSoftwareAction implements EventHandler<ActionEvent> {
@@ -4195,7 +4240,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a field from the resume references section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteReferenceAction implements EventHandler<ActionEvent> {
@@ -4204,8 +4249,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the entry to be deleted for reference.
-         * 
-         * @param entryNumber 
+         *
+         * @param entryNumber
          * @since 1.0
          */
         public DeleteReferenceAction(int entryNumber) {
@@ -4241,6 +4286,7 @@ public class VP_Center extends StackPane {
                     referencesFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(i).get(ii));
                 }
             }
+            controller.setChanges(true);
             addReferenceBtn.setVisible(true);
             addReferenceBtn.setManaged(true);
         }
@@ -4248,7 +4294,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a field to the resume references section.
-     * 
+     *
      * @since 1.0
      */
     private class AddReferenceAction implements EventHandler<ActionEvent> {
@@ -4299,7 +4345,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Submits the data in the resume references section.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitReferencesAction implements EventHandler<ActionEvent> {
@@ -4390,13 +4436,14 @@ public class VP_Center extends StackPane {
 
     /**
      * Clears the currently loaded cover letter and imports the selected one.
-     * 
+     *
      * @since 1.0
      */
     private class LoadCoverLetterAction implements EventHandler<ActionEvent> {
 
         /**
-         * @param event An ActionEvent, triggered by the load cover letter button.
+         * @param event An ActionEvent, triggered by the load cover letter
+         * button.
          * @since 1.0
          */
         @Override
@@ -4428,12 +4475,14 @@ public class VP_Center extends StackPane {
 
     /**
      * Stars a new, empty cover letter for the user.
-     * 
+     *
      * @since 1.0
      */
     private class StartNewCoverLetter implements EventHandler<ActionEvent> {
+
         /**
-         * @param event An ActionEvent, triggered by the add new cover letter button.
+         * @param event An ActionEvent, triggered by the add new cover letter
+         * button.
          * @since 1.0
          */
         @Override
@@ -4458,11 +4507,11 @@ public class VP_Center extends StackPane {
 
     /**
      * Adds a paragraph to the resume cover letter section.
-     * 
+     *
      * @since 1.0
      */
     private class AddParagraphAction implements EventHandler<ActionEvent> {
-        
+
         /**
          * @param event An ActionEvent, triggered by an add paragraph button.
          * @since 1.0
@@ -4476,7 +4525,7 @@ public class VP_Center extends StackPane {
             int newParaNumb = controller.getCurrentUser().getCovlet().getNumbParagraphs() + 1;
             VP_FieldLabel newParaLabel = new VP_FieldLabel("paragraph " + newParaNumb + ":", 140);
             VP_Button delParaBtn = new VP_Button("Delete", new DeleteParagraphAction(newParaNumb));
-            coverLetterEditFields.add(24 + newParaNumb, new VP_TextArea());
+            coverLetterEditFields.add(24 + newParaNumb, new VP_TextArea(controller));
             VP_DivisionLine newParaLine = new VP_DivisionLine(new Node[]{newParaLabel, coverLetterEditFields.get(24 + newParaNumb), delParaBtn});
             dynamicBody.getChildren().add(dynamicBody.getChildren().size() - 1, newParaLine);
             controller.getCurrentUser().getCovlet().setNumbParagraphs(newParaNumb);
@@ -4491,7 +4540,7 @@ public class VP_Center extends StackPane {
 
     /**
      * Deletes a paragraph from the resume cover letter section.
-     * 
+     *
      * @since 1.0
      */
     private class DeleteParagraphAction implements EventHandler<ActionEvent> {
@@ -4500,8 +4549,8 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the paragraph field number for reference.
-         * 
-         * @param paragraphNumber 
+         *
+         * @param paragraphNumber
          * @since 1.0
          */
         public DeleteParagraphAction(int paragraphNumber) {
@@ -4533,20 +4582,22 @@ public class VP_Center extends StackPane {
             } else {
                 ((VP_TextArea) (coverLetterEditFields.get(25))).setText("");
             }
+            controller.setChanges(true);
             addParagraphLine.show();
         }
     }
 
     /**
-     * Saves any information changed in the Business Card  page and brings the 
+     * Saves any information changed in the Business Card page and brings the
      * user back to the Overview page.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitCovLetEditAction implements EventHandler<ActionEvent> {
 
         /**
-         * @param event An ActionEvent, triggered by the submit cover letter button.
+         * @param event An ActionEvent, triggered by the submit cover letter
+         * button.
          * @since 1.0
          */
         @Override
@@ -4558,7 +4609,7 @@ public class VP_Center extends StackPane {
     /**
      * Updates the date on the cover letter from its previously stored value to
      * a new value representing the current date.
-     * 
+     *
      * @since 1.0
      */
     private class UpdateDateAction implements EventHandler<ActionEvent> {
@@ -4573,13 +4624,14 @@ public class VP_Center extends StackPane {
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
             String formattedDate = formatter.format(new Date());
             dateValueLabel.setText(formattedDate);
+            controller.setChanges(true);
         }
     }
 
     /**
-     * Saves any information changed in the Business Card page and brings the 
+     * Saves any information changed in the Business Card page and brings the
      * user back to the Overview page.
-     * 
+     *
      * @since 1.0
      */
     private class SubmitBCardAction implements EventHandler<ActionEvent> {
@@ -4588,7 +4640,7 @@ public class VP_Center extends StackPane {
 
         /**
          * Constructor. Stores the business card fields for reference.
-         * 
+         *
          * @param businessCardFields The list of fields of the business card.
          * @since 1.0
          */
@@ -4597,7 +4649,8 @@ public class VP_Center extends StackPane {
         }
 
         /**
-         * @param event An ActionEvent, triggered by the submit business card button.
+         * @param event An ActionEvent, triggered by the submit business card
+         * button.
          * @since 1.0
          */
         @Override

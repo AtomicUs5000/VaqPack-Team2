@@ -99,15 +99,21 @@ public class VP_Left extends VBox {
          */
         @Override
         public void handle(MouseEvent event) {
+            boolean saving = false;
             Node node = event.getPickResult().getIntersectedNode();
             if ((!(node instanceof StackPane)) && (node instanceof LabeledText || (node instanceof TreeCell && ((TreeCell) node).getText() != null))) {
                 try {
                     VP_Sounds.play(0);
-                    int wizardNumber = (int) ((VP_TreeItem) treeView.getSelectionModel().getSelectedItem()).getWizardNumber();
-                    double position = (double) ((VP_TreeItem) treeView.getSelectionModel().getSelectedItem()).getPositionProp().getValue();
-                    controller.getCenter().cancelActionFunction();
-                    controller.getCenter().showScreen(wizardNumber, position);
-                    System.out.println("position = " + ((VP_TreeItem) treeView.getSelectionModel().getSelectedItem()).getPositionProp().getValue());
+                    if (controller.hasChanges()) {
+                        saving = controller.getCenter().confirmLeavePage();
+                    }
+                    if (!saving) {
+                        int wizardNumber = (int) ((VP_TreeItem) treeView.getSelectionModel().getSelectedItem()).getWizardNumber();
+                        double position = (double) ((VP_TreeItem) treeView.getSelectionModel().getSelectedItem()).getPositionProp().getValue();
+                        controller.getCenter().cancelActionFunction();
+                        controller.getCenter().showScreen(wizardNumber, position);
+                    }
+
                 } catch (Exception e) {
                     // just eat it, shouldn't take you anywhere anyway
                 }

@@ -15,10 +15,21 @@ package vaqpack.components;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
+import vaqpack.VP_GUIController;
 
 public class VP_TextArea extends TextArea implements EventHandler<KeyEvent> {
+    private final VP_GUIController controller;
     
     public VP_TextArea() {
+        this.controller = null;
+        this.setStyle("-fx-control-inner-background: white");
+        setPrefRowCount(4);
+        setWrapText(true);
+        assignEvents();
+    }
+    
+    public VP_TextArea(VP_GUIController controller) {
+        this.controller = controller;
         this.setStyle("-fx-control-inner-background: white");
         setPrefRowCount(4);
         setWrapText(true);
@@ -33,6 +44,9 @@ public class VP_TextArea extends TextArea implements EventHandler<KeyEvent> {
     @Override
     public void handle(KeyEvent event) {
         this.showValid();
+        if (controller != null) {
+            controller.setChanges(true);
+        }
     }
     
     /*------------------------------------------------------------------------*

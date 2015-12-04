@@ -16,9 +16,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import vaqpack.VP_GUIController;
 
 public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
-
+    private final VP_GUIController controller;
     private int limit;
 
     /*---------------------------------------------------------------------*
@@ -29,6 +30,20 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
      *---------------------------------------------------------------------*/
     public VP_TextField(int columns, int limit) {
         //-------- Initialization Start ----------\\
+        this.controller = null;
+        this.limit = limit;
+        //-------- Initialization End ------------\\
+        this.setMinSize(TextField.USE_PREF_SIZE, TextField.USE_PREF_SIZE);
+        this.setMaxSize(TextField.USE_PREF_SIZE, TextField.USE_PREF_SIZE);
+        this.setAlignment(Pos.CENTER_LEFT);
+        this.setStyle("-fx-control-inner-background: white");
+        this.setPrefColumnCount(columns);
+        this.assignEvents();
+    }
+
+    public VP_TextField(int columns, int limit, VP_GUIController controller) {
+        //-------- Initialization Start ----------\\
+        this.controller = controller;
         this.limit = limit;
         //-------- Initialization End ------------\\
         this.setMinSize(TextField.USE_PREF_SIZE, TextField.USE_PREF_SIZE);
@@ -47,6 +62,9 @@ public class VP_TextField extends TextField implements EventHandler<KeyEvent> {
     @Override
     public void handle(KeyEvent event) {
         this.showValid();
+        if (controller != null) {
+            controller.setChanges(true);
+        }
         if (limit > 0) {
             String text = this.getText();
             try {

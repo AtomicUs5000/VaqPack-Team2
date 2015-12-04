@@ -17,9 +17,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.input.KeyEvent;
+import vaqpack.VP_GUIController;
 
 public class VP_PasswordField extends PasswordField implements EventHandler<KeyEvent> {
-
+    private final VP_GUIController controller;
     private final int limit,
             minimum;
     private final Label strengthLabel;
@@ -36,6 +37,24 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
      *---------------------------------------------------------------------*/
     public VP_PasswordField(int columns, int limit, int minimum, Label strengthLabel) {
         //-------- Initialization Start ----------\\
+        this.controller = null;
+        this.limit = limit;
+        this.minimum = minimum;
+        this.strengthLabel = strengthLabel;
+        //-------- Initialization End ------------\\
+
+        this.setMinSize(PasswordField.USE_PREF_SIZE, PasswordField.USE_PREF_SIZE);
+        this.setMaxSize(PasswordField.USE_PREF_SIZE, PasswordField.USE_PREF_SIZE);
+        this.setAlignment(Pos.CENTER_LEFT);
+        this.setStyle("-fx-control-inner-background: white");
+        this.setPrefColumnCount(columns);
+        this.assignEvents();
+    }
+    
+    public VP_PasswordField(int columns, int limit, int minimum, 
+            Label strengthLabel, VP_GUIController controller) {
+        //-------- Initialization Start ----------\\
+        this.controller = controller;
         this.limit = limit;
         this.minimum = minimum;
         this.strengthLabel = strengthLabel;
@@ -69,6 +88,9 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
         //-------- Initialization End ------------\\
 
         this.showValid();
+        if (controller != null) {
+            controller.setChanges(true);
+        }
         if (limit > 0) {
             if (length > limit) {
                 text = text.substring(0, limit);

@@ -86,6 +86,7 @@ public class VP_GUIController {
             dbTaskLabels;
     private Timer timer;
     private int sessionSeconds;
+    private boolean changes;
 
     /**
      * Constructor. Creates the empty scene and sets the TITLE for it. Creates a
@@ -887,14 +888,13 @@ public class VP_GUIController {
         @Override
         public void handle(Event event) {
             //-------- Initialization Start ----------\\
-            boolean exitCancelled = false;
+            boolean saving = false;
             //-------- Initialization End ------------\\
-
             event.consume();
-            // insert code alert user to save things. if necessary
-            // let the alert return a value
-            // exitCancelled = blahblahblah
-            if (!exitCancelled) {
+            if (hasChanges()) {
+                saving = center.confirmLeavePage();
+            }
+            if (!saving) {
                 logoutUser();
                 System.exit(0);
             }
@@ -1180,11 +1180,10 @@ public class VP_GUIController {
      * Custom-styled JavaFX Alert for errors.
      * @since 1.0
      */
-    private class VPErrorAlert extends Alert {
+    public class VPErrorAlert extends Alert {
 
         /**
-         * @param alertType Typically set to error type, but is prepared for 
-         * adjustments.
+         * @param alertType Typically set to error type.
          * @since 1.0
          */
         public VPErrorAlert(AlertType alertType) {
@@ -1276,4 +1275,25 @@ public class VP_GUIController {
     protected Stage getPrimaryStage() {
         return primaryStage;
     }
+
+    /**
+     * Accessor method.
+     * 
+     * @return Whether or not the user has changed some field input.
+     * @since 1.0
+     */
+    protected boolean hasChanges() {
+        return changes;
+    }
+
+    /**
+     * Mutator method.
+     * 
+     * @param changes The boolean value representing if the user has changed some field input.
+     * @since 1.0
+     */
+    public void setChanges(boolean changes) {
+        this.changes = changes;
+    }
+
 }

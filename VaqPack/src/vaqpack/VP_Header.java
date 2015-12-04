@@ -88,11 +88,27 @@ public class VP_Header extends VBox {
 
         // Menu actions
         userLogout.setOnAction((e) -> {
-            controller.logoutUser();
+            boolean saving = false;
+            if (controller.hasChanges()) {
+                saving = controller.getCenter().confirmLeavePage();
+            }
+            if (!saving) {
+                controller.logoutUser();
+            }
+            
         });
         exitVP.setOnAction(controller.new ClosingSequence());
         toggleFull.setOnAction(new FullScreenToggle());
-        changePass.setOnAction(controller.getCenter().new WizardMainAction(22));
+        changePass.setOnAction((e) -> {
+            boolean saving = false;
+            if (controller.hasChanges()) {
+                saving = controller.getCenter().confirmLeavePage();
+            }
+            if (!saving) {
+                controller.getCenter().cancelActionFunction();
+                controller.getCenter().showScreen(22, 0);
+            }    
+        });
         gettingStarted.setOnAction(new HelpAction());
         aboutHelp.setOnAction(new AboutAction());
 
