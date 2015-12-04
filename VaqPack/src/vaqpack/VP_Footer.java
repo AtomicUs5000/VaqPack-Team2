@@ -1,15 +1,7 @@
-/*-----------------------------------------------------------------------------*
- * VP_Footer.java
- * - Everything involving the footer of the gui
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 1500
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_Footer.java - Everything involving the footer of the GUI. FILE ID 1500
+ */
+
 package vaqpack;
 
 import javafx.geometry.Insets;
@@ -19,6 +11,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
+/**
+ * 
+ * 
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_Footer extends HBox {
 
     private final VP_GUIController controller;

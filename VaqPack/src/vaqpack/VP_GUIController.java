@@ -26,15 +26,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -43,9 +46,13 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import vaqpack.components.VP_Dialog;
+import vaqpack.components.VP_PageSubdivision;
+import vaqpack.user.VP_Resume;
 
 /**
- * Events triggered by or altering the VaqPak GUI.
+ * Events triggered by or altering the VaqPak GUI. This class links the GUI to
+ * the data and to user events, and provides a centralized location where
+ * components can reference each other.
  *
  * @author William Dewald (Project Manager, Team-02)
  * @author Fernando Bazan
@@ -57,10 +64,16 @@ import vaqpack.components.VP_Dialog;
  */
 public class VP_GUIController {
 
-    private final Scene primaryScene;
-    private final String title;
-    private final StackPane mainLayout;
-    private final VP_Loader loader;
+    private final int USER_PASSWORD_MINIMUM = 12,
+            USER_INACTIVITY_LIMIT = 300,
+            SCENE_WIDTH = 1000,
+            SCENE_HEIGHT = 600;
+    private final String TITLE = "VaqPack";
+    private final StackPane mainLayout = new StackPane();
+    private final VP_Loader loader = new VP_Loader(SCENE_WIDTH, SCENE_HEIGHT);
+    private final Scene primaryScene = new Scene(mainLayout, SCENE_WIDTH, SCENE_HEIGHT);
+    private final Alert warnLogOut = new Alert(AlertType.WARNING);
+    private final VP_User currentUser = new VP_User();
     private final VP_DataManager dataM;
     private final VP_Header header;
     private final VP_Left leftTree;
@@ -70,73 +83,43 @@ public class VP_GUIController {
             dbTasks;
     private ArrayList<String> guiTaskLabels,
             dbTaskLabels;
-    private final int USER_PASSWORD_MINIMUM,
-            USER_INACTIVITY_LIMIT,
-            sceneWidth,
-            sceneHeight;
-    private final VP_User currentUser;
-    private final Alert warnLogOut;
     private Timer timer;
     private int sessionSeconds;
 
     /**
-     * Constructor. Creates the empty scene and sets the title for it. Creates a
+     * Constructor. Creates the empty scene and sets the TITLE for it. Creates a
      * VP_Loader and sets it as visible, while the empty GUI is not visible.
-     * Creates the Data Manager.
      *
      * @param primaryStage Sent to header object for full-screen control.
      * @since 1.0
      */
     protected VP_GUIController(Stage primaryStage) {
         //-------- Initialization Start ----------\\
-        USER_PASSWORD_MINIMUM = 12;
-        USER_INACTIVITY_LIMIT = 300;
-        sceneWidth = 1000;
-        sceneHeight = 600;
-        mainLayout = new StackPane();
-        loader = new VP_Loader(sceneWidth, sceneHeight);
         dataM = new VP_DataManager(this);
         header = new VP_Header(this, primaryStage);
         leftTree = new VP_Left(this);
         center = new VP_Center(this);
         footer = new VP_Footer(this);
-        primaryScene = new Scene(mainLayout, sceneWidth, sceneHeight);
-        sessionSeconds = USER_INACTIVITY_LIMIT;
         timer = new java.util.Timer();
-        warnLogOut = new Alert(AlertType.WARNING);
-        currentUser = new VP_User();
-        title = "VaqPack";
+        sessionSeconds = USER_INACTIVITY_LIMIT;
+        ObservableList<Node> mainChildren = mainLayout.getChildren();
         //-------- Initialization End ------------\\
 
-        mainLayout.getChildren().addAll(loader, createShell());
-        mainLayout.getChildren().get(1).setVisible(false);
-        mainLayout.getChildren().get(0).setVisible(true);
+        mainChildren.addAll(loader, createShell());
+        mainChildren.get(1).setVisible(false);
+        mainChildren.get(0).setVisible(true);
         mainLayout.setAlignment(Pos.TOP_LEFT);
-        primaryScene.getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
+        primaryScene.getStylesheets().add(this.getClass()
+                .getResource("/vpStyle.css").toExternalForm());
         primaryScene.setOnMouseMoved(new UpdateActivity());
         primaryScene.setOnKeyTyped(new UpdateActivity());
-        primaryStage.setTitle(title);
+        primaryStage.setTitle(TITLE);
         primaryStage.setScene(primaryScene);
         primaryStage.setOnCloseRequest(new ClosingSequence());
         warnLogOut.setContentText("You will be logged out for inactivity in 30 seconds.");
         warnLogOut.getDialogPane().setOnMouseMoved(new UpdateActivity());
         warnLogOut.getDialogPane().setOnKeyTyped(new UpdateActivity());
         load();
-    }
-
-    /**
-     * Called by TreeClick event handler within VP_Center class. This function
-     * clears unsaved values from forms and brings the user to a specific page
-     * of the wizard.
-     *
-     * @param wizardNumber Determines the center page number that the user will
-     * jump to when clicking a particular node of VP_Left.
-     * @param position The vertical scroll position of the selected screen.
-     * @since 1.0
-     */
-    protected void quickJump(int wizardNumber, double position) {
-        center.cancelActionFunction();
-        center.showScreen(wizardNumber, position);
     }
 
     /**
@@ -153,12 +136,13 @@ public class VP_GUIController {
         VP_ErrorHandler eh = new VP_ErrorHandler(errorCode, exceptionString);
         VPErrorAlert errorAlert = new VPErrorAlert(AlertType.ERROR);
         //-------- Initialization End ------------\\
+
         VP_Sounds.play(-2);
         errorAlert.setTitle("Error");
         errorAlert.setHeaderText(eh.getHeader());
         errorAlert.setContentText(eh.getContent());
         errorAlert.setResizable(true);
-        errorAlert.getDialogPane().setPrefSize(sceneWidth * 0.5, sceneHeight * 0.75);
+        errorAlert.getDialogPane().setPrefSize(SCENE_WIDTH * 0.5, SCENE_HEIGHT * 0.75);
         errorAlert.showAndWait();
         if (eh.isCritical()) {
             System.exit(-1);
@@ -169,8 +153,8 @@ public class VP_GUIController {
      * Series of actions that must occur when a user logs out. Stops the timer
      * that logs users out for inactivity. Calls logout() for the user to clear
      * bound values and then calls newUserSet() which will detect that there is
-     * no user and will adjust the GUI accordingly. Calls updateTree() to make
-     * sections invisible.
+     * no user and will adjust the GUI accordingly. Finally, this function calls
+     * updateTree() to make the tree invisible.
      *
      * @since 1.0
      */
@@ -179,27 +163,32 @@ public class VP_GUIController {
         timer.purge();
         currentUser.logout();
         newUserSet();
-        updateTree();
+        updateTree(0);
     }
 
     /**
-     * Must be called whenever the user has logged in, successfully completed a
-     * major task, or has logged out. This functions determines which branches
-     * of the tree are visible.
+     * Must be called whenever the user has logged in, has successfully
+     * completed a major task, or has logged out. This functions determines
+     * which branches of the tree are visible. Calls updateDynamicTree which
+     * will either create or delete leaves of the tree depending on the addition
+     * or deletion of particular entries by the user.
      *
+     * @param fromPage From which page of the wizard this function has been
+     * called. In the case where all tree branches should be checked, fromPage
+     * should be 0.
      * @since 1.0
      */
-    protected void updateTree() {
+    protected void updateTree(int fromPage) {
+        ObservableList<TreeItem<String>> falseRootChildren = leftTree.getFalseRoot().getChildren();
         if (currentUser.getUserID() != -1) {
-            if (leftTree.getFalseRoot().getChildren().size() == 0) {
-                leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("OVERVIEW", 3));
-                leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Personal Information", 4));
+            if (falseRootChildren.size() == 0) {
+                falseRootChildren.add(new VP_TreeItem("OVERVIEW", 3));
+                falseRootChildren.add(new VP_TreeItem("Personal Information", 4));
             }
             if (currentUser.hasCompletedPersonalInfo()) {
-                if (leftTree.getFalseRoot().getChildren().size() == 2) {
-                    // user has been here before, load full resume, business card, and cover letters
-                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Resume", 11));
-                    VP_TreeItem res = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(2);
+                if (falseRootChildren.size() == 2) {
+                    falseRootChildren.add(new VP_TreeItem("Resume", 11));
+                    VP_TreeItem res = (VP_TreeItem) falseRootChildren.get(2);
                     ArrayList<VP_TreeItem> RES_Nodes = new ArrayList();
                     RES_Nodes.add(new VP_TreeItem("Heading", 12));
                     ArrayList<VP_TreeItem> RES_He_Nodes = new ArrayList();
@@ -235,29 +224,52 @@ public class VP_GUIController {
                     RES_Nodes.add(new VP_TreeItem("Software", 20));
                     RES_Nodes.add(new VP_TreeItem("References", 21));
                     res.getChildren().addAll(RES_Nodes);
-
-                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Business Card", 5));
-                    VP_TreeItem bc = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(3);
+                    falseRootChildren.add(new VP_TreeItem("Business Card", 5));
+                    VP_TreeItem bc = (VP_TreeItem) falseRootChildren.get(3);
                     ArrayList<VP_TreeItem> BC_Nodes = new ArrayList();
                     BC_Nodes.add(new VP_TreeItem("Name", 5));
-                    BC_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(0).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(0).getPositionProp().bind(center.getBcNodes()
+                            .get(0).layoutYProperty().subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_N_Nodes = new ArrayList();
                     BC_N_Nodes.add(new VP_TreeItem("First Name", 4));
                     BC_N_Nodes.add(new VP_TreeItem("Middle Name", 4));
                     BC_N_Nodes.add(new VP_TreeItem("Last Name", 4));
                     BC_Nodes.get(0).getChildren().addAll(BC_N_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Company", 5));
-                    BC_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_CY_Nodes = new ArrayList();
                     BC_CY_Nodes.add(new VP_TreeItem("Profession", 5));
-                    BC_CY_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CY_Nodes.get(0).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     BC_CY_Nodes.add(new VP_TreeItem("Company Name", 5));
-                    BC_CY_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CY_Nodes.get(1).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     BC_CY_Nodes.add(new VP_TreeItem("Slogan", 5));
-                    BC_CY_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CY_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(1).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     BC_Nodes.get(1).getChildren().addAll(BC_CY_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Address", 5));
-                    BC_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(2).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(2).getPositionProp().bind(center.getBcNodes().get(2).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_A_Nodes = new ArrayList();
                     BC_A_Nodes.add(new VP_TreeItem("Address Line 1", 4));
                     BC_A_Nodes.add(new VP_TreeItem("Address Line 2", 4));
@@ -266,31 +278,50 @@ public class VP_GUIController {
                     BC_A_Nodes.add(new VP_TreeItem("Zip", 4));
                     BC_Nodes.get(2).getChildren().addAll(BC_A_Nodes);
                     BC_Nodes.add(new VP_TreeItem("Communication", 5));
-                    BC_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> BC_CN_Nodes = new ArrayList();
                     BC_CN_Nodes.add(new VP_TreeItem("Phone", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Cell", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Email", 4));
                     BC_CN_Nodes.add(new VP_TreeItem("Web Page", 5));
-                    BC_CN_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    BC_CN_Nodes.get(3).getPositionProp().bind(center.getBcNodes().get(3).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(5))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     BC_Nodes.get(3).getChildren().addAll(BC_CN_Nodes);
                     bc.getChildren().addAll(BC_Nodes);
-
-                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Cover Letter", 6));
-                    VP_TreeItem cl = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(4);
+                    falseRootChildren.add(new VP_TreeItem("Cover Letter", 6));
+                    VP_TreeItem cl = (VP_TreeItem) falseRootChildren.get(4);
                     ArrayList<VP_TreeItem> CL_Nodes = new ArrayList();
                     CL_Nodes.add(new VP_TreeItem("Heading", 7));
-                    CL_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(0).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(0).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_H_Nodes = new ArrayList();
                     CL_H_Nodes.add(new VP_TreeItem("Name", 7));
-                    CL_H_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(1).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_H_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(1).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_HN_Nodes = new ArrayList();
                     CL_HN_Nodes.add(new VP_TreeItem("First Name", 4));
                     CL_HN_Nodes.add(new VP_TreeItem("Middle name", 4));
                     CL_HN_Nodes.add(new VP_TreeItem("Last Name", 4));
                     CL_H_Nodes.get(0).getChildren().addAll(CL_HN_Nodes);
                     CL_H_Nodes.add(new VP_TreeItem("Address", 7));
-                    CL_H_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(2).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_H_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(2).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_HA_Nodes = new ArrayList();
                     CL_HA_Nodes.add(new VP_TreeItem("Address Line 1", 4));
                     CL_HA_Nodes.add(new VP_TreeItem("Address Line 2", 4));
@@ -299,7 +330,11 @@ public class VP_GUIController {
                     CL_HA_Nodes.add(new VP_TreeItem("Zip", 4));
                     CL_H_Nodes.get(1).getChildren().addAll(CL_HA_Nodes);
                     CL_H_Nodes.add(new VP_TreeItem("Communication", 7));
-                    CL_H_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(3).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_H_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(3).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_HC_Nodes = new ArrayList();
                     CL_HC_Nodes.add(new VP_TreeItem("Phone", 4));
                     CL_HC_Nodes.add(new VP_TreeItem("Cell", 4));
@@ -307,32 +342,56 @@ public class VP_GUIController {
                     CL_H_Nodes.get(2).getChildren().addAll(CL_HC_Nodes);
                     CL_Nodes.get(0).getChildren().addAll(CL_H_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Date", 7));
-                    CL_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(4).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(4).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     CL_Nodes.add(new VP_TreeItem("Ad Reference", 7));
-                    CL_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(5).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(5).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_A_Nodes = new ArrayList();
                     CL_A_Nodes.add(new VP_TreeItem("Source", 7));
                     CL_A_Nodes.add(new VP_TreeItem("Job Position", 7));
                     CL_A_Nodes.add(new VP_TreeItem("Reference Number", 7));
                     CL_Nodes.get(2).getChildren().addAll(CL_A_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Contact Information", 7));
-                    CL_Nodes.get(3).getPositionProp().bind(center.getClNodes().get(6).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(3).getPositionProp().bind(center.getClNodes().get(6).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_C_Nodes = new ArrayList();
                     CL_C_Nodes.add(new VP_TreeItem("Name", 7));
-                    CL_C_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(7).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_C_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(7).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_CN_Nodes = new ArrayList();
                     CL_CN_Nodes.add(new VP_TreeItem("First Name", 7));
                     CL_CN_Nodes.add(new VP_TreeItem("Middle name", 7));
                     CL_CN_Nodes.add(new VP_TreeItem("Last Name", 7));
                     CL_C_Nodes.get(0).getChildren().addAll(CL_CN_Nodes);
                     CL_C_Nodes.add(new VP_TreeItem("Company", 7));
-                    CL_C_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(8).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_C_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(8).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_CC_Nodes = new ArrayList();
                     CL_CC_Nodes.add(new VP_TreeItem("Contact Title", 7));
                     CL_CC_Nodes.add(new VP_TreeItem("Company Name", 7));
                     CL_C_Nodes.get(1).getChildren().addAll(CL_CC_Nodes);
                     CL_C_Nodes.add(new VP_TreeItem("Address", 7));
-                    CL_C_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(9).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_C_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(9).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_CA_Nodes = new ArrayList();
                     CL_CA_Nodes.add(new VP_TreeItem("Address Line 1", 7));
                     CL_CA_Nodes.add(new VP_TreeItem("Address Line 2", 7));
@@ -342,56 +401,156 @@ public class VP_GUIController {
                     CL_C_Nodes.get(2).getChildren().addAll(CL_CA_Nodes);
                     CL_Nodes.get(3).getChildren().addAll(CL_C_Nodes);
                     CL_Nodes.add(new VP_TreeItem("Salutation", 7));
-                    CL_Nodes.get(4).getPositionProp().bind(center.getClNodes().get(10).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(4).getPositionProp().bind(center.getClNodes().get(10).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     CL_Nodes.add(new VP_TreeItem("Body", 7));
-                    CL_Nodes.get(5).getPositionProp().bind(center.getClNodes().get(11).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
-                    ArrayList<VP_TreeItem> CL_B_Nodes = new ArrayList();
-                    for (int i = 1; i <= currentUser.getCovlet().getNumbParagraphs(); i++) {
-                        CL_B_Nodes.add(new VP_TreeItem("Paragraph " + i, 7));
-                        CL_B_Nodes.get(i - 1).getPositionProp().bind(center.getClNodes().get(11).layoutYProperty().subtract(20).add(i * 50).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
-                    }
-                    CL_Nodes.get(5).getChildren().addAll(CL_B_Nodes);
+                    CL_Nodes.get(5).getPositionProp().bind(center.getClNodes().get(11).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     CL_Nodes.add(new VP_TreeItem("Closing", 7));
-                    CL_Nodes.get(6).getPositionProp().bind(center.getClNodes().get(12).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(6).getPositionProp().bind(center.getClNodes().get(12).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     CL_Nodes.add(new VP_TreeItem("Signature", 7));
-                    CL_Nodes.get(7).getPositionProp().bind(center.getClNodes().get(13).layoutYProperty().subtract(20).divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent())).getChildren().get(0))).heightProperty().subtract(center.heightProperty())));
+                    CL_Nodes.get(7).getPositionProp().bind(center.getClNodes().get(13).layoutYProperty()
+                            .subtract(20)
+                            .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
+                                    .getChildren().get(0))).heightProperty()
+                                    .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_S_Nodes = new ArrayList();
                     CL_S_Nodes.add(new VP_TreeItem("First Name", 4));
                     CL_S_Nodes.add(new VP_TreeItem("Middle Name", 4));
                     CL_S_Nodes.add(new VP_TreeItem("Last Name", 4));
                     CL_Nodes.get(7).getChildren().addAll(CL_S_Nodes);
                     cl.getChildren().addAll(CL_Nodes);
-                } else if (leftTree.getFalseRoot().getChildren().size() > 2) {
-                    // update the dynamically added custom nodes, this is not login
-
-                    // cover letter paragraphs
-                    VP_TreeItem clBody = (VP_TreeItem) leftTree.getFalseRoot().getChildren().get(4).getChildren().get(5);
-                    while (clBody.getChildren().size() > currentUser.getCovlet().getNumbParagraphs()) {
-                        clBody.getChildren().remove(clBody.getChildren().size() - 1);
-                    }
-                    while (clBody.getChildren().size() < currentUser.getCovlet().getNumbParagraphs()) {
-                        clBody.getChildren().add(new VP_TreeItem("Paragraph " + (clBody.getChildren().size() + 1), 7));
+                    updateTree(fromPage);
+                } else if (falseRootChildren.size() > 2) {
+                    // update the dynamically added custom nodes
+                    if (fromPage == 0) {
+                        for (int i = 7; i < 22; i++) {
+                            updateDynamicTree(i);
+                        }
+                    } else {
+                        updateDynamicTree(fromPage);
                     }
                 }
-                if (leftTree.getFalseRoot().getChildren().size() <= 5 && (currentUser.getBcard().hasCompletedBusinessCard()
+                if (falseRootChildren.size() <= 5 && (currentUser.getBcard().hasCompletedBusinessCard()
                         || currentUser.getCovlet().hasCompletedCoverLetter()
                         || currentUser.getResume().hasCompletedResume())) {
-                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Document Themes", 8));
-                    leftTree.getFalseRoot().getChildren().add(new VP_TreeItem("Distribute Documents", 10));
+                    falseRootChildren.add(new VP_TreeItem("Document Themes", 8));
+                    falseRootChildren.add(new VP_TreeItem("Distribute Documents", 10));
                 }
             }
         } else {
-            leftTree.getFalseRoot().getChildren().clear();
+            falseRootChildren.clear();
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * newUserSet()
-     * - Makes changes throughout the GUI, triggered when the current user
-     *   has changed. If the user is logged in, the inactivity timer is set.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Called by updateTree(), this function either adds or deletes tree
+     * branches representing the dynamic fields added to or deleted from
+     * document forms as desired by the user.
+     *
+     * @param fromPage Integer value representing the page of the wizard from
+     * which a call to updateTree() originates. The purpose of fromPage is to
+     * limit tree updates only to relevant branches.
+     * @since 1.0
+     */
+    private void updateDynamicTree(int fromPage) {
+        //-------- Initialization Start ----------\\
+        VP_Resume resume = currentUser.getResume();
+        ObservableList<TreeItem<String>> falseRootChildren = leftTree.getFalseRoot().getChildren();
+        VP_PageDivision div;
+        int count;
+        //-------- Initialization End ------------\\
+
+        // cover letter paragraphs
+        if (fromPage == 6 || fromPage == 7) {
+            div = center.getCovLetEditBox();
+            VP_TreeItem clBody = (VP_TreeItem) falseRootChildren.get(4).getChildren().get(5);
+            while (clBody.getChildren().size() > currentUser.getCovlet().getNumbParagraphs()) {
+                ((VP_TreeItem) (clBody.getChildren().get(clBody.getChildren().size() - 1))).getPositionProp().unbind();
+                clBody.getChildren().remove(clBody.getChildren().size() - 1);
+            }
+            while (clBody.getChildren().size() < currentUser.getCovlet().getNumbParagraphs()) {
+                clBody.getChildren().add(new VP_TreeItem("Paragraph " + (clBody.getChildren().size() + 1), 7));
+                ((VP_TreeItem) (clBody.getChildren().get(clBody.getChildren().size() - 1))).getPositionProp().bind(
+                        ((VP_PageSubdivision) (div.getChildren().get(6))).getChildren().get(clBody.getChildren().size()).layoutYProperty()
+                        .add(div.layoutYProperty().add(div.getChildren().get(6).layoutYProperty()))
+                        .divide(div.heightProperty().add(div.layoutYProperty()).subtract(center.heightProperty())));
+            }
+        } else if (fromPage > 12 && fromPage < 22) {
+            // resume
+            VP_TreeItem resItem = (VP_TreeItem) falseRootChildren.get(2).getChildren().get(fromPage - 11);
+            switch (fromPage) {
+                case 13:
+                    div = center.getResumeEducationBox();
+                    count = resume.getNumbEducation();
+                    break;
+                case 14:
+                    div = center.getResumeExperienceBox();
+                    count = resume.getNumbExperience();
+                    break;
+                case 15:
+                    div = center.getResumeAchievementsBox();
+                    count = resume.getNumbAchievements();
+                    break;
+                case 16:
+                    div = center.getResumeCommunityBox();
+                    count = resume.getNumbCommunity();
+                    break;
+                case 17:
+                    div = center.getResumeQualificationsBox();
+                    count = resume.getNumbQualification();
+                    break;
+                case 18:
+                    div = center.getResumeHighlightsBox();
+                    count = resume.getNumbHighlights();
+                    break;
+                case 19:
+                    div = center.getResumeLanguagesBox();
+                    count = resume.getNumbLanguages();
+                    break;
+                case 20:
+                    div = center.getResumeSoftwareBox();
+                    count = resume.getNumbSoftware();
+                    break;
+                case 21:
+                    div = center.getResumeReferencesBox();
+                    count = resume.getNumbReferences();
+                    break;
+                default:
+                    div = center.getResumeEducationBox();
+                    count = resItem.getChildren().size();
+                    break;
+            }
+            while (resItem.getChildren().size() > count) {
+                ((VP_TreeItem) (resItem.getChildren().get(resItem.getChildren().size() - 1))).getPositionProp().unbind();
+                resItem.getChildren().remove(resItem.getChildren().size() - 1);
+            }
+            while (resItem.getChildren().size() < count) {
+                resItem.getChildren().add(new VP_TreeItem("Entry " + (resItem.getChildren().size() + 1), fromPage));
+                ((VP_TreeItem) (resItem.getChildren().get(resItem.getChildren().size() - 1))).getPositionProp()
+                        .bind(div.layoutYProperty().add(div.getChildren().get(resItem.getChildren().size() + 1)
+                                        .layoutYProperty().subtract(8 * resItem.getChildren().size())).divide(div.heightProperty()
+                                        .add(div.layoutYProperty()).subtract(center.heightProperty())));
+            }
+        }
+    }
+
+    /**
+     * Makes changes throughout the GUI, triggered when the current user has
+     * changed. If the user is logged in, the inactivity timer is set.
+     *
+     * @since 1.0
+     */
     public void newUserSet() {
         header.getAdminMenu().setDisable(true);
         header.getAdminMenu().setText("");
@@ -433,13 +592,13 @@ public class VP_GUIController {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * createShell()
-     * - Creates an empty BorderPane and its children to be built after the
-     *   stage is showing and while the database is being checked.
-     * - No paramters.
-     * - Returns the empty GUI BorderPane.
-     *------------------------------------------------------------------------*/
+    /**
+     * Creates an empty BorderPane and its children to be built after the stage
+     * is showing and while the database is being checked.
+     *
+     * @return The empty GUI BorderPane.
+     * @since 1.0
+     */
     private BorderPane createShell() {
         //-------- Initialization Start ----------\\
         BorderPane guiShell = new BorderPane();
@@ -452,13 +611,12 @@ public class VP_GUIController {
         return guiShell;
     }
 
-    /*------------------------------------------------------------------------*
-     * load()
-     * - Configures and/or checks the database and builds the gui components
-     *   as background tasks/services. 
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Configures and/or checks the database and builds the GUI components as
+     * background tasks/services.
+     *
+     * @since 1.0
+     */
     private void load() {
         //-------- Initialization Start ----------\\
         LoadingThread loadDB;
@@ -494,7 +652,7 @@ public class VP_GUIController {
         guiTaskLabels.add("Building Footer");
         guiTaskLabels.add("Application Build Complete");
         for (int i = 0; i < guiTaskLabels.size(); i++) {
-            guiTasks.add(new LoadGUITask(i, this));
+            guiTasks.add(new LoadGUITask(i));
         }
         for (int i = 0; i < dbTaskLabels.size(); i++) {
             dbTasks.add(new LoadDBTask(i));
@@ -507,14 +665,16 @@ public class VP_GUIController {
         loadGUI.start();
     }
 
-    /*------------------------------------------------------------------------*
-     * requestDBLocation()
-     * - Displays a dialog requesting the database server location. If the user
-     *   cancels this, the program exits.
-     * - Parameter type. type = 0 indicates first time showing this dialog.
-     *   type = 1 indicates that the dialog is being shown again.
-     * - Returns a string array of the database server url and port.
-     *------------------------------------------------------------------------*/
+    /**
+     * Displays a dialog requesting the database server location. If the user
+     * cancels this, the program exits.
+     *
+     * @param type When type is 0, this indicates the first time showing this
+     * dialog. When type is 1, this indicates that the dialog is being shown
+     * again.
+     * @return A string array of the database server URL and port.
+     * @since 1.0
+     */
     private String[] requestDBLocation(int type) {
         //-------- Initialization Start ----------\\
         Optional result;
@@ -551,14 +711,17 @@ public class VP_GUIController {
         return loc;
     }
 
-    /*------------------------------------------------------------------------*
-     * requestAdminCred()
-     * - Displays a dialog requesting the database admin user credentials.
-     *   If the user cancels this, the program exits.
-     * - Parameter type. type = 0 indicates first time showing this dialog.
-     *   type = 1 indicates that the dialog is being shown again.
-     * - Returns a string array of the database admin username and password.
-     *------------------------------------------------------------------------*/
+    /**
+     * Displays a dialog requesting the database administrator user credentials.
+     * If the user cancels this, the program exits.
+     *
+     * @param type When type is 0, this indicates the first time showing this
+     * dialog. When type is 1, this indicates that the dialog is being shown
+     * again.
+     * @return A string array of the database administrator username and
+     * password.
+     * @since 1.0
+     */
     private String[] requestAdminCred(int type) {
         //-------- Initialization Start ----------\\
         Optional result;
@@ -596,16 +759,16 @@ public class VP_GUIController {
         return cred;
     }
 
-    /*------------------------------------------------------------------------*
-     * requestVPAdmin()
-     * - Displays a dialog requesting the VaqPack admin user credentials, as
-     *   well as confirmation of database server admin credentials.
-     *   If the user cancels this, the program exits.
-     * - Parameter type. type = 0 indicates first time showing this dialog.
-     *   type = 1 indicates that the dialog is being shown again.
-     * - Returns a string array of the database admin username and password and
-     *   the VaqPack admin user email and password.
-     *------------------------------------------------------------------------*/
+    /**
+     * Displays a dialog requesting the VaqPack administrator  user credentials, 
+     * as well as confirmation of database server administrator credentials.
+     * If the user cancels this, the program exits.
+     * 
+     * @param type When type is 0, this indicates first time showing this dialog.
+     * @return A string array of the database administrator username and password 
+     * and the VaqPack administrator user email and password.
+     * @since 1.0
+     */
     private String[] requestVPAdmin(int type) {
         //-------- Initialization Start ----------\\
         Optional result;
@@ -695,12 +858,11 @@ public class VP_GUIController {
         return cred;
     }
 
-    /*------------------------------------------------------------------------*
-     * exposeGUI()
-     * - Hides the loader and makes the GUI visible
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Hides the loader and makes the GUI visible
+     * 
+     * @since 1.0
+     */
     private void exposeGUI() {
         mainLayout.getChildren().get(0).setVisible(false);
         mainLayout.getChildren().get(1).setVisible(true);
@@ -709,12 +871,17 @@ public class VP_GUIController {
     /*#########################################################################/
      * SUBCLASSES                                                     /
      *########################################################################*/
-    /*------------------------------------------------------------------------*
-     * Subclass ClosingSequence
-     * - Prevents the window from closing before the user saves things.
-     *------------------------------------------------------------------------*/
+    /**
+     * Prevents the window from closing before the user saves things.
+     *
+     * @since 1.0
+     */
     protected class ClosingSequence implements EventHandler {
 
+        /**
+         * @param event A general event of no specific type.
+         * @since 1.0
+         */
         @Override
         public void handle(Event event) {
             //-------- Initialization Start ----------\\
@@ -732,17 +899,22 @@ public class VP_GUIController {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass LoadDBTasks
-     * - Defines the runnable wrappers for the datatbase tasks.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the runnable wrappers for the datatbase tasks.
+     * 
+     * @since 1.0
+     */
     private class LoadDBTask implements Runnable {
 
         private final int stage;
         private boolean adminCheck;
-        private CountDownLatch adminlatch,
-                latch;
+        private CountDownLatch adminlatch, latch;
 
+        /**
+         * @param stage The current stage of database checking. Depending on the 
+         * stage, the database task is run differently.
+         * @since 1.0
+         */
         public LoadDBTask(int stage) {
             this.stage = stage;
         }
@@ -756,7 +928,7 @@ public class VP_GUIController {
             //-------- Initialization End ------------\\
 
             Platform.runLater(() -> (loader.setActivity1(dbTaskLabels.get(stage))));
-            if (stage == 0 || stage == 1) {
+            if (stage <= 1) {
                 while (!complete) {
                     retrieveComplete = false;
                     while (!retrieveComplete) {
@@ -845,7 +1017,7 @@ public class VP_GUIController {
                         }
                     }
                 }
-            } else if (stage > 1 && stage < 17) {
+            } else if (stage <= 16) {
                 try {
                     if (stage < 16) {
                         dataM.checkDBTable(stage - 2);
@@ -931,18 +1103,21 @@ public class VP_GUIController {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass LoadGUITask
-     * - Defines the runnable wrappers for the gui tasks.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the runnable wrappers for the GUI tasks.
+     * 
+     * @since 1.0
+     */
     private class LoadGUITask implements Runnable {
 
-        private final VP_GUIController controller;
         private final int stage;
-
-        public LoadGUITask(int stage, VP_GUIController controller) {
+        /**
+         * @param stage  The current stage of GUI building. Depending on the 
+         * stage, a different portion of the GUI is constructed.
+         * @since 1.0
+         */
+        public LoadGUITask(int stage) {
             this.stage = stage;
-            this.controller = controller;
         }
 
         @Override
@@ -961,18 +1136,23 @@ public class VP_GUIController {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass LoadingThread
-     * - Runs the tasks during loading.
-     *------------------------------------------------------------------------*/
+    /**
+     * Runs the tasks during loading.
+     * 
+     * @since 1.0
+     */
     private class LoadingThread extends Thread {
 
         private final ArrayList<Runnable> tasks;
 
+        /**
+         * @param tasks The list of runnable tasks to be run.
+         * @since 1.0
+         */
         public LoadingThread(ArrayList<Runnable> tasks) {
             this.tasks = tasks;
         }
-
+        
         @Override
         public void run() {
             for (int i = 0; i < tasks.size(); i++) {
@@ -986,25 +1166,35 @@ public class VP_GUIController {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass VPErrorAlert
-     * - Custom-styled JavaFX Alert for errors.
-     *------------------------------------------------------------------------*/
+    /**
+     * Custom-styled JavaFX Alert for errors.
+     * @since 1.0
+     */
     private class VPErrorAlert extends Alert {
 
+        /**
+         * @param alertType Typically set to error type, but is prepared for 
+         * adjustments.
+         * @since 1.0
+         */
         public VPErrorAlert(AlertType alertType) {
             super(alertType);
-            this.getDialogPane().getStylesheets().add(this.getClass().getResource("/vpStyle.css").toExternalForm());
+            this.getDialogPane().getStylesheets().add(this.getClass()
+                    .getResource("/vpStyle.css").toExternalForm());
             this.getDialogPane().getStyleClass().add("errorAlert");
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass UpdateActivity
-     * - Resets the inactivity timer. If a warning is showing, it closes.
-     *------------------------------------------------------------------------*/
+    /**
+     * Resets the inactivity timer. If a warning is showing, it closes.
+     * @since 1.0
+     */
     private class UpdateActivity implements EventHandler {
 
+        /**
+         * @param event
+         * @since 1.0
+         */
         @Override
         public void handle(Event event) {
             sessionSeconds = USER_INACTIVITY_LIMIT;
@@ -1050,13 +1240,19 @@ public class VP_GUIController {
     /**
      * Accessor method.
      *
-     * @return The VP_Left object.
+     * @return The VP_Left GUI object.
      * @since 1.0
      */
     protected VP_Left getLeftTree() {
         return leftTree;
     }
 
+    /**
+     * Accessor method.
+     * 
+     * @return The VP_Center GUI object.
+     * @since 1.0
+     */
     protected VP_Center getCenter() {
         return center;
     }

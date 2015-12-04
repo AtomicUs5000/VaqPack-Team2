@@ -1,15 +1,8 @@
-/*-----------------------------------------------------------------------------*
- * VP_Loader.java
- * - Everything involving the header of the gui
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_Loader.java  - Everything involving the header of the GUI.
  * FILE ID 1400
- *-----------------------------------------------------------------------------*/
+ */
+
 package vaqpack;
 
 import javafx.event.ActionEvent;
@@ -28,6 +21,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import vaqpack.components.VP_Dialog;
 
+/**
+ * 
+ * 
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_Header extends VBox {
 
     private final VP_GUIController controller;
@@ -83,7 +87,7 @@ public class VP_Header extends VBox {
         //-------- Initialization End ------------\\
 
         // Menu actions
-        userLogout.setOnAction(new LogoutAction());
+        userLogout.setOnAction((e) -> {controller.logoutUser();});
         exitVP.setOnAction(controller.new ClosingSequence());
         toggleFull.setOnAction(new FullScreenToggle());
         changePass.setOnAction(controller.getCenter().new WizardMainAction(22));
@@ -115,20 +119,6 @@ public class VP_Header extends VBox {
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
-    /*------------------------------------------------------------------------*
-     * Subclass LogoutAction
-     * - Sequence of events that must occur before logout and after.
-     *------------------------------------------------------------------------*/
-    protected class LogoutAction implements EventHandler {
-
-        @Override
-        public void handle(Event event) {
-            // have to insert code here to verify logout if things have not been saved
-            // assuming nothing to save for now...
-            controller.logoutUser();
-        }
-    }
-    
     /*------------------------------------------------------------------------*
      * Subclass FullScreenToggle
      * - Allows the user to enter or exit fullscreen mode

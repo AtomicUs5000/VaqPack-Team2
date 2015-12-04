@@ -1,15 +1,7 @@
-/*-----------------------------------------------------------------------------*
- * VP_Center.java
- * - Everything involving the center view of the GUI (wizard)
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_Center.java - Everything involving the center view of the GUI (wizard).
  * FILE ID 1200
- *-----------------------------------------------------------------------------*/
+ */
 package vaqpack;
 
 import vaqpack.peripherals.VP_Sounds;
@@ -53,6 +45,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import vaqpack.components.VP_Dialog;
 
+/**
+ * 
+ * 
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_Center extends StackPane {
 
     private final VP_GUIController controller;
@@ -92,9 +95,9 @@ public class VP_Center extends StackPane {
             softwareFields, referencesFields;
     private final VP_FieldLabel dateValueLabel;
     private final VP_PageSubdivision dynamicBody;
-    private final VP_PageDivision resumeEducationBox, resumeExperienceBox, resumeAchievementsBox,
-            resumeCommunityBox, resumeQualificationsBox, resumeHighlightsBox,
-            resumeLanguagesBox, resumeSoftwareBox, resumeReferencesBox;
+    private final VP_PageDivision covLetEditBox, resumeEducationBox, resumeExperienceBox,
+            resumeAchievementsBox, resumeCommunityBox, resumeQualificationsBox,
+            resumeHighlightsBox, resumeLanguagesBox, resumeSoftwareBox, resumeReferencesBox;
 
     /*------------------------------------------------------------------------*
      * VP_Center()
@@ -213,6 +216,7 @@ public class VP_Center extends StackPane {
         addLanguageBtn = new VP_Button("Add Language", new AddLanguageAction());
         addSoftwareBtn = new VP_Button("Add Software", new AddSoftwareAction());
         addReferenceBtn = new VP_Button("Add Reference", new AddReferenceAction());
+        covLetEditBox = new VP_PageDivision("EDIT COVER LETTER");
         resumeEducationBox = new VP_PageDivision("RESUME -- EDUCATION");
         resumeExperienceBox = new VP_PageDivision("RESUME -- WORK EXPERIENCE");
         resumeAchievementsBox = new VP_PageDivision("RESUME -- AWARDS AND ACHIEVEMENTS");
@@ -739,7 +743,6 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
-        VP_PageDivision covLetEditBox = new VP_PageDivision("EDIT COVER LETTER");
         VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 140),
                 middleNameLabel = new VP_FieldLabel("*middle name:", 140),
                 lastNameLabel = new VP_FieldLabel("last name:", 140),
@@ -2001,6 +2004,8 @@ public class VP_Center extends StackPane {
                     coverLetterEditFields.add(23 + dynamicBody.getChildren().size(), new VP_TextArea());
                     VP_DivisionLine newParaLine = new VP_DivisionLine(new Node[]{newParaLabel, coverLetterEditFields.get(23 + dynamicBody.getChildren().size()), delParaBtn});
                     dynamicBody.getChildren().add(dynamicBody.getChildren().size() - 1, newParaLine);
+                    dynamicBody.layout();
+                    dynamicBody.getParent().layout();
                 }
                 for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
                     ((VP_FieldLabel) ((VP_DivisionLine) (dynamicBody.getChildren().get(i + 1))).getChildren().get(0)).setText("paragraph " + (i + 1) + ":");
@@ -2016,7 +2021,7 @@ public class VP_Center extends StackPane {
         // education
         if ((resumeEducationBox.getChildren().size() - 5) > thisRes.getNumbEducation()) {
             while ((resumeEducationBox.getChildren().size() - 5) > thisRes.getNumbEducation()) {
-                resumeEducationBox.getChildren().remove(3);
+                resumeEducationBox.getChildren().remove(resumeEducationBox.getChildren().size() - 4);
                 for (int i = 0; i < 6; i++) {
                     educationFields.remove(thisRes.getNumbEducation() * 6);
                 }
@@ -2057,7 +2062,7 @@ public class VP_Center extends StackPane {
         // experience
         if ((resumeExperienceBox.getChildren().size() - 5) > thisRes.getNumbExperience()) {
             while ((resumeExperienceBox.getChildren().size() - 5) > thisRes.getNumbExperience()) {
-                resumeExperienceBox.getChildren().remove(3);
+                resumeExperienceBox.getChildren().remove(resumeExperienceBox.getChildren().size() - 4);
                 for (int i = 0; i < 5; i++) {
                     experienceFields.remove(thisRes.getNumbExperience() * 5);
                 }
@@ -2095,7 +2100,7 @@ public class VP_Center extends StackPane {
         // references
         if ((resumeReferencesBox.getChildren().size() - 5) > thisRes.getNumbReferences()) {
             while ((resumeReferencesBox.getChildren().size() - 5) > thisRes.getNumbReferences()) {
-                resumeReferencesBox.getChildren().remove(3);
+                resumeReferencesBox.getChildren().remove(resumeReferencesBox.getChildren().size() - 4);
                 for (int i = 0; i < 6; i++) {
                     referencesFields.remove(thisRes.getNumbReferences() * 6);
                 }
@@ -2136,7 +2141,7 @@ public class VP_Center extends StackPane {
         // achievements
         if ((resumeAchievementsBox.getChildren().size() - 5) > thisRes.getNumbAchievements()) {
             while ((resumeAchievementsBox.getChildren().size() - 5) > thisRes.getNumbAchievements()) {
-                resumeAchievementsBox.getChildren().remove(3);
+                resumeAchievementsBox.getChildren().remove(resumeAchievementsBox.getChildren().size() - 4);
                 for (int i = 0; i < 3; i++) {
                     achievementsFields.remove(thisRes.getNumbAchievements() * 3);
                 }
@@ -2168,7 +2173,7 @@ public class VP_Center extends StackPane {
         // community
         if ((resumeCommunityBox.getChildren().size() - 5) > thisRes.getNumbCommunity()) {
             while ((resumeCommunityBox.getChildren().size() - 5) > thisRes.getNumbCommunity()) {
-                resumeCommunityBox.getChildren().remove(3);
+                resumeCommunityBox.getChildren().remove(resumeCommunityBox.getChildren().size() - 4);
                 for (int i = 0; i < 3; i++) {
                     communityFields.remove(thisRes.getNumbCommunity() * 3);
                 }
@@ -2200,7 +2205,7 @@ public class VP_Center extends StackPane {
         // qualifications
         if ((resumeQualificationsBox.getChildren().size() - 5) > thisRes.getNumbQualification()) {
             while ((resumeQualificationsBox.getChildren().size() - 5) > thisRes.getNumbQualification()) {
-                resumeQualificationsBox.getChildren().remove(3);
+                resumeQualificationsBox.getChildren().remove(resumeQualificationsBox.getChildren().size() - 4);
                 qualificationsFields.remove(thisRes.getNumbQualification());
             }
         } else {
@@ -2221,7 +2226,7 @@ public class VP_Center extends StackPane {
         // highlights
         if ((resumeHighlightsBox.getChildren().size() - 5) > thisRes.getNumbHighlights()) {
             while ((resumeHighlightsBox.getChildren().size() - 5) > thisRes.getNumbHighlights()) {
-                resumeHighlightsBox.getChildren().remove(3);
+                resumeHighlightsBox.getChildren().remove(resumeHighlightsBox.getChildren().size() - 4);
                 highlightsFields.remove(thisRes.getNumbHighlights());
             }
         } else {
@@ -2242,7 +2247,7 @@ public class VP_Center extends StackPane {
         // languages
         if ((resumeLanguagesBox.getChildren().size() - 5) > thisRes.getNumbLanguages()) {
             while ((resumeLanguagesBox.getChildren().size() - 5) > thisRes.getNumbLanguages()) {
-                resumeLanguagesBox.getChildren().remove(3);
+                resumeLanguagesBox.getChildren().remove(resumeLanguagesBox.getChildren().size() - 4);
                 languagesFields.remove(thisRes.getNumbLanguages());
             }
         } else {
@@ -2261,10 +2266,10 @@ public class VP_Center extends StackPane {
             }
         }
         // software
-        if ((resumeHighlightsBox.getChildren().size() - 5) > thisRes.getNumbHighlights()) {
-            while ((resumeHighlightsBox.getChildren().size() - 5) > thisRes.getNumbHighlights()) {
-                resumeHighlightsBox.getChildren().remove(3);
-                highlightsFields.remove(thisRes.getNumbHighlights());
+        if ((resumeSoftwareBox.getChildren().size() - 5) > thisRes.getNumbSoftware()) {
+            while ((resumeSoftwareBox.getChildren().size() - 5) > thisRes.getNumbSoftware()) {
+                resumeSoftwareBox.getChildren().remove(resumeSoftwareBox.getChildren().size() - 4);
+                softwareFields.remove(thisRes.getNumbSoftware());
             }
         } else {
             while ((resumeSoftwareBox.getChildren().size() - 5) < thisRes.getNumbSoftware()) {
@@ -2281,7 +2286,6 @@ public class VP_Center extends StackPane {
                 softwareFields.get(i).textProperty().bindBidirectional(thisRes.getSoftware().get(i));
             }
         }
-        controller.updateTree();
     }
 
     private void saveCovLetFunction(int type) {
@@ -2330,6 +2334,7 @@ public class VP_Center extends StackPane {
             controller.getCurrentUser().getCovlet().save();
             if (controller.getCurrentUser().getCovlet().hasChanges()) {
                 updateDynamicFields();
+                controller.updateTree(7);
                 try {
                     controller.getDataM().saveCovLetData();
                 } catch (SQLException ex) {
@@ -2363,7 +2368,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < 6; i++) {
                 educationFields.remove((entryNumber - 1) * 6);
             }
-            resumeEducationBox.getChildren().remove(entryNumber + 1);
+            getResumeEducationBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getEducation().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getEducation().add(new ArrayList());
             for (int i = 0; i < 6; i++) {
@@ -2371,8 +2376,8 @@ public class VP_Center extends StackPane {
             }
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbEducation(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeEducationBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EDUCATION ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeEducationBox.getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteEducationAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeEducationBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EDUCATION ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeEducationBox().getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteEducationAction(i + 1));
                 }
                 for (int ii = 0; ii < 6; ii++) {
                     educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
@@ -2411,7 +2416,7 @@ public class VP_Center extends StackPane {
                     line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
-            resumeEducationBox.getChildren().add(resumeEducationBox.getChildren().size() - 3, educationDiv);
+            getResumeEducationBox().getChildren().add(getResumeEducationBox().getChildren().size() - 3, educationDiv);
             int ii = 0;
             for (int i = 6 * controller.getCurrentUser().getResume().getNumbEducation(); i < educationFields.size(); i++) {
                 educationFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(controller.getCurrentUser().getResume().getNumbEducation()).get(ii));
@@ -2465,6 +2470,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(13);
                     try {
                         controller.getDataM().saveResume(1);
                     } catch (SQLException ex) {
@@ -2496,7 +2502,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < 5; i++) {
                 experienceFields.remove((entryNumber - 1) * 5);
             }
-            resumeExperienceBox.getChildren().remove(entryNumber + 1);
+            getResumeExperienceBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getExperience().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getExperience().add(new ArrayList());
             for (int i = 0; i < 5; i++) {
@@ -2504,8 +2510,8 @@ public class VP_Center extends StackPane {
             }
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbExperience(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeExperienceBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EXPERIENCE ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeExperienceBox.getChildren().get(i + 2))).getChildren().get(6))).getChildren().get(0)).setOnAction(new DeleteExperienceAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeExperienceBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EXPERIENCE ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeExperienceBox().getChildren().get(i + 2))).getChildren().get(6))).getChildren().get(0)).setOnAction(new DeleteExperienceAction(i + 1));
                 }
                 for (int ii = 0; ii < 5; ii++) {
                     experienceFields.get((5 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(i).get(ii));
@@ -2541,7 +2547,7 @@ public class VP_Center extends StackPane {
                     line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4, delline);
-            resumeExperienceBox.getChildren().add(resumeExperienceBox.getChildren().size() - 3, experienceDiv);
+            getResumeExperienceBox().getChildren().add(getResumeExperienceBox().getChildren().size() - 3, experienceDiv);
             int ii = 0;
             for (int i = 5 * controller.getCurrentUser().getResume().getNumbExperience(); i < experienceFields.size(); i++) {
                 experienceFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(controller.getCurrentUser().getResume().getNumbExperience()).get(ii));
@@ -2595,6 +2601,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(14);
                     try {
                         controller.getDataM().saveResume(2);
                     } catch (SQLException ex) {
@@ -2626,7 +2633,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < 3; i++) {
                 achievementsFields.remove((entryNumber - 1) * 3);
             }
-            resumeAchievementsBox.getChildren().remove(entryNumber + 1);
+            getResumeAchievementsBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getAchievements().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getAchievements().add(new ArrayList());
             for (int i = 0; i < 3; i++) {
@@ -2634,8 +2641,8 @@ public class VP_Center extends StackPane {
             }
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbAchievements(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeAchievementsBox.getChildren().get(i + 2))).getChildren().get(0))).setText("AWARD/ACHIEVEMENT ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeAchievementsBox.getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteAchievementAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeAchievementsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("AWARD/ACHIEVEMENT ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeAchievementsBox().getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteAchievementAction(i + 1));
                 }
                 for (int ii = 0; ii < 3; ii++) {
                     achievementsFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(i).get(ii));
@@ -2665,7 +2672,7 @@ public class VP_Center extends StackPane {
                     line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             achievementDiv.getChildren().addAll(line0, line1, line2, delline);
-            resumeAchievementsBox.getChildren().add(resumeAchievementsBox.getChildren().size() - 3, achievementDiv);
+            getResumeAchievementsBox().getChildren().add(getResumeAchievementsBox().getChildren().size() - 3, achievementDiv);
             int ii = 0;
             for (int i = 3 * controller.getCurrentUser().getResume().getNumbAchievements(); i < achievementsFields.size(); i++) {
                 achievementsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(controller.getCurrentUser().getResume().getNumbAchievements()).get(ii));
@@ -2717,6 +2724,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(15);
                     try {
                         controller.getDataM().saveResume(3);
                     } catch (SQLException ex) {
@@ -2748,7 +2756,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < 3; i++) {
                 communityFields.remove((entryNumber - 1) * 3);
             }
-            resumeCommunityBox.getChildren().remove(entryNumber + 1);
+            getResumeCommunityBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getCommunity().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getCommunity().add(new ArrayList());
             for (int i = 0; i < 3; i++) {
@@ -2756,8 +2764,8 @@ public class VP_Center extends StackPane {
             }
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbCommunity(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeCommunityBox.getChildren().get(i + 2))).getChildren().get(0))).setText("EVENT ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeCommunityBox.getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteCommunityAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeCommunityBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EVENT ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeCommunityBox().getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteCommunityAction(i + 1));
                 }
                 for (int ii = 0; ii < 3; ii++) {
                     communityFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(i).get(ii));
@@ -2787,7 +2795,7 @@ public class VP_Center extends StackPane {
                     line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             communityDiv.getChildren().addAll(line0, line1, line2, delline);
-            resumeCommunityBox.getChildren().add(resumeCommunityBox.getChildren().size() - 3, communityDiv);
+            getResumeCommunityBox().getChildren().add(getResumeCommunityBox().getChildren().size() - 3, communityDiv);
             int ii = 0;
             for (int i = 3 * controller.getCurrentUser().getResume().getNumbCommunity(); i < communityFields.size(); i++) {
                 communityFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(controller.getCurrentUser().getResume().getNumbCommunity()).get(ii));
@@ -2839,6 +2847,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(16);
                     try {
                         controller.getDataM().saveResume(4);
                     } catch (SQLException ex) {
@@ -2868,13 +2877,13 @@ public class VP_Center extends StackPane {
             }
             controller.getCurrentUser().getResume().setNumbQualification(controller.getCurrentUser().getResume().getNumbQualification() - 1);
             qualificationsFields.remove(entryNumber - 1);
-            resumeQualificationsBox.getChildren().remove(entryNumber + 1);
+            getResumeQualificationsBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getQualifications().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getQualifications().add(new SimpleStringProperty());
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbQualification(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeQualificationsBox.getChildren().get(i + 2))).getChildren().get(0))).setText("QUALIFICATION #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeQualificationsBox.getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteQualificationAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeQualificationsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("QUALIFICATION #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeQualificationsBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteQualificationAction(i + 1));
                 }
                 qualificationsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(i));
             }
@@ -2895,7 +2904,7 @@ public class VP_Center extends StackPane {
             VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(controller.getCurrentUser().getResume().getNumbQualification())}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             qualificationDiv.getChildren().addAll(line0, delline);
-            resumeQualificationsBox.getChildren().add(resumeQualificationsBox.getChildren().size() - 3, qualificationDiv);
+            getResumeQualificationsBox().getChildren().add(getResumeQualificationsBox().getChildren().size() - 3, qualificationDiv);
             qualificationsFields.get(qualificationsFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(qualificationsFields.size() - 1));
             controller.getCurrentUser().getResume().setNumbQualification(newNumb);
             if (controller.getCurrentUser().getResume().getNumbQualification() == 9) {
@@ -2929,6 +2938,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(17);
                     try {
                         controller.getDataM().saveResume(5);
                     } catch (SQLException ex) {
@@ -2958,13 +2968,13 @@ public class VP_Center extends StackPane {
             }
             controller.getCurrentUser().getResume().setNumbHighlights(controller.getCurrentUser().getResume().getNumbHighlights() - 1);
             highlightsFields.remove(entryNumber - 1);
-            resumeHighlightsBox.getChildren().remove(entryNumber + 1);
+            getResumeHighlightsBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getHighlights().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getHighlights().add(new SimpleStringProperty());
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbHighlights(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeHighlightsBox.getChildren().get(i + 2))).getChildren().get(0))).setText("PERSONAL QUALITY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeHighlightsBox.getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteHighlightAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeHighlightsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("PERSONAL QUALITY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeHighlightsBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteHighlightAction(i + 1));
                 }
                 highlightsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(i));
             }
@@ -2985,7 +2995,7 @@ public class VP_Center extends StackPane {
             VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(controller.getCurrentUser().getResume().getNumbHighlights())}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             highlightDiv.getChildren().addAll(line0, delline);
-            resumeHighlightsBox.getChildren().add(resumeHighlightsBox.getChildren().size() - 3, highlightDiv);
+            getResumeHighlightsBox().getChildren().add(getResumeHighlightsBox().getChildren().size() - 3, highlightDiv);
             highlightsFields.get(highlightsFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(highlightsFields.size() - 1));
             controller.getCurrentUser().getResume().setNumbHighlights(newNumb);
             if (controller.getCurrentUser().getResume().getNumbHighlights() == 9) {
@@ -3019,6 +3029,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(18);
                     try {
                         controller.getDataM().saveResume(6);
                     } catch (SQLException ex) {
@@ -3048,13 +3059,13 @@ public class VP_Center extends StackPane {
             }
             controller.getCurrentUser().getResume().setNumbLanguages(controller.getCurrentUser().getResume().getNumbLanguages() - 1);
             languagesFields.remove(entryNumber - 1);
-            resumeLanguagesBox.getChildren().remove(entryNumber + 1);
+            getResumeLanguagesBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getLanguages().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getLanguages().add(new SimpleStringProperty());
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbLanguages(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeLanguagesBox.getChildren().get(i + 2))).getChildren().get(0))).setText("SECONDARY LANGUAGE #" + i);
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeLanguagesBox.getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteLanguageAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeLanguagesBox().getChildren().get(i + 2))).getChildren().get(0))).setText("SECONDARY LANGUAGE #" + i);
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeLanguagesBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteLanguageAction(i + 1));
                 }
                 languagesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(i));
             }
@@ -3075,7 +3086,7 @@ public class VP_Center extends StackPane {
             VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(controller.getCurrentUser().getResume().getNumbLanguages())}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             languageDiv.getChildren().addAll(line0, delline);
-            resumeLanguagesBox.getChildren().add(resumeLanguagesBox.getChildren().size() - 3, languageDiv);
+            getResumeLanguagesBox().getChildren().add(getResumeLanguagesBox().getChildren().size() - 3, languageDiv);
             languagesFields.get(languagesFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(languagesFields.size() - 1));
             controller.getCurrentUser().getResume().setNumbLanguages(newNumb);
             if (controller.getCurrentUser().getResume().getNumbLanguages() == 9) {
@@ -3113,6 +3124,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(19);
                     try {
                         controller.getDataM().saveResume(7);
                     } catch (SQLException ex) {
@@ -3142,13 +3154,13 @@ public class VP_Center extends StackPane {
             }
             controller.getCurrentUser().getResume().setNumbSoftware(controller.getCurrentUser().getResume().getNumbSoftware() - 1);
             softwareFields.remove(entryNumber - 1);
-            resumeSoftwareBox.getChildren().remove(entryNumber + 1);
+            getResumeSoftwareBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getSoftware().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getSoftware().add(new SimpleStringProperty());
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbSoftware(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeSoftwareBox.getChildren().get(i + 2))).getChildren().get(0))).setText("SOFTWARE PRODUCT #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeSoftwareBox.getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteSoftwareAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeSoftwareBox().getChildren().get(i + 2))).getChildren().get(0))).setText("SOFTWARE PRODUCT #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeSoftwareBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteSoftwareAction(i + 1));
                 }
                 softwareFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(i));
             }
@@ -3169,7 +3181,7 @@ public class VP_Center extends StackPane {
             VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(controller.getCurrentUser().getResume().getNumbSoftware())}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             softwareDiv.getChildren().addAll(line0, delline);
-            resumeSoftwareBox.getChildren().add(resumeSoftwareBox.getChildren().size() - 3, softwareDiv);
+            getResumeSoftwareBox().getChildren().add(getResumeSoftwareBox().getChildren().size() - 3, softwareDiv);
             softwareFields.get(softwareFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(softwareFields.size() - 1));
             controller.getCurrentUser().getResume().setNumbSoftware(newNumb);
             if (controller.getCurrentUser().getResume().getNumbSoftware() == 9) {
@@ -3203,6 +3215,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(20);
                     try {
                         controller.getDataM().saveResume(8);
                     } catch (SQLException ex) {
@@ -3234,7 +3247,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < 6; i++) {
                 referencesFields.remove((entryNumber - 1) * 6);
             }
-            resumeReferencesBox.getChildren().remove(entryNumber + 1);
+            getResumeReferencesBox().getChildren().remove(entryNumber + 1);
             controller.getCurrentUser().getResume().getReferences().remove(entryNumber - 1);
             controller.getCurrentUser().getResume().getReferences().add(new ArrayList());
             for (int i = 0; i < 6; i++) {
@@ -3242,8 +3255,8 @@ public class VP_Center extends StackPane {
             }
             for (int i = 0; i < controller.getCurrentUser().getResume().getNumbReferences(); i++) {
                 if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (resumeReferencesBox.getChildren().get(i + 2))).getChildren().get(0))).setText("REFERENCE #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (resumeReferencesBox.getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteReferenceAction(i + 1));
+                    ((Label) (((VP_PageSubdivision) (getResumeReferencesBox().getChildren().get(i + 2))).getChildren().get(0))).setText("REFERENCE #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeReferencesBox().getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteReferenceAction(i + 1));
                 }
                 for (int ii = 0; ii < 6; ii++) {
                     referencesFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(i).get(ii));
@@ -3282,7 +3295,7 @@ public class VP_Center extends StackPane {
                     line5 = new VP_DivisionLine(new Node[]{label5, referencesFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
                     delline = new VP_DivisionLine(new Node[]{delBtn});
             referenceDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
-            resumeReferencesBox.getChildren().add(resumeReferencesBox.getChildren().size() - 3, referenceDiv);
+            getResumeReferencesBox().getChildren().add(getResumeReferencesBox().getChildren().size() - 3, referenceDiv);
             int ii = 0;
             for (int i = 6 * controller.getCurrentUser().getResume().getNumbReferences(); i < referencesFields.size(); i++) {
                 referencesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(controller.getCurrentUser().getResume().getNumbReferences()).get(ii));
@@ -3362,6 +3375,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(21);
                     showScreen(11, 0);
                     try {
                         controller.getDataM().saveResume(9);
@@ -3404,6 +3418,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(12);
                     showScreen(11, 0);
                     try {
                         controller.getDataM().saveResume(0);
@@ -3439,6 +3454,7 @@ public class VP_Center extends StackPane {
                 controller.getDataM().loadCovLet(clID);
                 controller.getCurrentUser().setCurrentCoverLetterIndex(selectedLetter);
                 updateDynamicFields();
+                controller.updateTree(6);
                 showScreen(7, 0);
 
             } catch (SQLException ex) {
@@ -3463,6 +3479,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().setCurrentCoverLetterIndex(2);
             }
             updateDynamicFields();
+            controller.updateTree(6);
             saveCovLetFunction(0);
             showScreen(7, 0);
         }
@@ -3638,6 +3655,7 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getBcard().save();
                 if (controller.getCurrentUser().getBcard().hasChanges()) {
                     updateDynamicFields();
+                    controller.updateTree(5);
                     showScreen(3, 0);
                     try {
                         controller.getDataM().saveBCardData();
@@ -3760,6 +3778,7 @@ public class VP_Center extends StackPane {
                 personalInfoErrorLine.hide();
                 controller.getCurrentUser().save();
                 updateDynamicFields();
+                controller.updateTree(4);
                 showScreen(3, 0);
                 try {
                     controller.getDataM().saveUserData();
@@ -3865,6 +3884,7 @@ public class VP_Center extends StackPane {
                         // user login successful
                         resetLoginRegForms();
                         updateDynamicFields();
+                        controller.updateTree(0);
                         showScreen(3, 0);
                     }
                 } catch (SQLException ex) {
@@ -3932,6 +3952,7 @@ public class VP_Center extends StackPane {
                     controller.getDataM().userLogin(cred);
                     resetLoginRegForms();
                     updateDynamicFields();
+                    controller.updateTree(0);
                     showScreen(3, 0);
                 } else {
                     loginError.setText("The registration code is incorrect. Please try again.");
@@ -4209,5 +4230,45 @@ public class VP_Center extends StackPane {
 
     protected ArrayList<VP_PageSubdivision> getClNodes() {
         return clNodes;
+    }
+
+    protected VP_PageDivision getResumeEducationBox() {
+        return resumeEducationBox;
+    }
+
+    protected VP_PageDivision getResumeExperienceBox() {
+        return resumeExperienceBox;
+    }
+
+    protected VP_PageDivision getResumeAchievementsBox() {
+        return resumeAchievementsBox;
+    }
+
+    protected VP_PageDivision getResumeCommunityBox() {
+        return resumeCommunityBox;
+    }
+
+    protected VP_PageDivision getResumeQualificationsBox() {
+        return resumeQualificationsBox;
+    }
+
+    protected VP_PageDivision getResumeHighlightsBox() {
+        return resumeHighlightsBox;
+    }
+
+    protected VP_PageDivision getResumeLanguagesBox() {
+        return resumeLanguagesBox;
+    }
+
+    protected VP_PageDivision getResumeSoftwareBox() {
+        return resumeSoftwareBox;
+    }
+
+    protected VP_PageDivision getResumeReferencesBox() {
+        return resumeReferencesBox;
+    }
+
+    protected VP_PageDivision getCovLetEditBox() {
+        return covLetEditBox;
     }
 }

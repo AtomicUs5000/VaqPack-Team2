@@ -1,15 +1,8 @@
-/*-----------------------------------------------------------------------------*
- * VP_Left.java
- * - Everything involving the tree view (left side of GUI) of the wizard
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_Left.java - Everything involving the tree view (left side of GUI) of the wizard.
  * FILE ID 1300
- *-----------------------------------------------------------------------------*/
+ */
+
 package vaqpack;
 
 import vaqpack.peripherals.VP_Sounds;
@@ -26,6 +19,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * 
+ * 
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_Left extends VBox {
     private final VP_GUIController controller;
     private final TreeItem<String> falseRoot;
@@ -56,7 +60,8 @@ public class VP_Left extends VBox {
                     VP_Sounds.play(0);
                     int wizardNumber = (int) ((VP_TreeItem)treeView.getSelectionModel().getSelectedItem()).getWizardNumber();
                     double position = (double) ((VP_TreeItem)treeView.getSelectionModel().getSelectedItem()).getPositionProp().getValue();
-                    controller.quickJump(wizardNumber, position);
+                    controller.getCenter().cancelActionFunction();
+                    controller.getCenter().showScreen(wizardNumber, position);
                     System.out.println("position = " + ((VP_TreeItem)treeView.getSelectionModel().getSelectedItem()).getPositionProp().getValue());
                 }
                 catch (Exception e) {
