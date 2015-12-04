@@ -1,7 +1,6 @@
 /**
  * VP_Footer.java - Everything involving the footer of the GUI. FILE ID 1500
  */
-
 package vaqpack;
 
 import javafx.geometry.Insets;
@@ -12,8 +11,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
 /**
- * 
- * 
+ * The footer is the bottom of the main BorderPane layout. The footer extends
+ * HBox and consists of images on the right, and a dynamic field on the left
+ * that shows the email address of the currently logged in user.
+ *
  * @author William Dewald (Project Manager, Team-02)
  * @author Fernando Bazan
  * @author Erik Lopez
@@ -28,35 +29,36 @@ public class VP_Footer extends HBox {
     private final Pane footerLogo;
     private final Label footerCaption;
 
-    /*------------------------------------------------------------------------*
-     * VP_Footer()
-     * - Constructor. Adds empty panes for the footer information
-     * - No parameters.
-     *------------------------------------------------------------------------*/
+    /**
+     * Adds empty panes for the footer information and images.
+     *
+     * @param controller Stores the GUI controller for convenience in accessing 
+     * controller functions or classes accessed by the controller.
+     * @since 1.0
+     */
     protected VP_Footer(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
         footerLogo = new Pane();
         footerCaption = new Label();
         //-------- Initialization End ------------\\
-
-        this.setId("footer");
-        footerLogo.setId("footerLogo");
-        footerCaption.setId("footerCaption");
     }
 
-    /*------------------------------------------------------------------------*
-     * build()
-     * - Builds the gui footer. Called in a task to build in the background.
-     * - No Paramters
-     * - No Return
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the contents of the empty GUI footer. Called in a task to build in
+     * the background.
+     *
+     * @since 1.0
+     */
     protected void build() {
         //-------- Initialization Start ----------\\
         HBox leftFooterBox = new HBox();
         Label userLoggedInLabel = new Label();
         //-------- Initialization End ------------\\
-        
+
+        setId("footer");
+        footerLogo.setId("footerLogo");
+        footerCaption.setId("footerCaption");
         setAlignment(Pos.CENTER_RIGHT);
         setPrefHeight(40);
         setFillHeight(true);

@@ -46,8 +46,10 @@ import javax.xml.transform.TransformerException;
 import vaqpack.components.VP_Dialog;
 
 /**
- * 
- * 
+ * The center is the center of the main BorderPane layout. The center extends
+ * StackPane, where each layer of the StackPane corresponds to a wizard page.
+ * Some wizard pages may only be accessible under certain conditions.
+ *
  * @author William Dewald (Project Manager, Team-02)
  * @author Fernando Bazan
  * @author Erik Lopez
@@ -99,12 +101,14 @@ public class VP_Center extends StackPane {
             resumeAchievementsBox, resumeCommunityBox, resumeQualificationsBox,
             resumeHighlightsBox, resumeLanguagesBox, resumeSoftwareBox, resumeReferencesBox;
 
-    /*------------------------------------------------------------------------*
-     * VP_Center()
-     * - Constructor.
-     * - Parameter controller stored as member to access its data manager and
-     *   error function.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor. Initializes all of the components that require a reference
+     * to them in the future for dynamic page handling.
+     *
+     * @param controller Stores the GUI controller for convenience in accessing
+     * controller functions or classes accessed by the controller.
+     * @since 1.0
+     */
     protected VP_Center(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
@@ -227,22 +231,42 @@ public class VP_Center extends StackPane {
         resumeSoftwareBox = new VP_PageDivision("RESUME -- SOFTWARE");
         resumeReferencesBox = new VP_PageDivision("RESUME -- REFERENCES");
         //-------- Initialization End ------------\\
-
-        this.setId("center");
     }
 
-    /*------------------------------------------------------------------------*
-     * build()
-     * - Builds the GUI center which holds most of the content.
-     *   Called in a task, to build in the background.
-     *   The center is a stackpane, where each layer is an individual page
-     *   Layer 0 = Login Screen
-     *   Layer 1 = Reset Password Screen
-     *   Layer 2 = Temporary Testing grounds
-     * - No Paramters
-     * - No Return
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the GUI center which holds most of the content. Called in a task,
+     * to build in the background. The center extends StackPane, where each
+     * layer is an individual page.
+     * <ul>
+     * <li> Layer 0 = Login Screen </li>
+     * <li> Layer 1 = Reset Password Screen </li>
+     * <li> Layer 2 = Registration Screen </li>
+     * <li> Layer 3 = Overview Screen </li>
+     * <li> Layer 4 = Personal Information Screen </li>
+     * <li> Layer 5 = Business Card Screen </li>
+     * <li> Layer 6 = Cover Letters List Screen </li>
+     * <li> Layer 7 = Cover Letter Edit Screen </li>
+     * <li> Layer 8 = Themes List Screen Screen </li>
+     * <li> Layer 9 = Custom Theme Screen </li>
+     * <li> Layer 10 = Distribute Screen </li>
+     * <li> Layer 11 = Resume Status Screen </li>
+     * <li> Layer 12 = Resume Objective Screen </li>
+     * <li> Layer 13 = Resume Education Screen </li>
+     * <li> Layer 14 = Resume Experience Screen </li>
+     * <li> Layer 15 = Resume Achievements Screen </li>
+     * <li> Layer 16 = Resume Community Screen </li>
+     * <li> Layer 17 = Resume Qualifications Screen </li>
+     * <li> Layer 18 = Resume Highlights Screen </li>
+     * <li> Layer 19 = Resume Languages Screen </li>
+     * <li> Layer 20 = Resume Software Screen </li>
+     * <li> Layer 21 = Resume References Screen </li>
+     * <li> Layer 22 = Change Password Screen </li>
+     * </ul>
+     *
+     * @since 1.0
+     */
     protected void build() {
+        setId("center");
         getChildren().addAll(
                 buildLoginScreen(), //................screen 0
                 buildResetPasswordScreen(), //........screen 1
@@ -271,12 +295,13 @@ public class VP_Center extends StackPane {
         showScreen(0, 0);
     }
 
-    /*------------------------------------------------------------------------*
-     * showScreen()
-     * - Makes all center stackpane levels invisible except for the desired one.
-     * - Parameter screenNumber is the desired stackpane level to show.
-     * - No Return
-     *------------------------------------------------------------------------*/
+    /**
+     * Makes all center StackPane levels invisible except for the desired one.
+     *
+     * @param screenNumber The desired StackPane level to show.
+     * @param position The scroll position on the selected screen.
+     * @since 1.0
+     */
     protected void showScreen(int screenNumber, double position) {
         for (int i = 0; i < getChildren().size(); i++) {
             getChildren().get(i).setVisible(false);
@@ -302,13 +327,12 @@ public class VP_Center extends StackPane {
         ((ScrollPane) (getChildren().get(screenNumber))).setVvalue(position);
     }
 
-    /*------------------------------------------------------------------------*
-     * buildLoginScreen()
-     * - Creates the user login screen. Called by buildCenter().
-     *   A.K.A Screen 0
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Creates the user login screen. Called by buildCenter(). A.K.A Screen 0
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildLoginScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -348,13 +372,13 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResetPasswordScreen()
-     * - Creates the reset password screen. Called by buildCenter().
-     *   A.K.A Screen 1
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Creates the reset password screen. Called by buildCenter(). A.K.A Screen
+     * 1
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResetPasswordScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -395,13 +419,13 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildRegistrationScreen()
-     * - Creates the user registration screen. Called by buildCenter().
-     *   A.K.A Screen 2
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Creates the user registration screen. Called by buildCenter(). A.K.A
+     * Screen 2
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildRegistrationScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -440,15 +464,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildOverviewScreen()
-     * - Builds the Overview screen which provides access to the main
-     *   functionality of the program and lists the completion status of some of 
-     *   these functions for the logged in user.
-     *   A.K.A Screen 3
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the Overview screen which provides access to the main
+     * functionality of the program and lists the completion status of some of
+     * these functions for the logged in user. A.K.A Screen 3
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildOverviewScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -503,13 +526,13 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildPersonalInfoScreen()
-     * - Builds the screen where the user inputs personal information.
-     *   A.K.A Screen 4
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the screen where the user inputs personal information. A.K.A
+     * Screen 4
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildPersonalInfoScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -586,13 +609,12 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildBusinessCardScreen()
-     * - Builds the screen where the user edits the business card.
-     *   A.K.A Screen 5
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the screen where the user edits the business card. A.K.A Screen 5
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildBusinessCardScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -698,14 +720,13 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildCoverLettersStartScreen()
-     * - Builds the screen where the user sees the list of existing cover
-     *   letters or begins a new one.
-     *   A.K.A Screen 6
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the screen where the user sees the list of existing cover letters
+     * or begins a new one. A.K.A Screen 6
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildCoverLettersStartScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -714,7 +735,6 @@ public class VP_Center extends StackPane {
         VP_DivisionLine buttonLine = new VP_DivisionLine();
         VP_Button selectCoverLetterButton = new VP_Button("Load", new LoadCoverLetterAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction());
-        VP_PageSubdivision select = new VP_PageSubdivision("SELECT", false);
         //-------- Initialization End ------------\\
         coverLetterDetails.setParaText("You are currently using 0 out of 3 cover letters available to you."
                 + "\nClick \"Start New Cover Letter\" to begin working on a new cover letter.");
@@ -732,13 +752,13 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildCoverLettersEditScreen()
-     * - Builds the screen where the user edits a selected cover letter. 
-     *   A.K.A Screen 7
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the screen where the user edits a selected cover letter. 
+     * A.K.A Screen 7
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildCoverLettersEditScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -942,15 +962,15 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildThemesStartScreen()
-     * - Builds the screen where the user sees a list of available themes and 
+    /**
+     * Builds the screen where the user sees a list of available themes and 
      *   applies them to documents. From here, a user may select to build a
      *   custom theme. 
      *   A.K.A Screen 8
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildThemesStartScreen() {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
@@ -965,19 +985,18 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-
-    /*------------------------------------------------------------------------*
-     * buildThemesEditScreen()
-     * - Builds the screen where the user edits a selected custom theme. 
+    
+    /**
+     * Builds the screen where the user edits a selected custom theme. 
      *   A.K.A Screen 9
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildThemesEditScreen() {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision themeEditBox = new VP_PageDivision("EDIT CUSTOM THEME");
-
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(themeEditBox);
         screenContent.setSpacing(30);
@@ -987,22 +1006,20 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildDistributeScreen()
-     * - Builds the screen where the user selects which documents to send as
+    /**
+     * Builds the screen where the user selects which documents to send as
      *   attachments to a selected contact. User may also edit the list of
      *   stored contacts.
      *   A.K.A Screen 10
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildDistributeScreen() {
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision distributeBox = new VP_PageDivision("DISTRIBUTE DOCUMENTS");
-
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-
         screenContent.getChildren().addAll(distributeBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
@@ -1011,15 +1028,15 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeStartScreen()
-     * - Builds the screen displaying the completion status of the various 
+    /**
+     * Builds the screen displaying the completion status of the various 
      *   resume sections. From here, the user navigates to these sections to
      *   edit them, or may choose to create a custom section.
      *   A.K.A Screen 11
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeStartScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1078,15 +1095,15 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-
-    /*------------------------------------------------------------------------*
-     * buildResumeObjectiveScreen()
-     * - Builds the screen displaying the Heading and Objective sections of the
+    
+    /**
+     * Builds the screen displaying the Heading and Objective sections of the
      *   resume.
      *   A.K.A. screen 12
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeObjectiveScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1175,14 +1192,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeEducationScreen()
-     * - Builds the screen displaying the Education section of the
+    /**
+     * Builds the screen displaying the Education section of the
      *   resume.
      *   A.K.A. screen 13
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeEducationScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1230,14 +1247,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeExperienceScreen()
-     * - Builds the screen displaying the Work Experience section of the
+    /**
+     * Builds the screen displaying the Work Experience section of the
      *   resume.
      *   A.K.A. screen 14
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeExperienceScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1283,14 +1300,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeAchievementsScreen()
-     * - Builds the screen displaying the Awards and Achievements section of the
+    /**
+     * Builds the screen displaying the Awards and Achievements section of the
      *   resume.
      *   A.K.A. screen 15
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeAchievementsScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1330,14 +1347,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeCommunityScreen()
-     * - Builds the screen displaying the Community section of the
+    /**
+     * Builds the screen displaying the Community section of the
      *   resume.
      *   A.K.A. screen 16
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeCommunityScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1377,14 +1394,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeQualificationsScreen()
-     * - Builds the screen displaying the Qualifications section of the
+    /**
+     * Builds the screen displaying the Qualifications section of the
      *   resume.
      *   A.K.A. screen 17
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeQualificationsScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1417,14 +1434,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeHighlightsScreen()
-     * - Builds the screen displaying the Highlights section of the
+    /**
+     * Builds the screen displaying the Highlights section of the
      *   resume.
      *   A.K.A. screen 18
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeHighlightsScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1458,14 +1475,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeLanguagesScreen()
-     * - Builds the screen displaying the Languages section of the
+    /**
+     * Builds the screen displaying the Languages section of the
      *   resume.
      *   A.K.A. screen 19
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeLanguagesScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1497,15 +1514,15 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-
-    /*------------------------------------------------------------------------*
-     * buildResumeSoftwareScreen()
-     * - Builds the screen displaying the Software section of the
+    
+    /**
+     * Builds the screen displaying the Software section of the
      *   resume.
      *   A.K.A. screen 20
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeSoftwareScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1539,14 +1556,14 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildResumeReferencesScreen()
-     * - Builds the screen displaying the References section of the
+    /**
+     * Builds the screen displaying the References section of the
      *   resume.
      *   A.K.A. screen 21
-     * - No parameters.
-     * - Returns a scroller that gets applied to a center stackpane level.
-     *------------------------------------------------------------------------*/
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildResumeReferencesScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1595,7 +1612,14 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
-    
+
+    /**
+     * Builds the screen displaying the fields for password changing.
+     *   A.K.A. screen 22
+     *
+     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @since 1.0
+     */
     private ScrollPane buildChangePasswordScreen() {
         //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
@@ -1606,8 +1630,7 @@ public class VP_Center extends StackPane {
                 newPassConfirmLabel = new VP_FieldLabel("confirm new\npassword:", 100);
         VP_Button submitBtn = new VP_Button("Submit", new ChangePassAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(22));
-        VP_DivisionLine
-                oldPassLine = new VP_DivisionLine(new Node[]{oldPassLabel, oldPass}),
+        VP_DivisionLine oldPassLine = new VP_DivisionLine(new Node[]{oldPassLabel, oldPass}),
                 newPassLine = new VP_DivisionLine(new Node[]{newPassLabel, newPass}),
                 changePassStrengthLine = new VP_DivisionLine(new Node[]{changePassStrengthLabel}),
                 newPassConfirmLine = new VP_DivisionLine(new Node[]{newPassConfirmLabel, newPassConfirm}),
@@ -1627,12 +1650,11 @@ public class VP_Center extends StackPane {
         return screen;
     }
 
-    /*------------------------------------------------------------------------*
-     * resetLoginRegForms()
-     * - Restores the login page back to its original state.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Restores the login page back to its original state.
+     * 
+     * @since 1.0
+     */
     private void resetLoginRegForms() {
         loginEmail.setText("");
         loginEmail.setDisable(false);
@@ -1651,12 +1673,11 @@ public class VP_Center extends StackPane {
         accessLine.hide();
     }
 
-    /*------------------------------------------------------------------------*
-     * resetResetPasswordForms()
-     * - Restores the reset password page back to its original state.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Restores the reset password page back to its original state.
+     * 
+     * @since 1.0
+     */
     private void resetResetPasswordForms() {
         resetEmail.setText("");
         resetEmail.setDisable(false);
@@ -1685,12 +1706,11 @@ public class VP_Center extends StackPane {
         resetNewPassConfirm.showValid();
     }
 
-    /*------------------------------------------------------------------------*
-     * resetRegisterForms()
-     * - Restores the registration page back to its original state.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Restores the registration page back to its original state.
+     * 
+     * @since 1.0
+     */
     private void resetRegisterForms() {
         registerEmail.setText("");
         registerEmail.showValid();
@@ -1702,12 +1722,11 @@ public class VP_Center extends StackPane {
         registerErrorLine.hide();
     }
 
-    /*------------------------------------------------------------------------*
-     * updateResumeStatus()
-     * - Adjust the resume status page depending on what the user has completed.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Adjusts the resume status page depending on what the user has completed.
+     * 
+     * @since 1.0
+     */
     private void updateResumeStatus() {
         //-------- Initialization Start ----------\\
         VP_Resume thisRes = controller.getCurrentUser().getResume();
@@ -1770,12 +1789,11 @@ public class VP_Center extends StackPane {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * updateOverview()
-     * - Adjust the overview page depending on what the user has completed.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Adjusts the overview page depending on what the user has completed.
+     * 
+     * @since 1.0
+     */
     private void updateOverview() {
         //-------- Initialization Start ----------\\
         VP_User thisUser = controller.getCurrentUser();
@@ -1852,6 +1870,11 @@ public class VP_Center extends StackPane {
         }
     }
 
+    /**
+     * Resets fields and bound data when a user cancels.
+     * 
+     * @since 1.0
+     */
     protected void cancelActionFunction() {
         VP_Sounds.play(0);
         bcardError.setParaText("");
@@ -1893,17 +1916,20 @@ public class VP_Center extends StackPane {
         oldPass.setText("");
         newPass.setText("");
         newPassConfirm.setText("");
-        updateDynamicFields();
+        updateDynamicContent();
     }
 
-    protected void cancelActionPreloginFunction() {
-        VP_Sounds.play(0);
-        resetLoginRegForms();
-        resetResetPasswordForms();
-        resetRegisterForms();
-    }
-
-    protected void updateDynamicFields() {
+    /**
+     * Changes visibility and text values of various components base don recent 
+     * user activity. Also, this function adds or removes components from various pages 
+     * depending on what has been added or removed by the user. This function must 
+     * be called whenever a user logs out, a new user logs in, or a user loads a different
+     * cover letter to work on.
+     * This function does not update the tree view.
+     * 
+     * @since 1.0
+     */
+    protected void updateDynamicContent() {
         int numbLetters = 0;
         VP_Resume thisRes = controller.getCurrentUser().getResume();
         startNewBtn.setVisible(true);
@@ -2288,6 +2314,15 @@ public class VP_Center extends StackPane {
         }
     }
 
+    /**
+     * Saves the currently loaded cover letter. Called when a user submits
+     * changes to a cover letter or called when the user selects to add a new 
+     * cover letter.
+     * 
+     * @param type If type is 1, this means that changes to a cover letter have 
+     * been made and this function should use field input verification.
+     * @since 1.0
+     */
     private void saveCovLetFunction(int type) {
         //-------- Initialization Start ----------\\
         boolean hasError = false;
@@ -2333,7 +2368,7 @@ public class VP_Center extends StackPane {
             covletEditErrorLine.hide();
             controller.getCurrentUser().getCovlet().save();
             if (controller.getCurrentUser().getCovlet().hasChanges()) {
-                updateDynamicFields();
+                updateDynamicContent();
                 controller.updateTree(7);
                 try {
                     controller.getDataM().saveCovLetData();
@@ -2350,1159 +2385,87 @@ public class VP_Center extends StackPane {
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
-    private class DeleteEducationAction implements EventHandler<ActionEvent> {
+    /**
+     * Brings the user to one of the main wizard pages.
+     * 
+     * @since 1.0
+     */
+    protected class WizardMainAction implements EventHandler<ActionEvent> {
 
-        private final int entryNumber;
-
-        public DeleteEducationAction(int entryNumber) {
-            this.entryNumber = entryNumber;
+        private final int wizardPage;
+        /**
+         * Constructor. Stores the page number to send the suer to.
+         * @param wizardPage The Screen number or StackPane layer to be viewed.
+         * @since 1.0
+         */
+        public WizardMainAction(int wizardPage) {
+            this.wizardPage = wizardPage;
         }
-
+        /**
+         * @param event An ActionEvent triggered by a button.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
-            for (int i = 0; i < educationFields.size(); i++) {
-                educationFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbEducation(controller.getCurrentUser().getResume().getNumbEducation() - 1);
-            for (int i = 0; i < 6; i++) {
-                educationFields.remove((entryNumber - 1) * 6);
-            }
-            getResumeEducationBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getEducation().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getEducation().add(new ArrayList());
-            for (int i = 0; i < 6; i++) {
-                controller.getCurrentUser().getResume().getEducation().get(8).add(new SimpleStringProperty());
-            }
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbEducation(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeEducationBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EDUCATION ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeEducationBox().getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteEducationAction(i + 1));
-                }
-                for (int ii = 0; ii < 6; ii++) {
-                    educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
-                }
-            }
-            addEducationBtn.setVisible(true);
-            addEducationBtn.setManaged(true);
+            showScreen(wizardPage, 0);
         }
     }
 
-    private class AddEducationAction implements EventHandler<ActionEvent> {
-
+    /**
+     * Action event for the cancel button on pages before login or involving 
+     * login. Calls functions that reset the forms involving login or 
+     * registration. 
+     * 
+     * @since 1.0
+     */
+    private class CancelActionPrelogin implements EventHandler<ActionEvent> {
+        
+        /**
+         * @param event An ActionEvent triggered by a cancel button.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbEducation() + 1;
-            VP_PageSubdivision educationDiv = new VP_PageSubdivision("EDUCATION ENTRY #" + newNumb, false);
-            VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
-                    label1 = new VP_FieldLabel("institution location:", 130),
-                    label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
-                    label3 = new VP_FieldLabel("*GPA:", 130),
-                    label4 = new VP_FieldLabel("start date", 130),
-                    label5 = new VP_FieldLabel("end date", 130);
-            educationFields.add(new VP_TextField(32, 128));
-            educationFields.add(new VP_TextField(32, 128));
-            educationFields.add(new VP_TextField(32, 128));
-            educationFields.add(new VP_TextField(32, 128));
-            educationFields.add(new VP_TextField(32, 128));
-            educationFields.add(new VP_TextField(32, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteEducationAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                    line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                    line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                    line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                    line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                    line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
-            getResumeEducationBox().getChildren().add(getResumeEducationBox().getChildren().size() - 3, educationDiv);
-            int ii = 0;
-            for (int i = 6 * controller.getCurrentUser().getResume().getNumbEducation(); i < educationFields.size(); i++) {
-                educationFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(controller.getCurrentUser().getResume().getNumbEducation()).get(ii));
-                ii += 1;
-            }
-            controller.getCurrentUser().getResume().setNumbEducation(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbEducation() == 9) {
-                addEducationBtn.setVisible(false);
-                addEducationBtn.setManaged(false);
-            }
+            resetLoginRegForms();
+            resetResetPasswordForms();
+            resetRegisterForms();
         }
     }
 
-    private class SubmitEducationAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < educationFields.size(); i++) {
-                educationFields.get(i).textProperty().setValue(educationFields.get(i).textProperty().getValueSafe().trim());
-                if (educationFields.get(i).textProperty().getValueSafe().equals("")) {
-                    if (i % 6 == 0) {
-                        educationError.setParaText("The institution name cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 6 == 1) {
-                        educationError.setParaText("The institution location cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 6 == 2) {
-                        educationError.setParaText("The degree, certification, or training field cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 6 == 4) {
-                        educationError.setParaText("The start date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 6 == 5) {
-                        educationError.setParaText("The end date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
-                        hasError = true;
-                    }
-                    if (hasError) {
-                        educationFields.get(i).showInvalid();
-                        break;
-                    }
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                educationErrorLine.show();
-            } else {
-                educationError.setParaText("");
-                educationErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(13);
-                    try {
-                        controller.getDataM().saveResume(1);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3118, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteExperienceAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteExperienceAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < experienceFields.size(); i++) {
-                experienceFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbExperience(controller.getCurrentUser().getResume().getNumbExperience() - 1);
-            for (int i = 0; i < 5; i++) {
-                experienceFields.remove((entryNumber - 1) * 5);
-            }
-            getResumeExperienceBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getExperience().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getExperience().add(new ArrayList());
-            for (int i = 0; i < 5; i++) {
-                controller.getCurrentUser().getResume().getExperience().get(8).add(new SimpleStringProperty());
-            }
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbExperience(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeExperienceBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EXPERIENCE ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeExperienceBox().getChildren().get(i + 2))).getChildren().get(6))).getChildren().get(0)).setOnAction(new DeleteExperienceAction(i + 1));
-                }
-                for (int ii = 0; ii < 5; ii++) {
-                    experienceFields.get((5 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(i).get(ii));
-                }
-            }
-            addExperienceBtn.setVisible(true);
-            addExperienceBtn.setManaged(true);
-        }
-    }
-
-    private class AddExperienceAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbExperience() + 1;
-            VP_PageSubdivision experienceDiv = new VP_PageSubdivision("EXPERIENCE ENTRY #" + newNumb, false);
-            VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
-                    label1 = new VP_FieldLabel("institution location:", 130),
-                    label2 = new VP_FieldLabel("position held:", 130),
-                    label3 = new VP_FieldLabel("start date", 130),
-                    label4 = new VP_FieldLabel("end date", 130);
-            experienceFields.add(new VP_TextField(32, 128));
-            experienceFields.add(new VP_TextField(32, 128));
-            experienceFields.add(new VP_TextField(32, 128));
-            experienceFields.add(new VP_TextField(32, 128));
-            experienceFields.add(new VP_TextField(32, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteExperienceAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
-                    line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
-                    line2 = new VP_DivisionLine(new Node[]{label2, experienceFields.get(2 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
-                    line3 = new VP_DivisionLine(new Node[]{label3, experienceFields.get(3 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
-                    line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4, delline);
-            getResumeExperienceBox().getChildren().add(getResumeExperienceBox().getChildren().size() - 3, experienceDiv);
-            int ii = 0;
-            for (int i = 5 * controller.getCurrentUser().getResume().getNumbExperience(); i < experienceFields.size(); i++) {
-                experienceFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(controller.getCurrentUser().getResume().getNumbExperience()).get(ii));
-                ii += 1;
-            }
-            controller.getCurrentUser().getResume().setNumbExperience(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbExperience() == 9) {
-                addExperienceBtn.setVisible(false);
-                addExperienceBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitExperienceAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < experienceFields.size(); i++) {
-                experienceFields.get(i).textProperty().setValue(experienceFields.get(i).textProperty().getValueSafe().trim());
-                if (experienceFields.get(i).textProperty().getValueSafe().equals("")) {
-                    if (i % 5 == 0) {
-                        experienceError.setParaText("The institution name cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 5 == 1) {
-                        experienceError.setParaText("The institution location cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 5 == 2) {
-                        experienceError.setParaText("The position held cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 5 == 3) {
-                        experienceError.setParaText("The start date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
-                        hasError = true;
-                    } else if (i % 5 == 4) {
-                        experienceError.setParaText("The end date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
-                        hasError = true;
-                    }
-                    if (hasError) {
-                        experienceFields.get(i).showInvalid();
-                        break;
-                    }
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                experienceErrorLine.show();
-            } else {
-                experienceError.setParaText("");
-                experienceErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(14);
-                    try {
-                        controller.getDataM().saveResume(2);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3119, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteAchievementAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteAchievementAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < achievementsFields.size(); i++) {
-                achievementsFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbAchievements(controller.getCurrentUser().getResume().getNumbAchievements() - 1);
-            for (int i = 0; i < 3; i++) {
-                achievementsFields.remove((entryNumber - 1) * 3);
-            }
-            getResumeAchievementsBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getAchievements().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getAchievements().add(new ArrayList());
-            for (int i = 0; i < 3; i++) {
-                controller.getCurrentUser().getResume().getAchievements().get(8).add(new SimpleStringProperty());
-            }
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbAchievements(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeAchievementsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("AWARD/ACHIEVEMENT ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeAchievementsBox().getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteAchievementAction(i + 1));
-                }
-                for (int ii = 0; ii < 3; ii++) {
-                    achievementsFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(i).get(ii));
-                }
-            }
-            addAchievementBtn.setVisible(true);
-            addAchievementBtn.setManaged(true);
-        }
-    }
-
-    private class AddAchievementAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbAchievements() + 1;
-            VP_PageSubdivision achievementDiv = new VP_PageSubdivision("AWARD/ACHIEVEMENT ENTRY #" + newNumb, false);
-            VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),
-                    label1 = new VP_FieldLabel("given by:", 130),
-                    label2 = new VP_FieldLabel("date:", 130);
-            achievementsFields.add(new VP_TextField(32, 128));
-            achievementsFields.add(new VP_TextField(32, 128));
-            achievementsFields.add(new VP_TextField(32, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteAchievementAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
-                    line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
-                    line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            achievementDiv.getChildren().addAll(line0, line1, line2, delline);
-            getResumeAchievementsBox().getChildren().add(getResumeAchievementsBox().getChildren().size() - 3, achievementDiv);
-            int ii = 0;
-            for (int i = 3 * controller.getCurrentUser().getResume().getNumbAchievements(); i < achievementsFields.size(); i++) {
-                achievementsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(controller.getCurrentUser().getResume().getNumbAchievements()).get(ii));
-                ii += 1;
-            }
-            controller.getCurrentUser().getResume().setNumbAchievements(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbAchievements() == 9) {
-                addAchievementBtn.setVisible(false);
-                addAchievementBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitAchievementsAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < achievementsFields.size(); i++) {
-                achievementsFields.get(i).textProperty().setValue(achievementsFields.get(i).textProperty().getValueSafe().trim());
-            }
-            boolean endReached = false;
-            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbAchievements(); ii++) {
-                int count = 0;
-                for (int i = 0 + (ii * 3); i < 3 + (ii * 3); i++) {
-                    if (!achievementsFields.get(i).textProperty().getValueSafe().equals("")) {
-                        count += 1;
-                    }
-                }
-                if (count == 0 && !endReached) {
-                    endReached = true;
-                } else if (endReached && count > 0) {
-                    achievementsError.setParaText("You cannot have blank achievements in between entries. See achievement #" + (ii));
-                    hasError = true;
-                    break;
-                } else if (count < 3 && count > 0) {
-                    achievementsError.setParaText("Not all mandatory fields for an achievement are complete for entry #" + (ii + 1));
-                    hasError = true;
-                    break;
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                achievementsErrorLine.show();
-            } else {
-                achievementsError.setParaText("");
-                achievementsErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(15);
-                    try {
-                        controller.getDataM().saveResume(3);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3121, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteCommunityAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteCommunityAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < communityFields.size(); i++) {
-                communityFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbCommunity(controller.getCurrentUser().getResume().getNumbCommunity() - 1);
-            for (int i = 0; i < 3; i++) {
-                communityFields.remove((entryNumber - 1) * 3);
-            }
-            getResumeCommunityBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getCommunity().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getCommunity().add(new ArrayList());
-            for (int i = 0; i < 3; i++) {
-                controller.getCurrentUser().getResume().getCommunity().get(8).add(new SimpleStringProperty());
-            }
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbCommunity(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeCommunityBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EVENT ENTRY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeCommunityBox().getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteCommunityAction(i + 1));
-                }
-                for (int ii = 0; ii < 3; ii++) {
-                    communityFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(i).get(ii));
-                }
-            }
-            addCommunityBtn.setVisible(true);
-            addCommunityBtn.setManaged(true);
-        }
-    }
-
-    private class AddCommunityAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbCommunity() + 1;
-            VP_PageSubdivision communityDiv = new VP_PageSubdivision("EVENT ENTRY #" + newNumb, false);
-            VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),
-                    label1 = new VP_FieldLabel("event location:", 130),
-                    label2 = new VP_FieldLabel("date:", 130);
-            communityFields.add(new VP_TextField(32, 128));
-            communityFields.add(new VP_TextField(32, 128));
-            communityFields.add(new VP_TextField(32, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteCommunityAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
-                    line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
-                    line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            communityDiv.getChildren().addAll(line0, line1, line2, delline);
-            getResumeCommunityBox().getChildren().add(getResumeCommunityBox().getChildren().size() - 3, communityDiv);
-            int ii = 0;
-            for (int i = 3 * controller.getCurrentUser().getResume().getNumbCommunity(); i < communityFields.size(); i++) {
-                communityFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(controller.getCurrentUser().getResume().getNumbCommunity()).get(ii));
-                ii += 1;
-            }
-            controller.getCurrentUser().getResume().setNumbCommunity(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbCommunity() == 9) {
-                addCommunityBtn.setVisible(false);
-                addCommunityBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitCommunityAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < communityFields.size(); i++) {
-                communityFields.get(i).textProperty().setValue(communityFields.get(i).textProperty().getValueSafe().trim());
-            }
-            boolean endReached = false;
-            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbCommunity(); ii++) {
-                int count = 0;
-                for (int i = 0 + (ii * 3); i < 3 + (ii * 3); i++) {
-                    if (!communityFields.get(i).textProperty().getValueSafe().equals("")) {
-                        count += 1;
-                    }
-                }
-                if (count == 0 && !endReached) {
-                    endReached = true;
-                } else if (endReached && count > 0) {
-                    communityError.setParaText("You cannot have blank events in between entries. See entry #" + (ii));
-                    hasError = true;
-                    break;
-                } else if (count < 3 && count > 0) {
-                    communityError.setParaText("Not all mandatory fields for an event are complete for entry #" + (ii + 1));
-                    hasError = true;
-                    break;
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                communityErrorLine.show();
-            } else {
-                communityError.setParaText("");
-                communityErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(16);
-                    try {
-                        controller.getDataM().saveResume(4);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3122, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteQualificationAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteQualificationAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < qualificationsFields.size(); i++) {
-                qualificationsFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbQualification(controller.getCurrentUser().getResume().getNumbQualification() - 1);
-            qualificationsFields.remove(entryNumber - 1);
-            getResumeQualificationsBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getQualifications().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getQualifications().add(new SimpleStringProperty());
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbQualification(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeQualificationsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("QUALIFICATION #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeQualificationsBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteQualificationAction(i + 1));
-                }
-                qualificationsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(i));
-            }
-            addQualificationBtn.setVisible(true);
-            addQualificationBtn.setManaged(true);
-        }
-    }
-
-    private class AddQualificationAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbQualification() + 1;
-            VP_PageSubdivision qualificationDiv = new VP_PageSubdivision("QUALIFICATION #" + newNumb, false);
-            qualificationsFields.add(new VP_TextField(50, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteQualificationAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(controller.getCurrentUser().getResume().getNumbQualification())}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            qualificationDiv.getChildren().addAll(line0, delline);
-            getResumeQualificationsBox().getChildren().add(getResumeQualificationsBox().getChildren().size() - 3, qualificationDiv);
-            qualificationsFields.get(qualificationsFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(qualificationsFields.size() - 1));
-            controller.getCurrentUser().getResume().setNumbQualification(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbQualification() == 9) {
-                addQualificationBtn.setVisible(false);
-                addQualificationBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitQualificationsAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < qualificationsFields.size(); i++) {
-                qualificationsFields.get(i).textProperty().setValue(qualificationsFields.get(i).textProperty().getValueSafe().trim());
-                if (qualificationsFields.get(i).textProperty().getValueSafe().equals("")) {
-                    qualificationsError.setParaText("Qualification #" + (i + 1) + " cannot be blank.");
-                    hasError = true;
-                    qualificationsFields.get(i).showInvalid();
-                    break;
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                qualificationsErrorLine.show();
-            } else {
-                qualificationsError.setParaText("");
-                qualificationsErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(17);
-                    try {
-                        controller.getDataM().saveResume(5);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3123, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteHighlightAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteHighlightAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < highlightsFields.size(); i++) {
-                highlightsFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbHighlights(controller.getCurrentUser().getResume().getNumbHighlights() - 1);
-            highlightsFields.remove(entryNumber - 1);
-            getResumeHighlightsBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getHighlights().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getHighlights().add(new SimpleStringProperty());
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbHighlights(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeHighlightsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("PERSONAL QUALITY #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeHighlightsBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteHighlightAction(i + 1));
-                }
-                highlightsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(i));
-            }
-            addHighlightBtn.setVisible(true);
-            addHighlightBtn.setManaged(true);
-        }
-    }
-
-    private class AddHighlightAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbHighlights() + 1;
-            VP_PageSubdivision highlightDiv = new VP_PageSubdivision("PERSONAL QUALITY #" + newNumb, false);
-            highlightsFields.add(new VP_TextField(50, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteHighlightAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(controller.getCurrentUser().getResume().getNumbHighlights())}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            highlightDiv.getChildren().addAll(line0, delline);
-            getResumeHighlightsBox().getChildren().add(getResumeHighlightsBox().getChildren().size() - 3, highlightDiv);
-            highlightsFields.get(highlightsFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(highlightsFields.size() - 1));
-            controller.getCurrentUser().getResume().setNumbHighlights(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbHighlights() == 9) {
-                addHighlightBtn.setVisible(false);
-                addHighlightBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitHighlightsAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < highlightsFields.size(); i++) {
-                highlightsFields.get(i).textProperty().setValue(highlightsFields.get(i).textProperty().getValueSafe().trim());
-                if (highlightsFields.get(i).textProperty().getValueSafe().equals("")) {
-                    highlightsError.setParaText("Highlight #" + (i + 1) + " cannot be blank.");
-                    hasError = true;
-                    highlightsFields.get(i).showInvalid();
-                    break;
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                highlightsErrorLine.show();
-            } else {
-                highlightsError.setParaText("");
-                highlightsErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(18);
-                    try {
-                        controller.getDataM().saveResume(6);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3124, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteLanguageAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteLanguageAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < languagesFields.size(); i++) {
-                languagesFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbLanguages(controller.getCurrentUser().getResume().getNumbLanguages() - 1);
-            languagesFields.remove(entryNumber - 1);
-            getResumeLanguagesBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getLanguages().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getLanguages().add(new SimpleStringProperty());
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbLanguages(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeLanguagesBox().getChildren().get(i + 2))).getChildren().get(0))).setText("SECONDARY LANGUAGE #" + i);
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeLanguagesBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteLanguageAction(i + 1));
-                }
-                languagesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(i));
-            }
-            addLanguageBtn.setVisible(true);
-            addLanguageBtn.setManaged(true);
-        }
-    }
-
-    private class AddLanguageAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbLanguages() + 1;
-            VP_PageSubdivision languageDiv = new VP_PageSubdivision("SECONDARY LANGUAGE #" + controller.getCurrentUser().getResume().getNumbLanguages(), false);
-            languagesFields.add(new VP_TextField(50, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteLanguageAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(controller.getCurrentUser().getResume().getNumbLanguages())}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            languageDiv.getChildren().addAll(line0, delline);
-            getResumeLanguagesBox().getChildren().add(getResumeLanguagesBox().getChildren().size() - 3, languageDiv);
-            languagesFields.get(languagesFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(languagesFields.size() - 1));
-            controller.getCurrentUser().getResume().setNumbLanguages(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbLanguages() == 9) {
-                addLanguageBtn.setVisible(false);
-                addLanguageBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitLanguagesAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < languagesFields.size(); i++) {
-                languagesFields.get(i).textProperty().setValue(languagesFields.get(i).textProperty().getValueSafe().trim());
-                if (languagesFields.get(i).textProperty().getValueSafe().equals("")) {
-                    if (i == 0) {
-                        languagesError.setParaText("Primary Language cannot be blank.");
-                    } else {
-                        languagesError.setParaText("Secondary Language #" + i + " cannot be blank.");
-                    }
-                    hasError = true;
-                    languagesFields.get(i).showInvalid();
-                    break;
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                languagesErrorLine.show();
-            } else {
-                languagesError.setParaText("");
-                languagesErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(19);
-                    try {
-                        controller.getDataM().saveResume(7);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3125, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteSoftwareAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteSoftwareAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < softwareFields.size(); i++) {
-                softwareFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbSoftware(controller.getCurrentUser().getResume().getNumbSoftware() - 1);
-            softwareFields.remove(entryNumber - 1);
-            getResumeSoftwareBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getSoftware().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getSoftware().add(new SimpleStringProperty());
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbSoftware(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeSoftwareBox().getChildren().get(i + 2))).getChildren().get(0))).setText("SOFTWARE PRODUCT #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeSoftwareBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteSoftwareAction(i + 1));
-                }
-                softwareFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(i));
-            }
-            addSoftwareBtn.setVisible(true);
-            addSoftwareBtn.setManaged(true);
-        }
-    }
-
-    private class AddSoftwareAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbSoftware() + 1;
-            VP_PageSubdivision softwareDiv = new VP_PageSubdivision("SOFTWARE PRODUCT #" + newNumb, false);
-            softwareFields.add(new VP_TextField(50, 128));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteSoftwareAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(controller.getCurrentUser().getResume().getNumbSoftware())}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            softwareDiv.getChildren().addAll(line0, delline);
-            getResumeSoftwareBox().getChildren().add(getResumeSoftwareBox().getChildren().size() - 3, softwareDiv);
-            softwareFields.get(softwareFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(softwareFields.size() - 1));
-            controller.getCurrentUser().getResume().setNumbSoftware(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbSoftware() == 9) {
-                addSoftwareBtn.setVisible(false);
-                addSoftwareBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitSoftwareAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            for (int i = 0; i < softwareFields.size(); i++) {
-                softwareFields.get(i).textProperty().setValue(softwareFields.get(i).textProperty().getValueSafe().trim());
-                if (softwareFields.get(i).textProperty().getValueSafe().equals("")) {
-                    softwareError.setParaText("Software Product #" + (i + 1) + " cannot be blank.");
-                    hasError = true;
-                    softwareFields.get(i).showInvalid();
-                    break;
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                softwareErrorLine.show();
-            } else {
-                softwareError.setParaText("");
-                softwareErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(20);
-                    try {
-                        controller.getDataM().saveResume(8);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3126, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                }
-                showScreen(11, 0);
-            }
-        }
-    }
-
-    private class DeleteReferenceAction implements EventHandler<ActionEvent> {
-
-        private final int entryNumber;
-
-        public DeleteReferenceAction(int entryNumber) {
-            this.entryNumber = entryNumber;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            for (int i = 0; i < referencesFields.size(); i++) {
-                referencesFields.get(i).textProperty().unbind();
-            }
-            controller.getCurrentUser().getResume().setNumbReferences(controller.getCurrentUser().getResume().getNumbReferences() - 1);
-            for (int i = 0; i < 6; i++) {
-                referencesFields.remove((entryNumber - 1) * 6);
-            }
-            getResumeReferencesBox().getChildren().remove(entryNumber + 1);
-            controller.getCurrentUser().getResume().getReferences().remove(entryNumber - 1);
-            controller.getCurrentUser().getResume().getReferences().add(new ArrayList());
-            for (int i = 0; i < 6; i++) {
-                controller.getCurrentUser().getResume().getReferences().get(8).add(new SimpleStringProperty());
-            }
-            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbReferences(); i++) {
-                if (i > 0) {
-                    ((Label) (((VP_PageSubdivision) (getResumeReferencesBox().getChildren().get(i + 2))).getChildren().get(0))).setText("REFERENCE #" + (i + 1));
-                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeReferencesBox().getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteReferenceAction(i + 1));
-                }
-                for (int ii = 0; ii < 6; ii++) {
-                    referencesFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(i).get(ii));
-                }
-            }
-            addReferenceBtn.setVisible(true);
-            addReferenceBtn.setManaged(true);
-        }
-    }
-
-    private class AddReferenceAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int newNumb = controller.getCurrentUser().getResume().getNumbReferences() + 1;
-            VP_PageSubdivision referenceDiv = new VP_PageSubdivision("REFERENCE #" + newNumb, false);
-            VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),
-                    label1 = new VP_FieldLabel("*middle name:", 130),
-                    label2 = new VP_FieldLabel("last name:", 130),
-                    label3 = new VP_FieldLabel("company or\ninstitution:", 130),
-                    label4 = new VP_FieldLabel("phone:", 130),
-                    label5 = new VP_FieldLabel("*email:", 130);
-            referencesFields.add(new VP_TextField(32, 45));
-            referencesFields.add(new VP_TextField(32, 45));
-            referencesFields.add(new VP_TextField(32, 45));
-            referencesFields.add(new VP_TextField(32, 128));
-            referencesFields.add(new VP_TextField(13, 13));
-            referencesFields.add(new VP_TextField(32, 254));
-            VP_Button delBtn = new VP_Button("Delete", new DeleteReferenceAction(newNumb));
-            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
-                    line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
-                    line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
-                    line3 = new VP_DivisionLine(new Node[]{label3, referencesFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
-                    line4 = new VP_DivisionLine(new Node[]{label4, referencesFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
-                    line5 = new VP_DivisionLine(new Node[]{label5, referencesFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
-                    delline = new VP_DivisionLine(new Node[]{delBtn});
-            referenceDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
-            getResumeReferencesBox().getChildren().add(getResumeReferencesBox().getChildren().size() - 3, referenceDiv);
-            int ii = 0;
-            for (int i = 6 * controller.getCurrentUser().getResume().getNumbReferences(); i < referencesFields.size(); i++) {
-                referencesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(controller.getCurrentUser().getResume().getNumbReferences()).get(ii));
-                ii += 1;
-            }
-            controller.getCurrentUser().getResume().setNumbReferences(newNumb);
-            if (controller.getCurrentUser().getResume().getNumbReferences() == 9) {
-                addReferenceBtn.setVisible(false);
-                addReferenceBtn.setManaged(false);
-            }
-        }
-    }
-
-    private class SubmitReferencesAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            String phoneRegex = "\\([0-9]{3}\\)[0-9]{3}\\-[0-9]{4}$";
-            Pattern phonePattern = Pattern.compile(phoneRegex);
-            Matcher matcher;
-            VP_Sounds.play(0);
-            for (int i = 0; i < referencesFields.size(); i++) {
-                referencesFields.get(i).textProperty().setValue(referencesFields.get(i).textProperty().getValueSafe().trim());
-            }
-            boolean endReached = false;
-            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbReferences(); ii++) {
-                int count = 0, optionalCount = 0;
-                for (int i = 0 + (ii * 6); i < 6 + (ii * 6); i++) {
-                    if (!referencesFields.get(i).textProperty().getValueSafe().equals("")) {
-                        if (i % 6 == 1 || i % 6 == 5) {
-                            optionalCount += 1;
-                            if (i % 6 == 5) {
-                                hasError = (!controller.getDataM().checkEmail(referencesFields.get(i).textProperty().getValueSafe()));
-                                if (hasError) {
-                                    referencesFields.get(i).showInvalid();
-                                    referencesError.setParaText("Email is not in valid form in reference #" + (ii + 1) + ".");
-                                }
-                            }
-                        } else {
-                            count += 1;
-                            if (i % 6 == 4) {
-                                matcher = phonePattern.matcher(referencesFields.get(i).textProperty().getValueSafe());
-                                if (!matcher.matches()) {
-                                    hasError = true;
-                                    referencesFields.get(i).showInvalid();
-                                    referencesError.setParaText("Phone numbers must be in form "
-                                            + "(xxx)xxx-xxxx for reference #" + (ii + 1) + ".");
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (!hasError) {
-                    if (count == 0 && optionalCount == 0 && !endReached) {
-                        endReached = true;
-                    } else if (endReached && (count > 0 || optionalCount > 0)) {
-                        referencesError.setParaText("You cannot have blank references in between entries. See reference #" + (ii));
-                        hasError = true;
-                        break;
-                    } else if ((count < 4 && count > 0) || (count == 0 && optionalCount > 0)) {
-                        referencesError.setParaText("Not all mandatory fields for a reference are complete for entry #" + (ii + 1));
-                        hasError = true;
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                referencesErrorLine.show();
-            } else {
-                referencesError.setParaText("");
-                referencesErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(21);
-                    showScreen(11, 0);
-                    try {
-                        controller.getDataM().saveResume(9);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3120, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                } else {
-                    showScreen(11, 0);
-                }
-            }
-        }
-    }
-
-    private class SubmitObjectiveAction implements EventHandler<ActionEvent> {
-
-        private final VP_TextArea objectiveParagraph;
-
-        public SubmitObjectiveAction(VP_TextArea objectiveParagraph) {
-            this.objectiveParagraph = objectiveParagraph;
-        }
-
-        @Override
-        public void handle(ActionEvent event) {
-            boolean hasError = false;
-            VP_Sounds.play(0);
-            objectiveParagraph.textProperty().setValue(objectiveParagraph.textProperty().getValueSafe().trim());
-            if (objectiveParagraph.textProperty().getValueSafe().equals("")) {
-                hasError = true;
-                objectiveParagraph.showInvalid();
-                objectiveError.setParaText("The objective cannot be blank in your resume.");
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                objectiveErrorLine.show();
-            } else {
-                objectiveError.setParaText("");
-                objectiveErrorLine.hide();
-                controller.getCurrentUser().getResume().save();
-                if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(12);
-                    showScreen(11, 0);
-                    try {
-                        controller.getDataM().saveResume(0);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3117, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
-                } else {
-                    showScreen(11, 0);
-                }
-            }
-        }
-    }
-
-    private class LoadCoverLetterAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            int selectedLetter;
-            int clID;
-            if (coverLetterSelect.getValue() == "Cover Letter #1") {
-                selectedLetter = 0;
-            } else if (coverLetterSelect.getValue() == "Cover Letter #2") {
-                selectedLetter = 1;
-            } else {
-                selectedLetter = 2;
-            }
-            controller.getCurrentUser().getCovlet().clear();
-            clID = controller.getCurrentUser().getCoverLetterIds()[selectedLetter];
-            try {
-                controller.getDataM().loadCovLet(clID);
-                controller.getCurrentUser().setCurrentCoverLetterIndex(selectedLetter);
-                updateDynamicFields();
-                controller.updateTree(6);
-                showScreen(7, 0);
-
-            } catch (SQLException ex) {
-                controller.errorAlert(3116, ex.getMessage());
-            }
-        }
-    }
-
-    private class StartNewCoverLetter implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            if (controller.getCurrentUser().getCoverLetterIds()[0] == 0) {
-                controller.getCurrentUser().getCovlet().clear();
-                controller.getCurrentUser().setCurrentCoverLetterIndex(0);
-            } else if (controller.getCurrentUser().getCoverLetterIds()[1] == 0) {
-                controller.getCurrentUser().getCovlet().clear();
-                controller.getCurrentUser().setCurrentCoverLetterIndex(1);
-            } else {
-                controller.getCurrentUser().getCovlet().clear();
-                controller.getCurrentUser().setCurrentCoverLetterIndex(2);
-            }
-            updateDynamicFields();
-            controller.updateTree(6);
-            saveCovLetFunction(0);
-            showScreen(7, 0);
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass CancelAction
-     * - Reverts any information changed in post-login forms back to the 
-     *   user's saved values and brings the user back to the Overview
-     *   page.
-     *------------------------------------------------------------------------*/
+    /**
+     * Reverts any information changed in post-login forms back to the 
+     * user's saved values and brings the user back to the Overview page.
+     * 
+     * @since 1.0
+     */
     private class CancelAction implements EventHandler<ActionEvent> {
 
         private final int fromPage;
 
+        /**
+         * Default Constructor. Sets the fromPage member to 3, representing the 
+         * overview page of the wizard.
+         * @since 1.0
+         */
         public CancelAction() {
             this.fromPage = 3;
         }
 
+        /**
+         * Constructor. Sets the fromPage member.
+         * @param fromPage Represents the current wizard page of the user.
+         * @since 1.0
+         */
         public CancelAction(int fromPage) {
             this.fromPage = fromPage;
         }
 
+        /**
+         * @param event  An ActionEvent triggered by a cancel button.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             cancelActionFunction();
@@ -3516,174 +2479,411 @@ public class VP_Center extends StackPane {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass AddParagraphAction
-     * - 
-     *------------------------------------------------------------------------*/
-    private class AddParagraphAction implements EventHandler<ActionEvent> {
+    /**
+     * Action event for the 'forgot password?' link on page 0. Switches the 
+     * center StackPane to show level 1.
+     * 
+     * @since 1.0
+     */
+    private class ForgotPassAction implements EventHandler<MouseEvent> {
 
+        /**
+         * @param event MouseEvent triggered by a clickable label.
+         * @since 1.0
+         */
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(MouseEvent event) {
             VP_Sounds.play(0);
-            for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
-                ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().unbind();
-            }
-            int newParaNumb = controller.getCurrentUser().getCovlet().getNumbParagraphs() + 1;
-            VP_FieldLabel newParaLabel = new VP_FieldLabel("paragraph " + newParaNumb + ":", 140);
-            VP_Button delParaBtn = new VP_Button("Delete", new DeleteParagraphAction(newParaNumb));
-            coverLetterEditFields.add(24 + newParaNumb, new VP_TextArea());
-            VP_DivisionLine newParaLine = new VP_DivisionLine(new Node[]{newParaLabel, coverLetterEditFields.get(24 + newParaNumb), delParaBtn});
-            dynamicBody.getChildren().add(dynamicBody.getChildren().size() - 1, newParaLine);
-            controller.getCurrentUser().getCovlet().setNumbParagraphs(newParaNumb);
-            for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
-                ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getParagraphs().get(i));
-            }
-            if (controller.getCurrentUser().getCovlet().getNumbParagraphs() == 9) {
-                addParagraphLine.hide();
-            }
+            resetLoginRegForms();
+            showScreen(1, 0);
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass DeleteParagraphAction
-     * - 
-     *------------------------------------------------------------------------*/
-    private class DeleteParagraphAction implements EventHandler<ActionEvent> {
+    /**
+     * Action event for the 'need an account?' link on page 0. Switches the
+     * center StackPane to show level 2, user registration.
+     * 
+     * @since 1.0
+     */
+    private class NeedAccountAction implements EventHandler<MouseEvent> {
 
-        private final int paragraphNumber;
-
-        public DeleteParagraphAction(int paragraphNumber) {
-            this.paragraphNumber = paragraphNumber;
-        }
-
+        /**
+         * @param event MouseEvent triggered by a clickable label.
+         * @since 1.0
+         */
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(MouseEvent event) {
             VP_Sounds.play(0);
-            for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
-                ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().unbind();
-            }
-            if (controller.getCurrentUser().getCovlet().getNumbParagraphs() > 1) {
-                controller.getCurrentUser().getCovlet().setNumbParagraphs(controller.getCurrentUser().getCovlet().getNumbParagraphs() - 1);
-                coverLetterEditFields.remove(24 + paragraphNumber);
-                dynamicBody.getChildren().remove(paragraphNumber);
-                controller.getCurrentUser().getCovlet().getParagraphs().remove(paragraphNumber - 1);
-                controller.getCurrentUser().getCovlet().getParagraphs().add(new SimpleStringProperty());
-                for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
-                    ((VP_FieldLabel) ((VP_DivisionLine) (dynamicBody.getChildren().get(i + 1))).getChildren().get(0)).setText("paragraph " + (i + 1) + ":");
-                    ((VP_Button) ((VP_DivisionLine) (dynamicBody.getChildren().get(i + 1))).getChildren().get(2)).setOnAction(new DeleteParagraphAction(i + 1));
-
-                    ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getParagraphs().get(i));
-                }
-            } else {
-                ((VP_TextArea) (coverLetterEditFields.get(25))).setText("");
-            }
-            addParagraphLine.show();
+            resetLoginRegForms();
+            showScreen(2, 0);
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass SubmitCovLetEditAction
-     * - Saves any information changed in the Business Card  page and brings the
-     *   user back to the Overview page.
-     *------------------------------------------------------------------------*/
-    private class SubmitCovLetEditAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            saveCovLetFunction(1);
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass UpdateDateAction
-     * - Updates the date on the cover letter from its perviously stored value
-     *   to a new value representing the current date.
-     *------------------------------------------------------------------------*/
-    private class UpdateDateAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Sounds.play(0);
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
-            String formattedDate = formatter.format(new Date());
-            dateValueLabel.setText(formattedDate);
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass SubmitBCardAction
-     * - Saves any information changed in the Business Card  page and brings the
-     *   user back to the Overview page.
-     *------------------------------------------------------------------------*/
-    private class SubmitBCardAction implements EventHandler<ActionEvent> {
-
-        private final ArrayList<VP_TextField> businessCardFields;
-
-        public SubmitBCardAction(ArrayList<VP_TextField> businessCardFields) {
-            this.businessCardFields = businessCardFields;
-        }
-
+    /**
+     * Action event for the login button on wizard page 0.
+     * 
+     * @since 1.0
+     */
+    private class LoginAction implements EventHandler<ActionEvent> {
+        
+        /**
+         * @param event An ActionEvent for the login button.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             //-------- Initialization Start ----------\\
-            boolean hasError = false;
-            String webRegex = "^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-            Pattern webPattern = Pattern.compile(webRegex);
-            Matcher matcher;
+            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
+                loginPass.getText()};
+            int loginStatus;
             //-------- Initialization End ------------\\
 
             VP_Sounds.play(0);
-            businessCardFields.get(3).textProperty().setValue(businessCardFields.get(3).textProperty().getValueSafe().trim());
-            businessCardFields.get(4).textProperty().setValue(businessCardFields.get(4).textProperty().getValueSafe().trim());
-            businessCardFields.get(5).textProperty().setValue(businessCardFields.get(5).textProperty().getValueSafe().trim());
-            businessCardFields.get(14).textProperty().setValue(businessCardFields.get(14).textProperty().getValueSafe().trim());
-            if (!businessCardFields.get(14).textProperty().getValueSafe().equals("")) {
-                matcher = webPattern.matcher(businessCardFields.get(14).textProperty().getValueSafe());
-                if (!matcher.matches()) {
-                    hasError = true;
-                    businessCardFields.get(14).showInvalid();
-                    bcardError.setParaText("The web address is not in valid form. Be sure to include whether "
-                            + "the address is http or https");
-                }
-            }
-            if (hasError) {
-                VP_Sounds.play(-1);
-                bcardErrorLine.show();
-            } else {
-                bcardError.setParaText("");
-                bcardErrorLine.hide();
-                controller.getCurrentUser().getBcard().save();
-                if (controller.getCurrentUser().getBcard().hasChanges()) {
-                    updateDynamicFields();
-                    controller.updateTree(5);
-                    showScreen(3, 0);
-                    try {
-                        controller.getDataM().saveBCardData();
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3114, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3301, ex.getMessage());
+            accessInstructions.setParaText("Enter the access code that was emailed "
+                    + "to you when you registered below.");
+            if (controller.getDataM().checkEmail(cred[0])) {
+                try {
+                    loginStatus = controller.getDataM().userLogin(cred);
+                    if (loginStatus == -1) {
+                        // user does not exist in database
+                        loginError.setParaText("The email address and/or password is "
+                                + "incorrect. Please try again.");
+                        loginErrorLine.show();
+                        loginEmail.showInvalid();
+                        loginPass.showInvalid();
+                        VP_Sounds.play(-1);
+                    } else if (loginStatus == -2) {
+                        // user needs to enter registration code
+                        loginEmail.setDisable(true);
+                        loginEmail.setEditable(false);
+                        loginPass.setDisable(true);
+                        loginPass.setEditable(false);
+                        loginError.setParaText("");
+                        loginErrorLine.hide();
+                        loginButtonLine.hide();
+                        accessInstructionsLine.show();
+                        accessLine.show();
+                    } else {
+                        // user login successful
+                        resetLoginRegForms();
+                        updateDynamicContent();
+                        controller.updateTree(0);
+                        showScreen(3, 0);
                     }
-                } else {
-                    showScreen(3, 0);
+                } catch (SQLException ex) {
+                    controller.errorAlert(3107, ex.getMessage());
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    controller.errorAlert(3002, ex.getMessage());
                 }
+            } else {
+                loginError.setParaText("The email provided is invalid. Please try again.");
+                loginErrorLine.show();
+                loginEmail.showInvalid();
+            }
+        }
+    }
+    
+    /**
+     * Action event for the submit button on wizard page 2 to save user
+     * registration credentials. Checks if the provided email is not already
+     * associated with an existing account.
+     *
+     * @since 1.0
+     */
+    private class RegisterSubmitAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            String[] cred = {registerEmail.getText().toLowerCase(), registerPass.getText(),
+                registerPassConfirm.getText()};
+            int registerStatus;
+            //-------- Initialization End ------------\\
+
+            VP_Sounds.play(0);
+            if (controller.getDataM().checkEmail(cred[0])) {
+                if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
+                    registerPass.showInvalid();
+                    registerPassConfirm.showInvalid();
+                    registerError.setText("The password is not long enough.");
+                    registerErrorLine.show();
+                    VP_Sounds.play(-1);
+                } else if (!cred[1].equals(cred[2])) {
+                    registerPass.showInvalid();
+                    registerPassConfirm.showInvalid();
+                    registerError.setText("The passwords do not match.");
+                    registerErrorLine.show();
+                    VP_Sounds.play(-1);
+                } else {
+                    try {
+                        registerStatus = controller.getDataM().regUser(cred);
+                        if (registerStatus == 2) {
+                            accessInstructions.setParaText("Login with your new account.");
+                            accessInstructionsLine.show();
+                            resetRegisterForms();
+                            showScreen(0, 0);
+                        } else if (registerStatus == 1) {
+                            registerEmail.showInvalid();
+                            registerError.setText("This email is already associated "
+                                    + "with a VaqPack user.");
+                            registerErrorLine.show();
+                            VP_Sounds.play(-1);
+                        } else if (registerStatus == 0) {
+                            registerEmail.showInvalid();
+                            registerError.setText("This email is already associated "
+                                    + "with a VaqPack user who recently registered "
+                                    + "but has not yet enetered in the access code. "
+                                    + "Login and you will be prompted to enter in "
+                                    + "this code. If you did not receive the code, "
+                                    + "there will be an option to resend one.");
+                            registerErrorLine.show();
+                            VP_Sounds.play(-1);
+                        }
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3112, ex.getMessage());
+                    } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                        controller.errorAlert(3006, ex.getMessage());
+                    }
+                }
+            } else {
+                registerEmail.showInvalid();
+                registerError.setText("The email provided is invalid. Please try again.");
+                registerErrorLine.show();
+                VP_Sounds.play(-1);
             }
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * Subclass SubmitPersonalInfoAction
-     * - Saves any information changed in the Personal Information page and 
-     *   brings the user back to the Overview page.
-     *------------------------------------------------------------------------*/
+    /**
+     * Action event for the resend code button on page 0 to assign a new access 
+     * code for the user and send it to the user's email.
+     * 
+     * @since 1.0
+     */
+    private class ResendAccessAction implements EventHandler<ActionEvent> {
+        /**
+         * @param event An ActionEvent triggered by the resend button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
+                loginPass.getText(), regLoginAccess.getText()};
+            //-------- Initialization End ------------\\
+
+            VP_Sounds.play(0);
+            try {
+                controller.getDataM().resendAccess(cred);
+                accessInstructions.setParaText("A new access code has been emailed and "
+                        + "you should receive it shortly. Enter the code below.\n"
+                        + "If you do not receive an email, verify that you have "
+                        + "entered in the correct email address.");
+            } catch (SQLException ex) {
+                controller.errorAlert(3110, ex.getMessage());
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                controller.errorAlert(3005, ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Action event for the submit button on page 0 which submits the 
+     * registration access code.
+     * 
+     * @since 1.0
+     */
+    private class SubmitAccessAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent for a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
+                loginPass.getText(), regLoginAccess.getText()};
+            boolean accessStatus;
+            //-------- Initialization End ------------\\
+
+            VP_Sounds.play(0);
+            try {
+                accessStatus = controller.getDataM().verifyRegAccess(cred);
+                if (accessStatus) {
+                    cred[1] = loginPass.getText();
+                    controller.getDataM().userLogin(cred);
+                    resetLoginRegForms();
+                    updateDynamicContent();
+                    controller.updateTree(0);
+                    showScreen(3, 0);
+                } else {
+                    loginError.setText("The registration code is incorrect. Please try again.");
+                    accessInstructions.setParaText("Enter the access code that was emailed to you below.");
+                    loginErrorLine.show();
+                    regLoginAccess.showInvalid();
+                    VP_Sounds.play(-1);
+                }
+            } catch (SQLException ex) {
+                controller.errorAlert(3108, ex.getMessage());
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                controller.errorAlert(3003, ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Action event for the submit button on page 1 that is for submitting the
+     * email to the database manager to check if the user is eligible for
+     * password resetting.
+     *
+     * @since 1.0
+     */
+    private class SubmitResetAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            int userStatus;
+            //-------- Initialization End ------------\\
+
+            VP_Sounds.play(0);
+            if (controller.getDataM().checkEmail(resetEmail.getText())) {
+                try {
+                    userStatus = controller.getDataM().findUserForReset(resetEmail.getText().toLowerCase());
+                    if (userStatus == 0) {
+                        resetEmail.showInvalid();
+                        resetError.setParaText("The provided user does not exists in VaqPack. "
+                                + "If the email is correct, you need to register a new account.");
+                        resetErrorLine.show();
+                        VP_Sounds.play(-1);
+                    } else if (userStatus == 1) {
+                        resetEmail.showInvalid();
+                        resetError.setParaText("The password for this email has recently been reset. "
+                                + "Passwords may only be reset once every 24 hours.");
+                        resetErrorLine.show();
+                        VP_Sounds.play(-1);
+                    } else {
+                        resetError.setParaText("");
+                        resetErrorLine.hide();
+                        submitResetBtn.setDisable(true);
+                        resetEmail.setDisable(true);
+                        resetEmail.setEditable(false);
+                        resetInstructions1Line.hide();
+                        resetInstructions2Line.show();
+                        resetNewPassLine.show();
+                        resetPassStrengthLabel.setText("");
+                        resetPassStrengthLine.show();
+                        resetNewPassConfirmLine.show();
+                        resetCodeLine.show();
+                        resetButLine.show();
+                    }
+                } catch (SQLException ex) {
+                    controller.errorAlert(3111, ex.getMessage());
+                }
+            } else {
+                resetError.setParaText("The email provided is invalid. Please try again.");
+                resetErrorLine.show();
+                resetEmail.showInvalid();
+                VP_Sounds.play(-1);
+            }
+        }
+    }
+
+    /**
+     * Action event for the submit button on page 1 to submit the code for
+     * resetting a user password. This is typically used in the case that the
+     * user has forgotten the password and cannot log in.
+     *
+     * @since 1.0
+     */
+    private class SubmitResetPassCode implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            int resetStatus = 0;
+            String[] cred = {resetEmail.getText().toLowerCase(), resetNewPass.getText(),
+                resetNewPassConfirm.getText(), resetCode.getText()};
+            //-------- Initialization End ------------\\
+
+            VP_Sounds.play(0);
+            if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
+                resetNewPass.showInvalid();
+                resetNewPassConfirm.showInvalid();
+                resetError.setParaText("The new password is not long enough.");
+                resetErrorLine.show();
+                VP_Sounds.play(-1);
+            } else if (!cred[1].equals(cred[2])) {
+                resetNewPass.showInvalid();
+                resetNewPassConfirm.showInvalid();
+                resetError.setParaText("The passwords do not match.");
+                resetErrorLine.show();
+                VP_Sounds.play(-1);
+            } else {
+                try {
+                    resetStatus = controller.getDataM().resetPass(cred);
+                    if (resetStatus == 2) {
+                        accessInstructions.setParaText("Your password was reset. Login with your new password.");
+                        accessInstructionsLine.show();
+                        resetResetPasswordForms();
+                        showScreen(0, 0);
+                    } else if (resetStatus == 1) {
+                        resetCode.showInvalid();
+                        resetError.setParaText("The code has expired. Cancel and start the reset process over again.");
+                        resetErrorLine.show();
+                        VP_Sounds.play(-1);
+                    } else if (resetStatus == 0) {
+                        resetCode.showInvalid();
+                        resetError.setParaText("The code is incorrect. Please try again.");
+                        resetErrorLine.show();
+                        VP_Sounds.play(-1);
+                    }
+                } catch (SQLException ex) {
+                    controller.errorAlert(3109, ex.getMessage());
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    controller.errorAlert(3004, ex.getMessage());
+                }
+            }
+        }
+    }
+    
+    /**
+     * Saves any information changed in the Personal Information page and brings 
+     * the user back to the Overview page.
+     * 
+     * @since 1.0
+     */
     private class SubmitPersonalInfoAction implements EventHandler<ActionEvent> {
 
         private final ArrayList<VP_TextField> personalInfoFields;
-
+        
+        /**
+         * Constructor. Loads the input fields for personal information for reference.
+         * 
+         * @param personalInfoFields 
+         * @since 1.0
+         */
         public SubmitPersonalInfoAction(ArrayList<VP_TextField> personalInfoFields) {
             this.personalInfoFields = personalInfoFields;
         }
 
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             //-------- Initialization Start ----------\\
@@ -3777,7 +2977,7 @@ public class VP_Center extends StackPane {
                 personalInfoError.setParaText("");
                 personalInfoErrorLine.hide();
                 controller.getCurrentUser().save();
-                updateDynamicFields();
+                updateDynamicContent();
                 controller.updateTree(4);
                 showScreen(3, 0);
                 try {
@@ -3791,311 +2991,1680 @@ public class VP_Center extends StackPane {
             }
         }
     }
+    
+    /**
+     * Saves the user's personal information, entered in wizard page 4.
+     * 
+     * @since 1.0
+     */
+    private class SubmitObjectiveAction implements EventHandler<ActionEvent> {
 
-    /*------------------------------------------------------------------------*
-     * Subclass WizardMainAction
-     * - Brings the user to one of the main wizard pages
-     *------------------------------------------------------------------------*/
-    protected class WizardMainAction implements EventHandler<ActionEvent> {
+        private final VP_TextArea objectiveParagraph;
 
-        private final int wizardPage;
-
-        public WizardMainAction(int wizardPage) {
-            this.wizardPage = wizardPage;
+        /**
+         * Constructor. Stores the objective paragraph field for reference;
+         * 
+         * @param objectiveParagraph The cover letter objective paragraph field.
+         * @since 1.0
+         */
+        public SubmitObjectiveAction(VP_TextArea objectiveParagraph) {
+            this.objectiveParagraph = objectiveParagraph;
         }
 
+        /**
+         * @param event An ActionEvent, triggered by the cover letter submit button.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
+            boolean hasError = false;
             VP_Sounds.play(0);
-            showScreen(wizardPage, 0);
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass LoginAction
-     * - Action event for the 'forgot password?' link on page 0. Switches the
-     *   center stackpane to show level 1.
-     *------------------------------------------------------------------------*/
-    private class ForgotPassAction implements EventHandler<MouseEvent> {
-
-        @Override
-        public void handle(MouseEvent event) {
-            VP_Sounds.play(0);
-            resetLoginRegForms();
-            showScreen(1, 0);
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass NeedAccountAction
-     * - Action event for the 'need an account?' link on page 0. Switches the
-     *   center stackpane to show level 2.
-     *------------------------------------------------------------------------*/
-    private class NeedAccountAction implements EventHandler<MouseEvent> {
-
-        @Override
-        public void handle(MouseEvent event) {
-            VP_Sounds.play(0);
-            resetLoginRegForms();
-            showScreen(2, 0);
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass LoginAction
-     * - Action event for the login button on page 0.
-     *------------------------------------------------------------------------*/
-    private class LoginAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            //-------- Initialization Start ----------\\
-            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
-                loginPass.getText()};
-            int loginStatus;
-            //-------- Initialization End ------------\\
-
-            VP_Sounds.play(0);
-            accessInstructions.setParaText("Enter the access code that was emailed "
-                    + "to you when you registered below.");
-            if (controller.getDataM().checkEmail(cred[0])) {
-                try {
-                    loginStatus = controller.getDataM().userLogin(cred);
-                    if (loginStatus == -1) {
-                        // user does not exist in database
-                        loginError.setParaText("The email address and/or password is "
-                                + "incorrect. Please try again.");
-                        loginErrorLine.show();
-                        loginEmail.showInvalid();
-                        loginPass.showInvalid();
-                        VP_Sounds.play(-1);
-                    } else if (loginStatus == -2) {
-                        // user needs to enter registration code
-                        loginEmail.setDisable(true);
-                        loginEmail.setEditable(false);
-                        loginPass.setDisable(true);
-                        loginPass.setEditable(false);
-                        loginError.setParaText("");
-                        loginErrorLine.hide();
-                        loginButtonLine.hide();
-                        accessInstructionsLine.show();
-                        accessLine.show();
-                    } else {
-                        // user login successful
-                        resetLoginRegForms();
-                        updateDynamicFields();
-                        controller.updateTree(0);
-                        showScreen(3, 0);
-                    }
-                } catch (SQLException ex) {
-                    controller.errorAlert(3107, ex.getMessage());
-                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                    controller.errorAlert(3002, ex.getMessage());
-                }
+            objectiveParagraph.textProperty().setValue(objectiveParagraph.textProperty().getValueSafe().trim());
+            if (objectiveParagraph.textProperty().getValueSafe().equals("")) {
+                hasError = true;
+                objectiveParagraph.showInvalid();
+                objectiveError.setParaText("The objective cannot be blank in your resume.");
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                objectiveErrorLine.show();
             } else {
-                loginError.setParaText("The email provided is invalid. Please try again.");
-                loginErrorLine.show();
-                loginEmail.showInvalid();
-            }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass ResendAccessAction
-     * - Action event for the resend code button on page 0 to assign a new
-     *   access code for the user and send it to the user's email.
-     *------------------------------------------------------------------------*/
-    private class ResendAccessAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            //-------- Initialization Start ----------\\
-            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
-                loginPass.getText(), regLoginAccess.getText()};
-            //-------- Initialization End ------------\\
-
-            VP_Sounds.play(0);
-            try {
-                controller.getDataM().resendAccess(cred);
-                accessInstructions.setParaText("A new access code has been emailed and "
-                        + "you should receive it shortly. Enter the code below.\n"
-                        + "If you do not receive an email, verify that you have "
-                        + "entered in the correct email address.");
-            } catch (SQLException ex) {
-                controller.errorAlert(3110, ex.getMessage());
-            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                controller.errorAlert(3005, ex.getMessage());
-            }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass SubmitAccessAction
-     * - Action event for the submit button on page 0 which submits the
-     *   registration access code.
-     *------------------------------------------------------------------------*/
-    private class SubmitAccessAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            //-------- Initialization Start ----------\\
-            String cred[] = new String[]{loginEmail.getText().toLowerCase(),
-                loginPass.getText(), regLoginAccess.getText()};
-            boolean accessStatus;
-            //-------- Initialization End ------------\\
-
-            VP_Sounds.play(0);
-            try {
-                accessStatus = controller.getDataM().verifyRegAccess(cred);
-                if (accessStatus) {
-                    cred[1] = loginPass.getText();
-                    controller.getDataM().userLogin(cred);
-                    resetLoginRegForms();
-                    updateDynamicFields();
-                    controller.updateTree(0);
-                    showScreen(3, 0);
+                objectiveError.setParaText("");
+                objectiveErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(12);
+                    showScreen(11, 0);
+                    try {
+                        controller.getDataM().saveResume(0);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3117, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
                 } else {
-                    loginError.setText("The registration code is incorrect. Please try again.");
-                    accessInstructions.setParaText("Enter the access code that was emailed to you below.");
-                    loginErrorLine.show();
-                    regLoginAccess.showInvalid();
-                    VP_Sounds.play(-1);
-                }
-            } catch (SQLException ex) {
-                controller.errorAlert(3108, ex.getMessage());
-            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                controller.errorAlert(3003, ex.getMessage());
-            }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass CancelActionPrelogin
-     * - Action event for the cancel button on pages before login or involving 
-     *   login. Calls cancelActionPreloginFunction().
-     *------------------------------------------------------------------------*/
-    private class CancelActionPrelogin implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            cancelActionPreloginFunction();
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass SubmitResetAction
-     * - Action event for the submit button on page 1 that is for submitting the
-     *   email to the database manager to check if the user is eligible for
-     *   password resetting.
-     *------------------------------------------------------------------------*/
-    private class SubmitResetAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            //-------- Initialization Start ----------\\
-            int userStatus;
-            //-------- Initialization End ------------\\
-
-            VP_Sounds.play(0);
-            if (controller.getDataM().checkEmail(resetEmail.getText())) {
-                try {
-                    userStatus = controller.getDataM().findUserForReset(resetEmail.getText().toLowerCase());
-                    if (userStatus == 0) {
-                        resetEmail.showInvalid();
-                        resetError.setParaText("The provided user does not exists in VaqPack. "
-                                + "If the email is correct, you need to register a new account.");
-                        resetErrorLine.show();
-                        VP_Sounds.play(-1);
-                    } else if (userStatus == 1) {
-                        resetEmail.showInvalid();
-                        resetError.setParaText("The password for this email has recently been reset. "
-                                + "Passwords may only be reset once every 24 hours.");
-                        resetErrorLine.show();
-                        VP_Sounds.play(-1);
-                    } else {
-                        resetError.setParaText("");
-                        resetErrorLine.hide();
-                        submitResetBtn.setDisable(true);
-                        resetEmail.setDisable(true);
-                        resetEmail.setEditable(false);
-                        resetInstructions1Line.hide();
-                        resetInstructions2Line.show();
-                        resetNewPassLine.show();
-                        resetPassStrengthLabel.setText("");
-                        resetPassStrengthLine.show();
-                        resetNewPassConfirmLine.show();
-                        resetCodeLine.show();
-                        resetButLine.show();
-                    }
-                } catch (SQLException ex) {
-                    controller.errorAlert(3111, ex.getMessage());
-                }
-            } else {
-                resetError.setParaText("The email provided is invalid. Please try again.");
-                resetErrorLine.show();
-                resetEmail.showInvalid();
-                VP_Sounds.play(-1);
-            }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass SubmitResetPassCode
-     * - Action event for the submit button on page 1 to submit the code for
-     *   resetting a user password.
-     *------------------------------------------------------------------------*/
-    private class SubmitResetPassCode implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            //-------- Initialization Start ----------\\
-            int resetStatus = 0;
-            String[] cred = {resetEmail.getText().toLowerCase(), resetNewPass.getText(),
-                resetNewPassConfirm.getText(), resetCode.getText()};
-            //-------- Initialization End ------------\\
-
-            VP_Sounds.play(0);
-            if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
-                resetNewPass.showInvalid();
-                resetNewPassConfirm.showInvalid();
-                resetError.setParaText("The new password is not long enough.");
-                resetErrorLine.show();
-                VP_Sounds.play(-1);
-            } else if (!cred[1].equals(cred[2])) {
-                resetNewPass.showInvalid();
-                resetNewPassConfirm.showInvalid();
-                resetError.setParaText("The passwords do not match.");
-                resetErrorLine.show();
-                VP_Sounds.play(-1);
-            } else {
-                try {
-                    resetStatus = controller.getDataM().resetPass(cred);
-                    if (resetStatus == 2) {
-                        accessInstructions.setParaText("Your password was reset. Login with your new password.");
-                        accessInstructionsLine.show();
-                        resetResetPasswordForms();
-                        showScreen(0, 0);
-                    } else if (resetStatus == 1) {
-                        resetCode.showInvalid();
-                        resetError.setParaText("The code has expired. Cancel and start the reset process over again.");
-                        resetErrorLine.show();
-                        VP_Sounds.play(-1);
-                    } else if (resetStatus == 0) {
-                        resetCode.showInvalid();
-                        resetError.setParaText("The code is incorrect. Please try again.");
-                        resetErrorLine.show();
-                        VP_Sounds.play(-1);
-                    }
-                } catch (SQLException ex) {
-                    controller.errorAlert(3109, ex.getMessage());
-                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                    controller.errorAlert(3004, ex.getMessage());
+                    showScreen(11, 0);
                 }
             }
         }
     }
     
+    /**
+     * Deletes a field from the resume education section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteEducationAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteEducationAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < educationFields.size(); i++) {
+                educationFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbEducation(controller.getCurrentUser().getResume().getNumbEducation() - 1);
+            for (int i = 0; i < 6; i++) {
+                educationFields.remove((entryNumber - 1) * 6);
+            }
+            getResumeEducationBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getEducation().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getEducation().add(new ArrayList());
+            for (int i = 0; i < 6; i++) {
+                controller.getCurrentUser().getResume().getEducation().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbEducation(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeEducationBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EDUCATION ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeEducationBox().getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteEducationAction(i + 1));
+                }
+                for (int ii = 0; ii < 6; ii++) {
+                    educationFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(i).get(ii));
+                }
+            }
+            addEducationBtn.setVisible(true);
+            addEducationBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume education section.
+     * 
+     * @since 1.0
+     */
+    private class AddEducationAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbEducation() + 1;
+            VP_PageSubdivision educationDiv = new VP_PageSubdivision("EDUCATION ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
+                    label1 = new VP_FieldLabel("institution location:", 130),
+                    label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
+                    label3 = new VP_FieldLabel("*GPA:", 130),
+                    label4 = new VP_FieldLabel("start date", 130),
+                    label5 = new VP_FieldLabel("end date", 130);
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            educationFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteEducationAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbEducation()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
+            getResumeEducationBox().getChildren().add(getResumeEducationBox().getChildren().size() - 3, educationDiv);
+            int ii = 0;
+            for (int i = 6 * controller.getCurrentUser().getResume().getNumbEducation(); i < educationFields.size(); i++) {
+                educationFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(controller.getCurrentUser().getResume().getNumbEducation()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbEducation(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbEducation() == 9) {
+                addEducationBtn.setVisible(false);
+                addEducationBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume education section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitEducationAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < educationFields.size(); i++) {
+                educationFields.get(i).textProperty().setValue(educationFields.get(i).textProperty().getValueSafe().trim());
+                if (educationFields.get(i).textProperty().getValueSafe().equals("")) {
+                    if (i % 6 == 0) {
+                        educationError.setParaText("The institution name cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 6 == 1) {
+                        educationError.setParaText("The institution location cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 6 == 2) {
+                        educationError.setParaText("The degree, certification, or training field cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 6 == 4) {
+                        educationError.setParaText("The start date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 6 == 5) {
+                        educationError.setParaText("The end date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        hasError = true;
+                    }
+                    if (hasError) {
+                        educationFields.get(i).showInvalid();
+                        break;
+                    }
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                educationErrorLine.show();
+            } else {
+                educationError.setParaText("");
+                educationErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(13);
+                    try {
+                        controller.getDataM().saveResume(1);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3118, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume experience section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteExperienceAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteExperienceAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < experienceFields.size(); i++) {
+                experienceFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbExperience(controller.getCurrentUser().getResume().getNumbExperience() - 1);
+            for (int i = 0; i < 5; i++) {
+                experienceFields.remove((entryNumber - 1) * 5);
+            }
+            getResumeExperienceBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getExperience().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getExperience().add(new ArrayList());
+            for (int i = 0; i < 5; i++) {
+                controller.getCurrentUser().getResume().getExperience().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbExperience(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeExperienceBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EXPERIENCE ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeExperienceBox().getChildren().get(i + 2))).getChildren().get(6))).getChildren().get(0)).setOnAction(new DeleteExperienceAction(i + 1));
+                }
+                for (int ii = 0; ii < 5; ii++) {
+                    experienceFields.get((5 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(i).get(ii));
+                }
+            }
+            addExperienceBtn.setVisible(true);
+            addExperienceBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume experience section.
+     * 
+     * @since 1.0
+     */
+    private class AddExperienceAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbExperience() + 1;
+            VP_PageSubdivision experienceDiv = new VP_PageSubdivision("EXPERIENCE ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
+                    label1 = new VP_FieldLabel("institution location:", 130),
+                    label2 = new VP_FieldLabel("position held:", 130),
+                    label3 = new VP_FieldLabel("start date", 130),
+                    label4 = new VP_FieldLabel("end date", 130);
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            experienceFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteExperienceAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, experienceFields.get(2 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line3 = new VP_DivisionLine(new Node[]{label3, experienceFields.get(3 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4 + (5 * controller.getCurrentUser().getResume().getNumbExperience()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4, delline);
+            getResumeExperienceBox().getChildren().add(getResumeExperienceBox().getChildren().size() - 3, experienceDiv);
+            int ii = 0;
+            for (int i = 5 * controller.getCurrentUser().getResume().getNumbExperience(); i < experienceFields.size(); i++) {
+                experienceFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(controller.getCurrentUser().getResume().getNumbExperience()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbExperience(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbExperience() == 9) {
+                addExperienceBtn.setVisible(false);
+                addExperienceBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume experience section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitExperienceAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < experienceFields.size(); i++) {
+                experienceFields.get(i).textProperty().setValue(experienceFields.get(i).textProperty().getValueSafe().trim());
+                if (experienceFields.get(i).textProperty().getValueSafe().equals("")) {
+                    if (i % 5 == 0) {
+                        experienceError.setParaText("The institution name cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 1) {
+                        experienceError.setParaText("The institution location cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 2) {
+                        experienceError.setParaText("The position held cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 3) {
+                        experienceError.setParaText("The start date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    } else if (i % 5 == 4) {
+                        experienceError.setParaText("The end date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        hasError = true;
+                    }
+                    if (hasError) {
+                        experienceFields.get(i).showInvalid();
+                        break;
+                    }
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                experienceErrorLine.show();
+            } else {
+                experienceError.setParaText("");
+                experienceErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(14);
+                    try {
+                        controller.getDataM().saveResume(2);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3119, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume achievements section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteAchievementAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteAchievementAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < achievementsFields.size(); i++) {
+                achievementsFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbAchievements(controller.getCurrentUser().getResume().getNumbAchievements() - 1);
+            for (int i = 0; i < 3; i++) {
+                achievementsFields.remove((entryNumber - 1) * 3);
+            }
+            getResumeAchievementsBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getAchievements().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getAchievements().add(new ArrayList());
+            for (int i = 0; i < 3; i++) {
+                controller.getCurrentUser().getResume().getAchievements().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbAchievements(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeAchievementsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("AWARD/ACHIEVEMENT ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeAchievementsBox().getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteAchievementAction(i + 1));
+                }
+                for (int ii = 0; ii < 3; ii++) {
+                    achievementsFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(i).get(ii));
+                }
+            }
+            addAchievementBtn.setVisible(true);
+            addAchievementBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume achievements section.
+     * 
+     * @since 1.0
+     */
+    private class AddAchievementAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbAchievements() + 1;
+            VP_PageSubdivision achievementDiv = new VP_PageSubdivision("AWARD/ACHIEVEMENT ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),
+                    label1 = new VP_FieldLabel("given by:", 130),
+                    label2 = new VP_FieldLabel("date:", 130);
+            achievementsFields.add(new VP_TextField(32, 128));
+            achievementsFields.add(new VP_TextField(32, 128));
+            achievementsFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteAchievementAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbAchievements()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            achievementDiv.getChildren().addAll(line0, line1, line2, delline);
+            getResumeAchievementsBox().getChildren().add(getResumeAchievementsBox().getChildren().size() - 3, achievementDiv);
+            int ii = 0;
+            for (int i = 3 * controller.getCurrentUser().getResume().getNumbAchievements(); i < achievementsFields.size(); i++) {
+                achievementsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(controller.getCurrentUser().getResume().getNumbAchievements()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbAchievements(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbAchievements() == 9) {
+                addAchievementBtn.setVisible(false);
+                addAchievementBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume achievements section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitAchievementsAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < achievementsFields.size(); i++) {
+                achievementsFields.get(i).textProperty().setValue(achievementsFields.get(i).textProperty().getValueSafe().trim());
+            }
+            boolean endReached = false;
+            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbAchievements(); ii++) {
+                int count = 0;
+                for (int i = 0 + (ii * 3); i < 3 + (ii * 3); i++) {
+                    if (!achievementsFields.get(i).textProperty().getValueSafe().equals("")) {
+                        count += 1;
+                    }
+                }
+                if (count == 0 && !endReached) {
+                    endReached = true;
+                } else if (endReached && count > 0) {
+                    achievementsError.setParaText("You cannot have blank achievements in between entries. See achievement #" + (ii));
+                    hasError = true;
+                    break;
+                } else if (count < 3 && count > 0) {
+                    achievementsError.setParaText("Not all mandatory fields for an achievement are complete for entry #" + (ii + 1));
+                    hasError = true;
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                achievementsErrorLine.show();
+            } else {
+                achievementsError.setParaText("");
+                achievementsErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(15);
+                    try {
+                        controller.getDataM().saveResume(3);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3121, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume community section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteCommunityAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteCommunityAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < communityFields.size(); i++) {
+                communityFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbCommunity(controller.getCurrentUser().getResume().getNumbCommunity() - 1);
+            for (int i = 0; i < 3; i++) {
+                communityFields.remove((entryNumber - 1) * 3);
+            }
+            getResumeCommunityBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getCommunity().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getCommunity().add(new ArrayList());
+            for (int i = 0; i < 3; i++) {
+                controller.getCurrentUser().getResume().getCommunity().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbCommunity(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeCommunityBox().getChildren().get(i + 2))).getChildren().get(0))).setText("EVENT ENTRY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeCommunityBox().getChildren().get(i + 2))).getChildren().get(4))).getChildren().get(0)).setOnAction(new DeleteCommunityAction(i + 1));
+                }
+                for (int ii = 0; ii < 3; ii++) {
+                    communityFields.get((3 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(i).get(ii));
+                }
+            }
+            addCommunityBtn.setVisible(true);
+            addCommunityBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume community section.
+     * 
+     * @since 1.0
+     */
+    private class AddCommunityAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbCommunity() + 1;
+            VP_PageSubdivision communityDiv = new VP_PageSubdivision("EVENT ENTRY #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),
+                    label1 = new VP_FieldLabel("event location:", 130),
+                    label2 = new VP_FieldLabel("date:", 130);
+            communityFields.add(new VP_TextField(32, 128));
+            communityFields.add(new VP_TextField(32, 128));
+            communityFields.add(new VP_TextField(32, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteCommunityAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2 + (3 * controller.getCurrentUser().getResume().getNumbCommunity()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            communityDiv.getChildren().addAll(line0, line1, line2, delline);
+            getResumeCommunityBox().getChildren().add(getResumeCommunityBox().getChildren().size() - 3, communityDiv);
+            int ii = 0;
+            for (int i = 3 * controller.getCurrentUser().getResume().getNumbCommunity(); i < communityFields.size(); i++) {
+                communityFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(controller.getCurrentUser().getResume().getNumbCommunity()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbCommunity(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbCommunity() == 9) {
+                addCommunityBtn.setVisible(false);
+                addCommunityBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume community section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitCommunityAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < communityFields.size(); i++) {
+                communityFields.get(i).textProperty().setValue(communityFields.get(i).textProperty().getValueSafe().trim());
+            }
+            boolean endReached = false;
+            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbCommunity(); ii++) {
+                int count = 0;
+                for (int i = 0 + (ii * 3); i < 3 + (ii * 3); i++) {
+                    if (!communityFields.get(i).textProperty().getValueSafe().equals("")) {
+                        count += 1;
+                    }
+                }
+                if (count == 0 && !endReached) {
+                    endReached = true;
+                } else if (endReached && count > 0) {
+                    communityError.setParaText("You cannot have blank events in between entries. See entry #" + (ii));
+                    hasError = true;
+                    break;
+                } else if (count < 3 && count > 0) {
+                    communityError.setParaText("Not all mandatory fields for an event are complete for entry #" + (ii + 1));
+                    hasError = true;
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                communityErrorLine.show();
+            } else {
+                communityError.setParaText("");
+                communityErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(16);
+                    try {
+                        controller.getDataM().saveResume(4);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3122, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume qualifications section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteQualificationAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteQualificationAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < qualificationsFields.size(); i++) {
+                qualificationsFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbQualification(controller.getCurrentUser().getResume().getNumbQualification() - 1);
+            qualificationsFields.remove(entryNumber - 1);
+            getResumeQualificationsBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getQualifications().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getQualifications().add(new SimpleStringProperty());
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbQualification(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeQualificationsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("QUALIFICATION #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeQualificationsBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteQualificationAction(i + 1));
+                }
+                qualificationsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(i));
+            }
+            addQualificationBtn.setVisible(true);
+            addQualificationBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume qualifications section.
+     * 
+     * @since 1.0
+     */
+    private class AddQualificationAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbQualification() + 1;
+            VP_PageSubdivision qualificationDiv = new VP_PageSubdivision("QUALIFICATION #" + newNumb, false);
+            qualificationsFields.add(new VP_TextField(50, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteQualificationAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(controller.getCurrentUser().getResume().getNumbQualification())}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            qualificationDiv.getChildren().addAll(line0, delline);
+            getResumeQualificationsBox().getChildren().add(getResumeQualificationsBox().getChildren().size() - 3, qualificationDiv);
+            qualificationsFields.get(qualificationsFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(qualificationsFields.size() - 1));
+            controller.getCurrentUser().getResume().setNumbQualification(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbQualification() == 9) {
+                addQualificationBtn.setVisible(false);
+                addQualificationBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume qualifications section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitQualificationsAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < qualificationsFields.size(); i++) {
+                qualificationsFields.get(i).textProperty().setValue(qualificationsFields.get(i).textProperty().getValueSafe().trim());
+                if (qualificationsFields.get(i).textProperty().getValueSafe().equals("")) {
+                    qualificationsError.setParaText("Qualification #" + (i + 1) + " cannot be blank.");
+                    hasError = true;
+                    qualificationsFields.get(i).showInvalid();
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                qualificationsErrorLine.show();
+            } else {
+                qualificationsError.setParaText("");
+                qualificationsErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(17);
+                    try {
+                        controller.getDataM().saveResume(5);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3123, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume highlights section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteHighlightAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteHighlightAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < highlightsFields.size(); i++) {
+                highlightsFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbHighlights(controller.getCurrentUser().getResume().getNumbHighlights() - 1);
+            highlightsFields.remove(entryNumber - 1);
+            getResumeHighlightsBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getHighlights().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getHighlights().add(new SimpleStringProperty());
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbHighlights(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeHighlightsBox().getChildren().get(i + 2))).getChildren().get(0))).setText("PERSONAL QUALITY #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeHighlightsBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteHighlightAction(i + 1));
+                }
+                highlightsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(i));
+            }
+            addHighlightBtn.setVisible(true);
+            addHighlightBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume highlights section.
+     * 
+     * @since 1.0
+     */
+    private class AddHighlightAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbHighlights() + 1;
+            VP_PageSubdivision highlightDiv = new VP_PageSubdivision("PERSONAL QUALITY #" + newNumb, false);
+            highlightsFields.add(new VP_TextField(50, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteHighlightAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(controller.getCurrentUser().getResume().getNumbHighlights())}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            highlightDiv.getChildren().addAll(line0, delline);
+            getResumeHighlightsBox().getChildren().add(getResumeHighlightsBox().getChildren().size() - 3, highlightDiv);
+            highlightsFields.get(highlightsFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(highlightsFields.size() - 1));
+            controller.getCurrentUser().getResume().setNumbHighlights(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbHighlights() == 9) {
+                addHighlightBtn.setVisible(false);
+                addHighlightBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume highlights section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitHighlightsAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < highlightsFields.size(); i++) {
+                highlightsFields.get(i).textProperty().setValue(highlightsFields.get(i).textProperty().getValueSafe().trim());
+                if (highlightsFields.get(i).textProperty().getValueSafe().equals("")) {
+                    highlightsError.setParaText("Highlight #" + (i + 1) + " cannot be blank.");
+                    hasError = true;
+                    highlightsFields.get(i).showInvalid();
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                highlightsErrorLine.show();
+            } else {
+                highlightsError.setParaText("");
+                highlightsErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(18);
+                    try {
+                        controller.getDataM().saveResume(6);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3124, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume languages section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteLanguageAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteLanguageAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < languagesFields.size(); i++) {
+                languagesFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbLanguages(controller.getCurrentUser().getResume().getNumbLanguages() - 1);
+            languagesFields.remove(entryNumber - 1);
+            getResumeLanguagesBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getLanguages().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getLanguages().add(new SimpleStringProperty());
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbLanguages(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeLanguagesBox().getChildren().get(i + 2))).getChildren().get(0))).setText("SECONDARY LANGUAGE #" + i);
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeLanguagesBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteLanguageAction(i + 1));
+                }
+                languagesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(i));
+            }
+            addLanguageBtn.setVisible(true);
+            addLanguageBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume languages section.
+     * 
+     * @since 1.0
+     */
+    private class AddLanguageAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbLanguages() + 1;
+            VP_PageSubdivision languageDiv = new VP_PageSubdivision("SECONDARY LANGUAGE #" + controller.getCurrentUser().getResume().getNumbLanguages(), false);
+            languagesFields.add(new VP_TextField(50, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteLanguageAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(controller.getCurrentUser().getResume().getNumbLanguages())}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            languageDiv.getChildren().addAll(line0, delline);
+            getResumeLanguagesBox().getChildren().add(getResumeLanguagesBox().getChildren().size() - 3, languageDiv);
+            languagesFields.get(languagesFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(languagesFields.size() - 1));
+            controller.getCurrentUser().getResume().setNumbLanguages(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbLanguages() == 9) {
+                addLanguageBtn.setVisible(false);
+                addLanguageBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume languages section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitLanguagesAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < languagesFields.size(); i++) {
+                languagesFields.get(i).textProperty().setValue(languagesFields.get(i).textProperty().getValueSafe().trim());
+                if (languagesFields.get(i).textProperty().getValueSafe().equals("")) {
+                    if (i == 0) {
+                        languagesError.setParaText("Primary Language cannot be blank.");
+                    } else {
+                        languagesError.setParaText("Secondary Language #" + i + " cannot be blank.");
+                    }
+                    hasError = true;
+                    languagesFields.get(i).showInvalid();
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                languagesErrorLine.show();
+            } else {
+                languagesError.setParaText("");
+                languagesErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(19);
+                    try {
+                        controller.getDataM().saveResume(7);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3125, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume software section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteSoftwareAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteSoftwareAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < softwareFields.size(); i++) {
+                softwareFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbSoftware(controller.getCurrentUser().getResume().getNumbSoftware() - 1);
+            softwareFields.remove(entryNumber - 1);
+            getResumeSoftwareBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getSoftware().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getSoftware().add(new SimpleStringProperty());
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbSoftware(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeSoftwareBox().getChildren().get(i + 2))).getChildren().get(0))).setText("SOFTWARE PRODUCT #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeSoftwareBox().getChildren().get(i + 2))).getChildren().get(2))).getChildren().get(0)).setOnAction(new DeleteSoftwareAction(i + 1));
+                }
+                softwareFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(i));
+            }
+            addSoftwareBtn.setVisible(true);
+            addSoftwareBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume software section.
+     * 
+     * @since 1.0
+     */
+    private class AddSoftwareAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbSoftware() + 1;
+            VP_PageSubdivision softwareDiv = new VP_PageSubdivision("SOFTWARE PRODUCT #" + newNumb, false);
+            softwareFields.add(new VP_TextField(50, 128));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteSoftwareAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(controller.getCurrentUser().getResume().getNumbSoftware())}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            softwareDiv.getChildren().addAll(line0, delline);
+            getResumeSoftwareBox().getChildren().add(getResumeSoftwareBox().getChildren().size() - 3, softwareDiv);
+            softwareFields.get(softwareFields.size() - 1).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(softwareFields.size() - 1));
+            controller.getCurrentUser().getResume().setNumbSoftware(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbSoftware() == 9) {
+                addSoftwareBtn.setVisible(false);
+                addSoftwareBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume software section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitSoftwareAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            VP_Sounds.play(0);
+            for (int i = 0; i < softwareFields.size(); i++) {
+                softwareFields.get(i).textProperty().setValue(softwareFields.get(i).textProperty().getValueSafe().trim());
+                if (softwareFields.get(i).textProperty().getValueSafe().equals("")) {
+                    softwareError.setParaText("Software Product #" + (i + 1) + " cannot be blank.");
+                    hasError = true;
+                    softwareFields.get(i).showInvalid();
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                softwareErrorLine.show();
+            } else {
+                softwareError.setParaText("");
+                softwareErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(20);
+                    try {
+                        controller.getDataM().saveResume(8);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3126, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                }
+                showScreen(11, 0);
+            }
+        }
+    }
+
+    /**
+     * Deletes a field from the resume references section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteReferenceAction implements EventHandler<ActionEvent> {
+
+        private final int entryNumber;
+
+        /**
+         * Constructor. Stores the entry to be deleted for reference.
+         * 
+         * @param entryNumber 
+         * @since 1.0
+         */
+        public DeleteReferenceAction(int entryNumber) {
+            this.entryNumber = entryNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < referencesFields.size(); i++) {
+                referencesFields.get(i).textProperty().unbind();
+            }
+            controller.getCurrentUser().getResume().setNumbReferences(controller.getCurrentUser().getResume().getNumbReferences() - 1);
+            for (int i = 0; i < 6; i++) {
+                referencesFields.remove((entryNumber - 1) * 6);
+            }
+            getResumeReferencesBox().getChildren().remove(entryNumber + 1);
+            controller.getCurrentUser().getResume().getReferences().remove(entryNumber - 1);
+            controller.getCurrentUser().getResume().getReferences().add(new ArrayList());
+            for (int i = 0; i < 6; i++) {
+                controller.getCurrentUser().getResume().getReferences().get(8).add(new SimpleStringProperty());
+            }
+            for (int i = 0; i < controller.getCurrentUser().getResume().getNumbReferences(); i++) {
+                if (i > 0) {
+                    ((Label) (((VP_PageSubdivision) (getResumeReferencesBox().getChildren().get(i + 2))).getChildren().get(0))).setText("REFERENCE #" + (i + 1));
+                    ((VP_Button) (((VP_DivisionLine) ((VP_PageSubdivision) (getResumeReferencesBox().getChildren().get(i + 2))).getChildren().get(7))).getChildren().get(0)).setOnAction(new DeleteReferenceAction(i + 1));
+                }
+                for (int ii = 0; ii < 6; ii++) {
+                    referencesFields.get((6 * i) + ii).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(i).get(ii));
+                }
+            }
+            addReferenceBtn.setVisible(true);
+            addReferenceBtn.setManaged(true);
+        }
+    }
+
+    /**
+     * Adds a field to the resume references section.
+     * 
+     * @since 1.0
+     */
+    private class AddReferenceAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by an add entry button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int newNumb = controller.getCurrentUser().getResume().getNumbReferences() + 1;
+            VP_PageSubdivision referenceDiv = new VP_PageSubdivision("REFERENCE #" + newNumb, false);
+            VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),
+                    label1 = new VP_FieldLabel("*middle name:", 130),
+                    label2 = new VP_FieldLabel("last name:", 130),
+                    label3 = new VP_FieldLabel("company or\ninstitution:", 130),
+                    label4 = new VP_FieldLabel("phone:", 130),
+                    label5 = new VP_FieldLabel("*email:", 130);
+            referencesFields.add(new VP_TextField(32, 45));
+            referencesFields.add(new VP_TextField(32, 45));
+            referencesFields.add(new VP_TextField(32, 45));
+            referencesFields.add(new VP_TextField(32, 128));
+            referencesFields.add(new VP_TextField(13, 13));
+            referencesFields.add(new VP_TextField(32, 254));
+            VP_Button delBtn = new VP_Button("Delete", new DeleteReferenceAction(newNumb));
+            VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line3 = new VP_DivisionLine(new Node[]{label3, referencesFields.get(3 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line4 = new VP_DivisionLine(new Node[]{label4, referencesFields.get(4 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    line5 = new VP_DivisionLine(new Node[]{label5, referencesFields.get(5 + (6 * controller.getCurrentUser().getResume().getNumbReferences()))}),
+                    delline = new VP_DivisionLine(new Node[]{delBtn});
+            referenceDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5, delline);
+            getResumeReferencesBox().getChildren().add(getResumeReferencesBox().getChildren().size() - 3, referenceDiv);
+            int ii = 0;
+            for (int i = 6 * controller.getCurrentUser().getResume().getNumbReferences(); i < referencesFields.size(); i++) {
+                referencesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(controller.getCurrentUser().getResume().getNumbReferences()).get(ii));
+                ii += 1;
+            }
+            controller.getCurrentUser().getResume().setNumbReferences(newNumb);
+            if (controller.getCurrentUser().getResume().getNumbReferences() == 9) {
+                addReferenceBtn.setVisible(false);
+                addReferenceBtn.setManaged(false);
+            }
+        }
+    }
+
+    /**
+     * Submits the data in the resume references section.
+     * 
+     * @since 1.0
+     */
+    private class SubmitReferencesAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            boolean hasError = false;
+            String phoneRegex = "\\([0-9]{3}\\)[0-9]{3}\\-[0-9]{4}$";
+            Pattern phonePattern = Pattern.compile(phoneRegex);
+            Matcher matcher;
+            VP_Sounds.play(0);
+            for (int i = 0; i < referencesFields.size(); i++) {
+                referencesFields.get(i).textProperty().setValue(referencesFields.get(i).textProperty().getValueSafe().trim());
+            }
+            boolean endReached = false;
+            for (int ii = 0; ii < controller.getCurrentUser().getResume().getNumbReferences(); ii++) {
+                int count = 0, optionalCount = 0;
+                for (int i = 0 + (ii * 6); i < 6 + (ii * 6); i++) {
+                    if (!referencesFields.get(i).textProperty().getValueSafe().equals("")) {
+                        if (i % 6 == 1 || i % 6 == 5) {
+                            optionalCount += 1;
+                            if (i % 6 == 5) {
+                                hasError = (!controller.getDataM().checkEmail(referencesFields.get(i).textProperty().getValueSafe()));
+                                if (hasError) {
+                                    referencesFields.get(i).showInvalid();
+                                    referencesError.setParaText("Email is not in valid form in reference #" + (ii + 1) + ".");
+                                }
+                            }
+                        } else {
+                            count += 1;
+                            if (i % 6 == 4) {
+                                matcher = phonePattern.matcher(referencesFields.get(i).textProperty().getValueSafe());
+                                if (!matcher.matches()) {
+                                    hasError = true;
+                                    referencesFields.get(i).showInvalid();
+                                    referencesError.setParaText("Phone numbers must be in form "
+                                            + "(xxx)xxx-xxxx for reference #" + (ii + 1) + ".");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!hasError) {
+                    if (count == 0 && optionalCount == 0 && !endReached) {
+                        endReached = true;
+                    } else if (endReached && (count > 0 || optionalCount > 0)) {
+                        referencesError.setParaText("You cannot have blank references in between entries. See reference #" + (ii));
+                        hasError = true;
+                        break;
+                    } else if ((count < 4 && count > 0) || (count == 0 && optionalCount > 0)) {
+                        referencesError.setParaText("Not all mandatory fields for a reference are complete for entry #" + (ii + 1));
+                        hasError = true;
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                referencesErrorLine.show();
+            } else {
+                referencesError.setParaText("");
+                referencesErrorLine.hide();
+                controller.getCurrentUser().getResume().save();
+                if (controller.getCurrentUser().getResume().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(21);
+                    showScreen(11, 0);
+                    try {
+                        controller.getDataM().saveResume(9);
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3120, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3303, ex.getMessage());
+                    }
+                } else {
+                    showScreen(11, 0);
+                }
+            }
+        }
+    }
+
+    /**
+     * Clears the currently loaded cover letter and imports the selected one.
+     * 
+     * @since 1.0
+     */
+    private class LoadCoverLetterAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by the load cover letter button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            int selectedLetter;
+            int clID;
+            if (coverLetterSelect.getValue() == "Cover Letter #1") {
+                selectedLetter = 0;
+            } else if (coverLetterSelect.getValue() == "Cover Letter #2") {
+                selectedLetter = 1;
+            } else {
+                selectedLetter = 2;
+            }
+            controller.getCurrentUser().getCovlet().clear();
+            clID = controller.getCurrentUser().getCoverLetterIds()[selectedLetter];
+            try {
+                controller.getDataM().loadCovLet(clID);
+                controller.getCurrentUser().setCurrentCoverLetterIndex(selectedLetter);
+                updateDynamicContent();
+                controller.updateTree(6);
+                showScreen(7, 0);
+
+            } catch (SQLException ex) {
+                controller.errorAlert(3116, ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Stars a new, empty cover letter for the user.
+     * 
+     * @since 1.0
+     */
+    private class StartNewCoverLetter implements EventHandler<ActionEvent> {
+        /**
+         * @param event An ActionEvent, triggered by the add new cover letter button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            if (controller.getCurrentUser().getCoverLetterIds()[0] == 0) {
+                controller.getCurrentUser().getCovlet().clear();
+                controller.getCurrentUser().setCurrentCoverLetterIndex(0);
+            } else if (controller.getCurrentUser().getCoverLetterIds()[1] == 0) {
+                controller.getCurrentUser().getCovlet().clear();
+                controller.getCurrentUser().setCurrentCoverLetterIndex(1);
+            } else {
+                controller.getCurrentUser().getCovlet().clear();
+                controller.getCurrentUser().setCurrentCoverLetterIndex(2);
+            }
+            updateDynamicContent();
+            controller.updateTree(6);
+            saveCovLetFunction(0);
+            showScreen(7, 0);
+        }
+    }
+
+    /**
+     * Adds a paragraph to the resume cover letter section.
+     * 
+     * @since 1.0
+     */
+    private class AddParagraphAction implements EventHandler<ActionEvent> {
+        
+        /**
+         * @param event An ActionEvent, triggered by an add paragraph button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
+                ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().unbind();
+            }
+            int newParaNumb = controller.getCurrentUser().getCovlet().getNumbParagraphs() + 1;
+            VP_FieldLabel newParaLabel = new VP_FieldLabel("paragraph " + newParaNumb + ":", 140);
+            VP_Button delParaBtn = new VP_Button("Delete", new DeleteParagraphAction(newParaNumb));
+            coverLetterEditFields.add(24 + newParaNumb, new VP_TextArea());
+            VP_DivisionLine newParaLine = new VP_DivisionLine(new Node[]{newParaLabel, coverLetterEditFields.get(24 + newParaNumb), delParaBtn});
+            dynamicBody.getChildren().add(dynamicBody.getChildren().size() - 1, newParaLine);
+            controller.getCurrentUser().getCovlet().setNumbParagraphs(newParaNumb);
+            for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
+                ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getParagraphs().get(i));
+            }
+            if (controller.getCurrentUser().getCovlet().getNumbParagraphs() == 9) {
+                addParagraphLine.hide();
+            }
+        }
+    }
+
+    /**
+     * Deletes a paragraph from the resume cover letter section.
+     * 
+     * @since 1.0
+     */
+    private class DeleteParagraphAction implements EventHandler<ActionEvent> {
+
+        private final int paragraphNumber;
+
+        /**
+         * Constructor. Stores the paragraph field number for reference.
+         * 
+         * @param paragraphNumber 
+         * @since 1.0
+         */
+        public DeleteParagraphAction(int paragraphNumber) {
+            this.paragraphNumber = paragraphNumber;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by a delete paragraph button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
+                ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().unbind();
+            }
+            if (controller.getCurrentUser().getCovlet().getNumbParagraphs() > 1) {
+                controller.getCurrentUser().getCovlet().setNumbParagraphs(controller.getCurrentUser().getCovlet().getNumbParagraphs() - 1);
+                coverLetterEditFields.remove(24 + paragraphNumber);
+                dynamicBody.getChildren().remove(paragraphNumber);
+                controller.getCurrentUser().getCovlet().getParagraphs().remove(paragraphNumber - 1);
+                controller.getCurrentUser().getCovlet().getParagraphs().add(new SimpleStringProperty());
+                for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
+                    ((VP_FieldLabel) ((VP_DivisionLine) (dynamicBody.getChildren().get(i + 1))).getChildren().get(0)).setText("paragraph " + (i + 1) + ":");
+                    ((VP_Button) ((VP_DivisionLine) (dynamicBody.getChildren().get(i + 1))).getChildren().get(2)).setOnAction(new DeleteParagraphAction(i + 1));
+
+                    ((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().bindBidirectional(controller.getCurrentUser().getCovlet().getParagraphs().get(i));
+                }
+            } else {
+                ((VP_TextArea) (coverLetterEditFields.get(25))).setText("");
+            }
+            addParagraphLine.show();
+        }
+    }
+
+    /**
+     * Saves any information changed in the Business Card  page and brings the 
+     * user back to the Overview page.
+     * 
+     * @since 1.0
+     */
+    private class SubmitCovLetEditAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by the submit cover letter button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            saveCovLetFunction(1);
+        }
+    }
+
+    /**
+     * Updates the date on the cover letter from its previously stored value to
+     * a new value representing the current date.
+     * 
+     * @since 1.0
+     */
+    private class UpdateDateAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by the update button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+            String formattedDate = formatter.format(new Date());
+            dateValueLabel.setText(formattedDate);
+        }
+    }
+
+    /**
+     * Saves any information changed in the Business Card page and brings the 
+     * user back to the Overview page.
+     * 
+     * @since 1.0
+     */
+    private class SubmitBCardAction implements EventHandler<ActionEvent> {
+
+        private final ArrayList<VP_TextField> businessCardFields;
+
+        /**
+         * Constructor. Stores the business card fields for reference.
+         * 
+         * @param businessCardFields The list of fields of the business card.
+         * @since 1.0
+         */
+        public SubmitBCardAction(ArrayList<VP_TextField> businessCardFields) {
+            this.businessCardFields = businessCardFields;
+        }
+
+        /**
+         * @param event An ActionEvent, triggered by the submit business card button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            boolean hasError = false;
+            String webRegex = "^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+            Pattern webPattern = Pattern.compile(webRegex);
+            Matcher matcher;
+            //-------- Initialization End ------------\\
+
+            VP_Sounds.play(0);
+            businessCardFields.get(3).textProperty().setValue(businessCardFields.get(3).textProperty().getValueSafe().trim());
+            businessCardFields.get(4).textProperty().setValue(businessCardFields.get(4).textProperty().getValueSafe().trim());
+            businessCardFields.get(5).textProperty().setValue(businessCardFields.get(5).textProperty().getValueSafe().trim());
+            businessCardFields.get(14).textProperty().setValue(businessCardFields.get(14).textProperty().getValueSafe().trim());
+            if (!businessCardFields.get(14).textProperty().getValueSafe().equals("")) {
+                matcher = webPattern.matcher(businessCardFields.get(14).textProperty().getValueSafe());
+                if (!matcher.matches()) {
+                    hasError = true;
+                    businessCardFields.get(14).showInvalid();
+                    bcardError.setParaText("The web address is not in valid form. Be sure to include whether "
+                            + "the address is http or https");
+                }
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                bcardErrorLine.show();
+            } else {
+                bcardError.setParaText("");
+                bcardErrorLine.hide();
+                controller.getCurrentUser().getBcard().save();
+                if (controller.getCurrentUser().getBcard().hasChanges()) {
+                    updateDynamicContent();
+                    controller.updateTree(5);
+                    showScreen(3, 0);
+                    try {
+                        controller.getDataM().saveBCardData();
+                    } catch (SQLException ex) {
+                        controller.errorAlert(3114, ex.getMessage());
+                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                        controller.errorAlert(3301, ex.getMessage());
+                    }
+                } else {
+                    showScreen(3, 0);
+                }
+            }
+        }
+    }
+
+    /**
+     * Action event for the submit button on wizard page 22 to save a user's new
+     * password. This is different than resetting a password. In this case, the
+     * user is already logged in but would like to change the password.
+     * Therefore, only verification that the new password meets requirements is
+     * needed. The user must still enter in the old password to avoid the
+     * problem of other people attempting to change the logged in user's
+     * password if that user happens to step away.
+     *
+     * @since 1.0
+     */
     private class ChangePassAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             //-------- Initialization Start ----------\\
@@ -4109,8 +4678,7 @@ public class VP_Center extends StackPane {
                 changePassError.setText("The old password is incorrect. Please try again.");
                 changePassErrorLine.show();
                 VP_Sounds.play(-1);
-            } else if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM())
-                    {
+            } else if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 newPass.showInvalid();
                 newPassConfirm.showInvalid();
                 changePassError.setText("The new password is not long enough. Please try again.");
@@ -4146,77 +4714,9 @@ public class VP_Center extends StackPane {
                     }
                 } catch (SQLException ex) {
                     controller.errorAlert(3127, ex.getMessage());
-                } catch (NoSuchAlgorithmException |UnsupportedEncodingException ex) {
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                     controller.errorAlert(3007, ex.getMessage());
                 }
-            }
-        }
-    }
-
-    /*------------------------------------------------------------------------*
-     * Subclass RegisterSubmitAction
-     * - Action event for the submit buttons on page 2.
-     *------------------------------------------------------------------------*/
-    private class RegisterSubmitAction implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            //-------- Initialization Start ----------\\
-            String[] cred = {registerEmail.getText().toLowerCase(), registerPass.getText(),
-                registerPassConfirm.getText()};
-            int registerStatus;
-            //-------- Initialization End ------------\\
-
-            VP_Sounds.play(0);
-            if (controller.getDataM().checkEmail(cred[0])) {
-                if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
-                    registerPass.showInvalid();
-                    registerPassConfirm.showInvalid();
-                    registerError.setText("The password is not long enough.");
-                    registerErrorLine.show();
-                    VP_Sounds.play(-1);
-                } else if (!cred[1].equals(cred[2])) {
-                    registerPass.showInvalid();
-                    registerPassConfirm.showInvalid();
-                    registerError.setText("The passwords do not match.");
-                    registerErrorLine.show();
-                    VP_Sounds.play(-1);
-                } else {
-                    try {
-                        registerStatus = controller.getDataM().regUser(cred);
-                        if (registerStatus == 2) {
-                            accessInstructions.setParaText("Login with your new account.");
-                            accessInstructionsLine.show();
-                            resetRegisterForms();
-                            showScreen(0, 0);
-                        } else if (registerStatus == 1) {
-                            registerEmail.showInvalid();
-                            registerError.setText("This email is already associated "
-                                    + "with a VaqPack user.");
-                            registerErrorLine.show();
-                            VP_Sounds.play(-1);
-                        } else if (registerStatus == 0) {
-                            registerEmail.showInvalid();
-                            registerError.setText("This email is already associated "
-                                    + "with a VaqPack user who recently registered "
-                                    + "but has not yet enetered in the access code. "
-                                    + "Login and you will be prompted to enter in "
-                                    + "this code. If you did not receive the code, "
-                                    + "there will be an option to resend one.");
-                            registerErrorLine.show();
-                            VP_Sounds.play(-1);
-                        }
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3112, ex.getMessage());
-                    } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                        controller.errorAlert(3006, ex.getMessage());
-                    }
-                }
-            } else {
-                registerEmail.showInvalid();
-                registerError.setText("The email provided is invalid. Please try again.");
-                registerErrorLine.show();
-                VP_Sounds.play(-1);
             }
         }
     }
@@ -4224,50 +4724,122 @@ public class VP_Center extends StackPane {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
+    /**
+     * Accessor method.
+     *
+     * @return The list of Business Card fields.
+     * @since 1.0
+     */
     protected ArrayList<VP_PageSubdivision> getBcNodes() {
         return bcNodes;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The list of Cover letter fields.
+     * @since 1.0
+     */
     protected ArrayList<VP_PageSubdivision> getClNodes() {
         return clNodes;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume education fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeEducationBox() {
         return resumeEducationBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume experiences fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeExperienceBox() {
         return resumeExperienceBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume achievements fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeAchievementsBox() {
         return resumeAchievementsBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume community fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeCommunityBox() {
         return resumeCommunityBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume qualifications fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeQualificationsBox() {
         return resumeQualificationsBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume highlights fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeHighlightsBox() {
         return resumeHighlightsBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume languages fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeLanguagesBox() {
         return resumeLanguagesBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume software fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeSoftwareBox() {
         return resumeSoftwareBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the resume references fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getResumeReferencesBox() {
         return resumeReferencesBox;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The container object for the cover letter fields.
+     * @since 1.0
+     */
     protected VP_PageDivision getCovLetEditBox() {
         return covLetEditBox;
     }

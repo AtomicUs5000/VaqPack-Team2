@@ -1,8 +1,6 @@
 /**
- * VP_Loader.java  - Everything involving the header of the GUI.
- * FILE ID 1400
+ * VP_Loader.java - Everything involving the header of the GUI. FILE ID 1400
  */
-
 package vaqpack;
 
 import javafx.event.ActionEvent;
@@ -18,12 +16,12 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import vaqpack.components.VP_Dialog;
 
 /**
- * 
- * 
+ * The header is the top of the main BorderPane layout. The header extends VBox
+ * and consists of a menu bar section and a logo section.
+ *
  * @author William Dewald (Project Manager, Team-02)
  * @author Fernando Bazan
  * @author Erik Lopez
@@ -35,7 +33,6 @@ import vaqpack.components.VP_Dialog;
 public class VP_Header extends VBox {
 
     private final VP_GUIController controller;
-    private final Stage primaryStage;
     private final MenuBar menuBar;
     private final HBox headerBar;
     private final Pane headerLogo;
@@ -43,15 +40,16 @@ public class VP_Header extends VBox {
     private final Menu adminMenu;
     private final MenuItem userLogout, changePass;
 
-    /*------------------------------------------------------------------------*
-     * VP_Header()
-     * - Constructor. Adds an empty menubar and header section to itself.
-     * - Parameter 
-     *------------------------------------------------------------------------*/
-    protected VP_Header(VP_GUIController controller, Stage primaryStage) {
+    /**
+     * Constructor. Adds an empty menu bar and header logo section to itself.
+     *
+     * @param controller Stores the GUI controller for convenience in accessing
+     * controller functions or classes accessed by the controller.
+     * @since 1.0
+     */
+    protected VP_Header(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
-        this.primaryStage = primaryStage;
         menuBar = new MenuBar();
         headerBar = new HBox();
         headerLogo = new Pane();
@@ -60,20 +58,16 @@ public class VP_Header extends VBox {
         userLogout = new MenuItem("Logout");
         changePass = new MenuItem("Change Your Password");
         //-------- Initialization End ------------\\
-        menuBar.setId("menuBar");
-        headerBar.setId("headerBar");
-        headerLogo.setId("headerLogo");
-        headerCaption.setId("headerCaption");
+
         this.getChildren().addAll(menuBar, headerBar);
     }
 
-    /*------------------------------------------------------------------------*
-     * build()
-     * - Builds the gui header, including the menu.
-     *   Called in a task to build in the background.
-     * - No Paramters
-     * - No Return
-     *------------------------------------------------------------------------*/
+    /**
+     * Builds the components for the empty GUI header, including the menu.
+     * Called in a task to build in the background.
+     *
+     * @since 1.0
+     */
     protected void build() {
         //-------- Initialization Start ----------\\
         Menu homeMenu = new Menu("Home"),
@@ -86,8 +80,16 @@ public class VP_Header extends VBox {
                 aboutHelp = new MenuItem("About VaqPack");
         //-------- Initialization End ------------\\
 
+        // styles
+        menuBar.setId("menuBar");
+        headerBar.setId("headerBar");
+        headerLogo.setId("headerLogo");
+        headerCaption.setId("headerCaption");
+
         // Menu actions
-        userLogout.setOnAction((e) -> {controller.logoutUser();});
+        userLogout.setOnAction((e) -> {
+            controller.logoutUser();
+        });
         exitVP.setOnAction(controller.new ClosingSequence());
         toggleFull.setOnAction(new FullScreenToggle());
         changePass.setOnAction(controller.getCenter().new WizardMainAction(22));
@@ -105,6 +107,7 @@ public class VP_Header extends VBox {
         adminMenu.setText("");
         userLogout.setVisible(false);
         changePass.setVisible(false);
+
         // Logo header construction
         headerBar.setPrefHeight(50);
         headerBar.setAlignment(Pos.CENTER_LEFT);
@@ -119,18 +122,36 @@ public class VP_Header extends VBox {
     /*##########################################################################
      * SUBCLASSES
      *########################################################################*/
-    /*------------------------------------------------------------------------*
-     * Subclass FullScreenToggle
-     * - Allows the user to enter or exit fullscreen mode
-     *------------------------------------------------------------------------*/
+    /**
+     * Allows the user to enter or exit full-screen mode
+     *
+     * @since 1.0
+     */
     private class FullScreenToggle implements EventHandler {
+
+        /**
+         * @param event A general event of no specific type. Although this is
+         * currently triggered by a menu item, this is left to be a simple event
+         * in case a shortcut command for this is added in future versions.
+         * @since 1.0
+         */
         @Override
         public void handle(Event event) {
-            primaryStage.setFullScreen(!primaryStage.isFullScreen());
+            controller.getPrimaryStage().setFullScreen(!controller.getPrimaryStage().isFullScreen());
         }
     }
-    
+
+    /**
+     * Opens the 'Getting Started with VaqPack' Dialog Box.
+     *
+     * @since 1.0
+     */
     private class HelpAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a menu item selection.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             VP_Dialog helpDialog = new VP_Dialog("Getting Started with VaqPack");
@@ -138,8 +159,18 @@ public class VP_Header extends VBox {
             helpDialog.show();
         }
     }
-    
+
+    /**
+     * Opens the 'About VaqPack' Dialog Box.
+     *
+     * @since 1.0
+     */
     private class AboutAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a menu item selection.
+         * @since 1.0
+         */
         @Override
         public void handle(ActionEvent event) {
             VP_Dialog aboutDialog = new VP_Dialog("About VaqPack");
@@ -151,18 +182,33 @@ public class VP_Header extends VBox {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
+    /**
+     * Accessor method.
+     *
+     * @return The 'Admin' Menu pull-down object.
+     * @since 1.0
+     */
     protected Menu getAdminMenu() {
         return adminMenu;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The inner menu item allowing a user to log out.
+     * @since 1.0
+     */
     protected MenuItem getUserLogout() {
         return userLogout;
     }
 
-    protected MenuBar getMenuBar() {
-        return menuBar;
-    }
-
+    /**
+     * Accessor method.
+     *
+     * @return The inner menu item allowing a user to access the page in the
+     * wizard to change a password.
+     * @since 1.0
+     */
     protected MenuItem getChangePass() {
         return changePass;
     }

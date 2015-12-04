@@ -71,6 +71,7 @@ public class VP_GUIController {
     private final String TITLE = "VaqPack";
     private final StackPane mainLayout = new StackPane();
     private final VP_Loader loader = new VP_Loader(SCENE_WIDTH, SCENE_HEIGHT);
+    private final Stage primaryStage;
     private final Scene primaryScene = new Scene(mainLayout, SCENE_WIDTH, SCENE_HEIGHT);
     private final Alert warnLogOut = new Alert(AlertType.WARNING);
     private final VP_User currentUser = new VP_User();
@@ -95,8 +96,9 @@ public class VP_GUIController {
      */
     protected VP_GUIController(Stage primaryStage) {
         //-------- Initialization Start ----------\\
+        this.primaryStage = primaryStage;
         dataM = new VP_DataManager(this);
-        header = new VP_Header(this, primaryStage);
+        header = new VP_Header(this);
         leftTree = new VP_Left(this);
         center = new VP_Center(this);
         footer = new VP_Footer(this);
@@ -900,7 +902,7 @@ public class VP_GUIController {
     }
 
     /**
-     * Defines the runnable wrappers for the datatbase tasks.
+     * Defines the runnable wrappers for the database tasks.
      * 
      * @since 1.0
      */
@@ -1119,7 +1121,10 @@ public class VP_GUIController {
         public LoadGUITask(int stage) {
             this.stage = stage;
         }
-
+        
+        /**
+         * Overridden run() sets the task to be completed depending on stage number.
+         */
         @Override
         public void run() {
             Platform.runLater(() -> (loader.setActivity2(guiTaskLabels.get(stage))));
@@ -1153,6 +1158,11 @@ public class VP_GUIController {
             this.tasks = tasks;
         }
         
+        /**
+         * Overridden run() calls run run() for the desired task within this thread.
+         * Provides a delay in between tasks to give a chance for the loading progress
+         * to update while providing loading information to the user.
+         */
         @Override
         public void run() {
             for (int i = 0; i < tasks.size(); i++) {
@@ -1255,5 +1265,15 @@ public class VP_GUIController {
      */
     protected VP_Center getCenter() {
         return center;
+    }
+
+    /**
+     * Accessor method.
+     * 
+     * @return The primary stage of the JavaFX GUI.
+     * @since 1.0
+     */
+    protected Stage getPrimaryStage() {
+        return primaryStage;
     }
 }
