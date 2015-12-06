@@ -30,6 +30,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,16 +39,21 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import vaqpack.components.VP_Dialog;
+import vaqpack.user.VP_Contact;
 
 /**
  * The center is the center of the main BorderPane layout. The center extends
@@ -82,13 +88,14 @@ public class VP_Center extends StackPane {
             bcardErrorLine, covletEditErrorLine, objectiveErrorLine, educationErrorLine,
             experienceErrorLine, achievementsErrorLine, communityErrorLine,
             qualificationsErrorLine, highlightsErrorLine, languagesErrorLine,
-            softwareErrorLine, referencesErrorLine, changePassErrorLine;
+            softwareErrorLine, referencesErrorLine, changePassErrorLine, 
+            addContactErrorLine, sendAttachErrorLine;
     private final VP_Paragraph accessInstructions, resetInstructions1, resetInstructions2,
             overviewInfo, coverLetterDetails, loginError, resetError, registerError,
             personalInfoError, bcardError, covletEditError, objectiveError,
             educationError, experienceError, achievementsError, communityError,
             qualificationsError, highlightsError, languagesError, softwareError,
-            referencesError, changePassError;
+            referencesError, changePassError, addContactError, sendAttachError;
     private final VP_Button submitResetBtn, startNewBtn, addEducationBtn, addExperienceBtn,
             addAchievementBtn, addCommunityBtn, addQualificationBtn, addHighlightBtn,
             addLanguageBtn, addSoftwareBtn, addReferenceBtn;
@@ -104,6 +111,7 @@ public class VP_Center extends StackPane {
     private final VP_PageDivision covLetEditBox, resumeEducationBox, resumeExperienceBox,
             resumeAchievementsBox, resumeCommunityBox, resumeQualificationsBox,
             resumeHighlightsBox, resumeLanguagesBox, resumeSoftwareBox, resumeReferencesBox;
+    private final CheckBox resHTMLcb, resPDFcb, clPDFcb, bcPDFcb;
 
     /**
      * Constructor. Initializes all of the components that require a reference
@@ -145,6 +153,8 @@ public class VP_Center extends StackPane {
         softwareErrorLine = new VP_DivisionLine();
         referencesErrorLine = new VP_DivisionLine();
         changePassErrorLine = new VP_DivisionLine();
+        addContactErrorLine = new VP_DivisionLine();
+        sendAttachErrorLine = new VP_DivisionLine();
         loginError = new VP_Paragraph("", true);
         resetError = new VP_Paragraph("", true);
         registerError = new VP_Paragraph("", true);
@@ -162,6 +172,8 @@ public class VP_Center extends StackPane {
         softwareError = new VP_Paragraph("", true);
         referencesError = new VP_Paragraph("", true);
         changePassError = new VP_Paragraph("", true);
+        addContactError = new VP_Paragraph("", true);
+        sendAttachError = new VP_Paragraph("", true);
         coverLetterDetails = new VP_Paragraph("", false);
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
@@ -234,6 +246,10 @@ public class VP_Center extends StackPane {
         resumeLanguagesBox = new VP_PageDivision("RESUME -- LANGUAGES");
         resumeSoftwareBox = new VP_PageDivision("RESUME -- SOFTWARE");
         resumeReferencesBox = new VP_PageDivision("RESUME -- REFERENCES");
+        resHTMLcb = new CheckBox("Resume (HTML File)");
+        resPDFcb = new CheckBox("Resume (PDF File)");
+        clPDFcb = new CheckBox("Cover Letter (PDF File)");
+        bcPDFcb = new CheckBox("Business Card (PDF File)");
         //-------- Initialization End ------------\\
     }
 
@@ -324,6 +340,7 @@ public class VP_Center extends StackPane {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(5);
         } else if (screenNumber == 10) {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(6);
+            updateSelectableDocs();
         } else if (screenNumber == 11) {
             ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(2);
             updateResumeStatus();
@@ -1046,9 +1063,164 @@ public class VP_Center extends StackPane {
      * @since 1.0
      */
     private ScrollPane buildDistributeScreen() {
+        //-------- Initialization Start ----------\\
         ScrollPane screen = new ScrollPane();
         VBox screenContent = new VBox();
         VP_PageDivision distributeBox = new VP_PageDivision("DISTRIBUTE DOCUMENTS");
+        VP_PageSubdivision documentsDiv = new VP_PageSubdivision("DOCUMENTS", false),
+                contactsDiv = new VP_PageSubdivision("CONTACTS", false),
+                sendDiv = new VP_PageSubdivision("SEND", false);
+        VP_Paragraph docInfo = new VP_Paragraph("Choose which documents you would like to send below. "
+                + "If a specific document is unselectable, this means you need to complete "
+                + "something in that document before you can select it for distribution."),
+                contactInfo = new VP_Paragraph("Choose a contact to send to from your list of contacts. "
+                        + "If you do not have any contacts or if you you need to send to someone who "
+                        + "is not in the list of contacts, add a new contact first.");
+        VP_TextField addEmail = new VP_TextField(20, 254),
+                addName = new VP_TextField(20, 140);
+        VP_Button addContactBtn = new VP_Button("Add"),
+                deleteBtn = new VP_Button("Delete Selected Contact"),
+                sendBtn = new VP_Button("Send Attachments"),
+                cancelBtn = new VP_Button("Cancel",  new CancelAction(10));
+        VP_DivisionLine doc1Line = new VP_DivisionLine(new Node[]{resHTMLcb}, 40),
+                doc2Line = new VP_DivisionLine(new Node[]{resPDFcb}, 40),
+                doc3Line = new VP_DivisionLine(new Node[]{clPDFcb}, 40),
+                doc4Line = new VP_DivisionLine(new Node[]{bcPDFcb}, 40),
+                deleteLine = new VP_DivisionLine(new Node[]{deleteBtn}),
+                addContactLine = new VP_DivisionLine(new Node[]{addEmail, addName, addContactBtn}),
+                sendLine = new VP_DivisionLine(new Node[]{sendBtn, cancelBtn});
+        TableView table = new TableView();
+        TableColumn emailCol = new TableColumn("Email"),
+                nameCol = new TableColumn("Name");
+
+        //-------- Initialization End ------------\\
+        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        table.setItems(controller.getCurrentUser().getContacts());
+        table.setEditable(true);
+        table.getColumns().addAll(emailCol, nameCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setFixedCellSize(25);
+        table.prefHeightProperty().bind(Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(30));
+        table.getSelectionModel().clearSelection();
+        table.setMaxHeight(200);
+        table.setPlaceholder(new Label("You have no contacts. Add some contact below."));
+        addEmail.setPromptText("Email Address");
+        addName.setPromptText("Contact Name");
+        
+        addContactBtn.setOnAction((e) -> {
+            boolean hasError = false;
+            String thisEmail = addEmail.getText().trim().toLowerCase(),
+                    thisName = addName.getText().trim();
+            VP_Sounds.play(0);
+            
+            if (thisEmail == null || thisEmail.equals("")) {
+                hasError = true;
+                addEmail.showInvalid();
+                addContactError.setParaText("New contact email address cannot be blank.");
+            } else if (thisName == null || thisName.equals("")) {
+                hasError = true;
+                addName.showInvalid();
+                addContactError.setParaText("New contact name cannot be blank.");
+            } else if (!controller.getDataM().checkEmail(thisEmail)) {
+                hasError = true;
+                addEmail.showInvalid();
+                addContactError.setParaText("New contact email is invalid.");
+            } else {
+                for (int i = 0; i < controller.getCurrentUser().getContacts().size(); i++) {
+                    if (((VP_Contact)controller.getCurrentUser().getContacts().get(i)).getEmail().equalsIgnoreCase(thisEmail)) {
+                        hasError = true;
+                        addEmail.showInvalid();
+                        addContactError.setParaText("A contact with this email already exists.");
+                        break;
+                    }
+                }
+            }
+            if (!hasError) {
+                addContactError.setParaText("");
+                addContactErrorLine.hide();
+                VP_Contact newContact = new VP_Contact(thisEmail, thisName);
+                try {
+                    controller.getDataM().addContact(newContact.getEmail(), newContact.getName());
+                    controller.getCurrentUser().getContacts().add(newContact);
+                    table.getSelectionModel().clearSelection();
+                    addName.clear();
+                    addEmail.clear();
+                    table.scrollTo(controller.getCurrentUser().getContacts().size() - 1);
+                } catch (SQLException ex) {
+                    controller.errorAlert(3128, ex.getMessage());
+                }
+            } else {
+                VP_Sounds.play(-1);
+                addContactErrorLine.show();
+            }
+        });
+        deleteBtn.setOnAction((e) -> {
+            VP_Contact deletedContact = (VP_Contact)(table.getSelectionModel().getSelectedItem());
+            VP_Sounds.play(0);
+            try {
+                controller.getDataM().deleteContact(deletedContact.getEmail(), deletedContact.getName());
+                controller.getCurrentUser().getContacts().remove(deletedContact);
+                table.getSelectionModel().clearSelection();
+            } catch (SQLException ex) {
+                controller.errorAlert(3129, ex.getMessage());
+            }
+        });
+        
+        sendBtn.setOnAction((e) -> {
+            Boolean hasError = false, 
+                    sendResHTML = resHTMLcb.isSelected(),
+                    sendResPDF = resPDFcb.isSelected(),
+                    sendBCPDF = bcPDFcb.isSelected(),
+                    sendCLPDF = clPDFcb.isSelected();
+            String email = "";
+            VP_Contact sendContact = (VP_Contact)(table.getSelectionModel().getSelectedItem());
+            VP_Sounds.play(0);
+            if (sendContact != null) {
+                email = sendContact.getEmail();
+            }
+            if (!(sendResHTML || sendResPDF || sendBCPDF || sendCLPDF)) {
+                hasError = true;
+                sendAttachError.setParaText("You have not selected any files to send.");
+            } else if (email.equals("")) {
+                hasError = true;
+                sendAttachError.setParaText("You have not selected a contact to send documents to.");
+            }
+            if (hasError) {
+                VP_Sounds.play(-1);
+                sendAttachErrorLine.show();
+            } else {
+                addContactError.setParaText("");
+                addContactErrorLine.hide();
+                try {
+                    controller.getDataM().sendAttachments(email, sendResHTML, sendResPDF, sendBCPDF, sendCLPDF);
+                    table.getSelectionModel().clearSelection();
+                    resHTMLcb.setSelected(false);
+                    resPDFcb.setSelected(false);
+                    bcPDFcb.setSelected(false);
+                    clPDFcb.setSelected(false);
+                    VP_Dialog emailSent = new VP_Dialog("EMAIL SENT");
+                    emailSent.setHeaderText("Your attachments have been sent out to the selected contact.");
+                    Label emailSentLabel = new Label("You should verify with the contact that the email has been received.");
+                    emailSentLabel.setPadding(new Insets(50, 20, 50, 20));
+                    emailSent.getDialogShell().add(emailSentLabel, 0, 0);
+                    emailSent.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                            emailSent.showAndWait();
+                } catch (SQLException | IOException ex) {
+                    controller.errorAlert(3130, ex.getMessage());
+                }
+            }
+        });
+        
+        addContactErrorLine.getChildren().addAll(addContactError);
+        addContactErrorLine.hide();
+        sendAttachErrorLine.getChildren().addAll(sendAttachError);
+        sendAttachErrorLine.hide();
+        documentsDiv.getChildren().addAll(docInfo, doc1Line, doc2Line, doc3Line, doc4Line);
+        contactsDiv.getChildren().addAll(contactInfo, table, deleteLine, addContactErrorLine, addContactLine);
+        sendDiv.getChildren().addAll(sendAttachErrorLine, sendLine);
+        distributeBox.getChildren().addAll(documentsDiv, contactsDiv, sendDiv);
+
         screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         screenContent.getChildren().addAll(distributeBox);
         screenContent.setSpacing(30);
@@ -1741,6 +1913,24 @@ public class VP_Center extends StackPane {
         registerErrorLine.hide();
     }
 
+    private void updateSelectableDocs() {
+        resHTMLcb.setDisable(true);
+        resPDFcb.setDisable(true);
+        bcPDFcb.setDisable(true);
+        clPDFcb.setDisable(true);
+        VP_User thisUser = controller.getCurrentUser();
+        if (thisUser.getBcard().hasCompletedBusinessCard()) {
+            bcPDFcb.setDisable(false);
+        }
+        if (thisUser.getCovlet().hasCompletedCoverLetter()) {
+            clPDFcb.setDisable(false);
+        }
+        if (thisUser.getResume().hasCompletedResume()) {
+            resHTMLcb.setDisable(false);
+            resPDFcb.setDisable(false);
+        }
+    }
+    
     /**
      * Adjusts the resume status page depending on what the user has completed.
      *
@@ -1925,6 +2115,14 @@ public class VP_Center extends StackPane {
         personalInfoErrorLine.hide();
         changePassError.setParaText("");
         changePassErrorLine.hide();
+        addContactError.setParaText("");
+        addContactErrorLine.hide();
+        sendAttachError.setParaText("");
+        sendAttachErrorLine.hide();
+        resHTMLcb.setSelected(false);
+        resPDFcb.setSelected(false);
+        bcPDFcb.setSelected(false);
+        clPDFcb.setSelected(false);
         controller.getCurrentUser().getResume().revert();
         controller.getCurrentUser().getCovlet().revert();
         controller.getCurrentUser().getBcard().revert();

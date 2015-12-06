@@ -14,9 +14,12 @@ package vaqpack.user;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class VP_User {
 
+    private final ObservableList<VP_Contact> contacts;
     private final VP_BusinessCard bcard;
     private final VP_Resume resume;
     private final VP_CoverLetter covlet;
@@ -56,6 +59,7 @@ public class VP_User {
      * - No parameters
      *------------------------------------------------------------------------*/
     public VP_User() {
+        contacts = FXCollections.observableArrayList();
         email = new SimpleStringProperty();
         firstName = new SimpleStringProperty();
         middleName = new SimpleStringProperty();
@@ -315,5 +319,9 @@ public class VP_User {
 
     public boolean hasChanges() {
         return changes;
+    }
+
+    public ObservableList<VP_Contact> getContacts() {
+        return contacts;
     }
 }

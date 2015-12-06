@@ -438,3 +438,11 @@
     -fx-border-color: rgb(0, 38, 73);
     -fx-accent: rgba(50, 200, 170, 0.5);
 }
+.check-box {
+   -fx-text-fill: rgb(0, 38, 73);
+   -fx-accent: rgba(50, 200, 170, 0.5);
+   -fx-focus-color: rgb(0, 135, 81);
+}
+.check-box:hover {
+   -fx-cursor: hand;
+}

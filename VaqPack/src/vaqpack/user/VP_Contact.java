@@ -12,18 +12,23 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack.user;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class VP_Contact {
 
-    private String email;
+    private final SimpleStringProperty
+            email,
+            name;
 
     /*------------------------------------------------------------------------*
      * VP_Contact()
      * - Constructor.
      * - Parameter email sets the contact's email.
      *------------------------------------------------------------------------*/
-    protected VP_Contact(String email) {
+    public VP_Contact(String email, String name) {
         //-------- Initialization Start ----------\\
-        this.email = email;
+        this.email = new SimpleStringProperty(email);
+        this.name = new SimpleStringProperty(name);
         //-------- Initialization End ------------\\
     }
 
@@ -33,12 +38,18 @@ public class VP_Contact {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
-    protected String getEmail() {
-        return email;
+        
+    public String getName() {
+        return this.name.get();
     }
-
-    protected void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.name.set(name);
     }
-
+    
+    public String getEmail() {
+        return this.email.get();
+    }
+    public void setEmail(String email) {
+        this.email.set(email);
+    }
 }

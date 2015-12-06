@@ -22,6 +22,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
@@ -520,6 +521,69 @@ public class VP_DataManager {
             if (resFiles[1] != null && resFiles[1].exists()) {
                 resFiles[1].delete();
             }
+        }
+    }
+    
+    public void addContact(String email, String name) throws SQLException {
+        dbManager.addUserContact(email, name);
+    }
+    
+    public void deleteContact(String email, String name) throws SQLException {
+        dbManager.deleteUserContact(email, name);
+    }
+    
+    public void sendAttachments(String email, boolean sendResHTML, boolean sendResPDF,
+            boolean sendBCPDF, boolean sendCLPDF) throws SQLException, IOException {
+        //-------- Initialization Start ----------\\
+        File temp1 = null,
+                temp2 = null,
+                temp3 = null,
+                temp4 = null;
+        ArrayList<File> files = new ArrayList();
+        ArrayList<String> filenames = new ArrayList();
+        String[] ccMail = {};
+        String msg;
+        VP_Mail sendAttachEmail;
+        //-------- Initialization End ------------\\
+        
+        if (sendResHTML) {
+            temp1 = dbManager.retrieveFile(1);
+            if (temp1 != null) {
+                files.add(temp1);
+                filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_resume.html");
+            }
+        }
+        if (sendResHTML) {
+            temp2 = dbManager.retrieveFile(2);
+            if (temp1 != null) {
+                files.add(temp2);
+                filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_resume.pdf");
+            }
+        }
+        if (sendResHTML) {
+            temp3 = dbManager.retrieveFile(3);
+            if (temp1 != null) {
+                files.add(temp3);
+                filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_business_card.pdf");
+            }
+        }
+        if (sendResHTML) {
+            temp4 = dbManager.retrieveFile(4);
+            if (temp1 != null) {
+                files.add(temp4);
+                filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_cover_letter.pdf");
+            }
+        }
+        if (files.size() > 0) {
+            msg = controller.getCurrentUser().getFirstName().getValueSafe() + " " +
+                    controller.getCurrentUser().getLastName().getValueSafe() +
+                    " is sending you files using VaqPack. If you believe that you have received this email in error, "
+                    + "please contact " + controller.getCurrentUser().getFirstName().getValueSafe() + " " +
+                    controller.getCurrentUser().getLastName().getValueSafe() + " at " +
+                    controller.getCurrentUser().getDocEmail() + ".";
+            sendAttachEmail = new VP_Mail(controller, email, ccMail, "VaqPack Mailer", msg, filenames, files);
+            sendAttachEmail.setDaemon(true);
+            sendAttachEmail.start();
         }
     }
 

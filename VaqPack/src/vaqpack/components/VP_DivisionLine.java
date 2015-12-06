@@ -44,6 +44,20 @@ public class VP_DivisionLine extends HBox {
     }
     
     /*------------------------------------------------------------------------*
+     * VP_DivisionLine
+     * - Constructor.
+     * - Parameter nodes is an array of nodes, allowing the addition of nodes
+     * - Parameter padLeft is the left padding of the line.
+     *   to this component at the time of its construction.
+     *------------------------------------------------------------------------*/
+    public VP_DivisionLine(Node[] nodes, int padLeft) {
+        this.setAlignment(Pos.CENTER_LEFT);
+        this.setSpacing(20);
+        this.getChildren().addAll(nodes);
+        this.setPadding(new Insets(2, 0, 2, padLeft));
+    }
+    
+    /*------------------------------------------------------------------------*
      * hide()
      * - Hides this line and collapses it.
      * - No parameters.

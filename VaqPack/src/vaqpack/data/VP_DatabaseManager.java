@@ -12,17 +12,13 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack.data;
 
-import vaqpack.user.VP_User;
-import vaqpack.user.VP_Resume;
-import vaqpack.user.VP_CoverLetter;
-import vaqpack.user.VP_BusinessCard;
+import vaqpack.user.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,7 +27,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
-import vaqpack.peripherals.VP_Mail;
 
 public class VP_DatabaseManager {
 
@@ -231,13 +226,11 @@ public class VP_DatabaseManager {
     protected void checkContactTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE contact ("
-                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
                 + "  user_id int(10) unsigned NOT NULL,"
-                + "  name varchar(128) NOT NULL,"
+                + "  name varchar(140) NOT NULL,"
                 + "  email varchar(254) NOT NULL,"
-                + "  PRIMARY KEY (id),"
-                + "  UNIQUE KEY id_UNIQUE (id),"
-                + "  KEY conUID_idx (user_id),"
+                + "  PRIMARY KEY (user_id, email),"
+                + "  UNIQUE KEY id_UNIQUE (user_id, email),"
                 + "  CONSTRAINT conUID FOREIGN KEY (user_id) REFERENCES user (id)"
                 + "  ON DELETE CASCADE ON UPDATE NO ACTION"
                 + ")";
@@ -1008,6 +1001,15 @@ public class VP_DatabaseManager {
                                                 res.setThemeId(rts.getInt("theme"));
                                                 res.save();
                                             }
+                                            try (PreparedStatement ps7 = con.prepareStatement("SELECT * FROM contact WHERE user_id = ?")) {
+                                                ps7.setInt(1, userID);
+                                                ps7.executeQuery();
+                                                rts = ps7.getResultSet();
+                                                while (rts.next()) {
+                                                    VP_Contact thisContact = new VP_Contact(rts.getString("email"), rts.getString("name"));
+                                                    thisUser.getContacts().add(thisContact);
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -1644,56 +1646,42 @@ public class VP_DatabaseManager {
                 }
             }
             System.out.println("Resume pdf Stored");
-            
-            /*
-            // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
-
-            sql = "SELECT * FROM resume_pdf WHERE user_id = " + userID;
-            rts = stm.executeQuery(sql);
-            if (rts.next()) {
-                Blob pdfBlob = rts.getBlob("pdf");
-                File pdf2 = new File("respdfLoadedFromDatabaseTest.pdf");
-                InputStream inputStream2 = rts.getBinaryStream("pdf");
-                try (FileOutputStream outputStream = new FileOutputStream(pdf2)) {
-                    int current;
-                    while ((current = inputStream2.read()) > -1) {
-                        outputStream.write(current);
-                    }
-                    outputStream.flush();
-                    outputStream.close();
-                    inputStream2.close();
-                    sql = "SELECT * FROM resume_html WHERE user_id = " + userID;
-                    rts = stm.executeQuery(sql);
-                    if (rts.next()) {
-                        Blob htmlBlob = rts.getBlob("html");
-                        File html2 = new File("reshtmlLoadedFromDatabaseTest.html");
-                        InputStream inputStream3 = rts.getBinaryStream("html");
-                        try (FileOutputStream outputStream2 = new FileOutputStream(html2)) {
-                            int current2;
-                            while ((current2 = inputStream3.read()) > -1) {
-                                outputStream2.write(current2);
-                            }
-                            outputStream2.flush();
-                            outputStream2.close();
-                            inputStream3.close();
-                            String[] ccMail = {};
-                            VP_Mail respdfEmail;
-                            String msg = "PDF and HTML send file test.\n\n"
-                                    + "This is an automated message from the VaqPack software. Please do not reply.";
-                            respdfEmail = new VP_Mail(dataM.getController(), thisUser.getEmail().getValueSafe(), ccMail, "VaqPack Testing", msg,
-                                    new String[]{"respdfLoadedFromDatabaseTest.pdf", "reshtmlLoadedFromDatabaseTest.html"}, new File[]{pdf2, html2});
-                            respdfEmail.setDaemon(true);
-                            respdfEmail.start();
-                        }
-                    }
-                }
-            }
-            // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
-            */
         }
         close();
     }
-
+    
+    protected void addUserContact(String email, String name) throws SQLException {
+        //-------- Initialization Start ----------\\
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int userID = thisUser.getUserID();
+        //-------- Initialization End ------------\\
+        
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO contact (user_id, name, email) values(?, ?, ?)")) {
+            ps.setInt(1, userID);
+            ps.setString(2, name);
+            ps.setString(3, email);
+            ps.executeUpdate();
+        }
+        close();
+    }
+    
+    protected void deleteUserContact(String email, String name) throws SQLException {
+        //-------- Initialization Start ----------\\
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int userID = thisUser.getUserID();
+        //-------- Initialization End ------------\\
+        
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM contact WHERE user_id = ? AND name = ? AND email = ?")) {
+            ps.setInt(1, userID);
+            ps.setString(2, name);
+            ps.setString(3, email);
+            ps.executeUpdate();
+        }
+        close();
+    }
+    
     protected void storeResumeData(int section) throws SQLException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1986,6 +1974,46 @@ public class VP_DatabaseManager {
             }
         }
         close();
+    }
+    
+    protected File retrieveFile(int type) throws SQLException,
+            FileNotFoundException, IOException {
+        //-------- Initialization Start ----------\\
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int userID = thisUser.getUserID();
+        String filecategory = "resume",
+                filetype = "pdf",
+                sql = "",
+                condition = " WHERE user_id = " + userID;
+        File thisFile = null;
+        //-------- Initialization End ------------\\
+        if (type == 1) {
+            filetype = "html";
+        } else if (type == 3) {
+            filecategory = "business_card";
+        } else if (type == 4) {
+            filecategory = "cover_letter";
+            condition = " WHERE cover_letter_id = " + thisUser.getCovlet().getId();
+        }
+        sql = "SELECT " +
+                filetype + " FROM " + filecategory + "_" + filetype + condition;
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            rts = ps.executeQuery();
+            if (rts.next()) {
+                thisFile = new File(thisUser.getLastName().getValueSafe() + "_" + filecategory + "." + filetype);
+                try (InputStream inputStream = rts.getBinaryStream(filetype);
+                        FileOutputStream outputStream = new FileOutputStream(thisFile)) {
+                    int current;
+                    while ((current = inputStream.read()) > -1) {
+                        outputStream.write(current);
+                    }
+                    outputStream.flush();
+                }
+            }
+        }
+        close();
+        return thisFile;
     }
 
     /*------------------------------------------------------------------------*

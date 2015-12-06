@@ -432,11 +432,11 @@ public class VP_Resume {
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("RES_NAME_" + currentTheme);
         }
-        xsl += "><xsl:value-of select=\"resume/heading/name/firstname\"/> ";
+        xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"resume/heading/name/firstname\"/> ";
         if (owner.getMiddleName().getValueSafe()!= null) {
-            xsl += "<xsl:value-of select=\"resume/heading/name/middlename\"/> ";
+            xsl += " <xsl:value-of select=\"resume/heading/name/middlename\"/> ";
         }
-        xsl += "<xsl:value-of select=\"resume/heading/name/lastname\"/></div>\n<div";
+        xsl += " <xsl:value-of select=\"resume/heading/name/lastname\"/></span></div>\n<div";
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("RES_ADDRESS1_" + currentTheme);
         }
@@ -452,9 +452,9 @@ public class VP_Resume {
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("RES_CITY_STATE_ZIP_" + currentTheme);
         }
-        xsl += "><xsl:value-of select=\"resume/heading/address/city\"/>, "
+        xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"resume/heading/address/city\"/>, "
                 + "<xsl:value-of select=\"resume/heading/address/state\"/> "
-                + "<xsl:value-of select=\"resume/heading/address/zip\"/></div>\n<div";
+                + "<xsl:value-of select=\"resume/heading/address/zip\"/></span></div>\n<div";
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("RES_COMMUNICATION_" + currentTheme);
         }
@@ -507,14 +507,14 @@ public class VP_Resume {
                 if (themeId < 0) {
                     xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
                 }
-                xsl += ">GPA: <xsl:value-of select=\"resume/education/institution" + i + "/gpa\"/></p>\n";
+                xsl += "><span xml:space=\"preserve\">GPA: <xsl:value-of select=\"resume/education/institution" + i + "/gpa\"/></span></p>\n";
             }
             xsl += "<p";
             if (themeId < 0) {
                 xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
             }
-            xsl += "><xsl:value-of select=\"resume/education/institution" + i + "/start\"/> - "
-                    + "<xsl:value-of select=\"resume/education/institution" + i + "/end\"/></p>\n</div>\n";
+            xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"resume/education/institution" + i + "/start\"/> - "
+                    + "<xsl:value-of select=\"resume/education/institution" + i + "/end\"/></span></p>\n</div>\n";
         }
         xsl += "<br/>\n<div";
         if (themeId < 0) {
@@ -546,8 +546,8 @@ public class VP_Resume {
             if (themeId < 0) {
                 xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
             }
-            xsl += "><xsl:value-of select=\"resume/experience/institution" + i + "/start\"/> - "
-                    + "<xsl:value-of select=\"resume/experience/institution" + i + "/end\"/></p>\n</div>\n";
+            xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"resume/experience/institution" + i + "/start\"/> - "
+                    + "<xsl:value-of select=\"resume/experience/institution" + i + "/end\"/></span></p>\n</div>\n";
         }
         xsl += "<br/>\n";
         if (achievements.get(0).get(0).getValueSafe() != null) {
@@ -718,11 +718,11 @@ public class VP_Resume {
                 if (themeId < 0) {
                     xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
                 }
-                xsl += "><xsl:value-of select=\"resume/references/ref" + i + "/firstname\"/> ";
+                xsl += "><span xml:space=\"preserve\"><xsl:value-of select=\"resume/references/ref" + i + "/firstname\"/> ";
                 if (references.get(i - 1).get(1).getValueSafe() != null) {
                     xsl += "<xsl:value-of select=\"resume/references/ref" + i + "/middlename\"/> ";
                 }
-                xsl += "<xsl:value-of select=\"resume/references/ref" + i + "/lastname\"/></p>\n<p";
+                xsl += "<xsl:value-of select=\"resume/references/ref" + i + "/lastname\"/></span></p>\n<p";
                 if (themeId < 0) {
                     xsl += VP_Theme.Default.valueOf("RES_PARAGRAPHS_" + currentTheme);
                 }

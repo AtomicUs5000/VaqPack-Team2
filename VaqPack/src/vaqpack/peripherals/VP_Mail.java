@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Properties;
 import java.util.Date;
 import java.security.Security;
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -41,10 +42,9 @@ public class VP_Mail extends Thread {
             recipient,
             subject,
             message;
-    private final String[]
-            ccEmails,
-            filenames;
-    private final File[] attachments;
+    private final String[] ccEmails;
+    private final ArrayList<File> attachments;
+    private final ArrayList<String> filenames;
 
     /*------------------------------------------------------------------------*
      * VP_Mail()
@@ -55,7 +55,7 @@ public class VP_Mail extends Thread {
      * - Parameter string message is the email's message body.
      *------------------------------------------------------------------------*/
     public VP_Mail(VP_GUIController controller, String recipient, String[] ccEmails, String subject, String message,
-            String[] filenames, File[] attachments) {
+            ArrayList<String> filenames, ArrayList<File> attachments) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
         this.recipient = recipient;
@@ -111,16 +111,16 @@ public class VP_Mail extends Thread {
             msg.setSentDate(new Date());
 
             // attachment
-            if (filenames != null && attachments !=null && !filenames[0].equals("") && attachments[0] != null) {
+            if (filenames != null && attachments !=null && !filenames.get(0).equals("") && attachments.get(0) != null) {
                 msgbody = new MimeBodyPart();
                 msgbody.setText(message);
                 attach = new MimeMultipart("mixed");
                 attach.addBodyPart(msgbody);
-                for (int i = 0; i < attachments.length; i++){
+                for (int i = 0; i < attachments.size(); i++){
                     msgbody = new MimeBodyPart();
-                    source = new FileDataSource(attachments[i]);
+                    source = new FileDataSource(attachments.get(i));
                     msgbody.setDataHandler(new DataHandler(source));
-                    msgbody.setFileName(filenames[i]);
+                    msgbody.setFileName(filenames.get(i));
                     attach.addBodyPart(msgbody);
                 }
                 msg.setContent(attach);
@@ -131,10 +131,10 @@ public class VP_Mail extends Thread {
             transPort.connect("smtp.gmail.com", userName, password);
             transPort.sendMessage(msg, msg.getAllRecipients());
             transPort.close();
-            if (filenames != null && attachments !=null && !filenames[0].equals("") && attachments[0] != null) {
-                for (int i = 0; i < attachments.length; i++) {
-                    if (attachments[i] != null && attachments[i].exists()) {
-                        attachments[i].delete();
+            if (filenames != null && attachments !=null && !filenames.get(0).equals("") && attachments.get(0) != null) {
+                for (int i = 0; i < attachments.size(); i++) {
+                    if (attachments.get(i) != null && attachments.get(i).exists()) {
+                        attachments.get(i).delete();
                     }
                 }
             }  
