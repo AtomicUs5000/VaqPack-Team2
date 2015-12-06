@@ -24,6 +24,7 @@ public class VP_User {
             userID,
             currentCoverLetterIndex;
     private boolean completedPersonalInfo;
+    private boolean changes;
     private final StringProperty email,
             firstName,
             middleName,
@@ -151,17 +152,62 @@ public class VP_User {
      * - No return
      *------------------------------------------------------------------------*/
     public void save() {
-        firstNameStored = firstName.getValue();
-        middleNameStored = middleName.getValue();
-        lastNameStored = lastName.getValue();
-        address1Stored = address1.getValue();
-        address2Stored = address2.getValue();
-        cityStored = city.getValue();
-        stateStored = state.getValue();
-        zipStored = zip.getValue();
-        phoneStored = phone.getValue();
-        cellStored = cell.getValue();
-        docEmailStored = docEmail.getValue();
+        changes = false;
+        if ((firstNameStored != null && !firstNameStored.equals(firstName.getValue())) || 
+                (firstNameStored == null && firstName.getValue() != null) ) {
+            firstNameStored = firstName.getValue();
+            changes = true;
+        }
+        if ((middleNameStored != null && !middleNameStored.equals(middleName.getValue())) || 
+                (middleNameStored == null && middleName.getValue() != null) ) {
+            middleNameStored = middleName.getValue();
+            changes = true;
+        }
+        if ((lastNameStored != null && !lastNameStored.equals(lastName.getValue())) || 
+                (lastNameStored == null && lastName.getValue() != null) ) {
+            lastNameStored = lastName.getValue();
+            changes = true;
+        }
+        if ((address1Stored != null && !address1Stored.equals(address1.getValue())) || 
+                (address1Stored == null && address1.getValue() != null) ) {
+            address1Stored = address1.getValue();
+            changes = true;
+        }
+        if ((address2Stored != null && !address2Stored.equals(address2.getValue())) || 
+                (address2Stored == null && address2.getValue() != null) ) {
+            address2Stored = address2.getValue();
+            changes = true;
+        }
+        if ((cityStored != null && !cityStored.equals(city.getValue())) || 
+                (cityStored == null && city.getValue() != null) ) {
+            cityStored = city.getValue();
+            changes = true;
+        }
+        if ((stateStored != null && !stateStored.equals(state.getValue())) || 
+                (stateStored == null && state.getValue() != null) ) {
+            stateStored = state.getValue();
+            changes = true;
+        }
+        if ((zipStored != null && !zipStored.equals(zip.getValue())) || 
+                (zipStored == null && zip.getValue() != null) ) {
+            zipStored = zip.getValue();
+            changes = true;
+        }
+        if ((phoneStored != null && !phoneStored.equals(phone.getValue())) || 
+                (phoneStored == null && phone.getValue() != null) ) {
+            phoneStored = phone.getValue();
+            changes = true;
+        }
+        if ((cellStored != null && !cellStored.equals(cell.getValue())) || 
+                (cellStored == null && cell.getValue() != null) ) {
+            cellStored = cell.getValue();
+            changes = true;
+        }
+        if ((docEmailStored != null && !docEmailStored.equals(docEmail.getValue())) || 
+                (docEmailStored == null && docEmail.getValue() != null) ) {
+            docEmailStored = docEmail.getValue();
+            changes = true;
+        }
         completedPersonalInfo = true;
         if (firstNameStored == null || lastNameStored == null || address1Stored == null ||
                 cityStored == null || stateStored == null || zipStored == null) {
@@ -265,5 +311,9 @@ public class VP_User {
 
     public void setCurrentCoverLetterIndex(int currentCoverLetterIndex) {
         this.currentCoverLetterIndex = currentCoverLetterIndex;
+    }
+
+    public boolean hasChanges() {
+        return changes;
     }
 }

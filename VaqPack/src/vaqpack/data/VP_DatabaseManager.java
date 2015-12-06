@@ -1463,6 +1463,7 @@ public class VP_DatabaseManager {
                         inputStream.close();
                     }
                 }
+                System.out.println("business card pdf Stored");
             }
         }
         close();
@@ -1579,6 +1580,7 @@ public class VP_DatabaseManager {
                         inputStream.close();
                     }
                 }
+                System.out.println("cover letter pdf Stored");
             }
         }
         close();
@@ -1610,6 +1612,7 @@ public class VP_DatabaseManager {
                     inputStream.close();
                 }
             }
+            System.out.println("Resume html Stored");
         }
         close();
     }
@@ -1640,6 +1643,9 @@ public class VP_DatabaseManager {
                     inputStream.close();
                 }
             }
+            System.out.println("Resume pdf Stored");
+            
+            /*
             // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
 
             sql = "SELECT * FROM resume_pdf WHERE user_id = " + userID;
@@ -1683,6 +1689,7 @@ public class VP_DatabaseManager {
                 }
             }
             // TEMPORARY JUST TESTTIIINNGGGGG            UHGUIHDDH asparagus
+            */
         }
         close();
     }

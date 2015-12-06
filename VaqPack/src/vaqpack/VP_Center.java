@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -1934,7 +1936,9 @@ public class VP_Center extends StackPane {
         oldPass.setText("");
         newPass.setText("");
         newPassConfirm.setText("");
-        updateDynamicContent();
+        Thread backgroundThread = new Thread(new UpdateDynamicTask(0));
+        backgroundThread.setDaemon(true);
+        backgroundThread.start();
     }
 
     /**
@@ -1947,7 +1951,7 @@ public class VP_Center extends StackPane {
      *
      * @since 1.0
      */
-    protected void updateDynamicContent() {
+    private void updateDynamicContent(int fromPage) {
         int numbLetters = 0;
         VP_Resume thisRes = controller.getCurrentUser().getResume();
         startNewBtn.setVisible(true);
@@ -2330,6 +2334,7 @@ public class VP_Center extends StackPane {
                 softwareFields.get(i).textProperty().bindBidirectional(thisRes.getSoftware().get(i));
             }
         }
+        controller.updateTree(fromPage);
     }
 
     /**
@@ -2386,15 +2391,12 @@ public class VP_Center extends StackPane {
             covletEditErrorLine.hide();
             controller.getCurrentUser().getCovlet().save();
             if (controller.getCurrentUser().getCovlet().hasChanges()) {
-                updateDynamicContent();
-                controller.updateTree(7);
-                try {
-                    controller.getDataM().saveCovLetData();
-                } catch (SQLException ex) {
-                    controller.errorAlert(3115, ex.getMessage());
-                } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                    controller.errorAlert(3302, ex.getMessage());
-                }
+                Thread backgroundThread1 = new Thread(new UpdateDynamicTask(7));
+                backgroundThread1.setDaemon(true);
+                backgroundThread1.start();
+                Thread backgroundThread2 = new Thread(new SaveCovLetTask());
+                backgroundThread2.setDaemon(true);
+                backgroundThread2.start();
             }
             showScreen(3, 0);
         }
@@ -2600,8 +2602,9 @@ public class VP_Center extends StackPane {
                     } else {
                         // user login successful
                         resetLoginRegForms();
-                        updateDynamicContent();
-                        controller.updateTree(0);
+                        Thread backgroundThread = new Thread(new UpdateDynamicTask(0));
+                        backgroundThread.setDaemon(true);
+                        backgroundThread.start();
                         showScreen(3, 0);
                     }
                 } catch (SQLException ex) {
@@ -2753,8 +2756,9 @@ public class VP_Center extends StackPane {
                     cred[1] = loginPass.getText();
                     controller.getDataM().userLogin(cred);
                     resetLoginRegForms();
-                    updateDynamicContent();
-                    controller.updateTree(0);
+                    Thread backgroundThread = new Thread(new UpdateDynamicTask(0));
+                    backgroundThread.setDaemon(true);
+                    backgroundThread.start();
                     showScreen(3, 0);
                 } else {
                     loginError.setText("The registration code is incorrect. Please try again.");
@@ -3013,16 +3017,14 @@ public class VP_Center extends StackPane {
                 personalInfoError.setParaText("");
                 personalInfoErrorLine.hide();
                 controller.getCurrentUser().save();
-                updateDynamicContent();
-                controller.updateTree(4);
+                Thread backgroundThread1 = new Thread(new UpdateDynamicTask(4));
+                backgroundThread1.setDaemon(true);
+                backgroundThread1.start();
                 showScreen(3, 0);
-                try {
-                    controller.getDataM().saveUserData();
-                    controller.getCurrentUser().getCovlet().save();
-                    controller.getCurrentUser().getResume().save();
-                    controller.getCurrentUser().getBcard().save();
-                } catch (SQLException ex) {
-                    controller.errorAlert(3113, ex.getMessage());
+                if (controller.getCurrentUser().hasChanges()) {
+                    Thread backgroundThread2 = new Thread(new SaveUserTask());
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
             }
         }
@@ -3070,20 +3072,119 @@ public class VP_Center extends StackPane {
                 objectiveErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(12);
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(12));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
                     showScreen(11, 0);
-                    try {
-                        controller.getDataM().saveResume(0);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3117, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread2 = new Thread(new SaveResTask(0));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 } else {
                     showScreen(11, 0);
                 }
             }
+        }
+    }
+    
+    protected class UpdateDynamicTask implements Runnable {
+        private final int fromPage;
+        
+        public UpdateDynamicTask(int fromPage) {
+            this.fromPage = fromPage;
+        }
+        @Override
+        public void run() {
+            Platform.runLater(() -> {updateDynamicContent(fromPage);});
+        }
+    }
+    
+    private class SaveUserTask implements Runnable {
+        @Override
+        public void run() {
+            try {
+                controller.getDataM().getDbBusy().await();
+                controller.getDataM().setDbBusy(new CountDownLatch(1));
+                controller.getDataM().saveUserData();
+            } catch (SQLException ex) {
+                controller.errorAlert(3113, ex.getMessage());
+            } catch (InterruptedException ex) {
+                    Platform.runLater(() -> {controller.errorAlert(1204, ex.getMessage());});
+            } finally {
+                controller.getDataM().getDbBusy().countDown();
+                controller.getCurrentUser().getCovlet().save();
+                controller.getCurrentUser().getResume().save();
+                controller.getCurrentUser().getBcard().save();
+                Thread backgroundThread1 = new Thread(new SaveCovLetTask());
+                backgroundThread1.setDaemon(true);
+                backgroundThread1.start();
+                Thread backgroundThread2 = new Thread(new SaveBCardTask());
+                backgroundThread2.setDaemon(true);
+                backgroundThread2.start();
+                Thread backgroundThread3 = new Thread(new SaveResTask(0));
+                backgroundThread3.setDaemon(true);
+                backgroundThread3.start();
+            }
+        }
+    }
+    
+    private class SaveBCardTask implements Runnable {
+        @Override
+        public void run() {
+            try {
+                controller.getDataM().getDbBusy().await();
+                controller.getDataM().setDbBusy(new CountDownLatch(1));
+                controller.getDataM().saveBCardData();
+            } catch (SQLException ex) {
+                controller.errorAlert(3114, ex.getMessage());
+            } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                controller.errorAlert(3301, ex.getMessage());
+            } catch (InterruptedException ex) {
+                    Platform.runLater(() -> {controller.errorAlert(1203, ex.getMessage());});
+            } finally {
+                controller.getDataM().getDbBusy().countDown();
+            }
+        }
+    }
+    
+    private class SaveCovLetTask implements Runnable {
+        @Override
+        public void run() {
+        try {
+            controller.getDataM().getDbBusy().await();
+            controller.getDataM().setDbBusy(new CountDownLatch(1));
+            controller.getDataM().saveCovLetData();
+            } catch (SQLException ex) {
+                Platform.runLater(() -> {controller.errorAlert(3115, ex.getMessage());});
+            } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                Platform.runLater(() -> {controller.errorAlert(3302, ex.getMessage());});
+            } catch (InterruptedException ex) {
+                    Platform.runLater(() -> {controller.errorAlert(1202, ex.getMessage());});
+            } finally {
+                controller.getDataM().getDbBusy().countDown();
+            }
+        }
+    }
+    
+    private class SaveResTask implements Runnable {
+        private final int resumeSection; 
+        public SaveResTask(int resumeSection) {
+            this.resumeSection = resumeSection;
+        }
+        @Override
+        public void run() {
+                try {
+                    controller.getDataM().getDbBusy().await();
+                    controller.getDataM().setDbBusy(new CountDownLatch(1));
+                    controller.getDataM().saveResume(resumeSection);
+                } catch (SQLException ex) {
+                    Platform.runLater(() -> {controller.errorAlert(3117 + resumeSection, ex.getMessage());});
+                } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                    Platform.runLater(() -> {controller.errorAlert(3303, ex.getMessage());});
+                } catch (InterruptedException ex) {
+                    Platform.runLater(() -> {controller.errorAlert(1201, ex.getMessage());});
+                } finally {
+                    controller.getDataM().getDbBusy().countDown();
+                }
         }
     }
 
@@ -3240,15 +3341,12 @@ public class VP_Center extends StackPane {
                 educationErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(13);
-                    try {
-                        controller.getDataM().saveResume(1);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3118, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(13));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(1));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -3405,15 +3503,12 @@ public class VP_Center extends StackPane {
                 experienceErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(14);
-                    try {
-                        controller.getDataM().saveResume(2);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3119, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(14));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(2));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -3562,15 +3657,12 @@ public class VP_Center extends StackPane {
                 achievementsErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(15);
-                    try {
-                        controller.getDataM().saveResume(3);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3121, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(15));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(3));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -3719,15 +3811,12 @@ public class VP_Center extends StackPane {
                 communityErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(16);
-                    try {
-                        controller.getDataM().saveResume(4);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3122, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(16));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(4));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -3844,15 +3933,12 @@ public class VP_Center extends StackPane {
                 qualificationsErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(17);
-                    try {
-                        controller.getDataM().saveResume(5);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3123, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(17));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(5));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -3969,15 +4055,12 @@ public class VP_Center extends StackPane {
                 highlightsErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(18);
-                    try {
-                        controller.getDataM().saveResume(6);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3124, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(18));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(6));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -4098,15 +4181,12 @@ public class VP_Center extends StackPane {
                 languagesErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(19);
-                    try {
-                        controller.getDataM().saveResume(7);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3125, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(19));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(7));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -4223,15 +4303,12 @@ public class VP_Center extends StackPane {
                 softwareErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(20);
-                    try {
-                        controller.getDataM().saveResume(8);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3126, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(20));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(8));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 }
                 showScreen(11, 0);
             }
@@ -4417,16 +4494,12 @@ public class VP_Center extends StackPane {
                 referencesErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(21);
-                    showScreen(11, 0);
-                    try {
-                        controller.getDataM().saveResume(9);
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3120, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3303, ex.getMessage());
-                    }
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(21));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
+                    Thread backgroundThread2 = new Thread(new SaveResTask(9));
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 } else {
                     showScreen(11, 0);
                 }
@@ -4463,8 +4536,9 @@ public class VP_Center extends StackPane {
             try {
                 controller.getDataM().loadCovLet(clID);
                 controller.getCurrentUser().setCurrentCoverLetterIndex(selectedLetter);
-                updateDynamicContent();
-                controller.updateTree(6);
+                Thread backgroundThread = new Thread(new UpdateDynamicTask(6));
+                backgroundThread.setDaemon(true);
+                backgroundThread.start();
                 showScreen(7, 0);
 
             } catch (SQLException ex) {
@@ -4498,8 +4572,9 @@ public class VP_Center extends StackPane {
                 controller.getCurrentUser().getCovlet().clear();
                 controller.getCurrentUser().setCurrentCoverLetterIndex(2);
             }
-            updateDynamicContent();
-            controller.updateTree(6);
+            Thread backgroundThread = new Thread(new UpdateDynamicTask(6));
+            backgroundThread.setDaemon(true);
+            backgroundThread.start();
             saveCovLetFunction(0);
             showScreen(7, 0);
         }
@@ -4684,16 +4759,13 @@ public class VP_Center extends StackPane {
                 bcardErrorLine.hide();
                 controller.getCurrentUser().getBcard().save();
                 if (controller.getCurrentUser().getBcard().hasChanges()) {
-                    updateDynamicContent();
-                    controller.updateTree(5);
+                    Thread backgroundThread1 = new Thread(new UpdateDynamicTask(5));
+                    backgroundThread1.setDaemon(true);
+                    backgroundThread1.start();
                     showScreen(3, 0);
-                    try {
-                        controller.getDataM().saveBCardData();
-                    } catch (SQLException ex) {
-                        controller.errorAlert(3114, ex.getMessage());
-                    } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                        controller.errorAlert(3301, ex.getMessage());
-                    }
+                    Thread backgroundThread2 = new Thread(new SaveBCardTask());
+                    backgroundThread2.setDaemon(true);
+                    backgroundThread2.start();
                 } else {
                     showScreen(3, 0);
                 }

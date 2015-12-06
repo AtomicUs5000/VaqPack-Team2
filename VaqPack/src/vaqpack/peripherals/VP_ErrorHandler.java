@@ -83,7 +83,31 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
-
+            // ID 1200 Originates from VP_Center
+            case 1201:
+                header = "A thread was unexpectedly interrupted while storing the resume.\n"
+                        + "VaqPack will attempt to continue.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1202:
+                header = "A thread was unexpectedly interrupted while storing the cover letter.\n"
+                        + "VaqPack will attempt to continue.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1203:
+                header = "A thread was unexpectedly interrupted while storing the business card.\n"
+                        + "VaqPack will attempt to continue.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 1204:
+                header = "A thread was unexpectedly interrupted while storing user data.\n"
+                        + "VaqPack will attempt to continue.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
             // ID 3000 Originates from VP_DataManger
             case 3001:
                 header = "VaqPack's hashing algorithm has failed while attempting "
@@ -283,7 +307,7 @@ public class VP_ErrorHandler {
                 break;
             case 3120:
                 header = "VaqPack has encountered a MySQL error \n"
-                        + "while storing resume references.\n"
+                        + "while storing resume achievements.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
@@ -291,7 +315,7 @@ public class VP_ErrorHandler {
                 break;
             case 3121:
                 header = "VaqPack has encountered a MySQL error \n"
-                        + "while storing resume achievements.\n"
+                        + "while storing the resume community section.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
@@ -299,7 +323,7 @@ public class VP_ErrorHandler {
                 break;
             case 3122:
                 header = "VaqPack has encountered a MySQL error \n"
-                        + "while storing the resume community section.\n"
+                        + "while storing the resume qualifications.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
@@ -307,7 +331,7 @@ public class VP_ErrorHandler {
                 break;
             case 3123:
                 header = "VaqPack has encountered a MySQL error \n"
-                        + "while storing the resume qualifications.\n"
+                        + "while storing the resume highlights.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
@@ -315,7 +339,7 @@ public class VP_ErrorHandler {
                 break;
             case 3124:
                 header = "VaqPack has encountered a MySQL error \n"
-                        + "while storing the resume highlights.\n"
+                        + "while storing the resume languages.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
@@ -323,7 +347,7 @@ public class VP_ErrorHandler {
                 break;
             case 3125:
                 header = "VaqPack has encountered a MySQL error \n"
-                        + "while storing the resume languages.\n"
+                        + "while storing the resume software section.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;
@@ -331,7 +355,7 @@ public class VP_ErrorHandler {
                 break;
             case 3126:
                 header = "VaqPack has encountered a MySQL error \n"
-                        + "while storing the resume software section.\n"
+                        + "while storing resume references.\n"
                         + "VaqPack will attempt to continue.\n"
                         + "Please try again.";
                 content = "Error " + errorCode + ": " + exceptionString;

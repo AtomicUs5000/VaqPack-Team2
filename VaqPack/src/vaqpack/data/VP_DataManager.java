@@ -23,6 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.BadPaddingException;
@@ -39,6 +40,7 @@ public class VP_DataManager {
     private final VP_GUIController controller;
     private final VP_DatabaseManager dbManager;
     private final VP_FileManager fileM;
+    private CountDownLatch dbBusy;
 
     /*------------------------------------------------------------------------*
      * VP_DataManager()
@@ -53,6 +55,7 @@ public class VP_DataManager {
         this.controller = controller;
         dbManager = new VP_DatabaseManager(this);
         fileM = new VP_FileManager(this);
+        dbBusy = new CountDownLatch(0);
         //-------- Initialization End ------------\\
     }
 
@@ -575,5 +578,13 @@ public class VP_DataManager {
      *########################################################################*/
     protected VP_GUIController getController() {
         return controller;
+    }
+
+    public CountDownLatch getDbBusy() {
+        return dbBusy;
+    }
+
+    public void setDbBusy(CountDownLatch dbBusy) {
+        this.dbBusy = dbBusy;
     }
 }
