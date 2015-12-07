@@ -41,6 +41,7 @@ public final class VP_HtmlToPdf {
             outputStream.flush();
             outputStream.close();
         }
+        //Executable.printDocumentSilent(pdfFile, false); 
     }
     
     /*##########################################################################

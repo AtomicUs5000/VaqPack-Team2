@@ -6,6 +6,7 @@ package vaqpack;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -17,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import vaqpack.components.VP_Dialog;
+import vaqpack.components.VP_Paragraph;
 
 /**
  * The header is the top of the main BorderPane layout. The header extends VBox
@@ -190,6 +192,17 @@ public class VP_Header extends VBox {
         @Override
         public void handle(ActionEvent event) {
             VP_Dialog aboutDialog = new VP_Dialog("About VaqPack");
+            aboutDialog.setHeaderText("Version 1.0");
+            VP_Paragraph aboutContent = new VP_Paragraph("VaqPack was created by Team-02 \n"
+                    + "of Software Engineering course CSCI-3340-02 \n"
+                    + "during the Fall 2015 semester at UTRGV.\n\n"
+                    + "\t William DeWald (Project Manager)\n"
+                    + "\t\t Fernando Bazan\n"
+                    + "\t\t Nathanael Carr\n"
+                    + "\t\t Erik Lopez\n"
+                    + "\t\t Raul Saavedra\n");
+            aboutContent.setPadding(new Insets(50, 20, 50, 20));
+            aboutDialog.getDialogShell().add(aboutContent, 0, 0);
             aboutDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
             aboutDialog.showAndWait();
         }

@@ -484,9 +484,11 @@ public class VP_DataManager {
             DocumentException {
         File bcpdf = fileM.generateBCardPDF();
         dbManager.storeBCardData(bcpdf);
+        /*
         if (bcpdf != null && bcpdf.exists()) {
             bcpdf.delete();
         }
+        */
     }
 
     /*------------------------------------------------------------------------*
