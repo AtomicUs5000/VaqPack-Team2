@@ -199,12 +199,18 @@ public class VP_DataManager {
                 dbManager.checkBusinessCardPDFTable();
                 break;
             case 11:
-                dbManager.checkCoverLetterPDFTable();
+                dbManager.checkBusinessCardHTMLTable();
                 break;
             case 12:
-                dbManager.checkResPDFTable();
+                dbManager.checkCoverLetterPDFTable();
                 break;
             case 13:
+                dbManager.checkCoverLetterHTMLTable();
+                break;
+            case 14:
+                dbManager.checkResPDFTable();
+                break;
+            case 15:
                 dbManager.checkResHTMLTable();
                 break;
         }
@@ -474,37 +480,43 @@ public class VP_DataManager {
 
     /*------------------------------------------------------------------------*
      * saveBCardData()
-     * - Calls generateBCardPDF() in the file manager.
-     *   Then calls storeBCardData in the database manager to store the pdf.
+     * - Calls generateBCardHTMLandPDF() in the file manager.
      * - No parameters.
      * - No return.
      *------------------------------------------------------------------------*/
     public void saveBCardData() throws SQLException, TransformerException,
             ParserConfigurationException, IOException, FileNotFoundException,
             DocumentException {
-        File bcpdf = fileM.generateBCardPDF();
-        dbManager.storeBCardData(bcpdf);
-        /*
-        if (bcpdf != null && bcpdf.exists()) {
-            bcpdf.delete();
+        File[] bcFiles = fileM.generateBCardHTMLandPDF();
+        dbManager.storeBCardHTML(bcFiles[0]);
+        dbManager.storeBCardPDF(bcFiles[1]);
+        if (bcFiles[0] != null && bcFiles[0].exists()) {
+            bcFiles[0].delete();
         }
-        */
+        if (bcFiles[1] != null && bcFiles[1].exists()) {
+            bcFiles[1].delete();
+        }
     }
 
     /*------------------------------------------------------------------------*
      * saveCovLetData()
-     * - Calls generateCovLetPDF() in the file manager.
-     *   Then calls storeCovLetData in the database manager to store the pdf.
+     * - Calls generateCovLetHTMLandPDF() in the file manager.
      * - No parameters.
      * - No return.
      *------------------------------------------------------------------------*/
     public void saveCovLetData() throws SQLException, TransformerException,
             ParserConfigurationException, IOException, FileNotFoundException,
             DocumentException {
-        File clpdf = fileM.generateCovLetPDF();
-        dbManager.storeCovLetData(clpdf);
-        if (clpdf != null && clpdf.exists()) {
-            clpdf.delete();
+        File[] clFiles = fileM.generateCovLetHTMLandPDF();
+        dbManager.storeCovLetPDF(clFiles[1]);
+        // html must come after pdf in this case because the cover letter id
+        //    is generated in the storeCovLetPDF function.
+        dbManager.storeCovLetHTML(clFiles[0]);
+        if (clFiles[0] != null && clFiles[0].exists()) {
+            clFiles[0].delete();
+        }
+        if (clFiles[1] != null && clFiles[1].exists()) {
+            clFiles[1].delete();
         }
     }
 
@@ -514,9 +526,9 @@ public class VP_DataManager {
         dbManager.storeResumeData(section);
         if (controller.getCurrentUser().getResume().hasCompletedResume()) {
             File[] resFiles = new File[2];
-             resFiles = fileM.generateResHTMLandPDF();
-             dbManager.storeResHTML(resFiles[0]);
-             dbManager.storeResPDF(resFiles[1]);
+            resFiles = fileM.generateResHTMLandPDF();
+            dbManager.storeResHTML(resFiles[0]);
+            dbManager.storeResPDF(resFiles[1]);
             if (resFiles[0] != null && resFiles[0].exists()) {
                 resFiles[0].delete();
             }
@@ -535,12 +547,15 @@ public class VP_DataManager {
     }
     
     public void sendAttachments(String email, boolean sendResHTML, boolean sendResPDF,
-            boolean sendBCPDF, boolean sendCLPDF) throws SQLException, IOException {
+            boolean sendBCHTML, boolean sendBCPDF, boolean sendCLHTML, boolean sendCLPDF) 
+            throws SQLException, IOException {
         //-------- Initialization Start ----------\\
         File temp1 = null,
                 temp2 = null,
                 temp3 = null,
-                temp4 = null;
+                temp4 = null,
+                temp5 = null,
+                temp6 = null;
         ArrayList<File> files = new ArrayList();
         ArrayList<String> filenames = new ArrayList();
         String[] ccMail = {};
@@ -555,24 +570,38 @@ public class VP_DataManager {
                 filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_resume.html");
             }
         }
-        if (sendResHTML) {
+        if (sendResPDF) {
             temp2 = dbManager.retrieveFile(2);
-            if (temp1 != null) {
+            if (temp2 != null) {
                 files.add(temp2);
                 filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_resume.pdf");
             }
         }
-        if (sendResHTML) {
+        if (sendBCHTML) {
             temp3 = dbManager.retrieveFile(3);
-            if (temp1 != null) {
+            if (temp3 != null) {
                 files.add(temp3);
+                filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_business_card.html");
+            }
+        }
+        if (sendBCPDF) {
+            temp4 = dbManager.retrieveFile(4);
+            if (temp4 != null) {
+                files.add(temp4);
                 filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_business_card.pdf");
             }
         }
-        if (sendResHTML) {
-            temp4 = dbManager.retrieveFile(4);
-            if (temp1 != null) {
-                files.add(temp4);
+        if (sendCLHTML) {
+            temp5 = dbManager.retrieveFile(5);
+            if (temp5 != null) {
+                files.add(temp5);
+                filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_cover_letter.html");
+            }
+        }
+        if (sendCLPDF) {
+            temp6 = dbManager.retrieveFile(6);
+            if (temp6 != null) {
+                files.add(temp6);
                 filenames.add(controller.getCurrentUser().getLastName().getValueSafe() + "_cover_letter.pdf");
             }
         }

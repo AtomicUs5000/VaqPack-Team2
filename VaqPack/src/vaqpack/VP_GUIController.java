@@ -643,7 +643,9 @@ public class VP_GUIController {
         dbTaskLabels.add("Checking User Data Table");
         dbTaskLabels.add("Checking Custom Theme Table");
         dbTaskLabels.add("Checking Business Card PDF Table");
+        dbTaskLabels.add("Checking Business Card HTML Table");
         dbTaskLabels.add("Checking Cover Letter PDF Table");
+        dbTaskLabels.add("Checking Cover Letter HTML Table");
         dbTaskLabels.add("Checking Resume PDF Table");
         dbTaskLabels.add("Checking Resume HTML Table");
         dbTaskLabels.add("Verifying User Access Levels");
@@ -1019,11 +1021,11 @@ public class VP_GUIController {
                         }
                     }
                 }
-            } else if (stage <= 16) {
+            } else if (stage <= 18) {
                 try {
-                    if (stage < 16) {
+                    if (stage < 18) {
                         dataM.checkDBTable(stage - 2);
-                    } else if (stage == 16) {
+                    } else if (stage == 18) {
                         dataM.contructUserAccess();
                     }
                 } catch (SQLException ex) {
@@ -1033,7 +1035,7 @@ public class VP_GUIController {
                         Platform.runLater(() -> errorAlert(3104, ex.getMessage()));
                     }
                 }
-            } else if (stage == 17) {
+            } else if (stage == 19) {
                 adminExists = false;
                 while (!adminExists && !adminCheck) {
                     adminCheck = false;

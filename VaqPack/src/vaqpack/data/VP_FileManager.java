@@ -162,7 +162,7 @@ public class VP_FileManager {
         prop.store(output, null);
     }
     
-    protected File generateBCardPDF() throws FileNotFoundException, 
+    protected File[] generateBCardHTMLandPDF() throws FileNotFoundException, 
             TransformerException, ParserConfigurationException, IOException, DocumentException {
         VP_User user = dataM.getController().getCurrentUser();
         File bcpdf = new File("bcpdf.tmp"),
@@ -260,16 +260,14 @@ public class VP_FileManager {
             if (bcxml.exists()) {
                 bcxml.delete();
             }
-            if (bchtml.exists()) {
-                bchtml.delete();
-            }
         } else {
+            bchtml = null;
             bcpdf = null;
         }
-        return bcpdf;
+        return new File[]{bchtml, bcpdf};
     }
     
-    protected File generateCovLetPDF() throws FileNotFoundException, 
+    protected File[] generateCovLetHTMLandPDF() throws FileNotFoundException, 
             TransformerException, ParserConfigurationException, IOException, DocumentException {
         VP_User user = dataM.getController().getCurrentUser();
         VP_CoverLetter covlet = user.getCovlet();
@@ -432,13 +430,11 @@ public class VP_FileManager {
             if (clxml.exists()) {
                 clxml.delete();
             }
-            if (clhtml.exists()) {
-                clhtml.delete();
-            }
         } else {
+            clhtml = null;
             clpdf = null;
         }
-        return clpdf;
+        return new File[]{clhtml, clpdf};
     }
     
     protected File[] generateResHTMLandPDF() throws FileNotFoundException, 

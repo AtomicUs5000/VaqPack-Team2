@@ -112,7 +112,7 @@ public class VP_Center extends StackPane {
     private final VP_PageDivision covLetEditBox, resumeEducationBox, resumeExperienceBox,
             resumeAchievementsBox, resumeCommunityBox, resumeQualificationsBox,
             resumeHighlightsBox, resumeLanguagesBox, resumeSoftwareBox, resumeReferencesBox;
-    private final CheckBox resHTMLcb, resPDFcb, clPDFcb, bcPDFcb;
+    private final CheckBox resHTMLcb, resPDFcb, clHTMLcb, clPDFcb, bcHTMLcb, bcPDFcb;
 
     /**
      * Constructor. Initializes all of the components that require a reference
@@ -254,7 +254,9 @@ public class VP_Center extends StackPane {
         resumeReferencesBox = new VP_PageDivision("RESUME -- REFERENCES");
         resHTMLcb = new CheckBox("Resume (HTML File)");
         resPDFcb = new CheckBox("Resume (PDF File)");
+        clHTMLcb = new CheckBox("Cover Letter (HTML File)");
         clPDFcb = new CheckBox("Cover Letter (PDF File)");
+        bcHTMLcb = new CheckBox("Business Card (HTML File)");
         bcPDFcb = new CheckBox("Business Card (PDF File)");
         //-------- Initialization End ------------\\
     }
@@ -511,13 +513,15 @@ public class VP_Center extends StackPane {
                 updateBcardBtn = new VP_Button("Update Your Business Card", new WizardMainAction(5)),
                 updateCovLetBtn = new VP_Button("Update Your Cover Letters", new WizardMainAction(6)),
                 applyThemesBtn = new VP_Button("Apply Themes to Your Docs", new WizardMainAction(8)),
-                distributeBtn = new VP_Button("Distribute Your Docs", new WizardMainAction(10));
+                distributeBtn = new VP_Button("Distribute Your Docs", new WizardMainAction(10)),
+                printDocsBtn = new VP_Button("Print Your Docs", new WizardMainAction(24));
         VP_DivisionLine step1Line = new VP_DivisionLine(new Node[]{updateInfoBtn, infoProgress}),
                 step2Line = new VP_DivisionLine(new Node[]{updateResumeBtn, resumeProgress}),
                 step3Line = new VP_DivisionLine(new Node[]{updateBcardBtn, bcardProgress}),
                 step4Line = new VP_DivisionLine(new Node[]{updateCovLetBtn, covletProgress}),
                 step5Line = new VP_DivisionLine(new Node[]{applyThemesBtn}),
-                step6Line = new VP_DivisionLine(new Node[]{distributeBtn});
+                step6Line = new VP_DivisionLine(new Node[]{distributeBtn}),
+                step7Line = new VP_DivisionLine(new Node[]{printDocsBtn});
         VP_PageSubdivision tasks = new VP_PageSubdivision("TASKS", false);
         //-------- Initialization End ------------\\
 
@@ -528,6 +532,7 @@ public class VP_Center extends StackPane {
         wizardMainButtons.add(updateCovLetBtn);
         wizardMainButtons.add(applyThemesBtn);
         wizardMainButtons.add(distributeBtn);
+        wizardMainButtons.add(printDocsBtn);
         for (int i = 0; i < wizardMainButtons.size(); i++) {
             wizardMainButtons.get(i).setPrefWidth(200);
         }
@@ -544,7 +549,7 @@ public class VP_Center extends StackPane {
         covletProgress.setMinWidth(250);
         covletProgress.setAlignment(Pos.CENTER_RIGHT);
         tasks.getChildren().addAll(step1Line, step2Line, step3Line, step4Line,
-                step5Line, step6Line);
+                step5Line, step6Line, step7Line);
         overviewBox.getChildren().addAll(overviewInfo, tasks);
         updateOverview();
         screenContent.getChildren().addAll(overviewBox);
@@ -1091,8 +1096,10 @@ public class VP_Center extends StackPane {
                 cancelBtn = new VP_Button("Cancel",  new CancelAction(10));
         VP_DivisionLine doc1Line = new VP_DivisionLine(new Node[]{resHTMLcb}, 40),
                 doc2Line = new VP_DivisionLine(new Node[]{resPDFcb}, 40),
-                doc3Line = new VP_DivisionLine(new Node[]{clPDFcb}, 40),
-                doc4Line = new VP_DivisionLine(new Node[]{bcPDFcb}, 40),
+                doc3Line = new VP_DivisionLine(new Node[]{clHTMLcb}, 40),
+                doc4Line = new VP_DivisionLine(new Node[]{clPDFcb}, 40),
+                doc5Line = new VP_DivisionLine(new Node[]{bcHTMLcb}, 40),
+                doc6Line = new VP_DivisionLine(new Node[]{bcPDFcb}, 40),
                 deleteLine = new VP_DivisionLine(new Node[]{deleteBtn}),
                 addContactLine = new VP_DivisionLine(new Node[]{addEmail, addName, addContactBtn}),
                 sendLine = new VP_DivisionLine(new Node[]{sendBtn, cancelBtn});
@@ -1178,7 +1185,9 @@ public class VP_Center extends StackPane {
             Boolean hasError = false, 
                     sendResHTML = resHTMLcb.isSelected(),
                     sendResPDF = resPDFcb.isSelected(),
+                    sendBCHTML = bcHTMLcb.isSelected(),
                     sendBCPDF = bcPDFcb.isSelected(),
+                    sendCLHTML = clHTMLcb.isSelected(),
                     sendCLPDF = clPDFcb.isSelected();
             String email = "";
             VP_Contact sendContact = (VP_Contact)(table.getSelectionModel().getSelectedItem());
@@ -1186,7 +1195,7 @@ public class VP_Center extends StackPane {
             if (sendContact != null) {
                 email = sendContact.getEmail();
             }
-            if (!(sendResHTML || sendResPDF || sendBCPDF || sendCLPDF)) {
+            if (!(sendResHTML || sendResPDF || sendBCHTML || sendBCPDF || sendCLPDF || sendCLHTML)) {
                 hasError = true;
                 sendAttachError.setParaText("You have not selected any files to send.");
             } else if (email.equals("")) {
@@ -1200,11 +1209,14 @@ public class VP_Center extends StackPane {
                 addContactError.setParaText("");
                 addContactErrorLine.hide();
                 try {
-                    controller.getDataM().sendAttachments(email, sendResHTML, sendResPDF, sendBCPDF, sendCLPDF);
+                    controller.getDataM().sendAttachments(email, sendResHTML, sendResPDF, 
+                            sendBCHTML, sendBCPDF, sendCLHTML, sendCLPDF);
                     table.getSelectionModel().clearSelection();
                     resHTMLcb.setSelected(false);
                     resPDFcb.setSelected(false);
+                    bcHTMLcb.setSelected(false);
                     bcPDFcb.setSelected(false);
+                    clHTMLcb.setSelected(false);
                     clPDFcb.setSelected(false);
                     VP_Dialog emailSent = new VP_Dialog("EMAIL SENT");
                     emailSent.setHeaderText("Your attachments have been sent out to the selected contact.");
@@ -1223,7 +1235,7 @@ public class VP_Center extends StackPane {
         addContactErrorLine.hide();
         sendAttachErrorLine.getChildren().addAll(sendAttachError);
         sendAttachErrorLine.hide();
-        documentsDiv.getChildren().addAll(docInfo, doc1Line, doc2Line, doc3Line, doc4Line);
+        documentsDiv.getChildren().addAll(docInfo, doc1Line, doc2Line, doc3Line, doc4Line, doc5Line, doc6Line);
         contactsDiv.getChildren().addAll(contactInfo, table, deleteLine, addContactErrorLine, addContactLine);
         sendDiv.getChildren().addAll(sendAttachErrorLine, sendLine);
         distributeBox.getChildren().addAll(documentsDiv, contactsDiv, sendDiv);
@@ -1960,13 +1972,17 @@ public class VP_Center extends StackPane {
     private void updateSelectableDocs() {
         resHTMLcb.setDisable(true);
         resPDFcb.setDisable(true);
+        bcHTMLcb.setDisable(true);
         bcPDFcb.setDisable(true);
+        clHTMLcb.setDisable(true);
         clPDFcb.setDisable(true);
         VP_User thisUser = controller.getCurrentUser();
         if (thisUser.getBcard().hasCompletedBusinessCard()) {
+            bcHTMLcb.setDisable(false);
             bcPDFcb.setDisable(false);
         }
         if (thisUser.getCovlet().hasCompletedCoverLetter()) {
+            clHTMLcb.setDisable(false);
             clPDFcb.setDisable(false);
         }
         if (thisUser.getResume().hasCompletedResume()) {
@@ -2079,10 +2095,11 @@ public class VP_Center extends StackPane {
                         || thisUser.getCovlet().hasCompletedCoverLetter()) {
                     overviewInfo.setParaText("You have completed updating your personal information "
                             + "and at least one document. You may update any document or information at "
-                            + "any time. You may now also apply a theme to your completed documents and "
-                            + "send them via email.");
+                            + "any time. You may apply a theme to your completed documents, "
+                            + "you may send them via email, or you may print them.");
                     wizardMainButtons.get(4).setDisable(false);
                     wizardMainButtons.get(5).setDisable(false);
+                    wizardMainButtons.get(6).setDisable(false);
                 } else {
 
                     overviewInfo.setParaText("You have completed updating your personal information. "
@@ -2165,7 +2182,9 @@ public class VP_Center extends StackPane {
         sendAttachErrorLine.hide();
         resHTMLcb.setSelected(false);
         resPDFcb.setSelected(false);
+        bcHTMLcb.setSelected(false);
         bcPDFcb.setSelected(false);
+        clHTMLcb.setSelected(false);
         clPDFcb.setSelected(false);
         adminPassMysql.setText("");
         adminPassMysql.showValid();

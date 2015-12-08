@@ -419,6 +419,28 @@ public class VP_DatabaseManager {
 
         checkTable(sql);
     }
+    
+    /*------------------------------------------------------------------------*
+     * checkBusinessCardHTMLTable()
+     * - Defines the SQL statement to create the 'business_card_pdf' table and 
+     *   then calls checkTable().
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void checkBusinessCardHTMLTable() throws SQLException {
+        //-------- Initialization Start ----------\\
+        String sql = "CREATE TABLE business_card_html ("
+                + "  user_id int(10) unsigned NOT NULL,"
+                + "  html blob,"
+                + "  PRIMARY KEY (user_id),"
+                + "  UNIQUE KEY user_id_UNIQUE (user_id),"
+                + "  CONSTRAINT userIDbchtml FOREIGN KEY (user_id) REFERENCES user (id)"
+                + "  ON DELETE CASCADE ON UPDATE NO ACTION"
+                + ")";
+        //-------- Initialization End ------------\\
+
+        checkTable(sql);
+    }
 
     /*------------------------------------------------------------------------*
      * checkCoverLetterPDFTable()
@@ -443,6 +465,31 @@ public class VP_DatabaseManager {
 
         checkTable(sql);
     }
+    
+    /*------------------------------------------------------------------------*
+     * checkCoverLetterHTMLTable()
+     * - Defines the SQL statement to create the 'cover_letter_html' table and
+     *   then calls checkTable().
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void checkCoverLetterHTMLTable() throws SQLException {
+        //-------- Initialization Start ----------\\
+        String sql = "CREATE TABLE cover_letter_html ("
+                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
+                + "  cover_letter_id int(10) unsigned NOT NULL,"
+                + "  html blob,"
+                + "  PRIMARY KEY (id,cover_letter_id),"
+                + "  UNIQUE KEY id_UNIQUE (id),"
+                + "  UNIQUE KEY cover_letter_id_UNIQUE (cover_letter_id),"
+                + "  CONSTRAINT covHID FOREIGN KEY (cover_letter_id) "
+                + "  REFERENCES cover_letter (id) ON DELETE CASCADE ON UPDATE NO ACTION"
+                + ")";
+        //-------- Initialization End ------------\\
+
+        checkTable(sql);
+    }
+    
 
     /*------------------------------------------------------------------------*
      * checkResPDFTable()
@@ -1398,12 +1445,12 @@ public class VP_DatabaseManager {
     }
 
     /*------------------------------------------------------------------------*
-     * storeBCardData()
+     * storeBCardPDF()
      * - This function stores business card data and its pdf file.
      * - 
      * - No return.
      *------------------------------------------------------------------------*/
-    protected void storeBCardData(File bcpdf) throws SQLException,
+    protected void storeBCardPDF(File bcpdf) throws SQLException,
             FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1470,13 +1517,44 @@ public class VP_DatabaseManager {
         }
         close();
     }
+    
+    protected void storeBCardHTML(File bchtml) throws SQLException,
+            FileNotFoundException, IOException {
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int userID = thisUser.getUserID();
+        FileInputStream inputStream;
+        String sql;
+        connect(dbName);
+        if (bchtml != null) {
+            inputStream = new FileInputStream(bchtml);
+            sql = "SELECT * FROM business_card_html WHERE user_id = " + userID;
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE business_card_html SET html = ? WHERE user_id = ?")) {
+                    ps.setBinaryStream(1, (InputStream) inputStream, (int) bchtml.length());
+                    ps.setInt(2, userID);
+                    ps.executeUpdate();
+                    inputStream.close();
+                }
+            } else {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO business_card_html (user_id, html) VALUES (?, ?)")) {
+                    ps.setInt(1, userID);
+                    ps.setBinaryStream(2, (InputStream) inputStream, (int) bchtml.length());
+                    ps.executeUpdate();
+                    inputStream.close();
+                }
+            }
+            System.out.println("Business card html Stored");
+        }
+        close();
+    }
 
     /*------------------------------------------------------------------------*
-     * storeCovLetData()
+     * storeCovLetPDF()
      * - This function stores cover letter data and its pdf file.
      * - No return.
      *------------------------------------------------------------------------*/
-    protected void storeCovLetData(File clpdf) throws SQLException,
+    protected void storeCovLetPDF(File clpdf) throws SQLException,
             FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1584,6 +1662,37 @@ public class VP_DatabaseManager {
                 }
                 System.out.println("cover letter pdf Stored");
             }
+        }
+        close();
+    }
+    
+    protected void storeCovLetHTML(File clhtml) throws SQLException,
+            FileNotFoundException, IOException {
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int remId = thisUser.getCovlet().getId();
+        FileInputStream inputStream;
+        String sql;
+        connect(dbName);
+        if (clhtml != null) {
+            inputStream = new FileInputStream(clhtml);
+            sql = "SELECT * FROM cover_letter_html WHERE cover_letter_id = " + remId;
+            rts = stm.executeQuery(sql);
+            if (rts.next()) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE cover_letter_html SET html = ? WHERE cover_letter_id = ?")) {
+                    ps.setBinaryStream(1, (InputStream) inputStream, (int) clhtml.length());
+                    ps.setInt(2, remId);
+                    ps.executeUpdate();
+                    inputStream.close();
+                }
+            } else {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO cover_letter_html (cover_letter_id, html) values(?,?)")) {
+                    ps.setInt(1, remId);
+                    ps.setBinaryStream(2, (InputStream) inputStream, (int) clhtml.length());
+                    ps.executeUpdate();
+                    inputStream.close();
+                }
+            }
+            System.out.println("Cover letter html Stored");
         }
         close();
     }
@@ -1990,8 +2099,17 @@ public class VP_DatabaseManager {
         if (type == 1) {
             filetype = "html";
         } else if (type == 3) {
+            filetype = "html";
             filecategory = "business_card";
         } else if (type == 4) {
+            filetype = "pdf";
+            filecategory = "business_card";
+        }else if (type == 5) {
+            filetype = "html";
+            filecategory = "cover_letter";
+            condition = " WHERE cover_letter_id = " + thisUser.getCovlet().getId();
+        } else if (type == 6) {
+            filetype = "pdf";
             filecategory = "cover_letter";
             condition = " WHERE cover_letter_id = " + thisUser.getCovlet().getId();
         }

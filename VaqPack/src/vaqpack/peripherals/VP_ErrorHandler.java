@@ -108,7 +108,7 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
-            // ID 3000 Originates from VP_DataManger
+            // ID 3000 Originates from VP_DataManager
             case 3001:
                 header = "VaqPack's hashing algorithm has failed while attempting "
                         + "to store the VaqPack admin user credentials.";
