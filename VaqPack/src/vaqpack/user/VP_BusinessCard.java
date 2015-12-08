@@ -1,20 +1,24 @@
-/*-----------------------------------------------------------------------------*
- * VP_BusinessCard.java
- * - Business card object
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 5100
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_BusinessCard.java - One per VP_User
+ * ID 5100
+ */
 package vaqpack.user;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+/**
+ * Holds all of the data unique to a business card. Decides when to build or 
+ * rebuild the XSL for file generation.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_BusinessCard {
     private int themeId = -1;
     private final VP_User owner;
@@ -31,11 +35,12 @@ public class VP_BusinessCard {
             completedBusinessCard,
             changes;
     
-    /*------------------------------------------------------------------------*
-     * VP_BusinessCard()
-     * - Constructor.
-     * Parameter owner is the logged in user who owns this.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @param owner The logged in VP_User who owns this business card.
+     * @since 1.0
+     */
     protected VP_BusinessCard(VP_User owner) {
         this.owner = owner;
         profession = new SimpleStringProperty();
@@ -46,25 +51,25 @@ public class VP_BusinessCard {
         completedBusinessCard = false;
     }
     
-    /*------------------------------------------------------------------------*
-     * revert()
-     * - Reverts bound properties to the last stored value
-     * - No parameters
-     * - No return
-     *------------------------------------------------------------------------*/
+    /**
+     * Reverts bound properties to the last stored value
+     * 
+     * @since 1.0
+     */
     public void revert() {
         profession.setValue(professionStored);
         companyName.setValue(companyNameStored);
         companySlogan.setValue(companySloganStored);
         webPage.setValue(webPageStored);
     }
-    
-    /*------------------------------------------------------------------------*
-     * save()
-     * - Stored values are set to the current bound properties.
-     * - No parameters
-     * - No return
-     *------------------------------------------------------------------------*/
+
+    /**
+     * Stored values are set to the current bound properties. Checks are to done
+     * to determine the completeness of the business card. If the the card is
+     * complete, and there have been changes, then the XSL for the card is generated.
+     * 
+     * @since 1.0
+     */
     public void save() {
         changes = false;
         completedBusinessCard = false;
@@ -103,13 +108,12 @@ public class VP_BusinessCard {
             generateXSL();
         }
     }
-    
-    /*------------------------------------------------------------------------*
-     * clear()
-     * - Clears all data in the business card for the next user
-     * - No parameters
-     * - No return
-     *------------------------------------------------------------------------*/
+
+    /**
+     * Clears all data in the business card for the next user.
+     * 
+     * @since 1.0
+     */
     protected void clear() {
         themeId = -1;
         xsl = null;
@@ -124,12 +128,11 @@ public class VP_BusinessCard {
         startedBusinessCard = false;
     }
     
-    /*------------------------------------------------------------------------*
-     * generateXSL()
-     * - Creates the xml stylesheet to be passed to html conversion.
-     * - No parameters
-     * - No return
-     *------------------------------------------------------------------------*/
+    /**
+     * Creates and stores the XML style-sheet to be used in HTML conversion.
+     * 
+     * @since 1.0
+     */
     private void generateXSL() {
         String currentTheme = String.valueOf(themeId * -1);
         xsl = "<?xml version=\"1.0\"?>\n"
@@ -224,42 +227,102 @@ public class VP_BusinessCard {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
+    /**
+     * Accessor method.
+     *
+     * @return The property for the business card profession field.
+     * @since 1.0
+     */
     public StringProperty getProfession() {
         return profession;
     }
     
+    /**
+     * Accessor method.
+     *
+     * @return The property for the business card company field.
+     * @since 1.0
+     */
     public StringProperty getCompanyName() {
         return companyName;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The property for the business card company slogan field.
+     * @since 1.0
+     */
     public StringProperty getCompanySlogan() {
         return companySlogan;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The property for the business card web page field.
+     * @since 1.0
+     */
     public StringProperty getWebPage() {
         return webPage;
     }
     
+    /**
+     * Accessor method.
+     *
+     * @return Whether or not the business card is complete.
+     * @since 1.0
+     */
     public boolean hasCompletedBusinessCard() {
         return completedBusinessCard;
     }
     
+    /**
+     * Accessor method.
+     *
+     * @return Whether or not the business card has been started.
+     * @since 1.0
+     */
     public boolean hasStartedBusinessCard() {
         return startedBusinessCard;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The currently selected theme for this business card.
+     * @since 1.0
+     */
     public int getThemeId() {
         return themeId;
     }
 
+    /**
+     * Mutator method.
+     *
+     * @param themeId Sets the theme for this business card
+     * @since 1.0
+     */
     public void setThemeId(int themeId) {
         this.themeId = themeId;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return The most recently generated XSL.
+     * @since 1.0
+     */
     public String getXsl() {
         return xsl;
     }
 
+    /**
+     * Accessor method.
+     *
+     * @return Whether or not changes have been made.
+     * @since 1.0
+     */
     public boolean hasChanges() {
         return changes;
     }
