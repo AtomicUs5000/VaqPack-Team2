@@ -72,14 +72,14 @@ public class VP_Center extends StackPane {
 
     private final VP_GUIController controller;
     private final VP_TextField loginEmail, resetEmail, regLoginAccess,
-            resetCode, registerEmail;
+            resetCode, registerEmail, newMysqlURL, newMysqlPort;
     private final Label resetPassStrengthLabel, registerPassStrengthLabel,
             changePassStrengthLabel, infoProgress, resumeProgress, bcardProgress,
             covletProgress, resObjProgress, resEduProgress, resExpProgress,
             resQualProgress, resHighProgress, resLangProgress, resSWProgress;
     private final VP_PasswordField loginPass,
             resetNewPass, resetNewPassConfirm, registerPass, registerPassConfirm,
-            oldPass, newPass, newPassConfirm;
+            oldPass, newPass, newPassConfirm, adminPassMysql;
     private final VP_DivisionLine accessInstructionsLine, loginButtonLine,
             accessLine, resetInstructions1Line, resetInstructions2Line,
             resetNewPassLine, resetNewPassConfirmLine, resetCodeLine, resetButLine,
@@ -89,13 +89,14 @@ public class VP_Center extends StackPane {
             experienceErrorLine, achievementsErrorLine, communityErrorLine,
             qualificationsErrorLine, highlightsErrorLine, languagesErrorLine,
             softwareErrorLine, referencesErrorLine, changePassErrorLine, 
-            addContactErrorLine, sendAttachErrorLine;
+            addContactErrorLine, sendAttachErrorLine, changeMysqlErrorLine;
     private final VP_Paragraph accessInstructions, resetInstructions1, resetInstructions2,
             overviewInfo, coverLetterDetails, loginError, resetError, registerError,
             personalInfoError, bcardError, covletEditError, objectiveError,
             educationError, experienceError, achievementsError, communityError,
             qualificationsError, highlightsError, languagesError, softwareError,
-            referencesError, changePassError, addContactError, sendAttachError;
+            referencesError, changePassError, addContactError, sendAttachError,
+            changeMysqlError;
     private final VP_Button submitResetBtn, startNewBtn, addEducationBtn, addExperienceBtn,
             addAchievementBtn, addCommunityBtn, addQualificationBtn, addHighlightBtn,
             addLanguageBtn, addSoftwareBtn, addReferenceBtn;
@@ -155,6 +156,7 @@ public class VP_Center extends StackPane {
         changePassErrorLine = new VP_DivisionLine();
         addContactErrorLine = new VP_DivisionLine();
         sendAttachErrorLine = new VP_DivisionLine();
+        changeMysqlErrorLine = new VP_DivisionLine();
         loginError = new VP_Paragraph("", true);
         resetError = new VP_Paragraph("", true);
         registerError = new VP_Paragraph("", true);
@@ -174,6 +176,7 @@ public class VP_Center extends StackPane {
         changePassError = new VP_Paragraph("", true);
         addContactError = new VP_Paragraph("", true);
         sendAttachError = new VP_Paragraph("", true);
+        changeMysqlError = new VP_Paragraph("", true);
         coverLetterDetails = new VP_Paragraph("", false);
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
@@ -198,6 +201,9 @@ public class VP_Center extends StackPane {
         loginEmail = new VP_TextField(32, 254);
         resetEmail = new VP_TextField(32, 254);
         registerEmail = new VP_TextField(32, 254);
+        newMysqlURL = new VP_TextField(50, 0);
+        newMysqlPort = new VP_TextField(5, 5);
+        adminPassMysql = new VP_PasswordField(32, 32, 0, null);
         loginPass = new VP_PasswordField(32, 32, 0, null);
         resetNewPass = new VP_PasswordField(32, 32,
                 controller.getUSER_PASSWORD_MINIMUM(), resetPassStrengthLabel);
@@ -310,7 +316,8 @@ public class VP_Center extends StackPane {
                 buildResumeLanguagesScreen(), //......screen 19
                 buildResumeSoftwareScreen(), //.......screen 20
                 buildResumeReferencesScreen(), //.....screen 21
-                buildChangePasswordScreen() // .......screen 22
+                buildChangePasswordScreen(), //.......screen 22
+                buildChangeMysqlScreen() //...........screen 23
         );
         showScreen(0, 0);
     }
@@ -1803,6 +1810,7 @@ public class VP_Center extends StackPane {
         screen.setPannable(true);
         return screen;
     }
+    
 
     /**
      * Builds the screen displaying the fields for password changing. A.K.A.
@@ -1834,6 +1842,42 @@ public class VP_Center extends StackPane {
         changePassBox.getChildren().addAll(oldPassLine, newPassLine, changePassStrengthLine,
                 newPassConfirmLine, changePassErrorLine, buttonLine);
         screenContent.getChildren().addAll(changePassBox);
+        screenContent.setSpacing(30);
+        screenContent.setPadding(new Insets(20, 20, 20, 20));
+        screen.setContent(screenContent);
+        screen.setPannable(true);
+        return screen;
+    }
+    
+    private ScrollPane buildChangeMysqlScreen() {
+        //-------- Initialization Start ----------\\
+        ScrollPane screen = new ScrollPane();
+        VBox screenContent = new VBox();
+        VP_PageDivision changeMysqlBox = new VP_PageDivision("CHANGE MYSQL LOCATION");
+        VP_Paragraph mysqlNotes = new VP_Paragraph("Enter in your password, the new url, and the new port for the VaqPack database. "
+                + "VaqPack will build a new database at the new location if one is not already present. "
+                + "Data must still be moved by the database administrator, unless this is a fresh installation. "
+                + "When you submit, VaqPack will close and will have to be restarted. "
+                + "The database admninistrator should be present in the event of problems or if "
+                + "new database credentials need to be entered. VaqPack does not check if the url and port is valid "
+                + "until it is restarted.");
+        
+        VP_FieldLabel adminPassLabel = new VP_FieldLabel("your password:", 100),
+                newMysqlUrlLabel = new VP_FieldLabel("new MySQL url:", 100),
+                newMysqlPortLabel = new VP_FieldLabel("new MySQL port:", 100);
+        VP_Button submitBtn = new VP_Button("Submit", new ChangeMySQLAction()),
+                cancelBtn = new VP_Button("Cancel", new CancelAction(23));
+        VP_DivisionLine adminPassLine = new VP_DivisionLine(new Node[]{adminPassLabel, adminPassMysql}),
+                newMysqlUrlLine = new VP_DivisionLine(new Node[]{newMysqlUrlLabel, newMysqlURL}),
+                newMysqlPortLine = new VP_DivisionLine(new Node[]{newMysqlPortLabel, newMysqlPort}),
+                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+        //-------- Initialization End ------------\\
+
+        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
+        changeMysqlErrorLine.getChildren().addAll(changeMysqlError);
+        changeMysqlBox.getChildren().addAll(adminPassLine, newMysqlUrlLine, newMysqlPortLine, 
+                changeMysqlErrorLine, buttonLine);
+        screenContent.getChildren().addAll(changeMysqlBox);
         screenContent.setSpacing(30);
         screenContent.setPadding(new Insets(20, 20, 20, 20));
         screen.setContent(screenContent);
@@ -2123,6 +2167,14 @@ public class VP_Center extends StackPane {
         resPDFcb.setSelected(false);
         bcPDFcb.setSelected(false);
         clPDFcb.setSelected(false);
+        adminPassMysql.setText("");
+        adminPassMysql.showValid();
+        newMysqlURL.setText("");
+        newMysqlURL.showValid();
+        newMysqlPort.setText("");
+        newMysqlPort.showValid();
+        changeMysqlError.setParaText("");
+        changeMysqlErrorLine.hide();
         controller.getCurrentUser().getResume().revert();
         controller.getCurrentUser().getCovlet().revert();
         controller.getCurrentUser().getBcard().revert();
@@ -5039,6 +5091,57 @@ public class VP_Center extends StackPane {
                     controller.errorAlert(3127, ex.getMessage());
                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                     controller.errorAlert(3007, ex.getMessage());
+                }
+            }
+        }
+    }
+    
+    private class ChangeMySQLAction implements EventHandler<ActionEvent> {
+
+        /**
+         * @param event An ActionEvent, triggered by a submit button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            //-------- Initialization Start ----------\\
+            String[] cred = {adminPassMysql.getText(), newMysqlURL.getText(), newMysqlPort.getText()};
+            //-------- Initialization End ------------\\
+            VP_Sounds.play(0);
+            changeMysqlError.setText("");
+            changeMysqlErrorLine.hide();
+            if (cred[0].length() < controller.getUSER_PASSWORD_MINIMUM()) {
+                adminPassMysql.showInvalid();
+                changeMysqlError.setText("Your password is incorrect. Please try again.");
+                changeMysqlErrorLine.show();
+                VP_Sounds.play(-1);
+            } else if (cred[1] == null || cred[1].equals("")) {
+                newMysqlURL.showInvalid();
+                changeMysqlError.setText("New MySQL URL cannot be blank.");
+                changeMysqlErrorLine.show();
+                VP_Sounds.play(-1);
+            } else if (cred[2] == null || cred[1].equals("")) {
+                newMysqlPort.showInvalid();
+                changeMysqlError.setText("New MySQL Port cannot be blank.");
+                changeMysqlErrorLine.show();
+                VP_Sounds.play(-1);
+            } else  {
+                try {
+                    if (controller.getDataM().checkCurrentPassword(cred[0])) {
+                        controller.getDataM().storeDBLocation(new String[]{cred[1], cred[2]});
+                        System.exit(2);
+                    } else {
+                        adminPassMysql.showInvalid();
+                        changeMysqlError.setText("Your password is incorrect. Please try again.");
+                        changeMysqlErrorLine.show();
+                        VP_Sounds.play(-1);
+                    }
+                } catch (SQLException ex) {
+                    controller.errorAlert(3131, ex.getMessage());
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    controller.errorAlert(3132, ex.getMessage());
+                } catch (IOException ex) {
+                    controller.errorAlert(3207, ex.getMessage());
                 }
             }
         }

@@ -393,6 +393,20 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 3131:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while attempting to change its location.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 3132:
+                header = "VaqPack's hashing algorithm has failed while attempting "
+                        + "to check the VaqPack admin password.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try submitting your password again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
 
             // ID 3200 Originates from VP_FileManager
             case 3201:
@@ -428,6 +442,12 @@ public class VP_ErrorHandler {
             case 3206:
                 header = "An unexpected error occurred while storing "
                         + "VaqPack admin credentials.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 3207:
+                header = "VaqPack is not able to store the new credentials file "
+                        + "that is necessary to connect to the new MySQL database.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;
