@@ -9,7 +9,6 @@ import vaqpack.user.VP_User;
 import vaqpack.user.VP_Resume;
 import vaqpack.components.*;
 import com.lowagie.text.DocumentException;
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -42,6 +41,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import vaqpack.peripherals.VP_Previewer;
 import vaqpack.user.VP_Contact;
 
 /**
@@ -346,6 +346,7 @@ public class VP_Center extends StackPane {
         ButtonType saveBtn = new ButtonType("Stay Here", ButtonBar.ButtonData.YES),
                 continueBtn = new ButtonType("Continue", ButtonBar.ButtonData.NO);
         //-------- Initialization End ------------\\
+        
         changesDialog.setHeaderText("You have not submitted your changes.");
         changesLabel.setPadding(new Insets(50, 20, 50, 20));
         changesDialog.getDialogShell().add(changesLabel, 0, 0);
@@ -366,6 +367,7 @@ public class VP_Center extends StackPane {
     private VP_Screen buildLoginScreen() {
         //-------- Initialization Start ----------\\
         VP_Screen screen = new VP_Screen("LOGIN");
+        VP_Paragraph loginNotes = new VP_Paragraph("Enter your login information below to begin using VaqPack.");
         VP_FieldLabel loginEmailLabel = new VP_FieldLabel("email:", 60),
                 loginPassLabel = new VP_FieldLabel("password:", 60),
                 regCodeLabel = new VP_FieldLabel("code:", 60);
@@ -387,7 +389,7 @@ public class VP_Center extends StackPane {
         accessInstructionsLine.getChildren().addAll(accessInstructions);
         accessLine.getChildren().addAll(regCodeLabel, regLoginAccess,
                 enterAccessBtn, accessCancelBtn, accessResendBtn);
-        screen.addNodes(new Node[]{emailLine, passLine, loginErrorLine,
+        screen.addNodes(new Node[]{loginNotes, emailLine, passLine, loginErrorLine,
                 loginButtonLine, accessInstructionsLine, accessLine});
         resetLoginRegForms();
         return screen;
@@ -452,8 +454,8 @@ public class VP_Center extends StackPane {
         //-------- Initialization End ------------\\
 
         registerPassStrengthLabel.getStyleClass().add("inputLabel");
-        screen.addNodes(new Node[]{emailLine, passLine, registerPassStrengthLine,
-            registerConfirmLine, registerErrorLine, registerInstructionsLine, registerButtonLine});
+        screen.addNodes(new Node[]{registerInstructionsLine, emailLine, passLine, registerPassStrengthLine,
+            registerConfirmLine, registerErrorLine, registerButtonLine});
         resetRegisterForms();
         return screen;
     }
@@ -476,14 +478,19 @@ public class VP_Center extends StackPane {
                 applyThemesBtn = new VP_Button("Apply Themes to Your Docs", new WizardMainAction(8)),
                 distributeBtn = new VP_Button("Distribute Your Docs", new WizardMainAction(10)),
                 printDocsBtn = new VP_Button("Print Your Docs", new WizardMainAction(24));
-        VP_DivisionLine step1Line = new VP_DivisionLine(new Node[]{updateInfoBtn, infoProgress}),
-                step2Line = new VP_DivisionLine(new Node[]{updateResumeBtn, resumeProgress}),
-                step3Line = new VP_DivisionLine(new Node[]{updateBcardBtn, bcardProgress}),
-                step4Line = new VP_DivisionLine(new Node[]{updateCovLetBtn, covletProgress}),
-                step5Line = new VP_DivisionLine(new Node[]{applyThemesBtn}),
-                step6Line = new VP_DivisionLine(new Node[]{distributeBtn}),
-                step7Line = new VP_DivisionLine(new Node[]{printDocsBtn});
-        VP_PageSubdivision tasks = new VP_PageSubdivision("TASKS", false);
+        VP_PageSubdivision tasks = new VP_PageSubdivision("TASKS", true);
+        VP_PageSubdivision step1 = new VP_PageSubdivision("STEP ONE", false),
+                step2 = new VP_PageSubdivision("STEP TWO", false),
+                step3 = new VP_PageSubdivision("STEP THREE", false),
+                step4 = new VP_PageSubdivision("STEP FOUR", false);
+        VP_DivisionLine step1Line = new VP_DivisionLine(new Node[]{updateInfoBtn, infoProgress}, 20),
+                step2aLine = new VP_DivisionLine(new Node[]{updateResumeBtn, resumeProgress}, 20),
+                step2bLine = new VP_DivisionLine(new Node[]{updateBcardBtn, bcardProgress}, 20),
+                step2cLine = new VP_DivisionLine(new Node[]{updateCovLetBtn, covletProgress}, 20),
+                step3Line = new VP_DivisionLine(new Node[]{applyThemesBtn}, 20),
+                step4aLine = new VP_DivisionLine(new Node[]{distributeBtn}, 20),
+                step4bLine = new VP_DivisionLine(new Node[]{printDocsBtn}, 20);
+        
         //-------- Initialization End ------------\\
 
         wizardMainButtons.add(updateInfoBtn);
@@ -496,8 +503,11 @@ public class VP_Center extends StackPane {
         for (int i = 0; i < wizardMainButtons.size(); i++) {
             wizardMainButtons.get(i).setPrefWidth(200);
         }
-        tasks.getChildren().addAll(step1Line, step2Line, step3Line, step4Line,
-                step5Line, step6Line, step7Line);
+        step1.getChildren().addAll(step1Line);
+        step2.getChildren().addAll(step2aLine, step2bLine, step2cLine);
+        step3.getChildren().addAll(step3Line);
+        step4.getChildren().addAll(step4aLine, step4bLine);
+        tasks.getChildren().addAll(step1, step2, step3, step4);
         screen.addNodes(new Node[]{overviewInfo, tasks});
         return screen;
     }
@@ -854,13 +864,18 @@ public class VP_Center extends StackPane {
     /**
      * Builds the screen where the user sees a list of available themes and
      * applies them to documents. From here, a user may select to build a custom
-     * theme. A.K.A Screen 8
+     * theme in a future version. A.K.A Screen 8
      *
      * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
     private VP_Screen buildThemesStartScreen() {
         VP_Screen screen = new VP_Screen("DOCUMENT THEMES");
+        VP_Paragraph notes = new VP_Paragraph("Select a theme from the list of themes for each document. Although you are free to choose individual themes for "
+                + "each document, it is recommended that you apply the same theme for a combined look and style "
+                + "that has uniformity.");
+        VP_Previewer previewer = new VP_Previewer();
+        screen.addNodes(new Node[]{notes, previewer.buildPreview()});
         return screen;
     }
 
@@ -1703,7 +1718,7 @@ public class VP_Center extends StackPane {
                         + "your personal information. This information remains private to "
                         + "you and is stored for the sole purpose of automatically filling in "
                         + "text in your documents. Click \"Update Personal Information\" below "
-                        + "to get started.");
+                        + "in to get started.");
                 for (int i = 1; i < wizardMainButtons.size(); i++) {
                     wizardMainButtons.get(i).setDisable(true);
                 }
@@ -2952,24 +2967,29 @@ public class VP_Center extends StackPane {
                 controller.getDataM().getDbBusy().await();
                 controller.getDataM().setDbBusy(new CountDownLatch(1));
                 controller.getDataM().saveUserData();
+                controller.getCurrentUser().getCovlet().save();
+                controller.getCurrentUser().getResume().save();
+                controller.getCurrentUser().getBcard().save();
+                Thread backgroundThread1 = new Thread(new SaveCovLetTask());
+                backgroundThread1.setDaemon(true);
+                Thread backgroundThread2 = new Thread(new SaveBCardTask());
+                backgroundThread2.setDaemon(true);
+                Thread backgroundThread3 = new Thread(new SaveResTask(0));
+                backgroundThread3.setDaemon(true);
+                controller.getDataM().setDbBusy(new CountDownLatch(1));
+                backgroundThread1.start();
+                controller.getDataM().getDbBusy().await();
+                controller.getDataM().setDbBusy(new CountDownLatch(1));
+                backgroundThread2.start();
+                controller.getDataM().getDbBusy().await();
+                controller.getDataM().setDbBusy(new CountDownLatch(1));
+                backgroundThread3.start();
             } catch (SQLException ex) {
                 Platform.runLater(() -> {controller.errorAlert(3113, ex.getMessage());});
             } catch (InterruptedException ex) {
                 Platform.runLater(() -> {controller.errorAlert(1204, ex.getMessage());});
             } finally {
                 controller.getDataM().getDbBusy().countDown();
-                controller.getCurrentUser().getCovlet().save();
-                controller.getCurrentUser().getResume().save();
-                controller.getCurrentUser().getBcard().save();
-                Thread backgroundThread1 = new Thread(new SaveCovLetTask());
-                backgroundThread1.setDaemon(true);
-                backgroundThread1.start();
-                Thread backgroundThread2 = new Thread(new SaveBCardTask());
-                backgroundThread2.setDaemon(true);
-                backgroundThread2.start();
-                Thread backgroundThread3 = new Thread(new SaveResTask(0));
-                backgroundThread3.setDaemon(true);
-                backgroundThread3.start();
             }
         }
     }
@@ -2978,17 +2998,11 @@ public class VP_Center extends StackPane {
         @Override
         public void run() {
             try {
-                controller.getDataM().getDbBusy().await();
-                controller.getDataM().setDbBusy(new CountDownLatch(1));
                 controller.getDataM().saveBCardData();
             } catch (SQLException ex) {
                 Platform.runLater(() -> {controller.errorAlert(3114, ex.getMessage());});
             } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
                 Platform.runLater(() -> {controller.errorAlert(3301, ex.getMessage());});
-            } catch (InterruptedException ex) {
-                Platform.runLater(() -> {controller.errorAlert(1203, ex.getMessage());});
-            } finally {
-                controller.getDataM().getDbBusy().countDown();
             }
         }
     }
@@ -2997,17 +3011,11 @@ public class VP_Center extends StackPane {
         @Override
         public void run() {
         try {
-            controller.getDataM().getDbBusy().await();
-            controller.getDataM().setDbBusy(new CountDownLatch(1));
             controller.getDataM().saveCovLetData();
             } catch (SQLException ex) {
                 Platform.runLater(() -> {controller.errorAlert(3115, ex.getMessage());});
             } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
                 Platform.runLater(() -> {controller.errorAlert(3302, ex.getMessage());});
-            } catch (InterruptedException ex) {
-                Platform.runLater(() -> {controller.errorAlert(1202, ex.getMessage());});
-            } finally {
-                controller.getDataM().getDbBusy().countDown();
             }
         }
     }
@@ -3019,19 +3027,13 @@ public class VP_Center extends StackPane {
         }
         @Override
         public void run() {
-                try {
-                    controller.getDataM().getDbBusy().await();
-                    controller.getDataM().setDbBusy(new CountDownLatch(1));
-                    controller.getDataM().saveResume(resumeSection);
-                } catch (SQLException ex) {
-                    Platform.runLater(() -> {controller.errorAlert(3117 + resumeSection, ex.getMessage());});
-                } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                    Platform.runLater(() -> {controller.errorAlert(3303, ex.getMessage());});
-                } catch (InterruptedException ex) {
-                    Platform.runLater(() -> {controller.errorAlert(1201, ex.getMessage());});
-                } finally {
-                    controller.getDataM().getDbBusy().countDown();
-                }
+            try {
+                controller.getDataM().saveResume(resumeSection);
+            } catch (SQLException ex) {
+                Platform.runLater(() -> {controller.errorAlert(3117 + resumeSection, ex.getMessage());});
+            } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
+                Platform.runLater(() -> {controller.errorAlert(3303, ex.getMessage());});
+            }
         }
     }
 

@@ -27,7 +27,7 @@ public class VP_PageDivision extends VBox {
     public VP_PageDivision(String title) {
         this.setSpacing(6);
         this.getStyleClass().add("formDivision");
-        this.setPadding(new Insets(10, 10, 10, 10));
+        this.setPadding(new Insets(10, 10, 10, 16));
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("pageHeader");
         titleLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
@@ -45,7 +45,7 @@ public class VP_PageDivision extends VBox {
     public VP_PageDivision(String title, String icon, double width) {
         this.setSpacing(10);
         this.getStyleClass().add("formDivision");
-        this.setPadding(new Insets(10, 10, 10, 10));
+        this.setPadding(new Insets(10, 10, 10, 16));
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("pageHeader");
         titleLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);

@@ -25,17 +25,21 @@ public class VP_PageSubdivision extends VBox {
 
     public VP_PageSubdivision(String caption, boolean isContainer) {
         this.setSpacing(6);
-        this.getStyleClass().add("formSubdivision");
-        this.setPadding(new Insets(6, 6, 6, 6));
-        if (isContainer)
+        this.setPadding(new Insets(6, 6, 6, 12));
+        if (isContainer) {
             getStyleClass().add("formContainer");
-        if (!caption.equals("")) {
-            Label titleLabel = new Label(caption);
-            titleLabel.getStyleClass().add("pageSubheader");
-            titleLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-            titleLabel.setMaxSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
-            titleLabel.setAlignment(Pos.CENTER_LEFT);
-            this.getChildren().add(titleLabel);
+        } else {
+            this.getStyleClass().add("formSubdivision");
         }
+        Label titleLabel = new Label(caption);
+        if (isContainer) {
+            titleLabel.getStyleClass().add("pageSubheader");
+        } else {
+            this.getStyleClass().add("pageSubSubheader");
+        }
+        titleLabel.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+        titleLabel.setMaxSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+        titleLabel.setAlignment(Pos.CENTER_LEFT);
+        this.getChildren().add(titleLabel);
     }
 }

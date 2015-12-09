@@ -1443,6 +1443,7 @@ public class VP_DatabaseManager {
             }
         }
         close();
+        dataM.getDbBusy().countDown();
     }
 
     /*------------------------------------------------------------------------*
@@ -1517,6 +1518,7 @@ public class VP_DatabaseManager {
             }
         }
         close();
+        dataM.getDbBusy().countDown();
     }
     
     protected void storeBCardHTML(File bchtml) throws SQLException,
@@ -1665,6 +1667,7 @@ public class VP_DatabaseManager {
             }
         }
         close();
+        dataM.getDbBusy().countDown();
     }
     
     protected void storeCovLetHTML(File clhtml) throws SQLException,
@@ -2084,6 +2087,7 @@ public class VP_DatabaseManager {
             }
         }
         close();
+        dataM.getDbBusy().countDown();
     }
     
     protected File retrieveFile(int type) throws SQLException,

@@ -244,21 +244,23 @@ public class VP_CoverLetter {
                 paragraphsStored.get(0) != null && !paragraphsStored.get(0).equals("")) {
             startedCoverLetter = true;
             completedCoverLetter = true;
-        } else if (adSource != null ||
-                adJobTitle != null ||
-                adRefNumber != null ||
-                contactFirstNameStored != null ||
-                contactLastNameStored != null ||
-                contactCompanyStored != null ||
-                contactTitleStored != null ||
-                contactAddress1Stored != null ||
-                contactAddress2Stored != null ||
-                contactCityStored != null ||
-                contactStateStored != null ||
-                contactZipStored != null ||
-                salutationStored != null ||
-                closingStored != null ||
-                paragraphsStored.get(0) != null) {
+        } else if (
+                (adSourceStored != null && !adSourceStored.equals("")) ||
+                (adJobTitleStored != null && !adJobTitleStored.equals("")) ||
+                (adRefNumberStored != null && !adRefNumberStored.equals("")) ||
+                (contactFirstNameStored != null && !contactFirstNameStored.equals("")) ||
+                (contactLastNameStored != null && !contactLastNameStored.equals("")) ||
+                (contactCompanyStored != null && !contactCompanyStored.equals("")) ||
+                (contactTitleStored != null && !contactTitleStored.equals("")) ||
+                (contactAddress1Stored != null && !contactAddress1Stored.equals("")) ||
+                (contactAddress2Stored != null && !contactAddress2Stored.equals("")) ||
+                (contactCityStored != null && !contactCityStored.equals("")) ||
+                (contactStateStored != null && !contactStateStored.equals("")) ||
+                (contactZipStored != null && !contactZipStored.equals("")) ||
+                (salutationStored != null && !salutationStored.equals("")) ||
+                (closingStored != null && !closingStored.equals("")) ||
+                (paragraphsStored.get(0) != null && !paragraphsStored.get(0).equals("")) 
+                ) {
             startedCoverLetter = true;
         }
         if (completedCoverLetter)
