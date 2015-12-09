@@ -449,6 +449,7 @@ public class VP_GUIController {
                         || currentUser.getResume().hasCompletedResume())) {
                     falseRootChildren.add(new VP_TreeItem("Document Themes", 8));
                     falseRootChildren.add(new VP_TreeItem("Distribute Documents", 10));
+                    falseRootChildren.add(new VP_TreeItem("Print Documents", 24));
                 }
             }
         } else {

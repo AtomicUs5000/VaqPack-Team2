@@ -108,6 +108,12 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 1205:
+                header = "A thread was unexpectedly interrupted while attempting to print.\n"
+                        + "VaqPack will attempt to continue.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
             // ID 3000 Originates from VP_DataManager
             case 3001:
                 header = "VaqPack's hashing algorithm has failed while attempting "
@@ -407,6 +413,14 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 3133:
+                header = "VaqPack's has encountered a MySQL error \n"
+                        + "while retrieving a file from the database for printing. \n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
 
             // ID 3200 Originates from VP_FileManager
             case 3201:
@@ -468,6 +482,11 @@ public class VP_ErrorHandler {
             case 3303:
                 header = "VaqPack could not create the HTML and PDF documents for the "
                         + "resume.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = true;
+                break;
+            case 3304:
+                header = "VaqPack could not create a temporary print file.";
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = true;
                 break;

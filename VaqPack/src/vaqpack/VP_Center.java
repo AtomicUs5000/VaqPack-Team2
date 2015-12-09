@@ -7,16 +7,9 @@ package vaqpack;
 import vaqpack.peripherals.VP_Sounds;
 import vaqpack.user.VP_User;
 import vaqpack.user.VP_Resume;
-import vaqpack.components.VP_Button;
-import vaqpack.components.VP_DivisionLine;
-import vaqpack.components.VP_Paragraph;
-import vaqpack.components.VP_PageDivision;
-import vaqpack.components.VP_PageSubdivision;
-import vaqpack.components.VP_PasswordField;
-import vaqpack.components.VP_TextArea;
-import vaqpack.components.VP_FieldLabel;
-import vaqpack.components.VP_TextField;
+import vaqpack.components.*;
 import com.lowagie.text.DocumentException;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -35,24 +28,20 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import vaqpack.components.VP_Dialog;
 import vaqpack.user.VP_Contact;
 
 /**
@@ -73,33 +62,30 @@ public class VP_Center extends StackPane {
     private final VP_GUIController controller;
     private final VP_TextField loginEmail, resetEmail, regLoginAccess,
             resetCode, registerEmail, newMysqlURL, newMysqlPort;
-    private final Label resetPassStrengthLabel, registerPassStrengthLabel,
-            changePassStrengthLabel, infoProgress, resumeProgress, bcardProgress,
+    private final VP_SimpleProgress infoProgress, resumeProgress, bcardProgress,
             covletProgress, resObjProgress, resEduProgress, resExpProgress,
             resQualProgress, resHighProgress, resLangProgress, resSWProgress;
+    private final Label resetPassStrengthLabel, registerPassStrengthLabel,
+            changePassStrengthLabel;
     private final VP_PasswordField loginPass,
             resetNewPass, resetNewPassConfirm, registerPass, registerPassConfirm,
             oldPass, newPass, newPassConfirm, adminPassMysql;
     private final VP_DivisionLine accessInstructionsLine, loginButtonLine,
             accessLine, resetInstructions1Line, resetInstructions2Line,
             resetNewPassLine, resetNewPassConfirmLine, resetCodeLine, resetButLine,
-            resetPassStrengthLine, personalInfoErrorLine, selectCoverLetterLine,
-            addParagraphLine, loginErrorLine, resetErrorLine, registerErrorLine,
+            resetPassStrengthLine, selectCoverLetterLine, addParagraphLine;
+    private final VP_ErrorLine loginErrorLine, resetErrorLine, registerErrorLine,
             bcardErrorLine, covletEditErrorLine, objectiveErrorLine, educationErrorLine,
             experienceErrorLine, achievementsErrorLine, communityErrorLine,
             qualificationsErrorLine, highlightsErrorLine, languagesErrorLine,
             softwareErrorLine, referencesErrorLine, changePassErrorLine, 
-            addContactErrorLine, sendAttachErrorLine, changeMysqlErrorLine;
+            addContactErrorLine, sendAttachErrorLine, changeMysqlErrorLine, 
+            personalInfoErrorLine;
     private final VP_Paragraph accessInstructions, resetInstructions1, resetInstructions2,
-            overviewInfo, coverLetterDetails, loginError, resetError, registerError,
-            personalInfoError, bcardError, covletEditError, objectiveError,
-            educationError, experienceError, achievementsError, communityError,
-            qualificationsError, highlightsError, languagesError, softwareError,
-            referencesError, changePassError, addContactError, sendAttachError,
-            changeMysqlError;
+            overviewInfo, coverLetterDetails;
     private final VP_Button submitResetBtn, startNewBtn, addEducationBtn, addExperienceBtn,
             addAchievementBtn, addCommunityBtn, addQualificationBtn, addHighlightBtn,
-            addLanguageBtn, addSoftwareBtn, addReferenceBtn;
+            addLanguageBtn, addSoftwareBtn, addReferenceBtn, printResBtn, printCLBtn, printBCBtn;
     private final ComboBox coverLetterSelect;
     private final ArrayList<VP_Button> wizardMainButtons;
     private final ArrayList<VP_PageSubdivision> bcNodes, clNodes;
@@ -125,10 +111,8 @@ public class VP_Center extends StackPane {
     protected VP_Center(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
-        loginErrorLine = new VP_DivisionLine();
         loginButtonLine = new VP_DivisionLine();
         accessInstructionsLine = new VP_DivisionLine();
-        resetErrorLine = new VP_DivisionLine();
         resetInstructions1Line = new VP_DivisionLine();
         resetInstructions2Line = new VP_DivisionLine();
         resetNewPassLine = new VP_DivisionLine();
@@ -137,47 +121,29 @@ public class VP_Center extends StackPane {
         accessLine = new VP_DivisionLine();
         resetButLine = new VP_DivisionLine();
         resetPassStrengthLine = new VP_DivisionLine();
-        registerErrorLine = new VP_DivisionLine();
-        personalInfoErrorLine = new VP_DivisionLine();
-        bcardErrorLine = new VP_DivisionLine();
-        covletEditErrorLine = new VP_DivisionLine();
         addParagraphLine = new VP_DivisionLine();
         selectCoverLetterLine = new VP_DivisionLine();
-        objectiveErrorLine = new VP_DivisionLine();
-        educationErrorLine = new VP_DivisionLine();
-        experienceErrorLine = new VP_DivisionLine();
-        achievementsErrorLine = new VP_DivisionLine();
-        communityErrorLine = new VP_DivisionLine();
-        qualificationsErrorLine = new VP_DivisionLine();
-        highlightsErrorLine = new VP_DivisionLine();
-        languagesErrorLine = new VP_DivisionLine();
-        softwareErrorLine = new VP_DivisionLine();
-        referencesErrorLine = new VP_DivisionLine();
-        changePassErrorLine = new VP_DivisionLine();
-        addContactErrorLine = new VP_DivisionLine();
-        sendAttachErrorLine = new VP_DivisionLine();
-        changeMysqlErrorLine = new VP_DivisionLine();
-        loginError = new VP_Paragraph("", true);
-        resetError = new VP_Paragraph("", true);
-        registerError = new VP_Paragraph("", true);
-        personalInfoError = new VP_Paragraph("", true);
-        bcardError = new VP_Paragraph("", true);
-        covletEditError = new VP_Paragraph("", true);
-        objectiveError = new VP_Paragraph("", true);
-        educationError = new VP_Paragraph("", true);
-        experienceError = new VP_Paragraph("", true);
-        achievementsError = new VP_Paragraph("", true);
-        communityError = new VP_Paragraph("", true);
-        qualificationsError = new VP_Paragraph("", true);
-        highlightsError = new VP_Paragraph("", true);
-        languagesError = new VP_Paragraph("", true);
-        softwareError = new VP_Paragraph("", true);
-        referencesError = new VP_Paragraph("", true);
-        changePassError = new VP_Paragraph("", true);
-        addContactError = new VP_Paragraph("", true);
-        sendAttachError = new VP_Paragraph("", true);
-        changeMysqlError = new VP_Paragraph("", true);
-        coverLetterDetails = new VP_Paragraph("", false);
+        loginErrorLine = new VP_ErrorLine();
+        resetErrorLine = new VP_ErrorLine();
+        registerErrorLine = new VP_ErrorLine();
+        personalInfoErrorLine = new VP_ErrorLine();
+        bcardErrorLine = new VP_ErrorLine();
+        covletEditErrorLine = new VP_ErrorLine();
+        objectiveErrorLine = new VP_ErrorLine();
+        educationErrorLine = new VP_ErrorLine();
+        experienceErrorLine = new VP_ErrorLine();
+        achievementsErrorLine = new VP_ErrorLine();
+        communityErrorLine = new VP_ErrorLine();
+        qualificationsErrorLine = new VP_ErrorLine();
+        highlightsErrorLine = new VP_ErrorLine();
+        languagesErrorLine = new VP_ErrorLine();
+        softwareErrorLine = new VP_ErrorLine();
+        referencesErrorLine = new VP_ErrorLine();
+        changePassErrorLine = new VP_ErrorLine();
+        addContactErrorLine = new VP_ErrorLine();
+        sendAttachErrorLine = new VP_ErrorLine();
+        changeMysqlErrorLine = new VP_ErrorLine();
+        coverLetterDetails = new VP_Paragraph();
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
         resetInstructions2 = new VP_Paragraph();
@@ -185,17 +151,17 @@ public class VP_Center extends StackPane {
         resetPassStrengthLabel = new Label();
         registerPassStrengthLabel = new Label();
         changePassStrengthLabel = new Label();
-        infoProgress = new Label();
-        resumeProgress = new Label();
-        bcardProgress = new Label();
-        covletProgress = new Label();
-        resObjProgress = new Label();
-        resEduProgress = new Label();
-        resExpProgress = new Label();
-        resQualProgress = new Label();
-        resHighProgress = new Label();
-        resLangProgress = new Label();
-        resSWProgress = new Label();
+        infoProgress = new VP_SimpleProgress();
+        resumeProgress = new VP_SimpleProgress();
+        bcardProgress = new VP_SimpleProgress();
+        covletProgress = new VP_SimpleProgress();
+        resObjProgress = new VP_SimpleProgress();
+        resEduProgress = new VP_SimpleProgress();
+        resExpProgress = new VP_SimpleProgress();
+        resQualProgress = new VP_SimpleProgress();
+        resHighProgress = new VP_SimpleProgress();
+        resLangProgress = new VP_SimpleProgress();
+        resSWProgress = new VP_SimpleProgress();
         regLoginAccess = new VP_TextField(16, 16);
         resetCode = new VP_TextField(16, 16);
         loginEmail = new VP_TextField(32, 254);
@@ -242,6 +208,9 @@ public class VP_Center extends StackPane {
         addLanguageBtn = new VP_Button("Add Language", new AddLanguageAction());
         addSoftwareBtn = new VP_Button("Add Software", new AddSoftwareAction());
         addReferenceBtn = new VP_Button("Add Reference", new AddReferenceAction());
+        printResBtn = new VP_Button("Print Resume", new PrintAction(2));
+        printCLBtn = new VP_Button("Print Cover Letter", new PrintAction(6));
+        printBCBtn = new VP_Button("Print Business Card", new PrintAction(4));
         covLetEditBox = new VP_PageDivision("EDIT COVER LETTER");
         resumeEducationBox = new VP_PageDivision("RESUME -- EDUCATION");
         resumeExperienceBox = new VP_PageDivision("RESUME -- WORK EXPERIENCE");
@@ -319,7 +288,8 @@ public class VP_Center extends StackPane {
                 buildResumeSoftwareScreen(), //.......screen 20
                 buildResumeReferencesScreen(), //.....screen 21
                 buildChangePasswordScreen(), //.......screen 22
-                buildChangeMysqlScreen() //...........screen 23
+                buildChangeMysqlScreen(), //..........screen 23
+                buildPrintScreen() //.................screen 24
         );
         showScreen(0, 0);
     }
@@ -336,39 +306,66 @@ public class VP_Center extends StackPane {
         for (int i = 0; i < getChildren().size(); i++) {
             getChildren().get(i).setVisible(false);
         }
+        TreeView thisTView = (TreeView)controller.getLeftTree().getChildren().get(0);
         if (screenNumber == 3) {
-            ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(0);
+            thisTView.getSelectionModel().clearAndSelect(0);
             updateOverview();
         } else if (screenNumber == 4) {
-            ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(1);
+            thisTView.getSelectionModel().clearAndSelect(1);
         } else if (screenNumber == 5) {
-            ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(3);
+            thisTView.getSelectionModel().clearAndSelect(3);
         } else if (screenNumber == 6) {
-            ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(4);
+            thisTView.getSelectionModel().clearAndSelect(4);
         } else if (screenNumber == 8) {
-            ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(5);
+            thisTView.getSelectionModel().clearAndSelect(5);
         } else if (screenNumber == 10) {
-            ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(6);
+            thisTView.getSelectionModel().clearAndSelect(6);
             updateSelectableDocs();
         } else if (screenNumber == 11) {
-            ((TreeView) (controller.getLeftTree().getChildren().get(0))).getSelectionModel().clearAndSelect(2);
+            thisTView.getSelectionModel().clearAndSelect(2);
             updateResumeStatus();
         }
         getChildren().get(screenNumber).setVisible(true);
-        ((ScrollPane) (getChildren().get(screenNumber))).setVvalue(position);
+        ((VP_Screen) (getChildren().get(screenNumber))).setVvalue(position);
+    }
+    
+    /**
+     * Opens a confirmation dialog, asking the user if it is desired to remain on the 
+     * page to save changes or leave the page;
+     * 
+     * @return Whether or not the user wants to remain on the page.
+     * @since 1.0
+     */
+    protected boolean confirmLeavePage() {
+        //-------- Initialization Start ----------\\
+        boolean staying = false;
+        Optional result;
+        VP_Dialog changesDialog = new VP_Dialog("Save Changes?");
+        Label changesLabel = new Label("Would you like to stay on the page to submit "
+                + "changes or continue with the desired action?");
+        ButtonType saveBtn = new ButtonType("Stay Here", ButtonBar.ButtonData.YES),
+                continueBtn = new ButtonType("Continue", ButtonBar.ButtonData.NO);
+        //-------- Initialization End ------------\\
+        changesDialog.setHeaderText("You have not submitted your changes.");
+        changesLabel.setPadding(new Insets(50, 20, 50, 20));
+        changesDialog.getDialogShell().add(changesLabel, 0, 0);
+        changesDialog.getDialogPane().getButtonTypes().addAll(saveBtn, continueBtn);
+        result = changesDialog.showAndWait();
+        if (result.get() == saveBtn) {
+            staying = true;
+        }
+        return staying;
     }
 
     /**
      * Creates the user login screen. Called by buildCenter(). A.K.A Screen 0
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildLoginScreen() {
+    private VP_Screen buildLoginScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision loginBox = new VP_PageDivision("LOGIN");
+        VP_Screen screen = new VP_Screen("LOGIN");
         VP_FieldLabel loginEmailLabel = new VP_FieldLabel("email:", 60),
                 loginPassLabel = new VP_FieldLabel("password:", 60),
                 regCodeLabel = new VP_FieldLabel("code:", 60);
@@ -382,8 +379,6 @@ public class VP_Center extends StackPane {
                 passLine = new VP_DivisionLine(new Node[]{loginPassLabel, loginPass});
         //-------- Initialization End ------------\\
 
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        loginErrorLine.getChildren().addAll(loginError);
         passForgotLabel.getStyleClass().add("clickable");
         passForgotLabel.setOnMouseClicked(new ForgotPassAction());
         needAccountLabel.getStyleClass().add("clickable");
@@ -392,14 +387,9 @@ public class VP_Center extends StackPane {
         accessInstructionsLine.getChildren().addAll(accessInstructions);
         accessLine.getChildren().addAll(regCodeLabel, regLoginAccess,
                 enterAccessBtn, accessCancelBtn, accessResendBtn);
-        loginBox.getChildren().addAll(emailLine, passLine, loginErrorLine,
-                loginButtonLine, accessInstructionsLine, accessLine);
+        screen.addNodes(new Node[]{emailLine, passLine, loginErrorLine,
+                loginButtonLine, accessInstructionsLine, accessLine});
         resetLoginRegForms();
-        screenContent.getChildren().addAll(loginBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
         return screen;
     }
 
@@ -407,28 +397,23 @@ public class VP_Center extends StackPane {
      * Creates the reset password screen. Called by buildCenter(). A.K.A Screen
      * 1
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResetPasswordScreen() {
+    private VP_Screen buildResetPasswordScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision forgotPassBox = new VP_PageDivision("RESET PASSWORD");
-        VP_FieldLabel resetEmailLabel = new VP_FieldLabel("email:", 100),
-                resetNewPassLabel = new VP_FieldLabel("new password:", 100),
+        VP_Screen screen = new VP_Screen("RESET PASSWORD");
+        VP_FieldLabel resetNewPassLabel = new VP_FieldLabel("new password:", 100),
                 resetNewPassConfirmLabel = new VP_FieldLabel("confirm\nnew password:", 100),
                 resetCodeLabel = new VP_FieldLabel("code:", 100);
-        VP_Button cancelResetBtn1 = new VP_Button("Cancel", new CancelActionPrelogin()),
-                submitResetPassCodeBtn = new VP_Button("Submit", new SubmitResetPassCode()),
+        VP_Button submitResetPassCodeBtn = new VP_Button("Submit", new SubmitResetPassCode()),
                 cancelResetBtn2 = new VP_Button("Cancel", new CancelActionPrelogin());
-        VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{resetEmailLabel, resetEmail,
-            submitResetBtn, cancelResetBtn1});
+        VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{ new VP_FieldLabel("email:", 100), 
+            resetEmail, submitResetBtn, new VP_Button("Cancel", new CancelActionPrelogin())}),
+                passStrengthLine = new VP_DivisionLine(new Node[]{resetPassStrengthLabel});
         //-------- Initialization End ------------\\
 
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         resetInstructions1Line.getChildren().addAll(resetInstructions1);
-        resetErrorLine.getChildren().addAll(resetError);
         resetInstructions2Line.getChildren().addAll(resetInstructions2);
         resetNewPassLine.getChildren().addAll(resetNewPassLabel, resetNewPass);
         resetPassStrengthLabel.getStyleClass().add("inputLabel");
@@ -437,16 +422,10 @@ public class VP_Center extends StackPane {
                 resetNewPassConfirm);
         resetCodeLine.getChildren().addAll(resetCodeLabel, resetCode);
         resetButLine.getChildren().addAll(submitResetPassCodeBtn, cancelResetBtn2);
-        forgotPassBox.getChildren().addAll(resetInstructions1Line,
-                emailLine, resetErrorLine, resetInstructions2Line,
-                resetNewPassLine, resetPassStrengthLabel,
-                resetNewPassConfirmLine, resetCodeLine, resetButLine);
+        screen.addNodes(new Node[]{resetInstructions1Line,
+                emailLine, resetErrorLine, resetInstructions2Line, resetNewPassLine,
+                passStrengthLine, resetNewPassConfirmLine, resetCodeLine, resetButLine});
         resetResetPasswordForms();
-        screenContent.getChildren().addAll(forgotPassBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
         return screen;
     }
 
@@ -454,44 +433,28 @@ public class VP_Center extends StackPane {
      * Creates the user registration screen. Called by buildCenter(). A.K.A
      * Screen 2
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildRegistrationScreen() {
+    private VP_Screen buildRegistrationScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision registerBox = new VP_PageDivision("REGISTER NEW ACCOUNT");
-        VP_FieldLabel registerEmailLabel = new VP_FieldLabel("email:", 100),
-                registerPassLabel = new VP_FieldLabel("password:", 100),
-                registerPassConfirmLabel = new VP_FieldLabel("confirm\npassword:", 100);
-        VP_Button registerBtn = new VP_Button("Register", new RegisterSubmitAction()),
-                registerCancelBtn = new VP_Button("Cancel", new CancelActionPrelogin());
-        VP_Paragraph registerInstructions = new VP_Paragraph("Enter your email and password twice. When "
-                + "you submit, an email will be sent to you with a registration "
-                + "access code. Login with the email and password you provided "
-                + "and you will be prompted to enter in the access code. Access "
-                + "codes expire within one hour.");
-        VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{registerEmailLabel, registerEmail}),
-                passLine = new VP_DivisionLine(new Node[]{registerPassLabel, registerPass}),
+        VP_Screen screen = new VP_Screen("REGISTER NEW ACCOUNT");
+        VP_DivisionLine emailLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("email:", 100), registerEmail}),
+                passLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("password:", 100), registerPass}),
                 registerPassStrengthLine = new VP_DivisionLine(new Node[]{registerPassStrengthLabel}),
-                registerConfirmLine = new VP_DivisionLine(new Node[]{registerPassConfirmLabel, registerPassConfirm}),
-                registerInstructionsLine = new VP_DivisionLine(new Node[]{registerInstructions}),
-                registerButtonLine = new VP_DivisionLine(new Node[]{registerBtn, registerCancelBtn});
+                registerConfirmLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("confirm\npassword:", 100), registerPassConfirm}),
+                registerInstructionsLine = new VP_DivisionLine(new Node[]{new VP_Paragraph(""
+                        + "Enter your email and password twice. When you submit, an email will be sent to you with a "
+                        + "registration access code. Login with the email and password you provided and you will be "
+                        + "prompted to enter in the access code. Access codes expire within one hour.")}),
+                registerButtonLine = new VP_DivisionLine(new Node[]{new VP_Button("Register", new RegisterSubmitAction()), 
+                    new VP_Button("Cancel", new CancelActionPrelogin())});
         //-------- Initialization End ------------\\
 
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         registerPassStrengthLabel.getStyleClass().add("inputLabel");
-        registerErrorLine.getChildren().addAll(registerError);
-        registerBox.getChildren().addAll(emailLine, passLine,
-                registerPassStrengthLine, registerConfirmLine, registerErrorLine,
-                registerInstructionsLine, registerButtonLine);
+        screen.addNodes(new Node[]{emailLine, passLine, registerPassStrengthLine,
+            registerConfirmLine, registerErrorLine, registerInstructionsLine, registerButtonLine});
         resetRegisterForms();
-        screenContent.getChildren().addAll(registerBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
         return screen;
     }
 
@@ -500,14 +463,12 @@ public class VP_Center extends StackPane {
      * functionality of the program and lists the completion status of some of
      * these functions for the logged in user. A.K.A Screen 3
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildOverviewScreen() {
+    private VP_Screen buildOverviewScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision overviewBox = new VP_PageDivision("OVERVIEW");
+        VP_Screen screen = new VP_Screen("OVERVIEW");
         VP_Button updateInfoBtn = new VP_Button("Update Personal Information", new WizardMainAction(4)),
                 updateResumeBtn = new VP_Button("Update Your Resume", new WizardMainAction(11)),
                 updateBcardBtn = new VP_Button("Update Your Business Card", new WizardMainAction(5)),
@@ -525,7 +486,6 @@ public class VP_Center extends StackPane {
         VP_PageSubdivision tasks = new VP_PageSubdivision("TASKS", false);
         //-------- Initialization End ------------\\
 
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         wizardMainButtons.add(updateInfoBtn);
         wizardMainButtons.add(updateResumeBtn);
         wizardMainButtons.add(updateBcardBtn);
@@ -536,69 +496,22 @@ public class VP_Center extends StackPane {
         for (int i = 0; i < wizardMainButtons.size(); i++) {
             wizardMainButtons.get(i).setPrefWidth(200);
         }
-        infoProgress.getStyleClass().add("notStarted");
-        infoProgress.setMinWidth(250);
-        infoProgress.setAlignment(Pos.CENTER_RIGHT);
-        resumeProgress.getStyleClass().add("notStarted");
-        resumeProgress.setMinWidth(250);
-        resumeProgress.setAlignment(Pos.CENTER_RIGHT);
-        bcardProgress.getStyleClass().add("notStarted");
-        bcardProgress.setMinWidth(250);
-        bcardProgress.setAlignment(Pos.CENTER_RIGHT);
-        covletProgress.getStyleClass().add("notStarted");
-        covletProgress.setMinWidth(250);
-        covletProgress.setAlignment(Pos.CENTER_RIGHT);
         tasks.getChildren().addAll(step1Line, step2Line, step3Line, step4Line,
                 step5Line, step6Line, step7Line);
-        overviewBox.getChildren().addAll(overviewInfo, tasks);
-        updateOverview();
-        screenContent.getChildren().addAll(overviewBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{overviewInfo, tasks});
         return screen;
-    }
-    
-    /**
-     * Opens a confirmation dialog, asking the user if it is desired to remain on the 
-     * page to save changes or leave the page;
-     * 
-     * @return Whether or not the user wants to remain on the page.
-     * @since 1.0
-     */
-    protected boolean confirmLeavePage() {
-        //-------- Initialization Start ----------\\
-        boolean staying = false;
-        Optional result;
-        VP_Dialog changesDialog = new VP_Dialog("Save Changes?");
-        Label changesLabel = new Label("Would you like to stay on the page to submit changes or continue with the desired action?");
-        ButtonType saveBtn = new ButtonType("Stay Here", ButtonBar.ButtonData.YES),
-                continueBtn = new ButtonType("Continue", ButtonBar.ButtonData.NO);
-        //-------- Initialization End ------------\\
-        changesDialog.setHeaderText("You have not submitted your changes.");
-        changesLabel.setPadding(new Insets(50, 20, 50, 20));
-        changesDialog.getDialogShell().add(changesLabel, 0, 0);
-        changesDialog.getDialogPane().getButtonTypes().addAll(saveBtn, continueBtn);
-        result = changesDialog.showAndWait();
-        if (result.get() == saveBtn) {
-            staying = true;
-        }
-        return staying;
     }
 
     /**
      * Builds the screen where the user inputs personal information. A.K.A
      * Screen 4
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildPersonalInfoScreen() {
+    private VP_Screen buildPersonalInfoScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision personalInfoBox = new VP_PageDivision("PERSONAL INFO", "personal-icon-larger.png", 160);
+        VP_Screen screen = new VP_Screen("PERSONAL INFO", "personal-icon-larger.png", 160);
         VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 100),
                 middleNameLabel = new VP_FieldLabel("*middle name:", 100),
                 lastNameLabel = new VP_FieldLabel("last name:", 100),
@@ -644,7 +557,6 @@ public class VP_Center extends StackPane {
                 communication = new VP_PageSubdivision("COMMUNICATION", false);
         //-------- Initialization End ------------\\
 
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         personalInfoFields.get(0).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
         personalInfoFields.get(1).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
         personalInfoFields.get(2).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
@@ -656,46 +568,22 @@ public class VP_Center extends StackPane {
         personalInfoFields.get(8).textProperty().bindBidirectional(controller.getCurrentUser().getPhone());
         personalInfoFields.get(9).textProperty().bindBidirectional(controller.getCurrentUser().getCell());
         personalInfoFields.get(10).textProperty().bindBidirectional(controller.getCurrentUser().getDocEmail());
-        personalInfoErrorLine.getChildren().addAll(personalInfoError);
-        personalInfoErrorLine.hide();
         name.getChildren().addAll(firstNameLine, middleNameLine, lastNameLine);
         address.getChildren().addAll(address1Line, address2Line, cityLine, stateLine, zipLine);
         communication.getChildren().addAll(phoneLine, cellLine, emailLine);
-        personalInfoBox.getChildren().addAll(name, address, communication, notesLine, personalInfoErrorLine, buttonsLine);
-        screenContent.getChildren().addAll(personalInfoBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{name, address, communication, notesLine, personalInfoErrorLine, buttonsLine});
         return screen;
     }
 
     /**
      * Builds the screen where the user edits the business card. A.K.A Screen 5
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildBusinessCardScreen() {
+    private VP_Screen buildBusinessCardScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision bcardPageBox = new VP_PageDivision("BUSINESS CARD");
-        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 110),
-                middleNameLabel = new VP_FieldLabel("*middle name:", 110),
-                lastNameLabel = new VP_FieldLabel("last name:", 110),
-                professionLabel = new VP_FieldLabel("profession:", 110),
-                companyNameLabel = new VP_FieldLabel("*company name:", 110),
-                companySloganLabel = new VP_FieldLabel("*company slogan:", 110),
-                address1Label = new VP_FieldLabel("address line 1:", 110),
-                address2Label = new VP_FieldLabel("*address line 2:", 110),
-                cityLabel = new VP_FieldLabel("city:", 110),
-                stateLabel = new VP_FieldLabel("state:", 110),
-                zipLabel = new VP_FieldLabel("zipcode:", 110),
-                phoneLabel = new VP_FieldLabel("phone:", 110),
-                cellLabel = new VP_FieldLabel("*cell:", 110),
-                emailLabel = new VP_FieldLabel("email:", 110),
-                webpageLabel = new VP_FieldLabel("*web page:", 110);
+        VP_Screen screen = new VP_Screen("BUSINESS CARD");
         ArrayList<VP_TextField> businessCardFields = new ArrayList();
         businessCardFields.add(new VP_TextField(32, 45));   // bind this to user
         businessCardFields.add(new VP_TextField(32, 45));   // bind this to user
@@ -716,21 +604,21 @@ public class VP_Center extends StackPane {
                 + "Locked fields can be edited by updating your personal info.");
         VP_Button submitBtn = new VP_Button("Submit", new SubmitBCardAction(businessCardFields)),
                 cancelBtn = new VP_Button("Cancel", new CancelAction());
-        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, businessCardFields.get(0)}),
-                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, businessCardFields.get(1)}),
-                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, businessCardFields.get(2)}),
-                professionLine = new VP_DivisionLine(new Node[]{professionLabel, businessCardFields.get(3)}),
-                companyNameLine = new VP_DivisionLine(new Node[]{companyNameLabel, businessCardFields.get(4)}),
-                companySloganLine = new VP_DivisionLine(new Node[]{companySloganLabel, businessCardFields.get(5)}),
-                address1Line = new VP_DivisionLine(new Node[]{address1Label, businessCardFields.get(6)}),
-                address2Line = new VP_DivisionLine(new Node[]{address2Label, businessCardFields.get(7)}),
-                cityLine = new VP_DivisionLine(new Node[]{cityLabel, businessCardFields.get(8)}),
-                stateLine = new VP_DivisionLine(new Node[]{stateLabel, businessCardFields.get(9)}),
-                zipLine = new VP_DivisionLine(new Node[]{zipLabel, businessCardFields.get(10)}),
-                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, businessCardFields.get(11)}),
-                cellLine = new VP_DivisionLine(new Node[]{cellLabel, businessCardFields.get(12)}),
-                emailLine = new VP_DivisionLine(new Node[]{emailLabel, businessCardFields.get(13)}),
-                webpageLine = new VP_DivisionLine(new Node[]{webpageLabel, businessCardFields.get(14)}),
+        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("first name:", 110), businessCardFields.get(0)}),
+                middleNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*middle name:", 110), businessCardFields.get(1)}),
+                lastNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("last name:", 110), businessCardFields.get(2)}),
+                professionLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("profession:", 110), businessCardFields.get(3)}),
+                companyNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*company name:", 110), businessCardFields.get(4)}),
+                companySloganLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*company slogan:", 110), businessCardFields.get(5)}),
+                address1Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("address line 1:", 110), businessCardFields.get(6)}),
+                address2Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*address line 2:", 110), businessCardFields.get(7)}),
+                cityLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("city:", 110), businessCardFields.get(8)}),
+                stateLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("state:", 110), businessCardFields.get(9)}),
+                zipLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("zipcode:", 110), businessCardFields.get(10)}),
+                phoneLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("phone:", 110), businessCardFields.get(11)}),
+                cellLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*cell:", 110), businessCardFields.get(12)}),
+                emailLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("email:", 110), businessCardFields.get(13)}),
+                webpageLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*web page:", 110), businessCardFields.get(14)}),
                 notesLine = new VP_DivisionLine(new Node[]{notes}),
                 buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
         VP_PageSubdivision name = new VP_PageSubdivision("NAME", false),
@@ -742,7 +630,6 @@ public class VP_Center extends StackPane {
         bcNodes.add(company);
         bcNodes.add(address);
         bcNodes.add(communication);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         businessCardFields.get(0).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
         businessCardFields.get(1).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
         businessCardFields.get(2).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
@@ -768,16 +655,8 @@ public class VP_Center extends StackPane {
         company.getChildren().addAll(professionLine, companyNameLine, companySloganLine);
         address.getChildren().addAll(address1Line, address2Line, cityLine, stateLine, zipLine);
         communication.getChildren().addAll(phoneLine, cellLine, emailLine, webpageLine);
-        bcardErrorLine.getChildren().addAll(bcardError);
-        bcardErrorLine.hide();
-        bcardPageBox.getChildren().addAll(name, company, address, communication,
-                notesLine, bcardErrorLine, buttonsLine);
-
-        screenContent.getChildren().addAll(bcardPageBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{name, company, address, communication,
+                notesLine, bcardErrorLine, buttonsLine});
         return screen;
     }
 
@@ -785,31 +664,21 @@ public class VP_Center extends StackPane {
      * Builds the screen where the user sees the list of existing cover letters
      * or begins a new one. A.K.A Screen 6
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildCoverLettersStartScreen() {
+    private VP_Screen buildCoverLettersStartScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision covLetListBox = new VP_PageDivision("COVER LETTERS");
-        VP_DivisionLine buttonLine = new VP_DivisionLine();
-        VP_Button selectCoverLetterButton = new VP_Button("Load", new LoadCoverLetterAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction());
+        VP_Screen screen = new VP_Screen("COVER LETTERS");
+        VP_Button selectCoverLetterButton = new VP_Button("Load", new LoadCoverLetterAction());
+        VP_DivisionLine buttonLine = new VP_DivisionLine(new Node[]{startNewBtn, new VP_Button("Cancel", new CancelAction())});
         //-------- Initialization End ------------\\
         coverLetterDetails.setParaText("You are currently using 0 out of 3 cover letters available to you."
                 + "\nClick \"Start New Cover Letter\" to begin working on a new cover letter.");
         selectCoverLetterLine.setPadding(new Insets(30, 0, 30, 100));
         selectCoverLetterLine.getChildren().addAll(coverLetterSelect, selectCoverLetterButton);
         selectCoverLetterLine.hide();
-
-        buttonLine.getChildren().addAll(startNewBtn, cancelBtn);
-        covLetListBox.getChildren().addAll(coverLetterDetails, selectCoverLetterLine, buttonLine);
-        screenContent.getChildren().addAll(covLetListBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{coverLetterDetails, selectCoverLetterLine, buttonLine});
         return screen;
     }
 
@@ -817,45 +686,12 @@ public class VP_Center extends StackPane {
      * Builds the screen where the user edits a selected cover letter. A.K.A
      * Screen 7
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildCoverLettersEditScreen() {
+    private VP_Screen buildCoverLettersEditScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 140),
-                middleNameLabel = new VP_FieldLabel("*middle name:", 140),
-                lastNameLabel = new VP_FieldLabel("last name:", 140),
-                address1Label = new VP_FieldLabel("address line 1:", 140),
-                address2Label = new VP_FieldLabel("*address line 2:", 140),
-                cityLabel = new VP_FieldLabel("city:", 140),
-                stateLabel = new VP_FieldLabel("state:", 140),
-                zipLabel = new VP_FieldLabel("zipcode:", 140),
-                phoneLabel = new VP_FieldLabel("phone:", 140),
-                cellLabel = new VP_FieldLabel("*cell:", 140),
-                emailLabel = new VP_FieldLabel("email:", 140),
-                dateLabel = new VP_FieldLabel("date:", 140),
-                adSourceLabel = new VP_FieldLabel("*job ad source:", 140),
-                adJobLabel = new VP_FieldLabel("*job position:", 140),
-                adRefLabel = new VP_FieldLabel("*ad reference no:", 140),
-                contactFirstNameLabel = new VP_FieldLabel("contact first name:", 140),
-                contactMiddleNameLabel = new VP_FieldLabel("*contact middle name:", 140),
-                contactLastNameLabel = new VP_FieldLabel("contact last name:", 140),
-                contactTitleLabel = new VP_FieldLabel("*contact title:", 140),
-                contactCompanyLabel = new VP_FieldLabel("*company name:", 140),
-                contactAddress1Label = new VP_FieldLabel("contact address line 1:", 140),
-                contactAddress2Label = new VP_FieldLabel("*contact address line 2:", 140),
-                contactCityLabel = new VP_FieldLabel("contact city:", 140),
-                contactStateLabel = new VP_FieldLabel("conact state:", 140),
-                contactZipLabel = new VP_FieldLabel("contact zipcode:", 140),
-                salutationLabel = new VP_FieldLabel("salutation:", 140),
-                paragraph1Label = new VP_FieldLabel("paragraph 1:", 140),
-                closingLabel = new VP_FieldLabel("closing:", 140),
-                sigFirstNameLabel = new VP_FieldLabel("first name:", 140),
-                sigMiddleNameLabel = new VP_FieldLabel("*middle name:", 140),
-                sigLastNameLabel = new VP_FieldLabel("last name:", 140);
-
+        VP_Screen screen = new VP_Screen(covLetEditBox);
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
@@ -894,10 +730,10 @@ public class VP_Center extends StackPane {
                 communication = new VP_PageSubdivision("COMMUNICATION", false),
                 dateDivision = new VP_PageSubdivision("", false),
                 adref = new VP_PageSubdivision("AD REFERENCE", false),
-                contact = new VP_PageSubdivision("CONTACT INFORMATION", true),
-                contactName = new VP_PageSubdivision("CONTACT NAME", false),
-                contactCompany = new VP_PageSubdivision("CONTACT COMPANY", false),
-                contactAddress = new VP_PageSubdivision("CONTACT ADDRESS", false),
+                contact = new VP_PageSubdivision("EMPLOYER INFORMATION", true),
+                contactName = new VP_PageSubdivision("EMPLOYER NAME", false),
+                contactCompany = new VP_PageSubdivision("EMPLOYER COMPANY", false),
+                contactAddress = new VP_PageSubdivision("EMPLOYER ADDRESS", false),
                 salutation = new VP_PageSubdivision("", false),
                 closing = new VP_PageSubdivision("", false),
                 signature = new VP_PageSubdivision("SIGNATURE", true),
@@ -922,41 +758,40 @@ public class VP_Center extends StackPane {
                 dateBtn = new VP_Button("Update", new UpdateDateAction()),
                 delPara1Btn = new VP_Button("Delete", new DeleteParagraphAction(1)),
                 addParaBtn = new VP_Button("Add a New Paragraph", new AddParagraphAction());
-        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, coverLetterEditFields.get(0)}),
-                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, coverLetterEditFields.get(1)}),
-                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, coverLetterEditFields.get(2)}),
-                address1Line = new VP_DivisionLine(new Node[]{address1Label, coverLetterEditFields.get(3)}),
-                address2Line = new VP_DivisionLine(new Node[]{address2Label, coverLetterEditFields.get(4)}),
-                cityLine = new VP_DivisionLine(new Node[]{cityLabel, coverLetterEditFields.get(5)}),
-                stateLine = new VP_DivisionLine(new Node[]{stateLabel, coverLetterEditFields.get(6)}),
-                zipLine = new VP_DivisionLine(new Node[]{zipLabel, coverLetterEditFields.get(7)}),
-                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, coverLetterEditFields.get(8)}),
-                cellLine = new VP_DivisionLine(new Node[]{cellLabel, coverLetterEditFields.get(9)}),
-                emailLine = new VP_DivisionLine(new Node[]{emailLabel, coverLetterEditFields.get(10)}),
-                dateLine = new VP_DivisionLine(new Node[]{dateLabel, dateValueLabel, dateBtn}),
-                adSourceLine = new VP_DivisionLine(new Node[]{adSourceLabel, coverLetterEditFields.get(11)}),
-                adJobLine = new VP_DivisionLine(new Node[]{adJobLabel, coverLetterEditFields.get(12)}),
-                adRefLine = new VP_DivisionLine(new Node[]{adRefLabel, coverLetterEditFields.get(13)}),
-                contactFirstNameLine = new VP_DivisionLine(new Node[]{contactFirstNameLabel, coverLetterEditFields.get(14)}),
-                contactMiddleNameLine = new VP_DivisionLine(new Node[]{contactMiddleNameLabel, coverLetterEditFields.get(15)}),
-                contactLastNameLine = new VP_DivisionLine(new Node[]{contactLastNameLabel, coverLetterEditFields.get(16)}),
-                contactTitleLine = new VP_DivisionLine(new Node[]{contactTitleLabel, coverLetterEditFields.get(17)}),
-                contactCompanyLine = new VP_DivisionLine(new Node[]{contactCompanyLabel, coverLetterEditFields.get(18)}),
-                contactAddress1Line = new VP_DivisionLine(new Node[]{contactAddress1Label, coverLetterEditFields.get(19)}),
-                contactAddress2Line = new VP_DivisionLine(new Node[]{contactAddress2Label, coverLetterEditFields.get(20)}),
-                contactCityLine = new VP_DivisionLine(new Node[]{contactCityLabel, coverLetterEditFields.get(21)}),
-                contactStateLine = new VP_DivisionLine(new Node[]{contactStateLabel, coverLetterEditFields.get(22)}),
-                contactZipLine = new VP_DivisionLine(new Node[]{contactZipLabel, coverLetterEditFields.get(23)}),
-                salutationLine = new VP_DivisionLine(new Node[]{salutationLabel, coverLetterEditFields.get(24)}),
-                paragraph1Line = new VP_DivisionLine(new Node[]{paragraph1Label, coverLetterEditFields.get(25), delPara1Btn}),
-                closingLine = new VP_DivisionLine(new Node[]{closingLabel, coverLetterEditFields.get(26)}),
-                sigFirstNameLine = new VP_DivisionLine(new Node[]{sigFirstNameLabel, coverLetterEditFields.get(27)}),
-                sigMiddleNameLine = new VP_DivisionLine(new Node[]{sigMiddleNameLabel, coverLetterEditFields.get(28)}),
-                sigLastNameLine = new VP_DivisionLine(new Node[]{sigLastNameLabel, coverLetterEditFields.get(29)}),
+        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("first name:", 140), coverLetterEditFields.get(0)}),
+                middleNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*middle name:", 140), coverLetterEditFields.get(1)}),
+                lastNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("last name:", 140), coverLetterEditFields.get(2)}),
+                address1Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("address line 1:", 140), coverLetterEditFields.get(3)}),
+                address2Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*address line 2:", 140), coverLetterEditFields.get(4)}),
+                cityLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("city:", 140), coverLetterEditFields.get(5)}),
+                stateLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("state:", 140), coverLetterEditFields.get(6)}),
+                zipLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("zipcode:", 140), coverLetterEditFields.get(7)}),
+                phoneLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("phone:", 140), coverLetterEditFields.get(8)}),
+                cellLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*cell:", 140), coverLetterEditFields.get(9)}),
+                emailLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("email:", 140), coverLetterEditFields.get(10)}),
+                dateLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("date:", 140), dateValueLabel, dateBtn}),
+                adSourceLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*job ad source:", 140), coverLetterEditFields.get(11)}),
+                adJobLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*job position:", 140), coverLetterEditFields.get(12)}),
+                adRefLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*ad reference no:", 140), coverLetterEditFields.get(13)}),
+                contactFirstNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer first name:", 140), coverLetterEditFields.get(14)}),
+                contactMiddleNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer middle name:", 140), coverLetterEditFields.get(15)}),
+                contactLastNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer last name:", 140), coverLetterEditFields.get(16)}),
+                contactTitleLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer title:", 140), coverLetterEditFields.get(17)}),
+                contactCompanyLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer name:", 140), coverLetterEditFields.get(18)}),
+                contactAddress1Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer address line 1:", 140), coverLetterEditFields.get(19)}),
+                contactAddress2Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer address line 2:", 140), coverLetterEditFields.get(20)}),
+                contactCityLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer city:", 140), coverLetterEditFields.get(21)}),
+                contactStateLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer state:", 140), coverLetterEditFields.get(22)}),
+                contactZipLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer zipcode:", 140), coverLetterEditFields.get(23)}),
+                salutationLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("salutation:", 140), coverLetterEditFields.get(24)}),
+                paragraph1Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("paragraph 1:", 140), coverLetterEditFields.get(25), delPara1Btn}),
+                closingLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("closing:", 140), coverLetterEditFields.get(26)}),
+                sigFirstNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("first name:", 140), coverLetterEditFields.get(27)}),
+                sigMiddleNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*middle name:", 140), coverLetterEditFields.get(28)}),
+                sigLastNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("last name:", 140), coverLetterEditFields.get(29)}),
                 buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
 
         //-------- Initialization End ------------\\
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         ((VP_TextField) (coverLetterEditFields.get(0))).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
         ((VP_TextField) (coverLetterEditFields.get(1))).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
         ((VP_TextField) (coverLetterEditFields.get(2))).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
@@ -995,9 +830,7 @@ public class VP_Center extends StackPane {
                 coverLetterEditFields.get(i).setDisable(true);
             }
         }
-        covletEditErrorLine.getChildren().addAll(covletEditError);
         addParagraphLine.getChildren().addAll(addParaBtn);
-        covletEditErrorLine.hide();
         name.getChildren().addAll(firstNameLine, middleNameLine, lastNameLine);
         address.getChildren().addAll(address1Line, address2Line, cityLine, stateLine, zipLine);
         communication.getChildren().addAll(phoneLine, cellLine, emailLine);
@@ -1013,13 +846,8 @@ public class VP_Center extends StackPane {
         closing.getChildren().addAll(closingLine);
         sigName.getChildren().addAll(sigFirstNameLine, sigMiddleNameLine, sigLastNameLine);
         signature.getChildren().addAll(sigName);
-        covLetEditBox.getChildren().addAll(heading, dateDivision, adref, contact,
-                salutation, dynamicBody, closing, signature, notes, covletEditErrorLine, buttonsLine);
-        screenContent.getChildren().addAll(covLetEditBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{heading, dateDivision, adref, contact,
+                salutation, dynamicBody, closing, signature, notes, covletEditErrorLine, buttonsLine});
         return screen;
     }
 
@@ -1028,41 +856,23 @@ public class VP_Center extends StackPane {
      * applies them to documents. From here, a user may select to build a custom
      * theme. A.K.A Screen 8
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildThemesStartScreen() {
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision themesListBox = new VP_PageDivision("DOCUMENT THEMES");
-
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-
-        screenContent.getChildren().addAll(themesListBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+    private VP_Screen buildThemesStartScreen() {
+        VP_Screen screen = new VP_Screen("DOCUMENT THEMES");
         return screen;
     }
 
     /**
      * Builds the screen where the user edits a selected custom theme. A.K.A
-     * Screen 9
+     * Screen 9. Currently, this screen is not implemented.
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildThemesEditScreen() {
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision themeEditBox = new VP_PageDivision("EDIT CUSTOM THEME");
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(themeEditBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+    private VP_Screen buildThemesEditScreen() {
+        VP_Screen screen = new VP_Screen("EDIT CUSTOM THEME");
         return screen;
     }
 
@@ -1071,14 +881,12 @@ public class VP_Center extends StackPane {
      * attachments to a selected contact. User may also edit the list of stored
      * contacts. A.K.A Screen 10
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildDistributeScreen() {
+    private VP_Screen buildDistributeScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision distributeBox = new VP_PageDivision("DISTRIBUTE DOCUMENTS");
+        VP_Screen screen = new VP_Screen("DISTRIBUTE DOCUMENTS");
         VP_PageSubdivision documentsDiv = new VP_PageSubdivision("DOCUMENTS", false),
                 contactsDiv = new VP_PageSubdivision("CONTACTS", false),
                 sendDiv = new VP_PageSubdivision("SEND", false);
@@ -1131,27 +939,26 @@ public class VP_Center extends StackPane {
             if (thisEmail == null || thisEmail.equals("")) {
                 hasError = true;
                 addEmail.showInvalid();
-                addContactError.setParaText("New contact email address cannot be blank.");
+                addContactErrorLine.setText("New contact email address cannot be blank.");
             } else if (thisName == null || thisName.equals("")) {
                 hasError = true;
                 addName.showInvalid();
-                addContactError.setParaText("New contact name cannot be blank.");
+                addContactErrorLine.setText("New contact name cannot be blank.");
             } else if (!controller.getDataM().checkEmail(thisEmail)) {
                 hasError = true;
                 addEmail.showInvalid();
-                addContactError.setParaText("New contact email is invalid.");
+                addContactErrorLine.setText("New contact email is invalid.");
             } else {
                 for (int i = 0; i < controller.getCurrentUser().getContacts().size(); i++) {
                     if (((VP_Contact)controller.getCurrentUser().getContacts().get(i)).getEmail().equalsIgnoreCase(thisEmail)) {
                         hasError = true;
                         addEmail.showInvalid();
-                        addContactError.setParaText("A contact with this email already exists.");
+                        addContactErrorLine.setText("A contact with this email already exists.");
                         break;
                     }
                 }
             }
             if (!hasError) {
-                addContactError.setParaText("");
                 addContactErrorLine.hide();
                 VP_Contact newContact = new VP_Contact(thisEmail, thisName);
                 try {
@@ -1197,16 +1004,15 @@ public class VP_Center extends StackPane {
             }
             if (!(sendResHTML || sendResPDF || sendBCHTML || sendBCPDF || sendCLPDF || sendCLHTML)) {
                 hasError = true;
-                sendAttachError.setParaText("You have not selected any files to send.");
+                sendAttachErrorLine.setText("You have not selected any files to send.");
             } else if (email.equals("")) {
                 hasError = true;
-                sendAttachError.setParaText("You have not selected a contact to send documents to.");
+                sendAttachErrorLine.setText("You have not selected a contact to send documents to.");
             }
             if (hasError) {
                 VP_Sounds.play(-1);
                 sendAttachErrorLine.show();
             } else {
-                addContactError.setParaText("");
                 addContactErrorLine.hide();
                 try {
                     controller.getDataM().sendAttachments(email, sendResHTML, sendResPDF, 
@@ -1230,22 +1036,10 @@ public class VP_Center extends StackPane {
                 }
             }
         });
-        
-        addContactErrorLine.getChildren().addAll(addContactError);
-        addContactErrorLine.hide();
-        sendAttachErrorLine.getChildren().addAll(sendAttachError);
-        sendAttachErrorLine.hide();
         documentsDiv.getChildren().addAll(docInfo, doc1Line, doc2Line, doc3Line, doc4Line, doc5Line, doc6Line);
         contactsDiv.getChildren().addAll(contactInfo, table, deleteLine, addContactErrorLine, addContactLine);
         sendDiv.getChildren().addAll(sendAttachErrorLine, sendLine);
-        distributeBox.getChildren().addAll(documentsDiv, contactsDiv, sendDiv);
-
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(distributeBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{documentsDiv, contactsDiv, sendDiv});
         return screen;
     }
 
@@ -1254,23 +1048,12 @@ public class VP_Center extends StackPane {
      * sections. From here, the user navigates to these sections to edit them,
      * or may choose to create a custom section. A.K.A Screen 11
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeStartScreen() {
+    private VP_Screen buildResumeStartScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision resumeStatusBox = new VP_PageDivision("RESUME");
-        VP_Button cancelBtn = new VP_Button("Cancel", new CancelAction());
-        ArrayList<Label> progressList = new ArrayList();
-        progressList.add(resObjProgress);
-        progressList.add(resEduProgress);
-        progressList.add(resExpProgress);
-        progressList.add(resQualProgress);
-        progressList.add(resHighProgress);
-        progressList.add(resLangProgress);
-        progressList.add(resSWProgress);
+        VP_Screen screen = new VP_Screen("RESUME");
         ArrayList<VP_Button> resUpdateBtns = new ArrayList();
         resUpdateBtns.add(new VP_Button("Update Objective", new WizardMainAction(12)));
         resUpdateBtns.add(new VP_Button("Update Education", new WizardMainAction(13)));
@@ -1292,27 +1075,16 @@ public class VP_Center extends StackPane {
                 step8Line = new VP_DivisionLine(new Node[]{resUpdateBtns.get(7), resLangProgress}),
                 step9Line = new VP_DivisionLine(new Node[]{resUpdateBtns.get(8), resSWProgress}),
                 step10Line = new VP_DivisionLine(new Node[]{resUpdateBtns.get(9), new VP_FieldLabel("optional")}),
-                buttonLine = new VP_DivisionLine(new Node[]{cancelBtn});
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Cancel", new CancelAction())});
         VP_PageSubdivision tasks = new VP_PageSubdivision("RESUME TASKS", false);
         //-------- Initialization End ------------\\
         for (int i = 0; i < resUpdateBtns.size(); i++) {
             resUpdateBtns.get(i).setPrefWidth(250);
         }
-        for (int i = 0; i < progressList.size(); i++) {
-            progressList.get(i).getStyleClass().add("notStarted");
-            progressList.get(i).setMinWidth(250);
-            progressList.get(i).setAlignment(Pos.CENTER_RIGHT);
-        }
-        updateResumeStatus();
         tasks.getChildren().addAll(step1Line, step2Line,
                 step3Line, step4Line, step5Line, step6Line, step7Line, step8Line, step9Line, step10Line);
-        resumeStatusBox.getChildren().addAll(tasks, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeStatusBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        updateResumeStatus();
+        screen.addNodes(new Node[]{tasks, buttonLine});
         return screen;
     }
 
@@ -1320,28 +1092,15 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Heading and Objective sections of the
      * resume. A.K.A. screen 12
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeObjectiveScreen() {
+    private VP_Screen buildResumeObjectiveScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision resumeHOBox = new VP_PageDivision("RESUME -- HEADING and OBJECTIVE");
+        VP_Screen screen = new VP_Screen("RESUME -- HEADING and OBJECTIVE");
         VP_PageSubdivision heading = new VP_PageSubdivision("HEADING", true),
                 objective = new VP_PageSubdivision("OBJECTIVE", false);
         VP_TextArea objectiveParagraph = new VP_TextArea();
-        VP_FieldLabel firstNameLabel = new VP_FieldLabel("first name:", 110),
-                middleNameLabel = new VP_FieldLabel("*middle name:", 110),
-                lastNameLabel = new VP_FieldLabel("last name:", 110),
-                address1Label = new VP_FieldLabel("address line 1:", 110),
-                address2Label = new VP_FieldLabel("*address line 2:", 110),
-                cityLabel = new VP_FieldLabel("city:", 110),
-                stateLabel = new VP_FieldLabel("state:", 110),
-                zipLabel = new VP_FieldLabel("zipcode:", 110),
-                phoneLabel = new VP_FieldLabel("phone:", 110),
-                cellLabel = new VP_FieldLabel("*cell:", 110),
-                emailLabel = new VP_FieldLabel("email:", 110);
         ArrayList<VP_TextField> headingFields = new ArrayList();
         headingFields.add(new VP_TextField(32, 45));   // bind this to user
         headingFields.add(new VP_TextField(32, 45));   // bind this to user
@@ -1354,21 +1113,20 @@ public class VP_Center extends StackPane {
         headingFields.add(new VP_TextField(13, 13));   // bind this to user
         headingFields.add(new VP_TextField(13, 13));   // bind this to user
         headingFields.add(new VP_TextField(32, 254));  // bind this to user
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitObjectiveAction(objectiveParagraph)),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
-        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{firstNameLabel, headingFields.get(0)}),
-                middleNameLine = new VP_DivisionLine(new Node[]{middleNameLabel, headingFields.get(1)}),
-                lastNameLine = new VP_DivisionLine(new Node[]{lastNameLabel, headingFields.get(2)}),
-                address1Line = new VP_DivisionLine(new Node[]{address1Label, headingFields.get(3)}),
-                address2Line = new VP_DivisionLine(new Node[]{address2Label, headingFields.get(4)}),
-                cityLine = new VP_DivisionLine(new Node[]{cityLabel, headingFields.get(5)}),
-                stateLine = new VP_DivisionLine(new Node[]{stateLabel, headingFields.get(6)}),
-                zipLine = new VP_DivisionLine(new Node[]{zipLabel, headingFields.get(7)}),
-                phoneLine = new VP_DivisionLine(new Node[]{phoneLabel, headingFields.get(8)}),
-                cellLine = new VP_DivisionLine(new Node[]{cellLabel, headingFields.get(9)}),
-                emailLine = new VP_DivisionLine(new Node[]{emailLabel, headingFields.get(10)}),
+        VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("first name:", 110), headingFields.get(0)}),
+                middleNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*middle name:", 110), headingFields.get(1)}),
+                lastNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("last name:", 110), headingFields.get(2)}),
+                address1Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("address line 1:", 110), headingFields.get(3)}),
+                address2Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*address line 2:", 110), headingFields.get(4)}),
+                cityLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("city:", 110), headingFields.get(5)}),
+                stateLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("state:", 110), headingFields.get(6)}),
+                zipLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("zipcode:", 110), headingFields.get(7)}),
+                phoneLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("phone:", 110), headingFields.get(8)}),
+                cellLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*cell:", 110), headingFields.get(9)}),
+                emailLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("email:", 110), headingFields.get(10)}),
                 objectiveLine = new VP_DivisionLine(new Node[]{objectiveParagraph}),
-                buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+                buttonsLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitObjectiveAction(objectiveParagraph)), 
+                    new VP_Button("Cancel", new CancelAction(11))});
         VP_PageSubdivision name = new VP_PageSubdivision("NAME", false),
                 address = new VP_PageSubdivision("ADDRESS", false),
                 communication = new VP_PageSubdivision("COMMUNICATION", false);
@@ -1377,7 +1135,6 @@ public class VP_Center extends StackPane {
                         + "The objective section of your resume should be tailored to fit what a specific employer is looking for. "
                         + "Keep this is mind when sending your resume to multiple employers.");
         //-------- Initialization End ------------\\
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         headingFields.get(0).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
         headingFields.get(1).textProperty().bindBidirectional(controller.getCurrentUser().getMiddleName());
         headingFields.get(2).textProperty().bindBidirectional(controller.getCurrentUser().getLastName());
@@ -1398,16 +1155,8 @@ public class VP_Center extends StackPane {
         address.getChildren().addAll(address1Line, address2Line, cityLine, stateLine, zipLine);
         communication.getChildren().addAll(phoneLine, cellLine, emailLine);
         heading.getChildren().addAll(name, address, communication, hNotes);
-        objectiveErrorLine.getChildren().addAll(objectiveError);
-        objectiveErrorLine.hide();
         objective.getChildren().addAll(oNotes, objectiveLine, objectiveErrorLine);
-        resumeHOBox.getChildren().addAll(heading, objective, buttonsLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeHOBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{heading, objective, buttonsLine});
         return screen;
     }
 
@@ -1415,35 +1164,27 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Education section of the resume. A.K.A.
      * screen 13
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeEducationScreen() {
+    private VP_Screen buildResumeEducationScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeEducationBox);
         VP_PageSubdivision educationDiv = new VP_PageSubdivision("EDUCATION ENTRY #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
-                label1 = new VP_FieldLabel("institution location:", 130),
-                label2 = new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130),
-                label3 = new VP_FieldLabel("*GPA:", 130),
-                label4 = new VP_FieldLabel("start date:", 130),
-                label5 = new VP_FieldLabel("end date:", 130);
         educationFields.add(new VP_TextField(32, 128, controller));
         educationFields.add(new VP_TextField(32, 128, controller));
         educationFields.add(new VP_TextField(32, 128, controller));
         educationFields.add(new VP_TextField(32, 128, controller));
         educationFields.add(new VP_TextField(32, 128, controller));
         educationFields.add(new VP_TextField(32, 128, controller));
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitEducationAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
-        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, educationFields.get(0)}),
-                line1 = new VP_DivisionLine(new Node[]{label1, educationFields.get(1)}),
-                line2 = new VP_DivisionLine(new Node[]{label2, educationFields.get(2)}),
-                line3 = new VP_DivisionLine(new Node[]{label3, educationFields.get(3)}),
-                line4 = new VP_DivisionLine(new Node[]{label4, educationFields.get(4)}),
-                line5 = new VP_DivisionLine(new Node[]{label5, educationFields.get(5)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addEducationBtn, cancelBtn});
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("institution name:", 130), educationFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("institution location:", 130), educationFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("degree, certificate, or\ntraining earned:", 130), educationFields.get(2)}),
+                line3 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*GPA:", 130), educationFields.get(3)}),
+                line4 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("start date:", 130), educationFields.get(4)}),
+                line5 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("end date:", 130), educationFields.get(5)}),
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitEducationAction()), addEducationBtn,
+                    new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph("(*) denotes an optional field."),
                 notes2 = new VP_Paragraph("At least one education entry must exist for your resume. "
                         + "The entries can be schools, colleges, or training centers. The GPA field is "
@@ -1453,15 +1194,7 @@ public class VP_Center extends StackPane {
             educationFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getEducation().get(0).get(i));
         }
         educationDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5);
-        educationErrorLine.getChildren().addAll(educationError);
-        educationErrorLine.hide();
-        resumeEducationBox.getChildren().addAll(notes2, educationDiv, notes1, educationErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeEducationBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, educationDiv, notes1, educationErrorLine, buttonLine});
         return screen;
     }
 
@@ -1469,32 +1202,25 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Work Experience section of the resume.
      * A.K.A. screen 14
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeExperienceScreen() {
+    private VP_Screen buildResumeExperienceScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeExperienceBox);
         VP_PageSubdivision experienceDiv = new VP_PageSubdivision("EXPERIENCE ENTRY #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("institution name:", 130),
-                label1 = new VP_FieldLabel("institution location:", 130),
-                label2 = new VP_FieldLabel("position held:", 130),
-                label3 = new VP_FieldLabel("start date:", 130),
-                label4 = new VP_FieldLabel("end date:", 130);
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitExperienceAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         experienceFields.add(new VP_TextField(32, 128, controller));
         experienceFields.add(new VP_TextField(32, 128, controller));
         experienceFields.add(new VP_TextField(32, 128, controller));
         experienceFields.add(new VP_TextField(32, 128, controller));
         experienceFields.add(new VP_TextField(32, 128, controller));
-        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, experienceFields.get(0)}),
-                line1 = new VP_DivisionLine(new Node[]{label1, experienceFields.get(1)}),
-                line2 = new VP_DivisionLine(new Node[]{label2, experienceFields.get(2)}),
-                line3 = new VP_DivisionLine(new Node[]{label3, experienceFields.get(3)}),
-                line4 = new VP_DivisionLine(new Node[]{label4, experienceFields.get(4)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addExperienceBtn, cancelBtn});
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("institution name:", 130), experienceFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("institution location:", 130), experienceFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("position held:", 130), experienceFields.get(2)}),
+                line3 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("start date:", 130), experienceFields.get(3)}),
+                line4 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("end date:", 130), experienceFields.get(4)}),
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitExperienceAction()),
+                    addExperienceBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph(""),
                 notes2 = new VP_Paragraph("At least one experience entry must exist for your resume. "
                         + "The entries are not limited to employers. Entries may also be internships or research studies, "
@@ -1505,15 +1231,7 @@ public class VP_Center extends StackPane {
             experienceFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getExperience().get(0).get(i));
         }
         experienceDiv.getChildren().addAll(line0, line1, line2, line3, line4);
-        experienceErrorLine.getChildren().addAll(experienceError);
-        experienceErrorLine.hide();
-        resumeExperienceBox.getChildren().addAll(notes2, experienceDiv, notes1, experienceErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeExperienceBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, experienceDiv, notes1, experienceErrorLine, buttonLine});
         return screen;
     }
 
@@ -1521,26 +1239,21 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Awards and Achievements section of the
      * resume. A.K.A. screen 15
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeAchievementsScreen() {
+    private VP_Screen buildResumeAchievementsScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeAchievementsBox);
         VP_PageSubdivision achievementsDiv = new VP_PageSubdivision("AWARD/ACHIEVEMENT ENTRY #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("name of award\nor achievement:", 130),
-                label1 = new VP_FieldLabel("given by:", 130),
-                label2 = new VP_FieldLabel("date:", 130);
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitAchievementsAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         achievementsFields.add(new VP_TextField(32, 128, controller));
         achievementsFields.add(new VP_TextField(32, 128, controller));
         achievementsFields.add(new VP_TextField(32, 128, controller));
-        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, achievementsFields.get(0)}),
-                line1 = new VP_DivisionLine(new Node[]{label1, achievementsFields.get(1)}),
-                line2 = new VP_DivisionLine(new Node[]{label2, achievementsFields.get(2)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addAchievementBtn, cancelBtn});
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("name of award\nor achievement:", 130), achievementsFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("given by:", 130), achievementsFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("date:", 130), achievementsFields.get(2)}),
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitAchievementsAction()), 
+                    addAchievementBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph(""),
                 notes2 = new VP_Paragraph("This section of your resume is optional. "
                         + "Each entry can be an award that you have won, induction into a society, or some other "
@@ -1551,15 +1264,7 @@ public class VP_Center extends StackPane {
             achievementsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getAchievements().get(0).get(i));
         }
         achievementsDiv.getChildren().addAll(line0, line1, line2);
-        achievementsErrorLine.getChildren().addAll(achievementsError);
-        achievementsErrorLine.hide();
-        resumeAchievementsBox.getChildren().addAll(notes2, achievementsDiv, notes1, achievementsErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeAchievementsBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, achievementsDiv, notes1, achievementsErrorLine, buttonLine});
         return screen;
     }
 
@@ -1567,26 +1272,21 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Community section of the resume. A.K.A.
      * screen 16
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeCommunityScreen() {
+    private VP_Screen buildResumeCommunityScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeCommunityBox);
         VP_PageSubdivision communityDiv = new VP_PageSubdivision("EVENT ENTRY #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("event name:", 130),
-                label1 = new VP_FieldLabel("event location:", 130),
-                label2 = new VP_FieldLabel("date:", 130);
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitCommunityAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         communityFields.add(new VP_TextField(32, 128, controller));
         communityFields.add(new VP_TextField(32, 128, controller));
         communityFields.add(new VP_TextField(32, 128, controller));
-        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, communityFields.get(0)}),
-                line1 = new VP_DivisionLine(new Node[]{label1, communityFields.get(1)}),
-                line2 = new VP_DivisionLine(new Node[]{label2, communityFields.get(2)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addCommunityBtn, cancelBtn});
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("event name:", 130), communityFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("event location:", 130), communityFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("date:", 130), communityFields.get(2)}),
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitCommunityAction()),
+                    addCommunityBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph(""),
                 notes2 = new VP_Paragraph("This section of your resume is optional. "
                         + "Each entry represents a community service event or volunteer work that you "
@@ -1597,15 +1297,7 @@ public class VP_Center extends StackPane {
             communityFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getCommunity().get(0).get(i));
         }
         communityDiv.getChildren().addAll(line0, line1, line2);
-        communityErrorLine.getChildren().addAll(communityError);
-        communityErrorLine.hide();
-        resumeCommunityBox.getChildren().addAll(notes2, communityDiv, notes1, communityErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeCommunityBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, communityDiv, notes1, communityErrorLine, buttonLine});
         return screen;
     }
 
@@ -1613,19 +1305,17 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Qualifications section of the resume.
      * A.K.A. screen 17
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeQualificationsScreen() {
+    private VP_Screen buildResumeQualificationsScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeQualificationsBox);
         VP_PageSubdivision qualificationsDiv = new VP_PageSubdivision("QUALIFICATION #1", false);
         qualificationsFields.add(new VP_TextField(50, 128, controller));
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitQualificationsAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{qualificationsFields.get(0)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addQualificationBtn, cancelBtn});
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitQualificationsAction()),
+                    addQualificationBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph(""),
                 notes2 = new VP_Paragraph("List your skills that are relevant to the job position "
                         + "you are applying for. At least one qualification must exist for your resume, although "
@@ -1636,15 +1326,7 @@ public class VP_Center extends StackPane {
             qualificationsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getQualifications().get(i));
         }
         qualificationsDiv.getChildren().addAll(line0);
-        qualificationsErrorLine.getChildren().addAll(qualificationsError);
-        qualificationsErrorLine.hide();
-        resumeQualificationsBox.getChildren().addAll(notes2, qualificationsDiv, notes1, qualificationsErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeQualificationsBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, qualificationsDiv, notes1, qualificationsErrorLine, buttonLine});
         return screen;
     }
 
@@ -1652,19 +1334,17 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Highlights section of the resume. A.K.A.
      * screen 18
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeHighlightsScreen() {
+    private VP_Screen buildResumeHighlightsScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeHighlightsBox);
         VP_PageSubdivision highlightsDiv = new VP_PageSubdivision("PERSONAL QUALITY #1", false);
         highlightsFields.add(new VP_TextField(50, 128, controller));
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitHighlightsAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{highlightsFields.get(0)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addHighlightBtn, cancelBtn});
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitHighlightsAction()),
+                    addHighlightBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph(""),
                 notes2 = new VP_Paragraph("List some personal qualities or personality traits "
                         + "that you feel would be beneficial to an employer. At least one highlight must "
@@ -1676,15 +1356,7 @@ public class VP_Center extends StackPane {
             highlightsFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getHighlights().get(i));
         }
         highlightsDiv.getChildren().addAll(line0);
-        highlightsErrorLine.getChildren().addAll(highlightsError);
-        highlightsErrorLine.hide();
-        resumeHighlightsBox.getChildren().addAll(notes2, highlightsDiv, notes1, highlightsErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeHighlightsBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, highlightsDiv, notes1, highlightsErrorLine, buttonLine});
         return screen;
     }
 
@@ -1692,19 +1364,17 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Languages section of the resume. A.K.A.
      * screen 19
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeLanguagesScreen() {
+    private VP_Screen buildResumeLanguagesScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeLanguagesBox);
         VP_PageSubdivision languagesDiv = new VP_PageSubdivision("PRIMARY LANGUAGE", false);
         languagesFields.add(new VP_TextField(50, 128, controller));
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitLanguagesAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{languagesFields.get(0)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addLanguageBtn, cancelBtn});
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitLanguagesAction()),
+                    addLanguageBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph(""),
                 notes2 = new VP_Paragraph("List the languages that you know. "
                         + "The primary language must exist for your resume. "
@@ -1715,15 +1385,7 @@ public class VP_Center extends StackPane {
             languagesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getLanguages().get(i));
         }
         languagesDiv.getChildren().addAll(line0);
-        languagesErrorLine.getChildren().addAll(languagesError);
-        languagesErrorLine.hide();
-        resumeLanguagesBox.getChildren().addAll(notes2, languagesDiv, notes1, languagesErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeLanguagesBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, languagesDiv, notes1, languagesErrorLine, buttonLine});
         return screen;
     }
 
@@ -1731,19 +1393,17 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the Software section of the resume. A.K.A.
      * screen 20
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeSoftwareScreen() {
+    private VP_Screen buildResumeSoftwareScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeSoftwareBox);
         VP_PageSubdivision softwareDiv = new VP_PageSubdivision("SOFTWARE PRODUCT #1", false);
         softwareFields.add(new VP_TextField(50, 128, controller));
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitSoftwareAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{softwareFields.get(0)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addSoftwareBtn, cancelBtn});
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitSoftwareAction()), 
+                    addSoftwareBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph(""),
                 notes2 = new VP_Paragraph("List the software products that you "
                         + "are familiar with and are relevant to the job you are applying for. "
@@ -1755,15 +1415,7 @@ public class VP_Center extends StackPane {
             softwareFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getSoftware().get(i));
         }
         softwareDiv.getChildren().addAll(line0);
-        softwareErrorLine.getChildren().addAll(softwareError);
-        softwareErrorLine.hide();
-        resumeSoftwareBox.getChildren().addAll(notes2, softwareDiv, notes1, softwareErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeSoftwareBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, softwareDiv, notes1, softwareErrorLine, buttonLine});
         return screen;
     }
 
@@ -1771,35 +1423,27 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the References section of the resume. A.K.A.
      * screen 21
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildResumeReferencesScreen() {
+    private VP_Screen buildResumeReferencesScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
+        VP_Screen screen = new VP_Screen(resumeReferencesBox);
         VP_PageSubdivision referenceDiv = new VP_PageSubdivision("REFERENCE #1", false);
-        VP_FieldLabel label0 = new VP_FieldLabel("first name:", 130),
-                label1 = new VP_FieldLabel("*middle name:", 130),
-                label2 = new VP_FieldLabel("last name:", 130),
-                label3 = new VP_FieldLabel("company or\ninstitution:", 130),
-                label4 = new VP_FieldLabel("phone:", 130),
-                label5 = new VP_FieldLabel("*email:", 130);
-        VP_Button submitBtn = new VP_Button("Submit", new SubmitReferencesAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(11));
         referencesFields.add(new VP_TextField(32, 45, controller));
         referencesFields.add(new VP_TextField(32, 45, controller));
         referencesFields.add(new VP_TextField(32, 45, controller));
         referencesFields.add(new VP_TextField(32, 128, controller));
         referencesFields.add(new VP_TextField(13, 13, controller));
         referencesFields.add(new VP_TextField(32, 254, controller));
-        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{label0, referencesFields.get(0)}),
-                line1 = new VP_DivisionLine(new Node[]{label1, referencesFields.get(1)}),
-                line2 = new VP_DivisionLine(new Node[]{label2, referencesFields.get(2)}),
-                line3 = new VP_DivisionLine(new Node[]{label3, referencesFields.get(3)}),
-                line4 = new VP_DivisionLine(new Node[]{label4, referencesFields.get(4)}),
-                line5 = new VP_DivisionLine(new Node[]{label5, referencesFields.get(5)}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, addReferenceBtn, cancelBtn});
+        VP_DivisionLine line0 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("first name:", 130), referencesFields.get(0)}),
+                line1 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*middle name:", 130), referencesFields.get(1)}),
+                line2 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("last name:", 130), referencesFields.get(2)}),
+                line3 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("company or\ninstitution:", 130), referencesFields.get(3)}),
+                line4 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("phone:", 130), referencesFields.get(4)}),
+                line5 = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*email:", 130), referencesFields.get(5)}),
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new SubmitReferencesAction()),
+                    addReferenceBtn, new VP_Button("Cancel", new CancelAction(11))});
         VP_Paragraph notes1 = new VP_Paragraph("(*) denotes an optional field."),
                 notes2 = new VP_Paragraph("This section of your resume is optional. "
                         + "When you do not include any references, the resume will be generated with "
@@ -1811,15 +1455,7 @@ public class VP_Center extends StackPane {
             referencesFields.get(i).textProperty().bindBidirectional(controller.getCurrentUser().getResume().getReferences().get(0).get(i));
         }
         referenceDiv.getChildren().addAll(line0, line1, line2, line3, line4, line5);
-        referencesErrorLine.getChildren().addAll(referencesError);
-        referencesErrorLine.hide();
-        resumeReferencesBox.getChildren().addAll(notes2, referenceDiv, notes1, referencesErrorLine, buttonLine);
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        screenContent.getChildren().addAll(resumeReferencesBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{notes2, referenceDiv, notes1, referencesErrorLine, buttonLine});
         return screen;
     }
     
@@ -1828,44 +1464,39 @@ public class VP_Center extends StackPane {
      * Builds the screen displaying the fields for password changing. A.K.A.
      * screen 22
      *
-     * @return A ScrollPane that gets applied to a center StackPane level.
+     * @return A VP_Screen that gets applied to a center StackPane level.
      * @since 1.0
      */
-    private ScrollPane buildChangePasswordScreen() {
+    private VP_Screen buildChangePasswordScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision changePassBox = new VP_PageDivision("CHANGE YOUR PASSWORD");
+        VP_Screen screen = new VP_Screen("CHANGE YOUR PASSWORD");
         VP_FieldLabel oldPassLabel = new VP_FieldLabel("old password:", 100),
                 newPassLabel = new VP_FieldLabel("new password:", 100),
                 newPassConfirmLabel = new VP_FieldLabel("confirm new\npassword:", 100);
-        VP_Button submitBtn = new VP_Button("Submit", new ChangePassAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(22));
         VP_DivisionLine oldPassLine = new VP_DivisionLine(new Node[]{oldPassLabel, oldPass}),
                 newPassLine = new VP_DivisionLine(new Node[]{newPassLabel, newPass}),
                 changePassStrengthLine = new VP_DivisionLine(new Node[]{changePassStrengthLabel}),
                 newPassConfirmLine = new VP_DivisionLine(new Node[]{newPassConfirmLabel, newPassConfirm}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new ChangePassAction()), 
+                    new VP_Button("Cancel", new CancelAction(22))});
         //-------- Initialization End ------------\\
 
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
         changePassStrengthLabel.getStyleClass().add("inputLabel");
-        changePassErrorLine.getChildren().addAll(changePassError);
-        changePassBox.getChildren().addAll(oldPassLine, newPassLine, changePassStrengthLine,
-                newPassConfirmLine, changePassErrorLine, buttonLine);
-        screenContent.getChildren().addAll(changePassBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        screen.addNodes(new Node[]{oldPassLine, newPassLine, changePassStrengthLine,
+                newPassConfirmLine, changePassErrorLine, buttonLine});
         return screen;
     }
     
-    private ScrollPane buildChangeMysqlScreen() {
+    /**
+     * Builds the screen displaying the fields for changing the MySQL location.
+     * A.K.A. screen 23. Only accessible by a VaqPack administrator.
+     *
+     * @return A VP_Screen that gets applied to a center StackPane level.
+     * @since 1.0
+     */
+    private VP_Screen buildChangeMysqlScreen() {
         //-------- Initialization Start ----------\\
-        ScrollPane screen = new ScrollPane();
-        VBox screenContent = new VBox();
-        VP_PageDivision changeMysqlBox = new VP_PageDivision("CHANGE MYSQL LOCATION");
+        VP_Screen screen = new VP_Screen("CHANGE MYSQL LOCATION");
         VP_Paragraph mysqlNotes = new VP_Paragraph("Enter in your password, the new url, and the new port for the VaqPack database. "
                 + "VaqPack will build a new database at the new location if one is not already present. "
                 + "Data must still be moved by the database administrator, unless this is a fresh installation. "
@@ -1873,27 +1504,35 @@ public class VP_Center extends StackPane {
                 + "The database admninistrator should be present in the event of problems or if "
                 + "new database credentials need to be entered. VaqPack does not check if the url and port is valid "
                 + "until it is restarted.");
-        
-        VP_FieldLabel adminPassLabel = new VP_FieldLabel("your password:", 100),
-                newMysqlUrlLabel = new VP_FieldLabel("new MySQL url:", 100),
-                newMysqlPortLabel = new VP_FieldLabel("new MySQL port:", 100);
-        VP_Button submitBtn = new VP_Button("Submit", new ChangeMySQLAction()),
-                cancelBtn = new VP_Button("Cancel", new CancelAction(23));
-        VP_DivisionLine adminPassLine = new VP_DivisionLine(new Node[]{adminPassLabel, adminPassMysql}),
-                newMysqlUrlLine = new VP_DivisionLine(new Node[]{newMysqlUrlLabel, newMysqlURL}),
-                newMysqlPortLine = new VP_DivisionLine(new Node[]{newMysqlPortLabel, newMysqlPort}),
-                buttonLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+        VP_DivisionLine adminPassLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("your password:", 100), adminPassMysql}),
+                newMysqlUrlLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("new MySQL url:", 100), newMysqlURL}),
+                newMysqlPortLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("new MySQL port:", 100), newMysqlPort}),
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Submit", new ChangeMySQLAction()),
+                    new VP_Button("Cancel", new CancelAction(23))
+                });
         //-------- Initialization End ------------\\
-
-        screenContent.prefWidthProperty().bind(screen.widthProperty().add(-20));
-        changeMysqlErrorLine.getChildren().addAll(changeMysqlError);
-        changeMysqlBox.getChildren().addAll(adminPassLine, newMysqlUrlLine, newMysqlPortLine, 
-                changeMysqlErrorLine, buttonLine);
-        screenContent.getChildren().addAll(changeMysqlBox);
-        screenContent.setSpacing(30);
-        screenContent.setPadding(new Insets(20, 20, 20, 20));
-        screen.setContent(screenContent);
-        screen.setPannable(true);
+        
+        screen.addNodes(new Node[]{mysqlNotes, adminPassLine, newMysqlUrlLine, newMysqlPortLine, 
+                changeMysqlErrorLine, buttonLine});
+        return screen;
+    }
+    
+    /**
+     * Builds the screen displaying the printing options.
+     * A.K.A. screen 24.
+     *
+     * @return A VP_Screen that gets applied to a center StackPane level.
+     * @since 1.0
+     */
+    private VP_Screen buildPrintScreen() {
+        //-------- Initialization Start ----------\\
+        VP_Screen screen = new VP_Screen("PRINT DOCUMENTS");
+        VP_Paragraph printNotes = new VP_Paragraph("Choose a document to print by clicking one of the buttons below. "
+                + "If a button is not active, this means that the document is not complete and connot be printed yet.");
+        VP_DivisionLine printLine = new VP_DivisionLine(new Node[]{printResBtn, printCLBtn, printBCBtn}),
+                cancelLine = new VP_DivisionLine(new Node[]{new VP_Button("Cancel", new CancelAction(24))});
+        //-------- Initialization End ------------\\
+        screen.addNodes(new Node[]{printNotes, printLine, cancelLine});
         return screen;
     }
 
@@ -1912,7 +1551,6 @@ public class VP_Center extends StackPane {
         loginPass.setEditable(true);
         loginPass.showValid();
         loginButtonLine.show();
-        loginError.setParaText("");
         loginErrorLine.hide();
         accessInstructions.setParaText("Enter the access code that was emailed to "
                 + "you when you registered below.");
@@ -1931,7 +1569,6 @@ public class VP_Center extends StackPane {
         resetEmail.setEditable(true);
         resetEmail.showValid();
         submitResetBtn.setDisable(false);
-        resetError.setParaText("");
         resetErrorLine.hide();
         resetInstructions1.setParaText("Enter your email and submit. "
                 + "An access code will be sent to your email.");
@@ -1965,10 +1602,15 @@ public class VP_Center extends StackPane {
         registerPass.showValid();
         registerPassConfirm.setText("");
         registerPassConfirm.showValid();
-        registerError.setText("");
         registerErrorLine.hide();
     }
 
+    /**
+     * Updates which documents are selectable for sending based or for printing 
+     * based on the completion status of those documents.
+     *
+     * @since 1.0
+     */
     private void updateSelectableDocs() {
         resHTMLcb.setDisable(true);
         resPDFcb.setDisable(true);
@@ -1976,18 +1618,24 @@ public class VP_Center extends StackPane {
         bcPDFcb.setDisable(true);
         clHTMLcb.setDisable(true);
         clPDFcb.setDisable(true);
+        printResBtn.setDisable(true);
+        printCLBtn.setDisable(true);
+        printBCBtn.setDisable(true);
         VP_User thisUser = controller.getCurrentUser();
         if (thisUser.getBcard().hasCompletedBusinessCard()) {
             bcHTMLcb.setDisable(false);
             bcPDFcb.setDisable(false);
+            printBCBtn.setDisable(false);
         }
         if (thisUser.getCovlet().hasCompletedCoverLetter()) {
             clHTMLcb.setDisable(false);
             clPDFcb.setDisable(false);
+            printCLBtn.setDisable(false);
         }
         if (thisUser.getResume().hasCompletedResume()) {
             resHTMLcb.setDisable(false);
             resPDFcb.setDisable(false);
+            printResBtn.setDisable(false);
         }
     }
     
@@ -2000,61 +1648,40 @@ public class VP_Center extends StackPane {
         //-------- Initialization Start ----------\\
         VP_Resume thisRes = controller.getCurrentUser().getResume();
         //-------- Initialization End ------------\\
-        resObjProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
-        resEduProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
-        resExpProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
-        resQualProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
-        resHighProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
-        resLangProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
-        resSWProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
         if (thisRes.hasCompletedObjective()) {
-            resObjProgress.getStyleClass().add("complete");
-            resObjProgress.setText("Complete");
+            resObjProgress.setStage(2);
         } else {
-            resObjProgress.getStyleClass().add("notStarted");
-            resObjProgress.setText("Not started");
+            resObjProgress.setStage(0);
         }
         if (thisRes.hasCompletedEducation()) {
-            resEduProgress.getStyleClass().add("complete");
-            resEduProgress.setText("Complete");
+            resEduProgress.setStage(2);
         } else {
-            resEduProgress.getStyleClass().add("notStarted");
-            resEduProgress.setText("Not started");
+            resEduProgress.setStage(0);
         }
         if (thisRes.hasCompletedWorkExperience()) {
-            resExpProgress.getStyleClass().add("complete");
-            resExpProgress.setText("Complete");
+            resExpProgress.setStage(2);
         } else {
-            resExpProgress.getStyleClass().add("notStarted");
-            resExpProgress.setText("Not started");
+            resExpProgress.setStage(0);
         }
         if (thisRes.hasCompletedQualifications()) {
-            resQualProgress.getStyleClass().add("complete");
-            resQualProgress.setText("Complete");
+            resQualProgress.setStage(2);
         } else {
-            resQualProgress.getStyleClass().add("notStarted");
-            resQualProgress.setText("Not started");
+            resQualProgress.setStage(0);
         }
         if (thisRes.hasCompletedHighlights()) {
-            resHighProgress.getStyleClass().add("complete");
-            resHighProgress.setText("Complete");
+            resHighProgress.setStage(2);
         } else {
-            resHighProgress.getStyleClass().add("notStarted");
-            resHighProgress.setText("Not started");
+            resHighProgress.setStage(0);
         }
         if (thisRes.hasCompletedLanguages()) {
-            resLangProgress.getStyleClass().add("complete");
-            resLangProgress.setText("Complete");
+            resLangProgress.setStage(2);
         } else {
-            resLangProgress.getStyleClass().add("notStarted");
-            resLangProgress.setText("Not started");
+            resLangProgress.setStage(0);
         }
         if (thisRes.hasCompletedSoftware()) {
-            resSWProgress.getStyleClass().add("complete");
-            resSWProgress.setText("Complete");
+            resSWProgress.setStage(2);
         } else {
-            resSWProgress.getStyleClass().add("notStarted");
-            resSWProgress.setText("Not started");
+            resSWProgress.setStage(0);
         }
     }
 
@@ -2069,13 +1696,8 @@ public class VP_Center extends StackPane {
         //-------- Initialization End ------------\\
 
         if (thisUser != null) {
-            infoProgress.getStyleClass().remove(infoProgress.getStyleClass().size() - 1);
-            resumeProgress.getStyleClass().remove(resumeProgress.getStyleClass().size() - 1);
-            bcardProgress.getStyleClass().remove(bcardProgress.getStyleClass().size() - 1);
-            covletProgress.getStyleClass().remove(covletProgress.getStyleClass().size() - 1);
             if (!thisUser.hasCompletedPersonalInfo()) {
-                infoProgress.getStyleClass().add("notStarted");
-                infoProgress.setText("Not started");
+                infoProgress.setStage(0);
                 overviewInfo.setParaText("Welcome to VaqPack! Before you can begin building "
                         + "your resume, business card, and cover letters, we need to gather "
                         + "your personal information. This information remains private to "
@@ -2086,8 +1708,7 @@ public class VP_Center extends StackPane {
                     wizardMainButtons.get(i).setDisable(true);
                 }
             } else {
-                infoProgress.getStyleClass().add("complete");
-                infoProgress.setText("Complete");
+                infoProgress.setStage(2);
                 wizardMainButtons.get(1).setDisable(false);
                 wizardMainButtons.get(2).setDisable(false);
                 wizardMainButtons.get(3).setDisable(false);
@@ -2108,34 +1729,25 @@ public class VP_Center extends StackPane {
                 }
             }
             if (thisUser.getResume().hasCompletedResume()) {
-                resumeProgress.getStyleClass().add("complete");
-                resumeProgress.setText("Complete");
+                resumeProgress.setStage(2);
             } else if (thisUser.getResume().hasStartedResume()) {
-                resumeProgress.getStyleClass().add("inProgress");
-                resumeProgress.setText("In progress");
+                resumeProgress.setStage(1);
             } else {
-                resumeProgress.getStyleClass().add("notStarted");
-                resumeProgress.setText("Not started");
+                resumeProgress.setStage(0);
             }
             if (thisUser.getBcard().hasCompletedBusinessCard()) {
-                bcardProgress.getStyleClass().add("complete");
-                bcardProgress.setText("Complete");
+                bcardProgress.setStage(2);
             } else if (thisUser.getBcard().hasStartedBusinessCard()) {
-                bcardProgress.getStyleClass().add("inProgress");
-                bcardProgress.setText("In progress");
+                bcardProgress.setStage(1);
             } else {
-                bcardProgress.getStyleClass().add("notStarted");
-                bcardProgress.setText("Not started");
+                bcardProgress.setStage(0);
             }
             if (thisUser.getCovlet().hasCompletedCoverLetter()) {
-                covletProgress.getStyleClass().add("complete");
-                covletProgress.setText("Complete");
+                covletProgress.setStage(2);
             } else if (thisUser.getCovlet().hasStartedCoverLetter()) {
-                covletProgress.getStyleClass().add("inProgress");
-                covletProgress.setText("In progress");
+                covletProgress.setStage(1);
             } else {
-                covletProgress.getStyleClass().add("notStarted");
-                covletProgress.setText("Not started");
+                covletProgress.setStage(0);
             }
         }
     }
@@ -2148,63 +1760,33 @@ public class VP_Center extends StackPane {
     protected void cancelActionFunction() {
         VP_Sounds.play(0);
         controller.setChanges(false);
-        bcardError.setParaText("");
         bcardErrorLine.hide();
-        covletEditError.setParaText("");
         covletEditErrorLine.hide();
-        objectiveError.setParaText("");
         objectiveErrorLine.hide();
-        educationError.setParaText("");
         educationErrorLine.hide();
-        experienceError.setParaText("");
         experienceErrorLine.hide();
-        achievementsError.setParaText("");
         achievementsErrorLine.hide();
-        communityError.setParaText("");
         communityErrorLine.hide();
-        qualificationsError.setParaText("");
         qualificationsErrorLine.hide();
-        highlightsError.setParaText("");
         highlightsErrorLine.hide();
-        languagesError.setParaText("");
         languagesErrorLine.hide();
-        softwareError.setParaText("");
         softwareErrorLine.hide();
-        referencesError.setParaText("");
         referencesErrorLine.hide();
-        personalInfoError.setParaText("");
         personalInfoErrorLine.hide();
-        changePassError.setParaText("");
         changePassErrorLine.hide();
-        addContactError.setParaText("");
         addContactErrorLine.hide();
-        sendAttachError.setParaText("");
         sendAttachErrorLine.hide();
+        changeMysqlErrorLine.hide();
         resHTMLcb.setSelected(false);
         resPDFcb.setSelected(false);
         bcHTMLcb.setSelected(false);
         bcPDFcb.setSelected(false);
         clHTMLcb.setSelected(false);
         clPDFcb.setSelected(false);
-        adminPassMysql.setText("");
-        adminPassMysql.showValid();
-        newMysqlURL.setText("");
-        newMysqlURL.showValid();
-        newMysqlPort.setText("");
-        newMysqlPort.showValid();
-        changeMysqlError.setParaText("");
-        changeMysqlErrorLine.hide();
         controller.getCurrentUser().getResume().revert();
         controller.getCurrentUser().getCovlet().revert();
         controller.getCurrentUser().getBcard().revert();
         controller.getCurrentUser().revert();
-        changePassStrengthLabel.setText("");
-        oldPass.showValid();
-        newPass.showValid();
-        newPassConfirm.showValid();
-        oldPass.setText("");
-        newPass.setText("");
-        newPassConfirm.setText("");
         Thread backgroundThread = new Thread(new UpdateDynamicTask(0));
         backgroundThread.setDaemon(true);
         backgroundThread.start();
@@ -2635,18 +2217,18 @@ public class VP_Center extends StackPane {
             if (!matcher.matches()) {
                 hasError = true;
                 ((VP_TextField) (coverLetterEditFields.get(23))).showInvalid();
-                covletEditError.setParaText("Contact Zipcode is not in proper form. "
+                covletEditErrorLine.setText("Contact Zipcode is not in proper form. "
                         + "Zipcodes can only be in form xxxxx or xxxxx-xxxx");
             } else if (((VP_TextArea) (coverLetterEditFields.get(25))).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 ((VP_TextArea) (coverLetterEditFields.get(25))).showInvalid();
-                covletEditError.setParaText("The first paragraph of the body cannot be blank.");
+                covletEditErrorLine.setText("The first paragraph of the body cannot be blank.");
             } else if (controller.getCurrentUser().getCovlet().getNumbParagraphs() > 1) {
                 for (int i = 0; i < controller.getCurrentUser().getCovlet().getNumbParagraphs(); i++) {
                     if (((VP_TextArea) (coverLetterEditFields.get(25 + i))).textProperty().getValueSafe().equals("")) {
                         hasError = true;
                         ((VP_TextArea) (coverLetterEditFields.get(25 + i))).showInvalid();
-                        covletEditError.setParaText("Please delete blank paragraphs before submitting.");
+                        covletEditErrorLine.setText("Please delete blank paragraphs before submitting.");
                         break;
                     }
                 }
@@ -2656,7 +2238,6 @@ public class VP_Center extends StackPane {
             VP_Sounds.play(-1);
             covletEditErrorLine.show();
         } else {
-            covletEditError.setParaText("");
             covletEditErrorLine.hide();
             controller.getCurrentUser().getCovlet().save();
             if (controller.getCurrentUser().getCovlet().hasChanges()) {
@@ -2723,6 +2304,7 @@ public class VP_Center extends StackPane {
             resetLoginRegForms();
             resetResetPasswordForms();
             resetRegisterForms();
+            showScreen(0, 0);
         }
     }
 
@@ -2851,7 +2433,7 @@ public class VP_Center extends StackPane {
                     loginStatus = controller.getDataM().userLogin(cred);
                     if (loginStatus == -1) {
                         // user does not exist in database
-                        loginError.setParaText("The email address and/or password is "
+                        loginErrorLine.setText("The email address and/or password is "
                                 + "incorrect. Please try again.");
                         loginErrorLine.show();
                         loginEmail.showInvalid();
@@ -2863,7 +2445,6 @@ public class VP_Center extends StackPane {
                         loginEmail.setEditable(false);
                         loginPass.setDisable(true);
                         loginPass.setEditable(false);
-                        loginError.setParaText("");
                         loginErrorLine.hide();
                         loginButtonLine.hide();
                         accessInstructionsLine.show();
@@ -2882,7 +2463,7 @@ public class VP_Center extends StackPane {
                     controller.errorAlert(3002, ex.getMessage());
                 }
             } else {
-                loginError.setParaText("The email provided is invalid. Please try again.");
+                loginErrorLine.setText("The email provided is invalid. Please try again.");
                 loginErrorLine.show();
                 loginEmail.showInvalid();
             }
@@ -2915,13 +2496,13 @@ public class VP_Center extends StackPane {
                 if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                     registerPass.showInvalid();
                     registerPassConfirm.showInvalid();
-                    registerError.setText("The password is not long enough.");
+                    registerErrorLine.setText("The password is not long enough.");
                     registerErrorLine.show();
                     VP_Sounds.play(-1);
                 } else if (!cred[1].equals(cred[2])) {
                     registerPass.showInvalid();
                     registerPassConfirm.showInvalid();
-                    registerError.setText("The passwords do not match.");
+                    registerErrorLine.setText("The passwords do not match.");
                     registerErrorLine.show();
                     VP_Sounds.play(-1);
                 } else {
@@ -2934,13 +2515,13 @@ public class VP_Center extends StackPane {
                             showScreen(0, 0);
                         } else if (registerStatus == 1) {
                             registerEmail.showInvalid();
-                            registerError.setText("This email is already associated "
+                            registerErrorLine.setText("This email is already associated "
                                     + "with a VaqPack user.");
                             registerErrorLine.show();
                             VP_Sounds.play(-1);
                         } else if (registerStatus == 0) {
                             registerEmail.showInvalid();
-                            registerError.setText("This email is already associated "
+                            registerErrorLine.setText("This email is already associated "
                                     + "with a VaqPack user who recently registered "
                                     + "but has not yet enetered in the access code. "
                                     + "Login and you will be prompted to enter in "
@@ -2957,7 +2538,7 @@ public class VP_Center extends StackPane {
                 }
             } else {
                 registerEmail.showInvalid();
-                registerError.setText("The email provided is invalid. Please try again.");
+                registerErrorLine.setText("The email provided is invalid. Please try again.");
                 registerErrorLine.show();
                 VP_Sounds.play(-1);
             }
@@ -3030,7 +2611,7 @@ public class VP_Center extends StackPane {
                     backgroundThread.start();
                     showScreen(3, 0);
                 } else {
-                    loginError.setText("The registration code is incorrect. Please try again.");
+                    loginErrorLine.setText("The registration code is incorrect. Please try again.");
                     accessInstructions.setParaText("Enter the access code that was emailed to you below.");
                     loginErrorLine.show();
                     regLoginAccess.showInvalid();
@@ -3069,18 +2650,17 @@ public class VP_Center extends StackPane {
                     userStatus = controller.getDataM().findUserForReset(resetEmail.getText().toLowerCase());
                     if (userStatus == 0) {
                         resetEmail.showInvalid();
-                        resetError.setParaText("The provided user does not exists in VaqPack. "
+                        resetErrorLine.setText("The provided user does not exists in VaqPack. "
                                 + "If the email is correct, you need to register a new account.");
                         resetErrorLine.show();
                         VP_Sounds.play(-1);
                     } else if (userStatus == 1) {
                         resetEmail.showInvalid();
-                        resetError.setParaText("The password for this email has recently been reset. "
+                        resetErrorLine.setText("The password for this email has recently been reset. "
                                 + "Passwords may only be reset once every 24 hours.");
                         resetErrorLine.show();
                         VP_Sounds.play(-1);
                     } else {
-                        resetError.setParaText("");
                         resetErrorLine.hide();
                         submitResetBtn.setDisable(true);
                         resetEmail.setDisable(true);
@@ -3098,7 +2678,7 @@ public class VP_Center extends StackPane {
                     controller.errorAlert(3111, ex.getMessage());
                 }
             } else {
-                resetError.setParaText("The email provided is invalid. Please try again.");
+                resetErrorLine.setText("The email provided is invalid. Please try again.");
                 resetErrorLine.show();
                 resetEmail.showInvalid();
                 VP_Sounds.play(-1);
@@ -3131,13 +2711,13 @@ public class VP_Center extends StackPane {
             if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 resetNewPass.showInvalid();
                 resetNewPassConfirm.showInvalid();
-                resetError.setParaText("The new password is not long enough.");
+                resetErrorLine.setText("The new password is not long enough.");
                 resetErrorLine.show();
                 VP_Sounds.play(-1);
             } else if (!cred[1].equals(cred[2])) {
                 resetNewPass.showInvalid();
                 resetNewPassConfirm.showInvalid();
-                resetError.setParaText("The passwords do not match.");
+                resetErrorLine.setText("The passwords do not match.");
                 resetErrorLine.show();
                 VP_Sounds.play(-1);
             } else {
@@ -3150,12 +2730,12 @@ public class VP_Center extends StackPane {
                         showScreen(0, 0);
                     } else if (resetStatus == 1) {
                         resetCode.showInvalid();
-                        resetError.setParaText("The code has expired. Cancel and start the reset process over again.");
+                        resetErrorLine.setText("The code has expired. Cancel and start the reset process over again.");
                         resetErrorLine.show();
                         VP_Sounds.play(-1);
                     } else if (resetStatus == 0) {
                         resetCode.showInvalid();
-                        resetError.setParaText("The code is incorrect. Please try again.");
+                        resetErrorLine.setText("The code is incorrect. Please try again.");
                         resetErrorLine.show();
                         VP_Sounds.play(-1);
                     }
@@ -3216,48 +2796,48 @@ public class VP_Center extends StackPane {
             if (personalInfoFields.get(0).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 personalInfoFields.get(0).showInvalid();
-                personalInfoError.setParaText("First Name cannot be blank.");
+                personalInfoErrorLine.setText("First Name cannot be blank.");
             } else if (personalInfoFields.get(2).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 personalInfoFields.get(2).showInvalid();
-                personalInfoError.setParaText("Last Name cannot be blank.");
+                personalInfoErrorLine.setText("Last Name cannot be blank.");
             } else if (personalInfoFields.get(3).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 personalInfoFields.get(3).showInvalid();
-                personalInfoError.setParaText("Address Line 1 cannot be blank.");
+                personalInfoErrorLine.setText("Address Line 1 cannot be blank.");
             } else if (personalInfoFields.get(5).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 personalInfoFields.get(5).showInvalid();
-                personalInfoError.setParaText("City cannot be blank.");
+                personalInfoErrorLine.setText("City cannot be blank.");
             } else if (personalInfoFields.get(6).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 personalInfoFields.get(6).showInvalid();
-                personalInfoError.setParaText("State cannot be blank.");
+                personalInfoErrorLine.setText("State cannot be blank.");
             } else if (personalInfoFields.get(6).textProperty().getValueSafe().length() != 2) {
                 hasError = true;
                 personalInfoFields.get(6).showInvalid();
-                personalInfoError.setParaText("State must be two characters.");
+                personalInfoErrorLine.setText("State must be two characters.");
             } else if (personalInfoFields.get(7).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 personalInfoFields.get(7).showInvalid();
-                personalInfoError.setParaText("Zipcode cannot be blank.");
+                personalInfoErrorLine.setText("Zipcode cannot be blank.");
             } else if (personalInfoFields.get(8).textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 personalInfoFields.get(8).showInvalid();
-                personalInfoError.setParaText("Phone cannot be blank.");
+                personalInfoErrorLine.setText("Phone cannot be blank.");
             } else {
                 matcher = zipPattern.matcher(personalInfoFields.get(7).textProperty().getValueSafe());
                 if (!matcher.matches()) {
                     hasError = true;
                     personalInfoFields.get(7).showInvalid();
-                    personalInfoError.setParaText("Zipcode is not in proper form. "
+                    personalInfoErrorLine.setText("Zipcode is not in proper form. "
                             + "Zipcodes can only be in form xxxxx or xxxxx-xxxx");
                 } else {
                     matcher = phonePattern.matcher(personalInfoFields.get(8).textProperty().getValueSafe());
                     if (!matcher.matches()) {
                         hasError = true;
                         personalInfoFields.get(8).showInvalid();
-                        personalInfoError.setParaText("Phone numbers must be in form "
+                        personalInfoErrorLine.setText("Phone numbers must be in form "
                                 + "(xxx)xxx-xxxx");
                     } else {
                         if (personalInfoFields.get(9).textProperty().getValueSafe().length() > 0) {
@@ -3265,7 +2845,7 @@ public class VP_Center extends StackPane {
                             if (!matcher.matches()) {
                                 hasError = true;
                                 personalInfoFields.get(9).showInvalid();
-                                personalInfoError.setParaText("Phone numbers must be in  form "
+                                personalInfoErrorLine.setText("Phone numbers must be in  form "
                                         + "(xxx)xxx-xxxx");
                             }
                         }
@@ -3273,7 +2853,7 @@ public class VP_Center extends StackPane {
                             hasError = (!controller.getDataM().checkEmail(personalInfoFields.get(10).textProperty().getValueSafe()));
                             if (hasError) {
                                 personalInfoFields.get(10).showInvalid();
-                                personalInfoError.setParaText("Email is not in valid form.");
+                                personalInfoErrorLine.setText("Email is not in valid form.");
                             }
                         }
                     }
@@ -3283,7 +2863,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 personalInfoErrorLine.show();
             } else {
-                personalInfoError.setParaText("");
                 personalInfoErrorLine.hide();
                 controller.getCurrentUser().save();
                 Thread backgroundThread1 = new Thread(new UpdateDynamicTask(4));
@@ -3331,13 +2910,12 @@ public class VP_Center extends StackPane {
             if (objectiveParagraph.textProperty().getValueSafe().equals("")) {
                 hasError = true;
                 objectiveParagraph.showInvalid();
-                objectiveError.setParaText("The objective cannot be blank in your resume.");
+                objectiveErrorLine.setText("The objective cannot be blank in your resume.");
             }
             if (hasError) {
                 VP_Sounds.play(-1);
                 objectiveErrorLine.show();
             } else {
-                objectiveError.setParaText("");
                 objectiveErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -3375,9 +2953,9 @@ public class VP_Center extends StackPane {
                 controller.getDataM().setDbBusy(new CountDownLatch(1));
                 controller.getDataM().saveUserData();
             } catch (SQLException ex) {
-                controller.errorAlert(3113, ex.getMessage());
+                Platform.runLater(() -> {controller.errorAlert(3113, ex.getMessage());});
             } catch (InterruptedException ex) {
-                    Platform.runLater(() -> {controller.errorAlert(1204, ex.getMessage());});
+                Platform.runLater(() -> {controller.errorAlert(1204, ex.getMessage());});
             } finally {
                 controller.getDataM().getDbBusy().countDown();
                 controller.getCurrentUser().getCovlet().save();
@@ -3404,11 +2982,11 @@ public class VP_Center extends StackPane {
                 controller.getDataM().setDbBusy(new CountDownLatch(1));
                 controller.getDataM().saveBCardData();
             } catch (SQLException ex) {
-                controller.errorAlert(3114, ex.getMessage());
+                Platform.runLater(() -> {controller.errorAlert(3114, ex.getMessage());});
             } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
-                controller.errorAlert(3301, ex.getMessage());
+                Platform.runLater(() -> {controller.errorAlert(3301, ex.getMessage());});
             } catch (InterruptedException ex) {
-                    Platform.runLater(() -> {controller.errorAlert(1203, ex.getMessage());});
+                Platform.runLater(() -> {controller.errorAlert(1203, ex.getMessage());});
             } finally {
                 controller.getDataM().getDbBusy().countDown();
             }
@@ -3427,7 +3005,7 @@ public class VP_Center extends StackPane {
             } catch (TransformerException | ParserConfigurationException | IOException | DocumentException ex) {
                 Platform.runLater(() -> {controller.errorAlert(3302, ex.getMessage());});
             } catch (InterruptedException ex) {
-                    Platform.runLater(() -> {controller.errorAlert(1202, ex.getMessage());});
+                Platform.runLater(() -> {controller.errorAlert(1202, ex.getMessage());});
             } finally {
                 controller.getDataM().getDbBusy().countDown();
             }
@@ -3581,19 +3159,19 @@ public class VP_Center extends StackPane {
                 educationFields.get(i).textProperty().setValue(educationFields.get(i).textProperty().getValueSafe().trim());
                 if (educationFields.get(i).textProperty().getValueSafe().equals("")) {
                     if (i % 6 == 0) {
-                        educationError.setParaText("The institution name cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        educationErrorLine.setText("The institution name cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
                     } else if (i % 6 == 1) {
-                        educationError.setParaText("The institution location cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        educationErrorLine.setText("The institution location cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
                     } else if (i % 6 == 2) {
-                        educationError.setParaText("The degree, certification, or training field cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        educationErrorLine.setText("The degree, certification, or training field cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
                     } else if (i % 6 == 4) {
-                        educationError.setParaText("The start date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        educationErrorLine.setText("The start date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
                     } else if (i % 6 == 5) {
-                        educationError.setParaText("The end date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
+                        educationErrorLine.setText("The end date cannot be blank in education entry #" + (((int) (i / 6)) + 1) + ".");
                         hasError = true;
                     }
                     if (hasError) {
@@ -3606,7 +3184,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 educationErrorLine.show();
             } else {
-                educationError.setParaText("");
                 educationErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -3743,19 +3320,19 @@ public class VP_Center extends StackPane {
                 experienceFields.get(i).textProperty().setValue(experienceFields.get(i).textProperty().getValueSafe().trim());
                 if (experienceFields.get(i).textProperty().getValueSafe().equals("")) {
                     if (i % 5 == 0) {
-                        experienceError.setParaText("The institution name cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        experienceErrorLine.setText("The institution name cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
                         hasError = true;
                     } else if (i % 5 == 1) {
-                        experienceError.setParaText("The institution location cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        experienceErrorLine.setText("The institution location cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
                         hasError = true;
                     } else if (i % 5 == 2) {
-                        experienceError.setParaText("The position held cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        experienceErrorLine.setText("The position held cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
                         hasError = true;
                     } else if (i % 5 == 3) {
-                        experienceError.setParaText("The start date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        experienceErrorLine.setText("The start date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
                         hasError = true;
                     } else if (i % 5 == 4) {
-                        experienceError.setParaText("The end date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
+                        experienceErrorLine.setText("The end date cannot be blank in experience entry #" + (((int) (i / 5)) + 1) + ".");
                         hasError = true;
                     }
                     if (hasError) {
@@ -3768,7 +3345,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 experienceErrorLine.show();
             } else {
-                experienceError.setParaText("");
                 experienceErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -3909,11 +3485,11 @@ public class VP_Center extends StackPane {
                 if (count == 0 && !endReached) {
                     endReached = true;
                 } else if (endReached && count > 0) {
-                    achievementsError.setParaText("You cannot have blank achievements in between entries. See achievement #" + (ii));
+                    achievementsErrorLine.setText("You cannot have blank achievements in between entries. See achievement #" + (ii));
                     hasError = true;
                     break;
                 } else if (count < 3 && count > 0) {
-                    achievementsError.setParaText("Not all mandatory fields for an achievement are complete for entry #" + (ii + 1));
+                    achievementsErrorLine.setText("Not all mandatory fields for an achievement are complete for entry #" + (ii + 1));
                     hasError = true;
                     break;
                 }
@@ -3922,7 +3498,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 achievementsErrorLine.show();
             } else {
-                achievementsError.setParaText("");
                 achievementsErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -4063,11 +3638,11 @@ public class VP_Center extends StackPane {
                 if (count == 0 && !endReached) {
                     endReached = true;
                 } else if (endReached && count > 0) {
-                    communityError.setParaText("You cannot have blank events in between entries. See entry #" + (ii));
+                    communityErrorLine.setText("You cannot have blank events in between entries. See entry #" + (ii));
                     hasError = true;
                     break;
                 } else if (count < 3 && count > 0) {
-                    communityError.setParaText("Not all mandatory fields for an event are complete for entry #" + (ii + 1));
+                    communityErrorLine.setText("Not all mandatory fields for an event are complete for entry #" + (ii + 1));
                     hasError = true;
                     break;
                 }
@@ -4076,7 +3651,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 communityErrorLine.show();
             } else {
-                communityError.setParaText("");
                 communityErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -4188,7 +3762,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < qualificationsFields.size(); i++) {
                 qualificationsFields.get(i).textProperty().setValue(qualificationsFields.get(i).textProperty().getValueSafe().trim());
                 if (qualificationsFields.get(i).textProperty().getValueSafe().equals("")) {
-                    qualificationsError.setParaText("Qualification #" + (i + 1) + " cannot be blank.");
+                    qualificationsErrorLine.setText("Qualification #" + (i + 1) + " cannot be blank.");
                     hasError = true;
                     qualificationsFields.get(i).showInvalid();
                     break;
@@ -4198,7 +3772,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 qualificationsErrorLine.show();
             } else {
-                qualificationsError.setParaText("");
                 qualificationsErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -4310,7 +3883,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < highlightsFields.size(); i++) {
                 highlightsFields.get(i).textProperty().setValue(highlightsFields.get(i).textProperty().getValueSafe().trim());
                 if (highlightsFields.get(i).textProperty().getValueSafe().equals("")) {
-                    highlightsError.setParaText("Highlight #" + (i + 1) + " cannot be blank.");
+                    highlightsErrorLine.setText("Highlight #" + (i + 1) + " cannot be blank.");
                     hasError = true;
                     highlightsFields.get(i).showInvalid();
                     break;
@@ -4320,7 +3893,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 highlightsErrorLine.show();
             } else {
-                highlightsError.setParaText("");
                 highlightsErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -4433,9 +4005,9 @@ public class VP_Center extends StackPane {
                 languagesFields.get(i).textProperty().setValue(languagesFields.get(i).textProperty().getValueSafe().trim());
                 if (languagesFields.get(i).textProperty().getValueSafe().equals("")) {
                     if (i == 0) {
-                        languagesError.setParaText("Primary Language cannot be blank.");
+                        languagesErrorLine.setText("Primary Language cannot be blank.");
                     } else {
-                        languagesError.setParaText("Secondary Language #" + i + " cannot be blank.");
+                        languagesErrorLine.setText("Secondary Language #" + i + " cannot be blank.");
                     }
                     hasError = true;
                     languagesFields.get(i).showInvalid();
@@ -4446,7 +4018,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 languagesErrorLine.show();
             } else {
-                languagesError.setParaText("");
                 languagesErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -4558,7 +4129,7 @@ public class VP_Center extends StackPane {
             for (int i = 0; i < softwareFields.size(); i++) {
                 softwareFields.get(i).textProperty().setValue(softwareFields.get(i).textProperty().getValueSafe().trim());
                 if (softwareFields.get(i).textProperty().getValueSafe().equals("")) {
-                    softwareError.setParaText("Software Product #" + (i + 1) + " cannot be blank.");
+                    softwareErrorLine.setText("Software Product #" + (i + 1) + " cannot be blank.");
                     hasError = true;
                     softwareFields.get(i).showInvalid();
                     break;
@@ -4568,7 +4139,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 softwareErrorLine.show();
             } else {
-                softwareError.setParaText("");
                 softwareErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -4721,7 +4291,7 @@ public class VP_Center extends StackPane {
                                 hasError = (!controller.getDataM().checkEmail(referencesFields.get(i).textProperty().getValueSafe()));
                                 if (hasError) {
                                     referencesFields.get(i).showInvalid();
-                                    referencesError.setParaText("Email is not in valid form in reference #" + (ii + 1) + ".");
+                                    referencesErrorLine.setText("Email is not in valid form in reference #" + (ii + 1) + ".");
                                 }
                             }
                         } else {
@@ -4731,7 +4301,7 @@ public class VP_Center extends StackPane {
                                 if (!matcher.matches()) {
                                     hasError = true;
                                     referencesFields.get(i).showInvalid();
-                                    referencesError.setParaText("Phone numbers must be in form "
+                                    referencesErrorLine.setText("Phone numbers must be in form "
                                             + "(xxx)xxx-xxxx for reference #" + (ii + 1) + ".");
                                     break;
                                 }
@@ -4743,11 +4313,11 @@ public class VP_Center extends StackPane {
                     if (count == 0 && optionalCount == 0 && !endReached) {
                         endReached = true;
                     } else if (endReached && (count > 0 || optionalCount > 0)) {
-                        referencesError.setParaText("You cannot have blank references in between entries. See reference #" + (ii));
+                        referencesErrorLine.setText("You cannot have blank references in between entries. See reference #" + (ii));
                         hasError = true;
                         break;
                     } else if ((count < 4 && count > 0) || (count == 0 && optionalCount > 0)) {
-                        referencesError.setParaText("Not all mandatory fields for a reference are complete for entry #" + (ii + 1));
+                        referencesErrorLine.setText("Not all mandatory fields for a reference are complete for entry #" + (ii + 1));
                         hasError = true;
                         break;
                     }
@@ -4759,7 +4329,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 referencesErrorLine.show();
             } else {
-                referencesError.setParaText("");
                 referencesErrorLine.hide();
                 controller.getCurrentUser().getResume().save();
                 if (controller.getCurrentUser().getResume().hasChanges()) {
@@ -5016,7 +4585,7 @@ public class VP_Center extends StackPane {
                 if (!matcher.matches()) {
                     hasError = true;
                     businessCardFields.get(14).showInvalid();
-                    bcardError.setParaText("The web address is not in valid form. Be sure to include whether "
+                    bcardErrorLine.setText("The web address is not in valid form. Be sure to include whether "
                             + "the address is http or https");
                 }
             }
@@ -5024,7 +4593,6 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 bcardErrorLine.show();
             } else {
-                bcardError.setParaText("");
                 bcardErrorLine.hide();
                 controller.getCurrentUser().getBcard().save();
                 if (controller.getCurrentUser().getBcard().hasChanges()) {
@@ -5065,17 +4633,17 @@ public class VP_Center extends StackPane {
             String[] cred = {oldPass.getText(), newPass.getText(), newPassConfirm.getText()};
             //-------- Initialization End ------------\\
             VP_Sounds.play(0);
-            changePassError.setText("");
+            changePassErrorLine.setText("");
             changePassErrorLine.hide();
             if (cred[0].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 oldPass.showInvalid();
-                changePassError.setText("The old password is incorrect. Please try again.");
+                changePassErrorLine.setText("The old password is incorrect. Please try again.");
                 changePassErrorLine.show();
                 VP_Sounds.play(-1);
             } else if (cred[1].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 newPass.showInvalid();
                 newPassConfirm.showInvalid();
-                changePassError.setText("The new password is not long enough. Please try again.");
+                changePassErrorLine.setText("The new password is not long enough. Please try again.");
                 changePassErrorLine.show();
                 VP_Sounds.play(-1);
             } else {
@@ -5096,13 +4664,13 @@ public class VP_Center extends StackPane {
                         } else {
                             newPass.showInvalid();
                             newPassConfirm.showInvalid();
-                            changePassError.setText("The new passwords do not match each other.");
+                            changePassErrorLine.setText("The new passwords do not match each other.");
                             changePassErrorLine.show();
                             VP_Sounds.play(-1);
                         }
                     } else {
                         oldPass.showInvalid();
-                        changePassError.setText("The old password is incorrect. Please try again.");
+                        changePassErrorLine.setText("The old password is incorrect. Please try again.");
                         changePassErrorLine.show();
                         VP_Sounds.play(-1);
                     }
@@ -5127,21 +4695,20 @@ public class VP_Center extends StackPane {
             String[] cred = {adminPassMysql.getText(), newMysqlURL.getText(), newMysqlPort.getText()};
             //-------- Initialization End ------------\\
             VP_Sounds.play(0);
-            changeMysqlError.setText("");
             changeMysqlErrorLine.hide();
             if (cred[0].length() < controller.getUSER_PASSWORD_MINIMUM()) {
                 adminPassMysql.showInvalid();
-                changeMysqlError.setText("Your password is incorrect. Please try again.");
+                changeMysqlErrorLine.setText("Your password is incorrect. Please try again.");
                 changeMysqlErrorLine.show();
                 VP_Sounds.play(-1);
             } else if (cred[1] == null || cred[1].equals("")) {
                 newMysqlURL.showInvalid();
-                changeMysqlError.setText("New MySQL URL cannot be blank.");
+                changeMysqlErrorLine.setText("New MySQL URL cannot be blank.");
                 changeMysqlErrorLine.show();
                 VP_Sounds.play(-1);
             } else if (cred[2] == null || cred[1].equals("")) {
                 newMysqlPort.showInvalid();
-                changeMysqlError.setText("New MySQL Port cannot be blank.");
+                changeMysqlErrorLine.setText("New MySQL Port cannot be blank.");
                 changeMysqlErrorLine.show();
                 VP_Sounds.play(-1);
             } else  {
@@ -5151,7 +4718,7 @@ public class VP_Center extends StackPane {
                         System.exit(2);
                     } else {
                         adminPassMysql.showInvalid();
-                        changeMysqlError.setText("Your password is incorrect. Please try again.");
+                        changeMysqlErrorLine.setText("Your password is incorrect. Please try again.");
                         changeMysqlErrorLine.show();
                         VP_Sounds.play(-1);
                     }
@@ -5162,6 +4729,55 @@ public class VP_Center extends StackPane {
                 } catch (IOException ex) {
                     controller.errorAlert(3207, ex.getMessage());
                 }
+            }
+        }
+    }
+    
+    private class PrintAction implements EventHandler<ActionEvent> {
+        private final Thread backgroundThread;
+        
+        public PrintAction(int type) {
+            backgroundThread = new Thread(new PrintTask(type));
+        }
+        
+        /**
+         * @param event An ActionEvent, triggered by a print button.
+         * @since 1.0
+         */
+        @Override
+        public void handle(ActionEvent event) {
+            this.backgroundThread.setDaemon(false);
+            this.backgroundThread.start();
+            VP_Dialog printDialog = new VP_Dialog("Printing");
+            printDialog.setHeaderText("");
+            VP_Paragraph printContent = new VP_Paragraph("VaqPack is attempting to print your "
+                    + "document. This may take a few moments.");
+            printContent.setPadding(new Insets(50, 20, 50, 20));
+            printDialog.getDialogShell().add(printContent, 0, 0);
+            printDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            printDialog.showAndWait();
+        }
+    }
+    
+    private class PrintTask implements Runnable {
+        private final int type;
+        public PrintTask(int type) {
+            this.type = type;
+        }
+        @Override
+        public void run() {
+            try {
+                controller.getDataM().getDbBusy().await();
+                controller.getDataM().setDbBusy(new CountDownLatch(1));
+                controller.getDataM().printDocument(type);
+            } catch (SQLException ex) {
+                Platform.runLater(() -> {controller.errorAlert(3114, ex.getMessage());});
+            } catch (IOException ex) {
+                Platform.runLater(() -> {controller.errorAlert(3304, ex.getMessage());});
+            } catch (InterruptedException ex) {
+                Platform.runLater(() -> {controller.errorAlert(1205, ex.getMessage());});
+            } finally {
+                controller.getDataM().getDbBusy().countDown();
             }
         }
     }

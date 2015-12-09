@@ -12,6 +12,7 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack.data;
 
+import com.lowagie.tools.Executable;
 import vaqpack.user.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -2132,6 +2133,57 @@ public class VP_DatabaseManager {
         }
         close();
         return thisFile;
+    }
+    
+    protected void printFile(int type, boolean printThis) throws SQLException,
+            FileNotFoundException, IOException {
+        //-------- Initialization Start ----------\\
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int userID = thisUser.getUserID();
+        String filecategory = "resume",
+                filetype = "pdf",
+                sql = "",
+                condition = " WHERE user_id = " + userID;
+        File thisFile = null;
+        Process printJob = null;
+        //-------- Initialization End ------------\\
+        if (type == 1) {
+            filetype = "html";
+        } else if (type == 3) {
+            filetype = "html";
+            filecategory = "business_card";
+        } else if (type == 4) {
+            filetype = "pdf";
+            filecategory = "business_card";
+        }else if (type == 5) {
+            filetype = "html";
+            filecategory = "cover_letter";
+            condition = " WHERE cover_letter_id = " + thisUser.getCovlet().getId();
+        } else if (type == 6) {
+            filetype = "pdf";
+            filecategory = "cover_letter";
+            condition = " WHERE cover_letter_id = " + thisUser.getCovlet().getId();
+        }
+        sql = "SELECT " +
+                filetype + " FROM " + filecategory + "_" + filetype + condition;
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            rts = ps.executeQuery();
+            if (rts.next()) {
+                thisFile = new File(thisUser.getLastName().getValueSafe() + "_" + filecategory + "." + filetype);
+                try (InputStream inputStream = rts.getBinaryStream(filetype);
+                        FileOutputStream outputStream = new FileOutputStream(thisFile)) {
+                    int current;
+                    while ((current = inputStream.read()) > -1) {
+                        outputStream.write(current);
+                    }
+                    outputStream.flush();
+                }
+                thisFile.deleteOnExit();
+                Executable.printDocumentSilent(thisFile, true);
+            }
+        }
+        close();
     }
 
     /*------------------------------------------------------------------------*

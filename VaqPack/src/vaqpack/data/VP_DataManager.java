@@ -617,6 +617,10 @@ public class VP_DataManager {
             sendAttachEmail.start();
         }
     }
+    
+    public void printDocument(int type) throws SQLException, IOException {
+        dbManager.printFile(type, true);
+    }
 
     /*------------------------------------------------------------------------*
      * loadCovLetData()
