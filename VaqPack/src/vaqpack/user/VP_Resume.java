@@ -427,7 +427,11 @@ public class VP_Resume {
                 + "version=\"1.0\">\n"
                 + "<xsl:output method=\"xml\" indent=\"yes\"/>\n"
                 + "<xsl:template match=\"/\">\n"
-                + "<html>\n<head>\n<title>Resume -- <xsl:value-of select=\"resume/heading/name/lastname\"/></title>\n</head>\n<body style=\"padding:20px;\">"
+                + "<html>\n<head>\n<title>Resume -- <xsl:value-of select=\"resume/heading/name/lastname\"/></title>\n</head>\n<body";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("RES_BODY_" + currentTheme);
+        }
+        xsl += ">"
                 + "<div";
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("RES_NAME_" + currentTheme);
@@ -786,7 +790,7 @@ public class VP_Resume {
         return completedSoftware;
     }
 
-    protected int getThemeId() {
+    public int getThemeId() {
         return themeId;
     }
 

@@ -336,7 +336,11 @@ public class VP_CoverLetter {
                 + "version=\"1.0\">\n"
                 + "<xsl:output method=\"xml\" indent=\"yes\"/>\n"
                 + "<xsl:template match=\"/\">\n"
-                + "<html>\n<head>\n<title>Cover Letter -- <xsl:value-of select=\"coverletter/heading/name/lastname\"/></title>\n</head>\n<body style=\"padding:20px;\">\n<div";
+                + "<html>\n<head>\n<title>Cover Letter -- <xsl:value-of select=\"coverletter/heading/name/lastname\"/></title>\n</head>\n<body";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_BODY_" + currentTheme);
+        }
+        xsl += ">\n<div";
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("CL_NAME_" + currentTheme);
         }
@@ -370,8 +374,12 @@ public class VP_CoverLetter {
         if (owner.getCell().getValueSafe() != null) {
             xsl += " <span style=\"padding-left:8pt;\">cell: <xsl:value-of select=\"coverletter/heading/communication/cell\"/></span> ";
         }
-            xsl += " <span style=\"padding-left:8pt;\"><xsl:value-of select=\"coverletter/heading/communication/email\"/> </span></span></div>\n"
-                + "<hr />\n<br />\n<div";
+        xsl += " <span style=\"padding-left:8pt;\"><xsl:value-of select=\"coverletter/heading/communication/email\"/> </span></span></div>\n"
+                + "<hr";
+        if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("CL_DIVIDER_" + currentTheme);
+        }
+        xsl += " />\n<br />\n<div";
         if (themeId < 0) {
             xsl += VP_Theme.Default.valueOf("CL_DATE_" + currentTheme);
         }

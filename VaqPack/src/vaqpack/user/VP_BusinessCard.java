@@ -141,84 +141,183 @@ public class VP_BusinessCard {
                 + "<xsl:output method=\"xml\" indent=\"yes\"/>\n"
                 + "<xsl:template match=\"/\">\n"
                 + "<html>\n<head>\n<title>Business Card -- <xsl:value-of select=\"businesscard/name/lastname\"/></title>\n</head>\n<body>\n"
-                + "<div style=\"border-collapse:collapse;margin:0;padding:0;width:3.5in;"
-                + "height:2in;text-align:center;vertical-align:middle;border:1px solid #000;\">\n"
-                + "<table style=\"margin:4pt;border-collapse:collapse;margin:0;padding:0;width:3.5in;"
-                + "height:2in;text-align:center;vertical-align:middle;\">\n"
-                + "<tr";
+                + "<div";
         if (themeId < 0) {
-            xsl += VP_Theme.Default.valueOf("BC_BACKGROUND_" + currentTheme);
+            xsl += VP_Theme.Default.valueOf("BC_CONTAINER_" + currentTheme);
         }
-        xsl += ">\n<td>\n<span";
+        xsl += ">\n"
+                + "<table";
         if (themeId < 0) {
+            xsl += VP_Theme.Default.valueOf("BC_TABLE_" + currentTheme);
+        }
+        xsl += ">\n";
+        if (themeId == -1 || themeId == -3 || themeId == -4) {
+            xsl += "<tr>\n<td";
+            xsl += VP_Theme.Default.valueOf("BC_CELL1_" + currentTheme);
+            xsl += ">\n<span";
             xsl += VP_Theme.Default.valueOf("BC_NAME_" + currentTheme);
-        }
-        xsl += " xml:space=\"preserve\"><xsl:value-of select=\"businesscard/name/firstname\"/> ";
-        if (owner.getMiddleName().getValueSafe()!= null) {
-            xsl += "  <xsl:value-of select=\"businesscard/name/middlename\"/> ";
-        }
-        xsl += "<xsl:value-of select=\"businesscard/name/lastname\"/></span>";
-        if (professionStored != null) {
-            xsl += "\n<span";
-            if (themeId < 0) {
+            xsl += " xml:space=\"preserve\"><xsl:value-of select=\"businesscard/name/firstname\"/> ";
+            if (owner.getMiddleName().getValueSafe()!= null) {
+                xsl += "  <xsl:value-of select=\"businesscard/name/middlename\"/> ";
+            }
+            xsl += "<xsl:value-of select=\"businesscard/name/lastname\"/></span>";
+            if (professionStored != null) {
+                xsl += "\n<span";
                 xsl += VP_Theme.Default.valueOf("BC_PROFESSION_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/company/profession\"/></span>";
             }
-            xsl += "><xsl:value-of select=\"businesscard/company/profession\"/></span>";
-        }
-        if (companyNameStored != null) {
-            xsl += "\n<span";
-            if (themeId < 0) {
+            if (companyNameStored != null) {
+                xsl += "\n<span";
                 xsl += VP_Theme.Default.valueOf("BC_COMPANY_NAME_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/company/companyname\"/></span>";
             }
-            xsl += "><xsl:value-of select=\"businesscard/company/companyname\"/></span>";
-        }
-        if (companySloganStored != null) {
-            xsl += "\n<span";
-            if (themeId < 0) {
+            if (companySloganStored != null) {
+                xsl += "\n<span";
                 xsl += VP_Theme.Default.valueOf("BC_COMPANY_SLOGAN_" + currentTheme);
+                xsl += ">\"<xsl:value-of select=\"businesscard/company/slogan\"/>\"</span>";
             }
-            xsl += ">\"<xsl:value-of select=\"businesscard/company/slogan\"/>\"</span>";
-        }
-        xsl += "\n<span";
-        if (themeId < 0) {
+            xsl += "\n</td></tr>\n<tr><td";
+            xsl += VP_Theme.Default.valueOf("BC_CELL1_" + currentTheme);
+            xsl += "><span";
             xsl += VP_Theme.Default.valueOf("BC_ADDRESS1_" + currentTheme);
-        }
-        xsl += "><xsl:value-of select=\"businesscard/address/line1\"/></span>";
-        if (owner.getAddress2().getValueSafe() != null) {
-            xsl += "\n<span";
-            if (themeId < 0) {
+            xsl += "><xsl:value-of select=\"businesscard/address/line1\"/></span>";
+            if (owner.getAddress2().getValueSafe() != null) {
+                xsl += "\n<span";
                 xsl += VP_Theme.Default.valueOf("BC_ADDRESS2_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/address/line2\"/></span>";
             }
-            xsl += "><xsl:value-of select=\"businesscard/address/line2\"/></span>";
-        }
-        xsl += "\n<span";
-        if (themeId < 0) {
-            xsl += VP_Theme.Default.valueOf("BC_CITY_STATE_ZIP_" + currentTheme);
-        }
-        xsl += "  xml:space=\"preserve\"><xsl:value-of select=\"businesscard/address/city\"/>, "
-                + "<xsl:value-of select=\"businesscard/address/state\"/> "
-                + "<xsl:value-of select=\"businesscard/address/zip\"/></span>";
-        xsl += "\n<span";
-        if (themeId < 0) {
-            xsl += VP_Theme.Default.valueOf("BC_PHONE_CELL_" + currentTheme);
-        }
-        xsl += "  xml:space=\"preserve\"><xsl:value-of select=\"businesscard/communication/phone\"/>";
-        if (owner.getCell().getValueSafe() != null) {
-            xsl += "<span style=\"padding-left:8pt;\">cell: <xsl:value-of select=\"businesscard/communication/cell\"/></span>";
-        }
-        xsl += "\n</span><span";
-        if (themeId < 0) {
-            xsl += VP_Theme.Default.valueOf("BC_EMAIL_" + currentTheme);
-        }
-        xsl += "><xsl:value-of select=\"businesscard/communication/email\"/></span>";
-        if (webPageStored != null) {
             xsl += "\n<span";
-            if (themeId < 0) {
-                xsl += VP_Theme.Default.valueOf("BC_WEB_" + currentTheme);
+            xsl += VP_Theme.Default.valueOf("BC_CITY_STATE_ZIP_" + currentTheme);
+            xsl += "  xml:space=\"preserve\"><xsl:value-of select=\"businesscard/address/city\"/>, "
+                    + "<xsl:value-of select=\"businesscard/address/state\"/> "
+                    + "<xsl:value-of select=\"businesscard/address/zip\"/></span>";
+            xsl += "\n</td></tr>\n<tr><td";
+            xsl += VP_Theme.Default.valueOf("BC_CELL1_" + currentTheme);
+            xsl += "><span";
+            xsl += VP_Theme.Default.valueOf("BC_PHONE_CELL_" + currentTheme);
+            xsl += "  xml:space=\"preserve\"><xsl:value-of select=\"businesscard/communication/phone\"/>";
+            if (owner.getCell().getValueSafe() != null) {
+                xsl += "<span style=\"padding-left:8pt;\">cell: <xsl:value-of select=\"businesscard/communication/cell\"/></span>";
             }
-            xsl += "><xsl:value-of select=\"businesscard/communication/web\"/></span>";
+            xsl += "\n</span><span";
+            xsl += VP_Theme.Default.valueOf("BC_EMAIL_" + currentTheme);
+            xsl += "><xsl:value-of select=\"businesscard/communication/email\"/></span>";
+            if (webPageStored != null) {
+                xsl += "\n<span";
+                xsl += VP_Theme.Default.valueOf("BC_WEB_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/communication/web\"/></span>";
+            }
+            xsl += "\n";
+        } else if (themeId == -2) {
+            xsl += "<tr>\n<td>\n";
+            if (companyNameStored != null) {
+                xsl += "<span";
+                xsl += VP_Theme.Default.valueOf("BC_COMPANY_NAME_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/company/companyname\"/></span>\n";
+            }
+            if (companySloganStored != null) {
+                xsl += "<span";
+                xsl += VP_Theme.Default.valueOf("BC_COMPANY_SLOGAN_" + currentTheme);
+                xsl += ">\"<xsl:value-of select=\"businesscard/company/slogan\"/>\"</span>\n";
+            }
+            if (webPageStored != null) {
+                xsl += "<span";
+                xsl += VP_Theme.Default.valueOf("BC_WEB_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/communication/web\"/></span>\n";
+            }
+            xsl += "<span";
+            xsl += VP_Theme.Default.valueOf("BC_NAME_" + currentTheme);
+            xsl += " xml:space=\"preserve\"><xsl:value-of select=\"businesscard/name/firstname\"/> ";
+            if (owner.getMiddleName().getValueSafe()!= null) {
+                xsl += "  <xsl:value-of select=\"businesscard/name/middlename\"/> ";
+            }
+            xsl += "<xsl:value-of select=\"businesscard/name/lastname\"/></span>\n";
+            if (professionStored != null) {
+                xsl += "\n<span";
+                xsl += VP_Theme.Default.valueOf("BC_PROFESSION_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/company/profession\"/></span>\n";
+            }
+            xsl += "<span";
+            xsl += VP_Theme.Default.valueOf("BC_ADDRESS1_" + currentTheme);
+            xsl += "><xsl:value-of select=\"businesscard/address/line1\"/></span>\n";
+            if (owner.getAddress2().getValueSafe() != null) {
+                xsl += "<span";
+                xsl += VP_Theme.Default.valueOf("BC_ADDRESS2_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/address/line2\"/></span>\n";
+            }
+            xsl += "\n<span";
+            xsl += VP_Theme.Default.valueOf("BC_CITY_STATE_ZIP_" + currentTheme);
+            xsl += "  xml:space=\"preserve\"><xsl:value-of select=\"businesscard/address/city\"/>, "
+                    + "<xsl:value-of select=\"businesscard/address/state\"/> "
+                    + "<xsl:value-of select=\"businesscard/address/zip\"/></span>";
+            xsl += "\n<span";
+            xsl += VP_Theme.Default.valueOf("BC_PHONE_CELL_" + currentTheme);
+            xsl += "  xml:space=\"preserve\"><xsl:value-of select=\"businesscard/communication/phone\"/>";
+            if (owner.getCell().getValueSafe() != null) {
+                xsl += "<span style=\"padding-left:8pt;\">cell: <xsl:value-of select=\"businesscard/communication/cell\"/></span>\n";
+            }
+            xsl += "</span>\n<span";
+            xsl += VP_Theme.Default.valueOf("BC_EMAIL_" + currentTheme);
+            xsl += "><xsl:value-of select=\"businesscard/communication/email\"/></span>\n";
+        } else if (themeId == -5 || themeId == -6) {
+            xsl += "<tr>\n<td";
+            xsl += VP_Theme.Default.valueOf("BC_CELL1_" + currentTheme);
+            xsl += ">\n<div";
+            xsl += VP_Theme.Default.valueOf("BC_NAME_" + currentTheme);
+            xsl += " xml:space=\"preserve\"><xsl:value-of select=\"businesscard/name/firstname\"/> ";
+            if (owner.getMiddleName().getValueSafe()!= null) {
+                xsl += " <xsl:value-of select=\"businesscard/name/middlename\"/> ";
+            }
+            xsl += " <xsl:value-of select=\"businesscard/name/lastname\"/></div>\n";
+            if (professionStored != null) {
+                xsl += "<div";
+                xsl += VP_Theme.Default.valueOf("BC_PROFESSION_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/company/profession\"/></div>\n";
+            }
+            if (companyNameStored != null) {
+                xsl += "<div";
+                xsl += VP_Theme.Default.valueOf("BC_COMPANY_NAME_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/company/companyname\"/></div>\n";
+            }
+            if (companySloganStored != null) {
+                xsl += "<div";
+                xsl += VP_Theme.Default.valueOf("BC_COMPANY_SLOGAN_" + currentTheme);
+                xsl += ">\"<xsl:value-of select=\"businesscard/company/slogan\"/>\"</div>\n";
+            }
+            xsl += "</td>\n<td";
+            xsl += VP_Theme.Default.valueOf("BC_CELL2_" + currentTheme);
+            xsl += ">\n<div";
+            xsl += VP_Theme.Default.valueOf("BC_ADDRESS1_" + currentTheme);
+            xsl += "><xsl:value-of select=\"businesscard/address/line1\"/></div>\n";
+            if (owner.getAddress2().getValueSafe() != null) {
+                xsl += "<div";
+                xsl += VP_Theme.Default.valueOf("BC_ADDRESS2_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/address/line2\"/></div>\n";
+            }
+            xsl += "<div";
+            xsl += VP_Theme.Default.valueOf("BC_CITY_STATE_ZIP_" + currentTheme);
+            xsl += " xml:space=\"preserve\"><xsl:value-of select=\"businesscard/address/city\"/>, "
+                    + "<xsl:value-of select=\"businesscard/address/state\"/> "
+                    + "<xsl:value-of select=\"businesscard/address/zip\"/></div>\n<div";
+            xsl += VP_Theme.Default.valueOf("BC_PHONE_CELL_" + currentTheme);
+            xsl += "><xsl:value-of select=\"businesscard/communication/phone\"/></div>\n";
+            if (owner.getCell().getValueSafe() != null) {
+                xsl += "<div";
+                xsl += VP_Theme.Default.valueOf("BC_PHONE_CELL_" + currentTheme);
+                xsl += ">cell: <xsl:value-of select=\"businesscard/communication/cell\"/></div>\n";
+            }
+            xsl += "</td>\n</tr>\n<tr>\n<td";
+            xsl += VP_Theme.Default.valueOf("BC_CELL3_" + currentTheme);
+            xsl += ">\n<div";
+            xsl += VP_Theme.Default.valueOf("BC_EMAIL_" + currentTheme);
+            xsl += "><xsl:value-of select=\"businesscard/communication/email\"/></div>\n";
+            if (webPageStored != null) {
+                xsl += "<div";
+                xsl += VP_Theme.Default.valueOf("BC_WEB_" + currentTheme);
+                xsl += "><xsl:value-of select=\"businesscard/communication/web\"/></div>\n";
+            }
         }
-        xsl += "\n</td>\n</tr>\n</table>\n</div>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>";
+        xsl += "</td>\n</tr>\n</table>\n</div>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>";
     }
 
     /*##########################################################################

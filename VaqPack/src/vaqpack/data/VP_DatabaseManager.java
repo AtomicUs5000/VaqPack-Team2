@@ -1887,7 +1887,7 @@ public class VP_DatabaseManager {
             if (rts.next()) {
                 if (section == 0) {
                     PreparedStatement ps2 = con.prepareStatement("UPDATE resume "
-                            + "SET objective = ? WHERE  user_id = ?");
+                            + "SET objective = ? WHERE user_id = ?");
                     ps2.setString(1, res.getObjective().getValueSafe());
                     ps2.setInt(2, userID);
                     ps2.executeUpdate();
@@ -1979,7 +1979,13 @@ public class VP_DatabaseManager {
                     ps2.setString(7, formattedStrings[5]);
                     ps2.setInt(8, userID);
                     ps2.executeUpdate();
-                }
+                } else if (section == 10) {
+                    PreparedStatement ps2 = con.prepareStatement("UPDATE resume "
+                            + "SET theme = ? WHERE  user_id = ?");
+                    ps2.setInt(1, res.getThemeId());
+                    ps2.setInt(2, userID);
+                    ps2.executeUpdate();
+                } 
             } else {
                 if (section == 0) {
                     PreparedStatement ps2 = con.prepareStatement("INSERT INTO resume "
@@ -2083,7 +2089,13 @@ public class VP_DatabaseManager {
                     ps2.setString(7, formattedStrings[4]);
                     ps2.setString(8, formattedStrings[5]);
                     ps2.executeUpdate();
-                }
+                } else if (section == 10) {
+                    PreparedStatement ps2 = con.prepareStatement("INSERT INTO resume "
+                            + "(user_id, theme) VALUES (?, ?)");
+                    ps2.setInt(1, userID);
+                    ps2.setInt(2, res.getThemeId());
+                    ps2.executeUpdate();
+                } 
             }
         }
         close();

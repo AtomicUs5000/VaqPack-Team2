@@ -24,25 +24,34 @@ import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import vaqpack.peripherals.VP_Previewer;
 import vaqpack.user.VP_Contact;
+import vaqpack.user.VP_Theme;
 
 /**
  * The center is the center of the main BorderPane layout. The center extends
@@ -99,6 +108,8 @@ public class VP_Center extends StackPane {
             resumeAchievementsBox, resumeCommunityBox, resumeQualificationsBox,
             resumeHighlightsBox, resumeLanguagesBox, resumeSoftwareBox, resumeReferencesBox;
     private final CheckBox resHTMLcb, resPDFcb, clHTMLcb, clPDFcb, bcHTMLcb, bcPDFcb;
+    private final VBox resLeftContainer, bcLeftContainer, clLeftContainer;
+    private final ToggleGroup groupRes, groupBC, groupCL;
 
     /**
      * Constructor. Initializes all of the components that require a reference
@@ -227,6 +238,12 @@ public class VP_Center extends StackPane {
         clPDFcb = new CheckBox("Cover Letter (PDF File)");
         bcHTMLcb = new CheckBox("Business Card (HTML File)");
         bcPDFcb = new CheckBox("Business Card (PDF File)");
+        resLeftContainer = new VBox();
+        bcLeftContainer = new VBox();
+        clLeftContainer = new VBox();
+        groupRes = new ToggleGroup();
+        groupBC = new ToggleGroup();
+        groupCL  = new ToggleGroup();
         //-------- Initialization End ------------\\
     }
 
@@ -871,11 +888,81 @@ public class VP_Center extends StackPane {
      */
     private VP_Screen buildThemesStartScreen() {
         VP_Screen screen = new VP_Screen("DOCUMENT THEMES");
-        VP_Paragraph notes = new VP_Paragraph("Select a theme from the list of themes for each document. Although you are free to choose individual themes for "
-                + "each document, it is recommended that you apply the same theme for a combined look and style "
+        VP_Paragraph notes = new VP_Paragraph("Select a theme from the list of themes for each document. "
+                + "Although you are free to choose individual themes for each document, it is "
+                + "recommended that you apply the same theme for a combined look and style "
                 + "that has uniformity.");
-        VP_Previewer previewer = new VP_Previewer();
-        screen.addNodes(new Node[]{notes, previewer.buildPreview()});
+        VP_PageSubdivision resDiv = new VP_PageSubdivision("RESUME THEME", false),
+                bcDiv = new VP_PageSubdivision("BUSINESS CARD THEME", false),
+                clDiv = new VP_PageSubdivision("COVER LETTER THEME", false);
+        int numbDefaultThemes = Integer.parseInt(VP_Theme.Default.COUNT.toString()); 
+        VP_DivisionLine resContainer = new VP_DivisionLine(),
+                bcContainer = new VP_DivisionLine(),
+                clContainer = new VP_DivisionLine(),
+                buttonLine = new VP_DivisionLine(new Node[]{new VP_Button("Return to Overview", new CancelAction())});
+        VP_PageSubdivision resRightContainer = new VP_PageSubdivision("SAMPLE PREVIEW", true),
+                bcRightContainer = new VP_PageSubdivision("SAMPLE PREVIEW", true),
+                clRightContainer = new VP_PageSubdivision("SAMPLE PREVIEW", true);
+        for (int i = 0; i < numbDefaultThemes; i++) {
+            VP_FieldLabel thisResLabel = new VP_FieldLabel("", 100),
+                    thisBCLabel = new VP_FieldLabel("", 100),
+                    thisCLLabel = new VP_FieldLabel("", 100);
+            VP_DivisionLine resLine = new VP_DivisionLine(),
+                    bcLine = new VP_DivisionLine(),
+                    clLine = new VP_DivisionLine();
+            RadioButton btnRes = new RadioButton(VP_Theme.Default.valueOf("NAME_" + (i + 1)).toString()),
+                    btnBC = new RadioButton(VP_Theme.Default.valueOf("NAME_" + (i + 1)).toString()),
+                    btnCL = new RadioButton(VP_Theme.Default.valueOf("NAME_" + (i + 1)).toString());
+            btnRes.setToggleGroup(groupRes);
+            btnBC.setToggleGroup(groupBC);
+            btnCL.setToggleGroup(groupCL);
+            btnRes.setUserData(i + 1);
+            btnBC.setUserData(i + 1);
+            btnCL.setUserData(i + 1);
+            resLine.getChildren().addAll(thisResLabel, btnRes);
+            bcLine.getChildren().addAll(thisBCLabel, btnBC);
+            clLine.getChildren().addAll(thisCLLabel, btnCL);
+            resLeftContainer.getChildren().add(resLine);
+            bcLeftContainer.getChildren().add(bcLine);
+            clLeftContainer.getChildren().add(clLine);
+            if (i == 0){
+                btnRes.setSelected(true);
+                btnBC.setSelected(true);
+                btnCL.setSelected(true);
+                thisResLabel.setText("Current Theme");
+                thisBCLabel.setText("Current Theme");
+                thisCLLabel.setText("Current Theme");
+            }
+        }
+        resLeftContainer.getChildren().add(new VP_Button("Apply Theme", new ApplyTheme(groupRes, 0, resLeftContainer)));
+        bcLeftContainer.getChildren().add(new VP_Button("Apply Theme", new ApplyTheme(groupBC, 1, bcLeftContainer)));
+        clLeftContainer.getChildren().add(new VP_Button("Apply Theme", new ApplyTheme(groupCL, 2, clLeftContainer)));
+        resContainer.setSpacing(40);
+        bcContainer.setSpacing(40);
+        clContainer.setSpacing(40);
+        resRightContainer.setAlignment(Pos.TOP_CENTER);
+        bcRightContainer.setAlignment(Pos.TOP_CENTER);
+        clRightContainer.setAlignment(Pos.TOP_CENTER);
+        resContainer.getChildren().addAll(resLeftContainer, resRightContainer);
+        bcContainer.getChildren().addAll(bcLeftContainer, bcRightContainer);
+        clContainer.getChildren().addAll(clLeftContainer, clRightContainer);
+        resDiv.getChildren().addAll(resContainer);
+        bcDiv.getChildren().addAll(bcContainer);
+        clDiv.getChildren().addAll(clContainer);
+        screen.addNodes(new Node[]{notes, resDiv, bcDiv, clDiv, buttonLine});
+        WebView previewRes = new WebView(),
+                previewBC = new WebView(),
+                previewCL = new WebView();
+        previewRes.setPrefSize(400, 200);
+        previewBC.setPrefSize(400, 200);
+        previewCL.setPrefSize(400, 200);
+        resRightContainer.getChildren().add(previewRes);
+        bcRightContainer.getChildren().add(previewBC);
+        clRightContainer.getChildren().add(previewCL);
+        groupRes.selectedToggleProperty().addListener(new ThemeToggle(groupRes, 0, resRightContainer));
+        groupBC.selectedToggleProperty().addListener(new ThemeToggle(groupBC, 1, bcRightContainer));
+        groupCL.selectedToggleProperty().addListener(new ThemeToggle(groupCL, 2, clRightContainer));
+
         return screen;
     }
 
@@ -1028,6 +1115,7 @@ public class VP_Center extends StackPane {
                 VP_Sounds.play(-1);
                 sendAttachErrorLine.show();
             } else {
+                sendAttachErrorLine.hide();
                 addContactErrorLine.hide();
                 try {
                     controller.getDataM().sendAttachments(email, sendResHTML, sendResPDF, 
@@ -1818,6 +1906,24 @@ public class VP_Center extends StackPane {
      * @since 1.0
      */
     private void updateDynamicContent(int fromPage) {
+        int numbThemes = Integer.parseInt(VP_Theme.Default.COUNT.toString());
+        for (int i = 0; i < numbThemes; i++) {
+            ((VP_FieldLabel)(((VP_DivisionLine)(resLeftContainer.getChildren().get(i))).getChildren().get(0))).setText("");
+            ((VP_FieldLabel)(((VP_DivisionLine)(bcLeftContainer.getChildren().get(i))).getChildren().get(0))).setText("");
+            ((VP_FieldLabel)(((VP_DivisionLine)(clLeftContainer.getChildren().get(i))).getChildren().get(0))).setText("");
+            if (controller.getCurrentUser().getResume().getThemeId() == ((i + 1) * - 1)) {
+                ((VP_FieldLabel)(((VP_DivisionLine)(resLeftContainer.getChildren().get(i))).getChildren().get(0))).setText("Current Theme");
+                groupRes.getToggles().get(i).setSelected(true);
+            }
+            if (controller.getCurrentUser().getBcard().getThemeId() == ((i + 1) * - 1)) {
+                ((VP_FieldLabel)(((VP_DivisionLine)(bcLeftContainer.getChildren().get(i))).getChildren().get(0))).setText("Current Theme");
+                groupBC.getToggles().get(i).setSelected(true);
+            }
+            if (controller.getCurrentUser().getCovlet().getThemeId() == ((i + 1) * - 1)) {
+                ((VP_FieldLabel)(((VP_DivisionLine)(clLeftContainer.getChildren().get(i))).getChildren().get(0))).setText("Current Theme");
+                groupCL.getToggles().get(i).setSelected(true);
+            }
+        }
         int numbLetters = 0;
         VP_Resume thisRes = controller.getCurrentUser().getResume();
         startNewBtn.setVisible(true);
@@ -4730,6 +4836,79 @@ public class VP_Center extends StackPane {
                     controller.errorAlert(3132, ex.getMessage());
                 } catch (IOException ex) {
                     controller.errorAlert(3207, ex.getMessage());
+                }
+            }
+        }
+    }
+    
+    private class ApplyTheme implements EventHandler<ActionEvent> {
+        private final ToggleGroup group;
+        private final int type;
+        private final VBox container;
+        
+        public ApplyTheme(ToggleGroup group, int type, VBox container) {
+            this.group = group;
+            this.type = type;
+            this.container = container;
+        }
+
+        @Override
+        public void handle(ActionEvent event) {
+            if (group.getSelectedToggle() != null) {
+                if (type == 0) {
+                    controller.getCurrentUser().getResume().setThemeId((int)(group.getSelectedToggle().getUserData()) * -1);
+                    controller.getCurrentUser().getResume().save();
+                    Thread backgroundThread = new Thread(new SaveResTask(10));
+                    backgroundThread.setDaemon(true);
+                    backgroundThread.start();
+                } else if (type == 1) {
+                    controller.getCurrentUser().getBcard().setThemeId((int)(group.getSelectedToggle().getUserData()) * -1);
+                    controller.getCurrentUser().getBcard().save();
+                    Thread backgroundThread = new Thread(new SaveBCardTask());
+                    backgroundThread.setDaemon(true);
+                    backgroundThread.start();
+                    
+                } else if (type == 2) {
+                    controller.getCurrentUser().getCovlet().setThemeId((int)(group.getSelectedToggle().getUserData()) * -1);
+                    controller.getCurrentUser().getCovlet().save();
+                    Thread backgroundThread = new Thread(new SaveCovLetTask());
+                    backgroundThread.setDaemon(true);
+                    backgroundThread.start();
+                }
+                int numbThemes = Integer.parseInt(VP_Theme.Default.COUNT.toString());
+                for (int i = 0; i < numbThemes; i++) {
+                    ((VP_FieldLabel)(((VP_DivisionLine)(container.getChildren().get(i))).getChildren().get(0))).setText("");
+                    if (i == ((int)(group.getSelectedToggle().getUserData())) - 1) {
+                        ((VP_FieldLabel)(((VP_DivisionLine)(container.getChildren().get(i))).getChildren().get(0))).setText("Current Theme");
+                    }
+                }
+            }
+        }
+    }
+    
+    private class ThemeToggle implements ChangeListener<Toggle> {
+        private final ToggleGroup group;
+        private final int type;
+        private final VP_PageSubdivision container;
+        
+        public ThemeToggle(ToggleGroup group, int type, VP_PageSubdivision container) {
+            this.group = group;
+            this.type = type;
+            this.container = container;
+        }
+        
+        @Override
+        public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+            if (group.getSelectedToggle() != null) {
+                VP_Previewer previewer = new VP_Previewer();
+                WebView preview;
+                try {
+                    preview = previewer.buildPreview(type, (int)(group.getSelectedToggle().getUserData()) * -1);
+                    preview.setPrefSize(400, 200);
+                    container.getChildren().set(1, preview);
+
+                } catch (IOException ex) {
+                    // just eat it.
                 }
             }
         }
