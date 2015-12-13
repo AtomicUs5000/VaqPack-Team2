@@ -3,7 +3,6 @@
  */
 package vaqpack;
 
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,11 +12,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import vaqpack.components.VP_Dialog;
+import vaqpack.components.VP_FieldLabel;
 import vaqpack.components.VP_Paragraph;
 
 /**
@@ -41,6 +43,8 @@ public class VP_Header extends VBox {
     private final Label headerCaption;
     private final Menu adminMenu;
     private final MenuItem userLogout, changePass;
+    private final VP_Dialog helpDialog,
+            aboutDialog;
 
     /**
      * Constructor. Adds an empty menu bar and header logo section to itself.
@@ -59,6 +63,8 @@ public class VP_Header extends VBox {
         adminMenu = new Menu("Admin");
         userLogout = new MenuItem("Logout");
         changePass = new MenuItem("Change Your Password");
+        helpDialog = new VP_Dialog("Getting Started with VaqPack");
+        aboutDialog = new VP_Dialog("About VaqPack");
         //-------- Initialization End ------------\\
 
         this.getChildren().addAll(menuBar, headerBar);
@@ -88,7 +94,6 @@ public class VP_Header extends VBox {
         headerBar.setId("headerBar");
         headerLogo.setId("headerLogo");
         headerCaption.setId("headerCaption");
-
         // Menu actions
         userLogout.setOnAction((e) -> {
             boolean saving = false;
@@ -98,7 +103,6 @@ public class VP_Header extends VBox {
             if (!saving) {
                 controller.logoutUser();
             }
-            
         });
         exitVP.setOnAction(controller.new ClosingSequence());
         toggleFull.setOnAction(new FullScreenToggle());
@@ -132,9 +136,18 @@ public class VP_Header extends VBox {
                 controller.getCenter().showScreen(23, 0);
             }    
         });
-        gettingStarted.setOnAction(new HelpAction());
-        aboutHelp.setOnAction(new AboutAction());
-
+        gettingStarted.setOnAction((e)->{
+            if (helpDialog.isShowing()) {
+                    helpDialog.hide();
+                }
+                helpDialog.show();
+        });
+        aboutHelp.setOnAction((e)->{
+            if (aboutDialog.isShowing()) {
+                aboutDialog.hide();
+            }
+            aboutDialog.show();
+        });
         // Menu building
         homeMenu.getItems().addAll(userLogout,
                 new SeparatorMenuItem(), exitVP);
@@ -146,7 +159,6 @@ public class VP_Header extends VBox {
         adminMenu.setText("");
         userLogout.setVisible(false);
         changePass.setVisible(false);
-
         // Logo header construction
         headerBar.setPrefHeight(50);
         headerBar.setAlignment(Pos.CENTER_LEFT);
@@ -156,6 +168,66 @@ public class VP_Header extends VBox {
         headerLogo.setPrefSize(200, 50);
         headerLogo.setMinSize(200, 50);
         headerCaption.setText("Graduate-to-Professional Aid Pack");
+        helpDialog.initModality(Modality.NONE);
+        helpDialog.setHeaderText("Version 1.0");
+        ScrollPane helpScroller = new ScrollPane();
+        helpScroller.setPrefWidth(450);
+        VBox helpContent = new VBox();
+        helpContent.prefWidthProperty().bind(helpScroller.widthProperty().add(-20));
+        VP_FieldLabel loginHelpLabel = new VP_FieldLabel("Account Help:");
+        VP_Paragraph acctPara1 = new VP_Paragraph("You must have a registered account in order to use VaqPack. "
+                + "If you do not have an account, select the 'need an account?' link on the login page. "
+                + "After you submit your information on the registration screen, an email will be sent to the "
+                + "email address that you used to register with. This email contains a registration code that you "
+                + "must enter in within one hour. If your code expires, you can always attempt to login and then click "
+                + "the button to send a new code.");
+        VP_Paragraph acctPara2 = new VP_Paragraph("If you cannot login because you have forgotten your password, click the "
+                + "'forgot your password?' link on the login page. An email with confirmation code will be sent to email "
+                + "address to prevent account theft.");
+        VP_Paragraph acctPara3 = new VP_Paragraph("Once you are logged in, you may change your password at any time. "
+                + "An email is sent to the email address associated with the currently logged-in account juat as a notifcation. "
+                + "For security reasons, you must provide your current password along with the new password. This method is in "
+                + "place to protect your account in the event that you step away without loggin out.");
+        VP_FieldLabel privacyHelpLabel = new VP_FieldLabel("Privacy Infomation:");
+        VP_Paragraph privPara = new VP_Paragraph("The information you provide to VaqPack is for the sole use of "
+                + "generating the documents you choose. This information is not shared with anyone. "
+                + "Although your password is hashed and safeguards have been provided to ensure that you must enter a "
+                + "password that is at least somewhat difficult to crack, it is recommended that you still change your "
+                + "password every few months. VaqPack will automatically log out any user after some time of inactivity. However, "
+                + "you should always log out of VaqPack before stepping away from the computer running it.");
+        VP_FieldLabel faqLabel = new VP_FieldLabel("Frequently Asked Questions:");
+        VP_FieldLabel faq1 = new VP_FieldLabel("Why can't I edit some of the fields?");
+        faq1.setPadding(new Insets(10, 0, 0, 40));
+        VP_Paragraph ans1 = new VP_Paragraph("Every document has some fields that can only be edited in the 'Personal "
+                + "Information' section. These fields are shown to you in the document editors just to let you know exactly "
+                + "what information is used in each document.");
+        VP_FieldLabel faq2 = new VP_FieldLabel("What is the tree for on the left side of VaqPack?");
+        faq2.setPadding(new Insets(10, 0, 0, 40));
+        VP_Paragraph ans2 = new VP_Paragraph("The tree view on the left is a convenient way to navigate between documents quickly "
+                + "outside of the main wizard. Like the steps in the wizard overview page, parts of the tree because accessible "
+                + "once you complete some steps.");
+        VP_FieldLabel faq3 = new VP_FieldLabel("I found a serious bug in VaqPack. Who should I contact?");
+        faq3.setPadding(new Insets(10, 0, 0, 40));
+        VP_Paragraph ans3 = new VP_Paragraph("Send an email describing the problem to the VaqPack project manager, William DeWald vacpackt2@gmail.com");
+        helpContent.getChildren().addAll(loginHelpLabel, acctPara1, acctPara2, acctPara3, privacyHelpLabel, 
+                privPara, faqLabel, faq1, ans1, faq2, ans2, faq3, ans3);
+        helpScroller.setContent(helpContent);
+        helpDialog.getDialogPane().setPrefSize(480, 480);
+        helpDialog.getDialogShell().add(helpScroller, 0, 0);
+        helpDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+        aboutDialog.initModality(Modality.NONE);
+        aboutDialog.setHeaderText("Version 1.0");
+        VP_Paragraph aboutContent = new VP_Paragraph("VaqPack was created by Team-02 \n"
+                + "of Software Engineering course CSCI-3340-02 \n"
+                + "during the Fall 2015 semester at UTRGV.\n\n"
+                + "\t William DeWald (Project Manager)\n"
+                + "\t\t Fernando Bazan\n"
+                + "\t\t Nathanael Carr\n"
+                + "\t\t Erik Lopez\n"
+                + "\t\t Raul Saavedra\n");
+        aboutContent.setPadding(new Insets(50, 20, 50, 20));
+        aboutDialog.getDialogShell().add(aboutContent, 0, 0);
+        aboutDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
     }
 
     /*##########################################################################
@@ -177,55 +249,6 @@ public class VP_Header extends VBox {
         @Override
         public void handle(Event event) {
             controller.getPrimaryStage().setFullScreen(!controller.getPrimaryStage().isFullScreen());
-        }
-    }
-
-    /**
-     * Opens the 'Getting Started with VaqPack' Dialog Box.
-     *
-     * @since 1.0
-     */
-    private class HelpAction implements EventHandler<ActionEvent> {
-
-        /**
-         * @param event An ActionEvent, triggered by a menu item selection.
-         * @since 1.0
-         */
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Dialog helpDialog = new VP_Dialog("Getting Started with VaqPack");
-            helpDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            helpDialog.show();
-        }
-    }
-
-    /**
-     * Opens the 'About VaqPack' Dialog Box.
-     *
-     * @since 1.0
-     */
-    private class AboutAction implements EventHandler<ActionEvent> {
-
-        /**
-         * @param event An ActionEvent, triggered by a menu item selection.
-         * @since 1.0
-         */
-        @Override
-        public void handle(ActionEvent event) {
-            VP_Dialog aboutDialog = new VP_Dialog("About VaqPack");
-            aboutDialog.setHeaderText("Version 1.0");
-            VP_Paragraph aboutContent = new VP_Paragraph("VaqPack was created by Team-02 \n"
-                    + "of Software Engineering course CSCI-3340-02 \n"
-                    + "during the Fall 2015 semester at UTRGV.\n\n"
-                    + "\t William DeWald (Project Manager)\n"
-                    + "\t\t Fernando Bazan\n"
-                    + "\t\t Nathanael Carr\n"
-                    + "\t\t Erik Lopez\n"
-                    + "\t\t Raul Saavedra\n");
-            aboutContent.setPadding(new Insets(50, 20, 50, 20));
-            aboutDialog.getDialogShell().add(aboutContent, 0, 0);
-            aboutDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            aboutDialog.showAndWait();
         }
     }
 

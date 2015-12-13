@@ -756,7 +756,11 @@ public class VP_Center extends StackPane {
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         coverLetterEditFields.add(new VP_TextField(32, 45));   // bind this to user
         VP_Paragraph notes = new VP_Paragraph("(*) denotes an optional field. "
-                + "Locked fields can be edited by updating your personal info. You may create up to 9 paragraphs.");
+                        + "Locked fields can be edited by updating your personal info. You may create up to 9 paragraphs."),
+                salNotes = new VP_Paragraph("... such as 'Dear Mr. Smith' or 'Dear Sir or Madam'. Do not use a comma. VaqPack "
+                        + "automatically adds one for you in the cover letter."),
+                closingNotes = new VP_Paragraph("... such as 'Sincerely' or 'Regards'. Do not use a comma. VaqPack "
+                        + "automatically adds one for you in the cover letter.");
         VP_PageSubdivision heading = new VP_PageSubdivision("HEADING", true),
                 name = new VP_PageSubdivision("NAME", false),
                 address = new VP_PageSubdivision("ADDRESS", false),
@@ -905,6 +909,7 @@ public class VP_Center extends StackPane {
                 ((VP_TextField) (coverLetterEditFields.get(21))).setText(thisEmployer.getCity());
                 ((VP_TextField) (coverLetterEditFields.get(22))).setText(thisEmployer.getState());
                 ((VP_TextField) (coverLetterEditFields.get(23))).setText(thisEmployer.getZip());
+                table2.getSelectionModel().clearSelection();
                 controller.setChanges(true);
             }
         });
@@ -913,9 +918,9 @@ public class VP_Center extends StackPane {
         contactCompany.getChildren().addAll(contactTitleLine, contactCompanyLine);
         contactAddress.getChildren().addAll(contactAddress1Line, contactAddress2Line, contactCityLine, contactStateLine, contactZipLine);
         contact.getChildren().addAll(contactName, contactCompany, contactAddress);
-        salutation.getChildren().addAll(salutationLine);
+        salutation.getChildren().addAll(salutationLine, salNotes);
         dynamicBody.getChildren().addAll(paragraph1Line, addParagraphLine);
-        closing.getChildren().addAll(closingLine);
+        closing.getChildren().addAll(closingLine, closingNotes);
         sigName.getChildren().addAll(sigFirstNameLine, sigMiddleNameLine, sigLastNameLine);
         signature.getChildren().addAll(sigName);
         screen.addNodes(new Node[]{heading, dateDivision, adref, contact,
