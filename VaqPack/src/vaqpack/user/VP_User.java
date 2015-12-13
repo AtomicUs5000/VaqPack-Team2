@@ -12,14 +12,18 @@
  *-----------------------------------------------------------------------------*/
 package vaqpack.user;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
+import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
 
 public class VP_User {
 
     private final ObservableList<VP_Contact> contacts;
+    private final ObservableList<VP_Employer> employers;
     private final VP_BusinessCard bcard;
     private final VP_Resume resume;
     private final VP_CoverLetter covlet;
@@ -51,7 +55,9 @@ public class VP_User {
             phoneStored,
             cellStored,
             docEmailStored;
-    private final int[] coverLetterIds;
+    private final ArrayList<Integer> coverLetterIds;
+    private final ArrayList<String> coverLetterDates,
+            coverLetterNames;
 
     /*------------------------------------------------------------------------*
      * VP_User()
@@ -59,7 +65,8 @@ public class VP_User {
      * - No parameters
      *------------------------------------------------------------------------*/
     public VP_User() {
-        contacts = FXCollections.observableArrayList();
+        contacts = observableArrayList();
+        employers = observableArrayList();
         email = new SimpleStringProperty();
         firstName = new SimpleStringProperty();
         middleName = new SimpleStringProperty();
@@ -78,12 +85,16 @@ public class VP_User {
         bcard = new VP_BusinessCard(this);
         resume = new VP_Resume(this);
         covlet = new VP_CoverLetter(this);
-        coverLetterIds = new int[3];
-        coverLetterIds[0] = 0;
-        coverLetterIds[1] = 0;
-        coverLetterIds[2] = 0;
+        coverLetterIds = new ArrayList();
+        coverLetterIds.add(0);
+        coverLetterDates = new ArrayList();
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        String formattedDate = formatter.format(new Date());
+        coverLetterDates.add(formattedDate);
+        coverLetterNames = new ArrayList();
+        coverLetterNames.add("");
         currentCoverLetterIndex = 0;
-        covlet.setId(coverLetterIds[currentCoverLetterIndex]);
+        covlet.setId(coverLetterIds.get(currentCoverLetterIndex));
     }
 
     /*------------------------------------------------------------------------*
@@ -118,11 +129,16 @@ public class VP_User {
         docEmail.setValue(null);
         accessLevel = -1;
         userID = -1;
-        coverLetterIds[0] = 0;
-        coverLetterIds[1] = 0;
-        coverLetterIds[2] = 0;
+        coverLetterIds.clear();
+        coverLetterIds.add(0);
+        coverLetterDates.clear();
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        String formattedDate = formatter.format(new Date());
+        coverLetterDates.add(formattedDate);
+        coverLetterNames.clear();
+        coverLetterNames.add("");
         currentCoverLetterIndex = 0;
-        covlet.setId(coverLetterIds[currentCoverLetterIndex]);
+        covlet.setId(coverLetterIds.get(currentCoverLetterIndex));
         bcard.clear();
         resume.clear();
         covlet.clear();
@@ -305,8 +321,12 @@ public class VP_User {
         return covlet;
     }
 
-    public int[] getCoverLetterIds() {
+    public ArrayList getCoverLetterIds() {
         return coverLetterIds;
+    }
+    
+    public ArrayList getCoverLetterDates() {
+        return coverLetterDates;
     }
 
     public int getCurrentCoverLetterIndex() {
@@ -323,5 +343,16 @@ public class VP_User {
 
     public ObservableList<VP_Contact> getContacts() {
         return contacts;
+    }
+    
+    public ObservableList<VP_Employer> getEmployers() {
+        return employers;
+    }
+
+    /**
+     * @return the coverLetterNames
+     */
+    public ArrayList<String> getCoverLetterNames() {
+        return coverLetterNames;
     }
 }

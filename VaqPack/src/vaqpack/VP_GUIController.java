@@ -361,7 +361,7 @@ public class VP_GUIController {
                     CL_A_Nodes.add(new VP_TreeItem("Job Position", 7));
                     CL_A_Nodes.add(new VP_TreeItem("Reference Number", 7));
                     CL_Nodes.get(2).getChildren().addAll(CL_A_Nodes);
-                    CL_Nodes.add(new VP_TreeItem("Contact Information", 7));
+                    CL_Nodes.add(new VP_TreeItem("Employer Information", 7));
                     CL_Nodes.get(3).getPositionProp().bind(center.getClNodes().get(6).layoutYProperty()
                             .subtract(20)
                             .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
@@ -370,6 +370,7 @@ public class VP_GUIController {
                     ArrayList<VP_TreeItem> CL_C_Nodes = new ArrayList();
                     CL_C_Nodes.add(new VP_TreeItem("Name", 7));
                     CL_C_Nodes.get(0).getPositionProp().bind(center.getClNodes().get(7).layoutYProperty()
+                            .add(center.getClNodes().get(6).layoutYProperty())
                             .subtract(20)
                             .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
                                     .getChildren().get(0))).heightProperty()
@@ -381,16 +382,18 @@ public class VP_GUIController {
                     CL_C_Nodes.get(0).getChildren().addAll(CL_CN_Nodes);
                     CL_C_Nodes.add(new VP_TreeItem("Company", 7));
                     CL_C_Nodes.get(1).getPositionProp().bind(center.getClNodes().get(8).layoutYProperty()
+                            .add(center.getClNodes().get(6).layoutYProperty())
                             .subtract(20)
                             .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
                                     .getChildren().get(0))).heightProperty()
                                     .subtract(center.heightProperty())));
                     ArrayList<VP_TreeItem> CL_CC_Nodes = new ArrayList();
-                    CL_CC_Nodes.add(new VP_TreeItem("Contact Title", 7));
+                    CL_CC_Nodes.add(new VP_TreeItem("Employer Title", 7));
                     CL_CC_Nodes.add(new VP_TreeItem("Company Name", 7));
                     CL_C_Nodes.get(1).getChildren().addAll(CL_CC_Nodes);
                     CL_C_Nodes.add(new VP_TreeItem("Address", 7));
                     CL_C_Nodes.get(2).getPositionProp().bind(center.getClNodes().get(9).layoutYProperty()
+                            .add(center.getClNodes().get(6).layoutYProperty())
                             .subtract(20)
                             .divide(((VP_PageDivision) (((VBox) (((ScrollPane) (center.getChildren().get(7))).getContent()))
                                     .getChildren().get(0))).heightProperty()
@@ -640,6 +643,7 @@ public class VP_GUIController {
         dbTaskLabels.add("Checking Business Card Table");
         dbTaskLabels.add("Checking Contact Table");
         dbTaskLabels.add("Checking Cover Letter Table");
+        dbTaskLabels.add("Checking Employer Table");
         dbTaskLabels.add("Checking Resume Table");
         dbTaskLabels.add("Checking User Data Table");
         dbTaskLabels.add("Checking Custom Theme Table");
@@ -1022,11 +1026,11 @@ public class VP_GUIController {
                         }
                     }
                 }
-            } else if (stage <= 18) {
+            } else if (stage <= 19) {
                 try {
-                    if (stage < 18) {
+                    if (stage < 19) {
                         dataM.checkDBTable(stage - 2);
-                    } else if (stage == 18) {
+                    } else if (stage == 19) {
                         dataM.contructUserAccess();
                     }
                 } catch (SQLException ex) {
@@ -1036,7 +1040,7 @@ public class VP_GUIController {
                         Platform.runLater(() -> errorAlert(3104, ex.getMessage()));
                     }
                 }
-            } else if (stage == 19) {
+            } else if (stage == 20) {
                 adminExists = false;
                 while (!adminExists && !adminCheck) {
                     adminCheck = false;

@@ -141,7 +141,6 @@ public class VP_CoverLetter {
         changes = false;
         completedCoverLetter = false;
         startedCoverLetter = false;
-
         if (numbParagraphs != numbParagraphsStored) {
             numbParagraphsStored = numbParagraphs;
             changes = true;
@@ -263,6 +262,8 @@ public class VP_CoverLetter {
                 ) {
             startedCoverLetter = true;
         }
+        owner.getCoverLetterNames().set(owner.getCurrentCoverLetterIndex(), contactLastNameStored);
+        owner.getCoverLetterDates().set(owner.getCurrentCoverLetterIndex(), dateStored);
         if (completedCoverLetter)
             generateXSL();
     }
@@ -565,12 +566,15 @@ public class VP_CoverLetter {
     public void setId(int id) {
         this.id = id;
     }
-
-    public StringProperty getDate() {
-        return date;
-    }
     
     public String getXsl() {
         return xsl;
+    }
+
+    /**
+     * @return the date
+     */
+    public StringProperty getDate() {
+        return date;
     }
 }

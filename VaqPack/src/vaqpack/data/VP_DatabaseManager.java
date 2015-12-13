@@ -281,6 +281,40 @@ public class VP_DatabaseManager {
 
         checkTable(sql);
     }
+    
+    /*------------------------------------------------------------------------*
+     * checkEmployerTable()
+     * - Defines the SQL statement to create the 'employer' table and then
+     *   calls checkTable().
+     * - No parameters.
+     * - No return.
+     *------------------------------------------------------------------------*/
+    protected void checkEmployerTable() throws SQLException {
+        //-------- Initialization Start ----------\\
+        String sql = "CREATE TABLE employer ("
+                + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
+                + "  email varchar(254) DEFAULT NULL,"
+                + "  first_name varchar(45) DEFAULT NULL,"
+                + "  middle_name varchar(45) DEFAULT NULL,"
+                + "  last_name varchar(45) DEFAULT NULL,"
+                + "  title varchar(48) DEFAULT NULL,"
+                + "  company varchar(48) DEFAULT NULL,"
+                + "  address_line1 varchar(254) DEFAULT NULL,"
+                + "  address_line2 varchar(254) DEFAULT NULL,"
+                + "  city varchar(45) DEFAULT NULL,"
+                + "  state varchar(2) DEFAULT NULL,"
+                + "  zipcode varchar(10) DEFAULT NULL,"
+                + "  adsource varchar(128) DEFAULT NULL,"
+                + "  adposition varchar(128) DEFAULT NULL,"
+                + "  adrefnumb varchar(128) DEFAULT NULL,"
+                + "  PRIMARY KEY (id, email),"
+                + "  UNIQUE KEY id_UNIQUE (id),"
+                + "  UNIQUE KEY email_UNIQUE (email)"
+                + ")";
+        //-------- Initialization End ------------\\
+
+        checkTable(sql);
+    }
 
     /*------------------------------------------------------------------------*
      * checkResumeTable()
@@ -791,7 +825,9 @@ public class VP_DatabaseManager {
                                         ps5.executeQuery();
                                         rts = ps5.getResultSet();
                                         if (rts.next()) {
-                                            thisUser.getCoverLetterIds()[0] = rts.getInt("id");
+                                            thisUser.getCoverLetterIds().set(0, rts.getInt("id"));
+                                            thisUser.getCoverLetterDates().set(0, rts.getString("date"));
+                                            thisUser.getCoverLetterNames().set(0, rts.getString("contact_last_name"));
                                             cl.setId(rts.getInt("id"));
                                             cl.getAdSource().setValue(rts.getString("adsource"));
                                             cl.getAdJobTitle().setValue(rts.getString("job_title"));
@@ -820,11 +856,10 @@ public class VP_DatabaseManager {
                                             cl.getClosing().setValue(rts.getString("closing"));
                                             cl.setThemeId(rts.getInt("theme"));
                                             cl.save();
-                                            if (rts.next()) {
-                                                thisUser.getCoverLetterIds()[1] = rts.getInt("id");
-                                                if (rts.next()) {
-                                                    thisUser.getCoverLetterIds()[2] = rts.getInt("id");
-                                                }
+                                            while (rts.next()) {
+                                                thisUser.getCoverLetterIds().add(rts.getInt("id"));
+                                                thisUser.getCoverLetterDates().add(rts.getString("date"));
+                                                thisUser.getCoverLetterNames().add(rts.getString("contact_last_name"));
                                             }
                                         }
                                         try (PreparedStatement ps6 = con.prepareStatement("SELECT * FROM resume WHERE user_id = ?")) {
@@ -1056,6 +1091,29 @@ public class VP_DatabaseManager {
                                                 while (rts.next()) {
                                                     VP_Contact thisContact = new VP_Contact(rts.getString("email"), rts.getString("name"));
                                                     thisUser.getContacts().add(thisContact);
+                                                }
+                                            }
+                                            try (PreparedStatement ps8 = con.prepareStatement("SELECT * FROM employer")) {
+                                                ps8.executeQuery();
+                                                rts = ps8.getResultSet();
+                                                thisUser.getEmployers().clear();
+                                                while (rts.next()) {
+                                                    VP_Employer thisEmployer = new VP_Employer(
+                                                            rts.getString("email"),
+                                                            rts.getString("first_name"),
+                                                            rts.getString("middle_name"),
+                                                            rts.getString("last_name"),
+                                                            rts.getString("title"),
+                                                            rts.getString("company"),
+                                                            rts.getString("address_line1"),
+                                                            rts.getString("address_line2"),
+                                                            rts.getString("city"),
+                                                            rts.getString("state"),
+                                                            rts.getString("zipcode"),
+                                                            rts.getString("adsource"),
+                                                            rts.getString("adposition"),
+                                                            rts.getString("adrefnumb"));
+                                                    thisUser.getEmployers().add(thisEmployer);
                                                 }
                                             }
                                         }
@@ -1514,7 +1572,6 @@ public class VP_DatabaseManager {
                         inputStream.close();
                     }
                 }
-                System.out.println("business card pdf Stored");
             }
         }
         close();
@@ -1547,7 +1604,6 @@ public class VP_DatabaseManager {
                     inputStream.close();
                 }
             }
-            System.out.println("Business card html Stored");
         }
         close();
     }
@@ -1639,10 +1695,15 @@ public class VP_DatabaseManager {
                     ps2.setString(18, paraText);
                     ps2.setString(19, cl.getClosing().getValueSafe());
                     ps2.setInt(20, cl.getThemeId());
-                    remId = ps2.executeUpdate();
+                    ps2.executeUpdate();
+                    rts = ps2.getGeneratedKeys();
+                    if(rts.next())
+                    {
+                        remId = rts.getInt(1);
+                    }
                 }
             }
-            thisUser.getCoverLetterIds()[thisUser.getCurrentCoverLetterIndex()] = remId;
+            thisUser.getCoverLetterIds().set(thisUser.getCurrentCoverLetterIndex(), remId);
             thisUser.getCovlet().setId(remId);
             if (clpdf != null) {
                 inputStream = new FileInputStream(clpdf);
@@ -1663,7 +1724,6 @@ public class VP_DatabaseManager {
                         inputStream.close();
                     }
                 }
-                System.out.println("cover letter pdf Stored");
             }
         }
         close();
@@ -1696,7 +1756,6 @@ public class VP_DatabaseManager {
                     inputStream.close();
                 }
             }
-            System.out.println("Cover letter html Stored");
         }
         close();
     }
@@ -1727,7 +1786,6 @@ public class VP_DatabaseManager {
                     inputStream.close();
                 }
             }
-            System.out.println("Resume html Stored");
         }
         close();
     }
@@ -1758,7 +1816,6 @@ public class VP_DatabaseManager {
                     inputStream.close();
                 }
             }
-            System.out.println("Resume pdf Stored");
         }
         close();
     }
@@ -1779,6 +1836,33 @@ public class VP_DatabaseManager {
         close();
     }
     
+    protected void addEmployer(VP_Employer employer) throws SQLException {
+        //-------- Initialization Start ----------\\
+        //-------- Initialization End ------------\\
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO employer "
+                + "(email, first_name, middle_name, last_name, title, company, "
+                + "address_line1, address_line2, city, state, zipcode, adsource,"
+                + " adposition, adrefnumb) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            ps.setString(1, employer.getEmail());
+            ps.setString(2, employer.getFirstName());
+            ps.setString(3, employer.getMiddleName());
+            ps.setString(4, employer.getLastName());
+            ps.setString(5, employer.getTitle());
+            ps.setString(6, employer.getCompany());
+            ps.setString(7, employer.getAddress1());
+            ps.setString(8, employer.getAddress2());
+            ps.setString(9, employer.getCity());
+            ps.setString(10, employer.getState());
+            ps.setString(11, employer.getZip());
+            ps.setString(12, employer.getAdSource());
+            ps.setString(13, employer.getAdPosition());
+            ps.setString(14, employer.getAdRefNumb());
+            ps.executeUpdate();
+        }
+        close();
+    }
+    
     protected void deleteUserContact(String email, String name) throws SQLException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1790,6 +1874,35 @@ public class VP_DatabaseManager {
             ps.setInt(1, userID);
             ps.setString(2, name);
             ps.setString(3, email);
+            ps.executeUpdate();
+        }
+        close();
+    }
+    
+    protected void deleteEmployer(VP_Employer employer) throws SQLException {
+        //-------- Initialization Start ----------\\
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int userID = thisUser.getUserID();
+        //-------- Initialization End ------------\\
+        
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM employer WHERE email = ?")) {
+            ps.setString(1, employer.getEmail());
+            ps.executeUpdate();
+        }
+        close();
+    }
+    
+    protected void deleteCoverLetter(int id) throws SQLException {
+        //-------- Initialization Start ----------\\
+        VP_User thisUser = dataM.getController().getCurrentUser();
+        int userID = thisUser.getUserID();
+        //-------- Initialization End ------------\\
+        
+        connect(dbName);
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM cover_letter WHERE id = ? AND user_id = ?")) {
+            ps.setInt(1, id);
+            ps.setInt(2, userID);
             ps.executeUpdate();
         }
         close();

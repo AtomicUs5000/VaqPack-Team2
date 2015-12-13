@@ -421,6 +421,30 @@ public class VP_ErrorHandler {
                 content = "Error " + errorCode + ": " + exceptionString;
                 critical = false;
                 break;
+            case 3134:
+                header = "VaqPack's has encountered a MySQL error \n"
+                        + "while deleting a cover letter. \n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 3135:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while attempting to add a new employer.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
+            case 3136:
+                header = "VaqPack has encountered a MySQL error \n"
+                        + "while attempting to delete an employer.\n"
+                        + "VaqPack will attempt to continue.\n"
+                        + "Please try again.";
+                content = "Error " + errorCode + ": " + exceptionString;
+                critical = false;
+                break;
 
             // ID 3200 Originates from VP_FileManager
             case 3201:

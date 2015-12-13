@@ -35,6 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import vaqpack.VP_GUIController;
 import vaqpack.peripherals.VP_Mail;
+import vaqpack.user.VP_Employer;
 
 public class VP_DataManager {
 
@@ -187,30 +188,33 @@ public class VP_DataManager {
                 dbManager.checkCoverLetterTable();
                 break;
             case 7:
-                dbManager.checkResumeTable();
+                dbManager.checkEmployerTable();
                 break;
             case 8:
-                dbManager.checkUserDataTable();
+                dbManager.checkResumeTable();
                 break;
             case 9:
-                dbManager.checkCustomThemeTable();
+                dbManager.checkUserDataTable();
                 break;
             case 10:
-                dbManager.checkBusinessCardPDFTable();
+                dbManager.checkCustomThemeTable();
                 break;
             case 11:
-                dbManager.checkBusinessCardHTMLTable();
+                dbManager.checkBusinessCardPDFTable();
                 break;
             case 12:
-                dbManager.checkCoverLetterPDFTable();
+                dbManager.checkBusinessCardHTMLTable();
                 break;
             case 13:
-                dbManager.checkCoverLetterHTMLTable();
+                dbManager.checkCoverLetterPDFTable();
                 break;
             case 14:
-                dbManager.checkResPDFTable();
+                dbManager.checkCoverLetterHTMLTable();
                 break;
             case 15:
+                dbManager.checkResPDFTable();
+                break;
+            case 16:
                 dbManager.checkResHTMLTable();
                 break;
         }
@@ -546,6 +550,14 @@ public class VP_DataManager {
         dbManager.deleteUserContact(email, name);
     }
     
+    public void addEmployer(VP_Employer employer) throws SQLException {
+        dbManager.addEmployer(employer);
+    }
+    
+    public void deleteEmployer(VP_Employer employer) throws SQLException {
+        dbManager.deleteEmployer(employer);
+    }
+    
     public void sendAttachments(String email, boolean sendResHTML, boolean sendResPDF,
             boolean sendBCHTML, boolean sendBCPDF, boolean sendCLHTML, boolean sendCLPDF) 
             throws SQLException, IOException {
@@ -620,6 +632,10 @@ public class VP_DataManager {
     
     public void printDocument(int type) throws SQLException, IOException {
         dbManager.printFile(type, true);
+    }
+    
+    public void deleteCovlet(int id) throws SQLException {
+        dbManager.deleteCoverLetter(id);
     }
 
     /*------------------------------------------------------------------------*

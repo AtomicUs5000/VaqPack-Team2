@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +52,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import vaqpack.peripherals.VP_Previewer;
 import vaqpack.user.VP_Contact;
+import vaqpack.user.VP_Employer;
 import vaqpack.user.VP_Theme;
 
 /**
@@ -89,12 +91,13 @@ public class VP_Center extends StackPane {
             qualificationsErrorLine, highlightsErrorLine, languagesErrorLine,
             softwareErrorLine, referencesErrorLine, changePassErrorLine, 
             addContactErrorLine, sendAttachErrorLine, changeMysqlErrorLine, 
-            personalInfoErrorLine;
+            personalInfoErrorLine, addEmployerErrorLine;
     private final VP_Paragraph accessInstructions, resetInstructions1, resetInstructions2,
             overviewInfo, coverLetterDetails;
     private final VP_Button submitResetBtn, startNewBtn, addEducationBtn, addExperienceBtn,
             addAchievementBtn, addCommunityBtn, addQualificationBtn, addHighlightBtn,
-            addLanguageBtn, addSoftwareBtn, addReferenceBtn, printResBtn, printCLBtn, printBCBtn;
+            addLanguageBtn, addSoftwareBtn, addReferenceBtn, printResBtn, printCLBtn,
+            printBCBtn, deleteCovletBtn;
     private final ComboBox coverLetterSelect;
     private final ArrayList<VP_Button> wizardMainButtons;
     private final ArrayList<VP_PageSubdivision> bcNodes, clNodes;
@@ -154,6 +157,7 @@ public class VP_Center extends StackPane {
         addContactErrorLine = new VP_ErrorLine();
         sendAttachErrorLine = new VP_ErrorLine();
         changeMysqlErrorLine = new VP_ErrorLine();
+        addEmployerErrorLine = new VP_ErrorLine();
         coverLetterDetails = new VP_Paragraph();
         accessInstructions = new VP_Paragraph();
         resetInstructions1 = new VP_Paragraph();
@@ -222,6 +226,7 @@ public class VP_Center extends StackPane {
         printResBtn = new VP_Button("Print Resume", new PrintAction(2));
         printCLBtn = new VP_Button("Print Cover Letter", new PrintAction(6));
         printBCBtn = new VP_Button("Print Business Card", new PrintAction(4));
+        deleteCovletBtn = new VP_Button("Delete", new DeleteCovletAction());
         covLetEditBox = new VP_PageDivision("EDIT COVER LETTER");
         resumeEducationBox = new VP_PageDivision("RESUME -- EDUCATION");
         resumeExperienceBox = new VP_PageDivision("RESUME -- WORK EXPERIENCE");
@@ -306,7 +311,8 @@ public class VP_Center extends StackPane {
                 buildResumeReferencesScreen(), //.....screen 21
                 buildChangePasswordScreen(), //.......screen 22
                 buildChangeMysqlScreen(), //..........screen 23
-                buildPrintScreen() //.................screen 24
+                buildPrintScreen(), //................screen 24
+                buildEmployersScreen() //.............screen 25
         );
         showScreen(0, 0);
     }
@@ -700,10 +706,10 @@ public class VP_Center extends StackPane {
         VP_Button selectCoverLetterButton = new VP_Button("Load", new LoadCoverLetterAction());
         VP_DivisionLine buttonLine = new VP_DivisionLine(new Node[]{startNewBtn, new VP_Button("Cancel", new CancelAction())});
         //-------- Initialization End ------------\\
-        coverLetterDetails.setParaText("You are currently using 0 out of 3 cover letters available to you."
-                + "\nClick \"Start New Cover Letter\" to begin working on a new cover letter.");
+        coverLetterDetails.setParaText("You currently do not have any cover letters started. "
+                + "Start a new cover letter by clicking the 'Start New Cover Letter' button below.");
         selectCoverLetterLine.setPadding(new Insets(30, 0, 30, 100));
-        selectCoverLetterLine.getChildren().addAll(coverLetterSelect, selectCoverLetterButton);
+        selectCoverLetterLine.getChildren().addAll(coverLetterSelect, selectCoverLetterButton, deleteCovletBtn);
         selectCoverLetterLine.hide();
         screen.addNodes(new Node[]{coverLetterDetails, selectCoverLetterLine, buttonLine});
         return screen;
@@ -755,7 +761,7 @@ public class VP_Center extends StackPane {
                 name = new VP_PageSubdivision("NAME", false),
                 address = new VP_PageSubdivision("ADDRESS", false),
                 communication = new VP_PageSubdivision("COMMUNICATION", false),
-                dateDivision = new VP_PageSubdivision("", false),
+                dateDivision = new VP_PageSubdivision("AUTO-FILL OPTIONS", false),
                 adref = new VP_PageSubdivision("AD REFERENCE", false),
                 contact = new VP_PageSubdivision("EMPLOYER INFORMATION", true),
                 contactName = new VP_PageSubdivision("EMPLOYER NAME", false),
@@ -765,6 +771,7 @@ public class VP_Center extends StackPane {
                 closing = new VP_PageSubdivision("", false),
                 signature = new VP_PageSubdivision("SIGNATURE", true),
                 sigName = new VP_PageSubdivision("NAME", false);
+        VP_FieldLabel tableHeading = new VP_FieldLabel("Load Ad Reference and Employer Information from VaqPack Employer List:");
         clNodes.add(heading);
         clNodes.add(name);
         clNodes.add(address);
@@ -783,6 +790,7 @@ public class VP_Center extends StackPane {
         VP_Button submitBtn = new VP_Button("Submit", new SubmitCovLetEditAction()),
                 cancelBtn = new VP_Button("Cancel", new CancelAction(7)),
                 dateBtn = new VP_Button("Update", new UpdateDateAction()),
+                loadDataBtn = new VP_Button("Load Employer Ad Data"),
                 delPara1Btn = new VP_Button("Delete", new DeleteParagraphAction(1)),
                 addParaBtn = new VP_Button("Add a New Paragraph", new AddParagraphAction());
         VP_DivisionLine firstNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("first name:", 140), coverLetterEditFields.get(0)}),
@@ -804,7 +812,7 @@ public class VP_Center extends StackPane {
                 contactMiddleNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer middle name:", 140), coverLetterEditFields.get(15)}),
                 contactLastNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer last name:", 140), coverLetterEditFields.get(16)}),
                 contactTitleLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer title:", 140), coverLetterEditFields.get(17)}),
-                contactCompanyLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer name:", 140), coverLetterEditFields.get(18)}),
+                contactCompanyLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*company name:", 140), coverLetterEditFields.get(18)}),
                 contactAddress1Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer address line 1:", 140), coverLetterEditFields.get(19)}),
                 contactAddress2Line = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*employer address line 2:", 140), coverLetterEditFields.get(20)}),
                 contactCityLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("employer city:", 140), coverLetterEditFields.get(21)}),
@@ -817,6 +825,10 @@ public class VP_Center extends StackPane {
                 sigMiddleNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("*middle name:", 140), coverLetterEditFields.get(28)}),
                 sigLastNameLine = new VP_DivisionLine(new Node[]{new VP_FieldLabel("last name:", 140), coverLetterEditFields.get(29)}),
                 buttonsLine = new VP_DivisionLine(new Node[]{submitBtn, cancelBtn});
+        TableView table2 = new TableView();
+        TableColumn emailCol2 = new TableColumn("Email"),
+                companyCol = new TableColumn("Company"),
+                adRefNumbCol = new TableColumn("Ad Reference Number");
 
         //-------- Initialization End ------------\\
         ((VP_TextField) (coverLetterEditFields.get(0))).textProperty().bindBidirectional(controller.getCurrentUser().getFirstName());
@@ -862,7 +874,40 @@ public class VP_Center extends StackPane {
         address.getChildren().addAll(address1Line, address2Line, cityLine, stateLine, zipLine);
         communication.getChildren().addAll(phoneLine, cellLine, emailLine);
         heading.getChildren().addAll(name, address, communication);
-        dateDivision.getChildren().addAll(dateLine);
+        emailCol2.setCellValueFactory(new PropertyValueFactory<>("email"));
+        companyCol.setCellValueFactory(new PropertyValueFactory<>("company"));
+        adRefNumbCol.setCellValueFactory(new PropertyValueFactory<>("adRefNumb"));
+        table2.setItems(controller.getCurrentUser().getEmployers());
+        table2.setEditable(true);
+        table2.getColumns().addAll(emailCol2, companyCol, adRefNumbCol);
+        table2.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table2.setFixedCellSize(25);
+        table2.prefHeightProperty().bind(Bindings.size(table2.getItems()).multiply(table2.getFixedCellSize()).add(30));
+        table2.getSelectionModel().clearSelection();
+        table2.setMaxHeight(100);
+        table2.setPlaceholder(new Label("There are no employers available at this time. Check back later."));
+        tableHeading.setPadding(new Insets(30, 0, 0, 50));
+        dateDivision.getChildren().addAll(dateLine, tableHeading, table2, loadDataBtn);
+        loadDataBtn.setOnAction((e)->{
+            VP_Employer thisEmployer = (VP_Employer)(table2.getSelectionModel().getSelectedItem());
+            if (thisEmployer != null) {
+                VP_Sounds.play(0);
+                ((VP_TextField) (coverLetterEditFields.get(11))).setText(thisEmployer.getAdSource());
+                ((VP_TextField) (coverLetterEditFields.get(12))).setText(thisEmployer.getAdPosition());
+                ((VP_TextField) (coverLetterEditFields.get(13))).setText(thisEmployer.getAdRefNumb());
+                ((VP_TextField) (coverLetterEditFields.get(14))).setText(thisEmployer.getFirstName());
+                ((VP_TextField) (coverLetterEditFields.get(15))).setText(thisEmployer.getMiddleName());
+                ((VP_TextField) (coverLetterEditFields.get(16))).setText(thisEmployer.getLastName());
+                ((VP_TextField) (coverLetterEditFields.get(17))).setText(thisEmployer.getTitle());
+                ((VP_TextField) (coverLetterEditFields.get(18))).setText(thisEmployer.getCompany());
+                ((VP_TextField) (coverLetterEditFields.get(19))).setText(thisEmployer.getAddress1());
+                ((VP_TextField) (coverLetterEditFields.get(20))).setText(thisEmployer.getAddress2());
+                ((VP_TextField) (coverLetterEditFields.get(21))).setText(thisEmployer.getCity());
+                ((VP_TextField) (coverLetterEditFields.get(22))).setText(thisEmployer.getState());
+                ((VP_TextField) (coverLetterEditFields.get(23))).setText(thisEmployer.getZip());
+                controller.setChanges(true);
+            }
+        });
         adref.getChildren().addAll(adSourceLine, adJobLine, adRefLine);
         contactName.getChildren().addAll(contactFirstNameLine, contactMiddleNameLine, contactLastNameLine);
         contactCompany.getChildren().addAll(contactTitleLine, contactCompanyLine);
@@ -995,7 +1040,8 @@ public class VP_Center extends StackPane {
         VP_Paragraph docInfo = new VP_Paragraph("Choose which documents you would like to send below. "
                 + "If a specific document is unselectable, this means you need to complete "
                 + "something in that document before you can select it for distribution."),
-                contactInfo = new VP_Paragraph("Choose a contact to send to from your list of contacts. "
+                contactInfo = new VP_Paragraph("Choose a contact to send to from your list of contacts "
+                        + "or from the system list of available employers. "
                         + "If you do not have any contacts or if you you need to send to someone who "
                         + "is not in the list of contacts, add a new contact first.");
         VP_TextField addEmail = new VP_TextField(20, 254),
@@ -1013,13 +1059,24 @@ public class VP_Center extends StackPane {
                 deleteLine = new VP_DivisionLine(new Node[]{deleteBtn}),
                 addContactLine = new VP_DivisionLine(new Node[]{addEmail, addName, addContactBtn}),
                 sendLine = new VP_DivisionLine(new Node[]{sendBtn, cancelBtn});
-        TableView table = new TableView();
+        TableView table = new TableView(),
+                table2 = new TableView();
         TableColumn emailCol = new TableColumn("Email"),
-                nameCol = new TableColumn("Name");
+                nameCol = new TableColumn("Name"),
+                emailCol2 = new TableColumn("Email"),
+                companyCol = new TableColumn("Company"),
+                adRefNumbCol = new TableColumn("Ad Reference Number");
+        
+        VP_FieldLabel tableHeader1 = new VP_FieldLabel("PERSONAL CONTACT LIST"),
+                tableHeader2 = new VP_FieldLabel("VAQPACK EMPLOYER LIST");
 
         //-------- Initialization End ------------\\
         emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        emailCol2.setCellValueFactory(new PropertyValueFactory<>("email"));
+        companyCol.setCellValueFactory(new PropertyValueFactory<>("company"));
+        adRefNumbCol.setCellValueFactory(new PropertyValueFactory<>("adRefNumb"));
+
         table.setItems(controller.getCurrentUser().getContacts());
         table.setEditable(true);
         table.getColumns().addAll(emailCol, nameCol);
@@ -1029,15 +1086,32 @@ public class VP_Center extends StackPane {
         table.getSelectionModel().clearSelection();
         table.setMaxHeight(200);
         table.setPlaceholder(new Label("You have no contacts. Add some contact below."));
+
+        table2.setItems(controller.getCurrentUser().getEmployers());
+        table2.setEditable(true);
+        table2.getColumns().addAll(emailCol2, companyCol, adRefNumbCol);
+        table2.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table2.setFixedCellSize(25);
+        table2.prefHeightProperty().bind(Bindings.size(table2.getItems()).multiply(table2.getFixedCellSize()).add(30));
+        table2.getSelectionModel().clearSelection();
+        table2.setMaxHeight(100);
+        table2.setPlaceholder(new Label("There are no employers available at this time. Check back later."));
+        
+        tableHeader1.setPadding(new Insets(30, 0, 0, 50));
+        tableHeader2.setPadding(new Insets(10, 0, 0, 50));
         addEmail.setPromptText("Email Address");
         addName.setPromptText("Contact Name");
-        
+        table.selectionModelProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
+            table2.getSelectionModel().clearSelection();
+        });
+        table2.selectionModelProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
+            table.getSelectionModel().clearSelection();
+        });
         addContactBtn.setOnAction((e) -> {
             boolean hasError = false;
             String thisEmail = addEmail.getText().trim().toLowerCase(),
                     thisName = addName.getText().trim();
             VP_Sounds.play(0);
-            
             if (thisEmail == null || thisEmail.equals("")) {
                 hasError = true;
                 addEmail.showInvalid();
@@ -1080,13 +1154,15 @@ public class VP_Center extends StackPane {
         });
         deleteBtn.setOnAction((e) -> {
             VP_Contact deletedContact = (VP_Contact)(table.getSelectionModel().getSelectedItem());
-            VP_Sounds.play(0);
-            try {
-                controller.getDataM().deleteContact(deletedContact.getEmail(), deletedContact.getName());
-                controller.getCurrentUser().getContacts().remove(deletedContact);
-                table.getSelectionModel().clearSelection();
-            } catch (SQLException ex) {
-                controller.errorAlert(3129, ex.getMessage());
+            if (deletedContact != null) {
+                VP_Sounds.play(0);
+                try {
+                    controller.getDataM().deleteContact(deletedContact.getEmail(), deletedContact.getName());
+                    controller.getCurrentUser().getContacts().remove(deletedContact);
+                    table.getSelectionModel().clearSelection();
+                } catch (SQLException ex) {
+                    controller.errorAlert(3129, ex.getMessage());
+                }
             }
         });
         
@@ -1100,16 +1176,19 @@ public class VP_Center extends StackPane {
                     sendCLPDF = clPDFcb.isSelected();
             String email = "";
             VP_Contact sendContact = (VP_Contact)(table.getSelectionModel().getSelectedItem());
+            VP_Employer sendEmployer = (VP_Employer)(table2.getSelectionModel().getSelectedItem());
             VP_Sounds.play(0);
             if (sendContact != null) {
                 email = sendContact.getEmail();
+            } else if (sendEmployer != null) {
+                email = sendEmployer.getEmail();
             }
             if (!(sendResHTML || sendResPDF || sendBCHTML || sendBCPDF || sendCLPDF || sendCLHTML)) {
                 hasError = true;
                 sendAttachErrorLine.setText("You have not selected any files to send.");
             } else if (email.equals("")) {
                 hasError = true;
-                sendAttachErrorLine.setText("You have not selected a contact to send documents to.");
+                sendAttachErrorLine.setText("You have not selected a contact or employer to send documents to.");
             }
             if (hasError) {
                 VP_Sounds.play(-1);
@@ -1121,6 +1200,7 @@ public class VP_Center extends StackPane {
                     controller.getDataM().sendAttachments(email, sendResHTML, sendResPDF, 
                             sendBCHTML, sendBCPDF, sendCLHTML, sendCLPDF);
                     table.getSelectionModel().clearSelection();
+                    table2.getSelectionModel().clearSelection();
                     resHTMLcb.setSelected(false);
                     resPDFcb.setSelected(false);
                     bcHTMLcb.setSelected(false);
@@ -1140,7 +1220,7 @@ public class VP_Center extends StackPane {
             }
         });
         documentsDiv.getChildren().addAll(docInfo, doc1Line, doc2Line, doc3Line, doc4Line, doc5Line, doc6Line);
-        contactsDiv.getChildren().addAll(contactInfo, table, deleteLine, addContactErrorLine, addContactLine);
+        contactsDiv.getChildren().addAll(contactInfo, tableHeader2, table2, tableHeader1, table, deleteLine, addContactErrorLine, addContactLine);
         sendDiv.getChildren().addAll(sendAttachErrorLine, sendLine);
         screen.addNodes(new Node[]{documentsDiv, contactsDiv, sendDiv});
         return screen;
@@ -1638,6 +1718,233 @@ public class VP_Center extends StackPane {
         screen.addNodes(new Node[]{printNotes, printLine, cancelLine});
         return screen;
     }
+    
+    /**
+     * Builds the screen where the administrator updates the list of employers 
+     * available to all users. A.K.A Screen 25
+     *
+     * @return A VP_Screen that gets applied to a center StackPane level.
+     * @since 1.0
+     */
+    private VP_Screen buildEmployersScreen() {
+        //-------- Initialization Start ----------\\
+        VP_Screen screen = new VP_Screen("EMPLOYERS LIST");
+        VP_PageSubdivision employersDiv = new VP_PageSubdivision("Employer List", false),
+                addEmployerDiv = new VP_PageSubdivision("Add Employer", false);
+        VP_Button addBtn = new VP_Button("Add"),
+                deleteBtn = new VP_Button("Delete Selected Employer"),
+                cancelBtn = new VP_Button("Cancel",  new CancelAction(25));
+        TableView table = new TableView();
+        TableColumn emailCol = new TableColumn("Email"),
+                firstNameCol = new TableColumn("First Name"),
+                middleNameCol = new TableColumn("Middle Name"), 
+                lastNameCol = new TableColumn("Last Name"), 
+                titleCol = new TableColumn("Title"), 
+                companyCol = new TableColumn("Company"), 
+                address1Col = new TableColumn("Address Line1"), 
+                address2Col = new TableColumn("Address Line2"), 
+                cityCol = new TableColumn("City"), 
+                stateCol = new TableColumn("State"), 
+                zipCol = new TableColumn("Zipcode"), 
+                adSourceCol = new TableColumn("Ad Source"), 
+                adPositionCol = new TableColumn("Job Position"), 
+                adRefNumbCol = new TableColumn("Ad Reference Number");
+        VP_TextField addEmail = new VP_TextField(32, 254),
+                addFirstName = new VP_TextField(32, 45),
+                addMiddleName = new VP_TextField(32, 45),
+                addLastName = new VP_TextField(32, 45),
+                addTitle = new VP_TextField(32, 48),
+                addCompany = new VP_TextField(32, 48),
+                addAddress1 = new VP_TextField(32, 254),
+                addAddress2 = new VP_TextField(32, 254),
+                addCity = new VP_TextField(32, 45),
+                addState = new VP_TextField(32, 2),
+                addZip = new VP_TextField(32, 10),
+                addAdSource = new VP_TextField(32, 128),
+                addAdPosition = new VP_TextField(32, 128),
+                addAdRefNumb = new VP_TextField(32, 128);
+        //-------- Initialization End ------------\\
+        
+        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        middleNameCol.setCellValueFactory(new PropertyValueFactory<>("middleName"));
+        lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        companyCol.setCellValueFactory(new PropertyValueFactory<>("company"));
+        address1Col.setCellValueFactory(new PropertyValueFactory<>("address1"));
+        address2Col.setCellValueFactory(new PropertyValueFactory<>("address2"));
+        cityCol.setCellValueFactory(new PropertyValueFactory<>("city"));
+        stateCol.setCellValueFactory(new PropertyValueFactory<>("state"));
+        zipCol.setCellValueFactory(new PropertyValueFactory<>("zip"));
+        adSourceCol.setCellValueFactory(new PropertyValueFactory<>("adSource"));
+        adPositionCol.setCellValueFactory(new PropertyValueFactory<>("adPosition"));
+        adRefNumbCol.setCellValueFactory(new PropertyValueFactory<>("adRefNumb"));
+        table.setItems(controller.getCurrentUser().getEmployers());
+        table.setEditable(true);
+        table.getColumns().addAll(emailCol, firstNameCol, middleNameCol, lastNameCol,
+                titleCol, companyCol, address1Col, address2Col, cityCol, stateCol,
+                zipCol, adSourceCol, adPositionCol, adRefNumbCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setFixedCellSize(25);
+        table.prefHeightProperty().bind(Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(30));
+        table.getSelectionModel().clearSelection();
+        table.setMaxHeight(400);
+        table.setPlaceholder(new Label("There are no employers. Add some empoyers below."));
+        addEmail.setPromptText("Email Address");
+        addFirstName.setPromptText("First Name");
+        addMiddleName.setPromptText("Middle Name (optional)");
+        addLastName.setPromptText("Last Name");
+        addTitle.setPromptText("Employer Title (optional)");
+        addCompany.setPromptText("Employer Company");
+        addAddress1.setPromptText("Address Line 1");
+        addAddress2.setPromptText("Address Line 2");
+        addCity.setPromptText("City");
+        addState.setPromptText("State");
+        addZip.setPromptText("Zipcode");
+        addAdSource.setPromptText("Ad Source");
+        addAdPosition.setPromptText("Job Position");
+        addAdRefNumb.setPromptText("Ad Reference Number");
+        employersDiv.getChildren().addAll(table, deleteBtn);
+        addEmployerDiv.getChildren().addAll(addEmail, addFirstName, addMiddleName,
+                addLastName, addTitle, addCompany, addAddress1, addAddress2,
+                addCity, addState, addZip, addAdSource, addAdPosition, addAdRefNumb, 
+                addEmployerErrorLine, addBtn);
+        addBtn.setOnAction((e) -> {
+            String zipRegex = "^[0-9]{5}(?:-[0-9]{4})?$";
+            Pattern zipPattern = Pattern.compile(zipRegex);
+            Matcher matcher;
+            boolean hasError = false;
+            String thisEmail = addEmail.getText().trim().toLowerCase(),
+                    thisFirstName = addFirstName.getText().trim(),
+                    thisMiddleName = addMiddleName.getText().trim(),
+                    thisLastName = addLastName.getText().trim(),
+                    thisTitle = addTitle.getText().trim(),
+                    thisCompany = addCompany.getText().trim(),
+                    thisAddress1 = addAddress1.getText().trim(),
+                    thisAddress2 = addAddress2.getText().trim(),
+                    thisCity = addCity.getText().trim(),
+                    thisState = addState.getText().trim().toUpperCase(),
+                    thisZip = addZip.getText().trim(),
+                    thisAdSource = addAdSource.getText().trim(),
+                    thisAdPosition = addAdPosition.getText().trim(),
+                    thisAdRefNumb = addAdRefNumb.getText().trim();
+            VP_Sounds.play(0);
+            if (thisEmail == null || thisEmail.equals("")) {
+                hasError = true;
+                addEmail.showInvalid();
+                addEmployerErrorLine.setText("New employer email address cannot be blank.");
+            } else if (!controller.getDataM().checkEmail(thisEmail)) {
+                hasError = true;
+                addEmail.showInvalid();
+                addEmployerErrorLine.setText("New employer email is invalid.");
+            } else if (thisFirstName == null || thisFirstName.equals("")) {
+                hasError = true;
+                addFirstName.showInvalid();
+                addEmployerErrorLine.setText("New employer first name cannot be blank.");
+            } else if (thisLastName == null || thisLastName.equals("")) {
+                hasError = true;
+                addLastName.showInvalid();
+                addEmployerErrorLine.setText("New employer last name cannot be blank.");
+            } else if (thisCompany == null || thisCompany.equals("")) {
+                hasError = true;
+                addCompany.showInvalid();
+                addEmployerErrorLine.setText("New employer company name cannot be blank.");
+            } else if (thisAddress1 == null || thisAddress1.equals("")) {
+                hasError = true;
+                addAddress1.showInvalid();
+                addEmployerErrorLine.setText("New employer address line 1 cannot be blank.");
+            } else if (thisCity == null || thisCity.equals("")) {
+                hasError = true;
+                addCity.showInvalid();
+                addEmployerErrorLine.setText("New employer city cannot be blank.");
+            } else if (thisState == null || thisState.equals("")) {
+                hasError = true;
+                addState.showInvalid();
+                addEmployerErrorLine.setText("New employer state cannot be blank.");
+            } else if (thisZip == null || thisZip.equals("")) {
+                hasError = true;
+                addZip.showInvalid();
+                addEmployerErrorLine.setText("New employer zipcode cannot be blank.");
+            } else if (thisAdSource == null || thisAdSource.equals("")) {
+                hasError = true;
+                addAdSource.showInvalid();
+                addEmployerErrorLine.setText("The ad source cannot be blank.");
+            } else if (thisAdPosition == null || thisAdPosition.equals("")) {
+                hasError = true;
+                addAdPosition.showInvalid();
+                addEmployerErrorLine.setText("The ad job position cannot be blank.");
+            } else if (thisAdRefNumb == null || thisAdRefNumb.equals("")) {
+                hasError = true;
+                addAdRefNumb.showInvalid();
+                addEmployerErrorLine.setText("The ad reference number cannot be blank.");
+            } else {
+                for (int i = 0; i < controller.getCurrentUser().getEmployers().size(); i++) {
+                    if (((VP_Employer)controller.getCurrentUser().getEmployers().get(i)).getEmail().equalsIgnoreCase(thisEmail)) {
+                        hasError = true;
+                        addEmail.showInvalid();
+                        addEmployerErrorLine.setText("An employer with this email already exists.");
+                        break;
+                    }
+                }
+                if (!hasError) {
+                    matcher = zipPattern.matcher(thisZip);
+                    if (!matcher.matches()) {
+                        hasError = true;
+                        addZip.showValid();
+                        addEmployerErrorLine.setText("Employer Zipcode is not in proper form. "
+                        + "Zipcodes can only be in form xxxxx or xxxxx-xxxx");
+                    }
+                }
+            }
+            if (!hasError) {
+                addEmployerErrorLine.hide();
+                VP_Employer newEmployer = new VP_Employer(thisEmail, thisFirstName, 
+                        thisMiddleName, thisLastName, thisTitle, thisCompany, thisAddress1,
+                        thisAddress2, thisCity, thisState, thisZip, thisAdSource,
+                        thisAdPosition, thisAdRefNumb);
+                try {
+                    controller.getDataM().addEmployer(newEmployer);
+                    controller.getCurrentUser().getEmployers().add(newEmployer);
+                    table.getSelectionModel().clearSelection();
+                    addEmail.clear();
+                    addFirstName.clear();
+                    addMiddleName.clear();
+                    addLastName.clear();
+                    addTitle.clear();
+                    addCompany.clear();
+                    addAddress1.clear();
+                    addAddress2.clear();
+                    addCity.clear();
+                    addState.clear();
+                    addZip.clear();
+                    addAdSource.clear();
+                    addAdPosition.clear();
+                    addAdRefNumb.clear();
+                    table.scrollTo(controller.getCurrentUser().getEmployers().size() - 1);
+                } catch (SQLException ex) {
+                    controller.errorAlert(3135, ex.getMessage());
+                }
+            } else {
+                VP_Sounds.play(-1);
+                addEmployerErrorLine.show();
+            }
+        });
+        deleteBtn.setOnAction((e) -> {
+            VP_Employer deletedEmployer = (VP_Employer)(table.getSelectionModel().getSelectedItem());
+            if (deletedEmployer != null) {
+                VP_Sounds.play(0);
+                try {
+                    controller.getDataM().deleteEmployer(deletedEmployer);
+                    controller.getCurrentUser().getEmployers().remove(deletedEmployer);
+                    table.getSelectionModel().clearSelection();
+                } catch (SQLException ex) {
+                    controller.errorAlert(3136, ex.getMessage());
+                }
+            }
+        });
+        screen.addNodes(new Node[]{employersDiv, addEmployerDiv, cancelBtn});
+        return screen;
+    }
 
     /**
      * Restores the login page back to its original state.
@@ -1880,6 +2187,7 @@ public class VP_Center extends StackPane {
         addContactErrorLine.hide();
         sendAttachErrorLine.hide();
         changeMysqlErrorLine.hide();
+        addEmployerErrorLine.hide();
         resHTMLcb.setSelected(false);
         resPDFcb.setSelected(false);
         bcHTMLcb.setSelected(false);
@@ -1924,7 +2232,6 @@ public class VP_Center extends StackPane {
                 groupCL.getToggles().get(i).setSelected(true);
             }
         }
-        int numbLetters = 0;
         VP_Resume thisRes = controller.getCurrentUser().getResume();
         startNewBtn.setVisible(true);
         addEducationBtn.setVisible(true);
@@ -1946,7 +2253,8 @@ public class VP_Center extends StackPane {
         addLanguageBtn.setManaged(true);
         addSoftwareBtn.setManaged(true);
         addReferenceBtn.setManaged(true);
-        selectCoverLetterLine.show();
+        deleteCovletBtn.setVisible(false);
+        selectCoverLetterLine.hide();
         if (thisRes.getNumbEducation() == 9) {
             addEducationBtn.setVisible(false);
             addEducationBtn.setManaged(false);
@@ -1985,31 +2293,31 @@ public class VP_Center extends StackPane {
         }
         coverLetterSelect.getItems().clear();
         List<String> clChoices = new ArrayList<>();
-        clChoices.add("Cover Letter #1");
-        clChoices.add("Cover Letter #2");
-        clChoices.add("Cover Letter #3");
-        for (int i = 0; i < 3; i++) {
-            if (controller.getCurrentUser().getCoverLetterIds()[i] > 0) {
-                numbLetters += 1;
-                coverLetterSelect.getItems().add(clChoices.get(i));
-                if (controller.getCurrentUser().getCurrentCoverLetterIndex() == i) {
-                    coverLetterSelect.setValue(clChoices.get(i));
+        int count = 0;
+        SimpleDateFormat oldFormatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy");
+        for (int i = 0; i < controller.getCurrentUser().getCoverLetterIds().size(); i++) {
+            if ((int)(controller.getCurrentUser().getCoverLetterIds().get(i)) > 0) {
+                count++;
+                String oldDateStr = (String)controller.getCurrentUser().getCoverLetterDates().get(i);
+                Date date;
+                try {
+                    date = oldFormatter.parse(oldDateStr);
+                    String simpleDate = formatter.format(date);
+                    clChoices.add("#" + count + " " + simpleDate + " ... Employer: " + (String)controller.getCurrentUser().getCoverLetterNames().get(i));
+                    coverLetterSelect.getItems().add(clChoices.get(i));
+                    if (controller.getCurrentUser().getCurrentCoverLetterIndex() == i) {
+                        coverLetterSelect.getSelectionModel().select(i);
+                    }
+                } catch (ParseException ex) {
                 }
             }
         }
-        if (numbLetters == 0) {
-            coverLetterDetails.setParaText("You are currently using 0 out of 3 cover letters available to you. "
-                    + "\nClick \"Start New Cover Letter\" to begin working on a new cover letter.");
-            selectCoverLetterLine.hide();
-        } else if (numbLetters < 3) {
-            coverLetterDetails.setParaText("You are currently using " + numbLetters + " out of 3 cover letters available to you. "
-                    + "\nClick \"Start New Cover Letter\" to begin working on a new cover letter or choose a cover letter "
-                    + "to load and/or edit.");
-        } else {
-            coverLetterDetails.setParaText("You are currently using 3 out of 3 cover letters available to you. "
-                    + "\nChoose a cover letter to load and/or edit.");
-            startNewBtn.setVisible(false);
-            startNewBtn.setManaged(false);
+        if (count > 0) {
+            selectCoverLetterLine.show();
+            if (count > 1) {
+                deleteCovletBtn.setVisible(true);
+            }
         }
         if ((dynamicBody.getChildren().size() - 2) != controller.getCurrentUser().getCovlet().getNumbParagraphs()) {
             if ((dynamicBody.getChildren().size() - 2) > controller.getCurrentUser().getCovlet().getNumbParagraphs()) {
@@ -3073,17 +3381,19 @@ public class VP_Center extends StackPane {
                 controller.getDataM().getDbBusy().await();
                 controller.getDataM().setDbBusy(new CountDownLatch(1));
                 controller.getDataM().saveUserData();
-                controller.getCurrentUser().getCovlet().save();
                 controller.getCurrentUser().getResume().save();
                 controller.getCurrentUser().getBcard().save();
-                Thread backgroundThread1 = new Thread(new SaveCovLetTask());
-                backgroundThread1.setDaemon(true);
+                if (controller.getCurrentUser().getCovlet().getId() != 0) {
+                    controller.getCurrentUser().getCovlet().save();
+                    Thread backgroundThread1 = new Thread(new SaveCovLetTask());
+                    backgroundThread1.setDaemon(true);
+                    controller.getDataM().setDbBusy(new CountDownLatch(1));
+                    backgroundThread1.start();
+                }
                 Thread backgroundThread2 = new Thread(new SaveBCardTask());
                 backgroundThread2.setDaemon(true);
                 Thread backgroundThread3 = new Thread(new SaveResTask(0));
                 backgroundThread3.setDaemon(true);
-                controller.getDataM().setDbBusy(new CountDownLatch(1));
-                backgroundThread1.start();
                 controller.getDataM().getDbBusy().await();
                 controller.getDataM().setDbBusy(new CountDownLatch(1));
                 backgroundThread2.start();
@@ -4468,20 +4778,13 @@ public class VP_Center extends StackPane {
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
-            int selectedLetter;
             int clID;
-            if (coverLetterSelect.getValue() == "Cover Letter #1") {
-                selectedLetter = 0;
-            } else if (coverLetterSelect.getValue() == "Cover Letter #2") {
-                selectedLetter = 1;
-            } else {
-                selectedLetter = 2;
-            }
+            int selectedLetter = coverLetterSelect.getSelectionModel().getSelectedIndex();
             controller.getCurrentUser().getCovlet().clear();
-            clID = controller.getCurrentUser().getCoverLetterIds()[selectedLetter];
+            clID = (int)controller.getCurrentUser().getCoverLetterIds().get(selectedLetter);
+            controller.getCurrentUser().setCurrentCoverLetterIndex(selectedLetter);
             try {
                 controller.getDataM().loadCovLet(clID);
-                controller.getCurrentUser().setCurrentCoverLetterIndex(selectedLetter);
                 Thread backgroundThread = new Thread(new UpdateDynamicTask(6));
                 backgroundThread.setDaemon(true);
                 backgroundThread.start();
@@ -4508,15 +4811,19 @@ public class VP_Center extends StackPane {
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
-            if (controller.getCurrentUser().getCoverLetterIds()[0] == 0) {
+            if ((int)controller.getCurrentUser().getCoverLetterIds().get(0) == 0
+                    && controller.getCurrentUser().getCoverLetterIds().size() == 1) {
                 controller.getCurrentUser().getCovlet().clear();
                 controller.getCurrentUser().setCurrentCoverLetterIndex(0);
-            } else if (controller.getCurrentUser().getCoverLetterIds()[1] == 0) {
-                controller.getCurrentUser().getCovlet().clear();
-                controller.getCurrentUser().setCurrentCoverLetterIndex(1);
             } else {
                 controller.getCurrentUser().getCovlet().clear();
-                controller.getCurrentUser().setCurrentCoverLetterIndex(2);
+                controller.getCurrentUser().getCoverLetterIds().add(0);
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+                String formattedDate = formatter.format(new Date());
+                controller.getCurrentUser().getCoverLetterDates().add(formattedDate);
+                controller.getCurrentUser().getCoverLetterNames().add("");
+                controller.getCurrentUser().setCurrentCoverLetterIndex(controller.getCurrentUser().getCoverLetterIds().size() - 1);
+                controller.getCurrentUser().getCovlet().save();
             }
             Thread backgroundThread = new Thread(new UpdateDynamicTask(6));
             backgroundThread.setDaemon(true);
@@ -4642,9 +4949,9 @@ public class VP_Center extends StackPane {
         @Override
         public void handle(ActionEvent event) {
             VP_Sounds.play(0);
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
-            String formattedDate = formatter.format(new Date());
-            dateValueLabel.setText(formattedDate);
+            SimpleDateFormat formatter1 = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+            String formattedDate1 = formatter1.format(new Date());
+            dateValueLabel.setText(formattedDate1);
             controller.setChanges(true);
         }
     }
@@ -4959,6 +5266,43 @@ public class VP_Center extends StackPane {
                 Platform.runLater(() -> {controller.errorAlert(1205, ex.getMessage());});
             } finally {
                 controller.getDataM().getDbBusy().countDown();
+            }
+        }
+    }
+    
+    private class DeleteCovletAction implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            VP_Sounds.play(0);
+            deleteCovletBtn.setVisible(false);
+            int index = coverLetterSelect.getSelectionModel().getSelectedIndex();
+            int clId = (int)controller.getCurrentUser().getCoverLetterIds().get(index);
+            int newId = 0;
+            controller.getCurrentUser().getCoverLetterIds().remove(index);
+            controller.getCurrentUser().getCoverLetterDates().remove(index);
+            controller.getCurrentUser().getCoverLetterNames().remove(index);
+            if (index <= controller.getCurrentUser().getCurrentCoverLetterIndex()) {
+                controller.getCurrentUser().setCurrentCoverLetterIndex(controller.getCurrentUser().getCurrentCoverLetterIndex() - 1);
+                if (controller.getCurrentUser().getCurrentCoverLetterIndex() < 0) {
+                    controller.getCurrentUser().setCurrentCoverLetterIndex(0);
+                }
+            }
+            newId = (int)controller.getCurrentUser().getCoverLetterIds().get(controller.getCurrentUser().getCurrentCoverLetterIndex());
+            if (clId > 0) {
+                try {
+                    controller.getDataM().deleteCovlet(clId);
+                } catch (SQLException ex) {
+                    controller.errorAlert(3134, ex.getMessage());
+                }
+            }
+            try {
+                controller.getDataM().loadCovLet(newId);
+                Thread backgroundThread = new Thread(new UpdateDynamicTask(6));
+                backgroundThread.setDaemon(true);
+                backgroundThread.start();
+            } catch (SQLException ex) {
+                controller.errorAlert(3116, ex.getMessage());
             }
         }
     }

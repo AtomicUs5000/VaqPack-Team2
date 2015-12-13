@@ -77,6 +77,7 @@ public class VP_Header extends VBox {
                 helpMenu = new Menu("Help");
         MenuItem exitVP = new MenuItem("Exit VaqPack"),
                 toggleFull = new MenuItem("Toggle Full Screen"),
+                updateEmployers = new MenuItem("Update Employers List"),
                 changeDB = new MenuItem("Change MySQL Location"),
                 gettingStarted = new MenuItem("Getting Started with VaqPack"),
                 aboutHelp = new MenuItem("About VaqPack");
@@ -111,6 +112,16 @@ public class VP_Header extends VBox {
                 controller.getCenter().showScreen(22, 0);
             }    
         });
+        updateEmployers.setOnAction((e) -> {
+            boolean saving = false;
+            if (controller.hasChanges()) {
+                saving = controller.getCenter().confirmLeavePage();
+            }
+            if (!saving) {
+                controller.getCenter().cancelActionFunction();
+                controller.getCenter().showScreen(25, 0);
+            }
+        });
         changeDB.setOnAction((e) -> {
             boolean saving = false;
             if (controller.hasChanges()) {
@@ -128,7 +139,7 @@ public class VP_Header extends VBox {
         homeMenu.getItems().addAll(userLogout,
                 new SeparatorMenuItem(), exitVP);
         optionsMenu.getItems().addAll(toggleFull, changePass);
-        adminMenu.getItems().addAll(changeDB);
+        adminMenu.getItems().addAll(updateEmployers, changeDB);
         helpMenu.getItems().addAll(gettingStarted, aboutHelp);
         menuBar.getMenus().addAll(homeMenu, optionsMenu, helpMenu, adminMenu);
         adminMenu.setDisable(true);
