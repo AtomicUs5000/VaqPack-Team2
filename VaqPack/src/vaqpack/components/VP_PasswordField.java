@@ -1,15 +1,7 @@
-/*-----------------------------------------------------------------------------*
- * VP_PasswordField.java
- * - Custom PasswordField with built in KeyEvent handling
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_PasswordField.java - Everything involving the password field GUI nodes.
  * FILE ID 2600
- *-----------------------------------------------------------------------------*/
+ */
 package vaqpack.components;
 
 import javafx.event.EventHandler;
@@ -19,22 +11,39 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.input.KeyEvent;
 import vaqpack.VP_GUIController;
 
+/**
+ * Defines a custom password field. This extends PasswordField and consists of
+ * overloaded constructors and implements EventHandler.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_PasswordField extends PasswordField implements EventHandler<KeyEvent> {
     private final VP_GUIController controller;
     private final int limit,
             minimum;
     private final Label strengthLabel;
 
-    /*---------------------------------------------------------------------*
-     * VP_PasswordField()
-     * - Constructor.
-     * - Parameter limit is the allowed character limit for this TextField.
-     *   A limit of 0 or less means to not limit the text.
-     *   A minimum of 0 or less means no minimum requirement and no strength
-     *   checking for this pawwrod field.
-     * - Parameter strengthLabel is the label that notes the strength if this
-     *   label is not null.
-     *---------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @param columns Sets the preferred width, in columns, of the field.
+     * @param limit Allowed character limit of the field. 
+     * <ul>
+     * <li>&lt;= 0 - No text limit</li>
+     * </ul>
+     * @param minimum Defines password strength requirements.
+     * <ul>
+     * <li>&lt;= 0 - No minimum requirement and no password strength checking.</li>
+     * </ul>
+     * @param strengthLabel Label that notes the strength if label is not null.
+     * @since 1.0
+     */
     public VP_PasswordField(int columns, int limit, int minimum, Label strengthLabel) {
         //-------- Initialization Start ----------\\
         this.controller = null;
@@ -51,6 +60,23 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
         this.assignEvents();
     }
     
+    /**
+     * Constructor.
+     * 
+     * @param columns Sets the preferred width, in columns, of the field.
+     * @param limit Allowed character limit of the field. 
+     * <ul>
+     * <li>&lt;= 0 - No text limit</li>
+     * </ul>
+     * @param minimum Defines password strength requirements.
+     * <ul>
+     * <li>&lt;= 0 - No minimum requirement and no password strength checking.</li>
+     * </ul>
+     * @param strengthLabel Label that notes the strength if label is not null.
+     * @param controller Stores the GUI controller for convenience in accessing
+     * controller functions or classes accessed by the controller.
+     * @since 1.0
+     */
     public VP_PasswordField(int columns, int limit, int minimum, 
             Label strengthLabel, VP_GUIController controller) {
         //-------- Initialization Start ----------\\
@@ -68,13 +94,14 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
         this.assignEvents();
     }
 
-    /*---------------------------------------------------------------------*
-     * handle()
-     * - Handles the KeyEvent, enforcing the limit, if any.
-     *   Calculates the strength of the password if minimum > 0 and if the
-     *   strengthLabel exists.
-     *   Also clears the red tint that was applied when invalid.
-     *---------------------------------------------------------------------*/
+    /**
+     * Handles the KeyEvent. Enforces the limit, if any. Calculates the strength
+     * of the password if minimum &gt; 0 and if strenthLabel exists. Clears red
+     * tint if applied due to invalid entry.
+     * 
+     * @param event The KeyEvent to be handled
+     * @since 1.0
+     */
     @Override
     public void handle(KeyEvent event) {
         //-------- Initialization Start ----------\\
@@ -136,54 +163,51 @@ public class VP_PasswordField extends PasswordField implements EventHandler<KeyE
             }
             switch (strength) {
                 case 0:
-                    strengthLabel.setText("Srength: Unacceptable");
+                    strengthLabel.setText("Strength: Unacceptable");
                     break;
                 case 1:
-                    strengthLabel.setText("Srength: Weak");
+                    strengthLabel.setText("Strength: Weak");
                     break;
                 case 2:
-                    strengthLabel.setText("Srength: Mediocre");
+                    strengthLabel.setText("Strength: Mediocre");
                     break;
                 case 3:
-                    strengthLabel.setText("Srength: Good");
+                    strengthLabel.setText("Strength: Good");
                     break;
                 case 4:
-                    strengthLabel.setText("Srength: Strong");
+                    strengthLabel.setText("Strength: Strong");
                     break;
                 case 5:
-                    strengthLabel.setText("Srength: Very Strong");
+                    strengthLabel.setText("Strength: Very Strong");
                     break;
             }
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * showInvalid()
-     * - Applies a red tint to the field when the caller deems it as invalid.
-     * - No Paramters
-     * - No Return
-     *------------------------------------------------------------------------*/
+    /**
+     * Applies a red tint to the field when the caller deems it as invalid.
+     * 
+     * @since 1.0
+     */
     public void showInvalid() {
         this.setStyle("-fx-control-inner-background: rgb(255, 210, 210);");
     }
     
-    /*------------------------------------------------------------------------*
-     * showValid()
-     * - Removes the red tint when the caller deems it as valid.
-     * - No Paramters
-     * - No Return
-     *------------------------------------------------------------------------*/
+    /**
+     * Removes the red tint when the caller deems it as valid.
+     * 
+     * @since 1.0
+     */
     public void showValid() {
         this.setStyle("-fx-control-inner-background: white");
     }
 
-    /*------------------------------------------------------------------------*
-     * assignEvents()
-     * - Applies any event handlers needed. This is done outside of the
-     *   constructor to avoid potential problems.
-     * - No Paramters
-     * - No Return
-     *------------------------------------------------------------------------*/
+    /**
+     * Applies any event handlers needed. Done outside of the constructor to 
+     * avoid potential problems.
+     * 
+     * @since 1.0
+     */
     private void assignEvents() {
         this.setOnKeyReleased(this);
     }

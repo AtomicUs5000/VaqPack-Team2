@@ -41,7 +41,6 @@ public class VP_DataManagerTest {
 
     /**
      * Test of checkDBLocation method, of class VP_DataManager.
-     * @throws java.lang.Exception
      */
     @Test
     public void testCheckDBLocation() throws Exception {

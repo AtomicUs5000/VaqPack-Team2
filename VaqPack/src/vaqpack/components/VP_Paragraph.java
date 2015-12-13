@@ -1,38 +1,42 @@
-/*-----------------------------------------------------------------------------*
- * VP_Paragraph.java
- * - Custom Label to be used as a paragraph within Page Divisions
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 2500
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_Paragraph.java - Defines a paragraph within a page division. FILE ID 2500
+ */
 package vaqpack.components;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 
+/**
+ * Defines a paragraph section within a page division. This extends Label and 
+ * consists of overloaded constructors.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_Paragraph extends Label {
 
-    /*------------------------------------------------------------------------*
-     * VP_Paragraph()
-     * - Default Constructor.
-     * - No parameters
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @since 1.0
+     */
     public VP_Paragraph() {
         this.setWrapText(true);
         this.setPadding(new Insets(10, 50, 10, 50));
         this.getStyleClass().add("paragraph");
     }
 
-    /*------------------------------------------------------------------------*
-     * VP_Paragraph()
-     * - Constructor.
-     * - Parameter string text sets the text for the paragraph.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @param text String sets the text for the paragraph.
+     * @since 1.0
+     */
     public VP_Paragraph(String text) {
         this.setWrapText(true);
         this.setPadding(new Insets(10, 50, 10, 50));
@@ -40,12 +44,13 @@ public class VP_Paragraph extends Label {
         this.getStyleClass().add("paragraph");
     }
     
-    /*------------------------------------------------------------------------*
-     * VP_Paragraph()
-     * - Constructor.
-     * - Parameter string text sets the text for the paragraph.
-     * - Parameter boolean isError sets the style to bold red if true.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor. 
+     * 
+     * @param text Sets the text for the paragraph.
+     * @param isError Applies error style to paragraph.
+     * @since 1.0
+     */
     public VP_Paragraph(String text, boolean isError) {
         this.setWrapText(true);
         this.setPadding(new Insets(10, 50, 10, 50));
@@ -57,12 +62,12 @@ public class VP_Paragraph extends Label {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * setParaText()
-     * - Separate from setText(), this adds an indent on the first line.
-     * - Parameter string text sets the text for the paragraph.
-     * - No return
-     *------------------------------------------------------------------------*/
+    /**
+     * Adds an indent to the first line of paragraph text.
+     * 
+     * @param text Sets the text for the paragraph.
+     * @since 1.0
+     */
     public void setParaText(String text) {
         this.setText("\t" + text);
     }

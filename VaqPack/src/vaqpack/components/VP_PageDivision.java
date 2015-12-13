@@ -1,15 +1,7 @@
-/*-----------------------------------------------------------------------------*
- * VP_PageDivision.java
- * - Custom VBox page section with a header title
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_PageDivision.java - Custom VBox that represents a page section with title. 
  * FILE ID 2300
- *-----------------------------------------------------------------------------*/
+ */
 package vaqpack.components;
 
 import javafx.geometry.Insets;
@@ -17,13 +9,26 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+/**
+ * The page division defines page sections. This extends VBox and consists of 
+ * overloaded constructors.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_PageDivision extends VBox {
     
-    /*------------------------------------------------------------------------*
-     * VP_PageDivision()
-     * - Constructor.
-     * - Parameter string title is the title at the top of this component
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @param title The string which sets the title at the top of this component.
+     * @since 1.0
+     */
     public VP_PageDivision(String title) {
         this.setSpacing(6);
         this.getStyleClass().add("formDivision");
@@ -36,12 +41,14 @@ public class VP_PageDivision extends VBox {
         this.getChildren().add(titleLabel);
     }
     
-    /*------------------------------------------------------------------------*
-     * VP_PageDivision()
-     * - Overloaded Constructor.
-     * - Parameter string title is the title at the top of this component
-     * - Parameter icon is a header icon.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @param title The string which sets the title at the top of this component.
+     * @param icon The name of the desired header icon.
+     * @param width The preferred width of the component.
+     * @since 1.0
+     */
     public VP_PageDivision(String title, String icon, double width) {
         this.setSpacing(10);
         this.getStyleClass().add("formDivision");

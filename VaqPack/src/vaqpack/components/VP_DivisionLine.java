@@ -1,15 +1,7 @@
-/*-----------------------------------------------------------------------------*
- * VP_DivisionLine.java
- * - Custom HBox that represents a line of a page division
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_DivisionLine.java - Custom HBox that represents a line of page division. 
  * FILE ID 2100
- *-----------------------------------------------------------------------------*/
+ */
 package vaqpack.components;
 
 import javafx.geometry.Insets;
@@ -17,25 +9,38 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 
+/**
+ * The division line divides a page. This extends HBox and consists of 
+ * overloaded constructors and methods to show and hide the division line.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_DivisionLine extends HBox {
     
-    /*------------------------------------------------------------------------*
-     * VP_DivisionLine
-     * - Default Constructor.
-     * - No parameters
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @since 1.0
+     */
     public VP_DivisionLine() {
         this.setAlignment(Pos.CENTER_LEFT);
         this.setSpacing(20);
         this.setPadding(new Insets(4, 0, 4, 4));
     }
     
-    /*------------------------------------------------------------------------*
-     * VP_DivisionLine
-     * - Constructor.
-     * - Parameter nodes is an array of nodes, allowing the addition of nodes
-     *   to this component at the time of its construction.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @param nodes An array of nodes which allows the addition of nodes to this
+     * component at the time of its construction.
+     * @since 1.0
+     */
     public VP_DivisionLine(Node[] nodes) {
         this.setAlignment(Pos.CENTER_LEFT);
         this.setSpacing(20);
@@ -43,13 +48,14 @@ public class VP_DivisionLine extends HBox {
         this.setPadding(new Insets(4, 0, 4, 4));
     }
     
-    /*------------------------------------------------------------------------*
-     * VP_DivisionLine
-     * - Constructor.
-     * - Parameter nodes is an array of nodes, allowing the addition of nodes
-     * - Parameter padLeft is the left padding of the line.
-     *   to this component at the time of its construction.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     * 
+     * @param nodes An array of nodes which allows the addition of nodes to this
+     * component at the time of its construction.
+     * @param padLeft Sets the left padding of the line.
+     * @since 1.0
+     */
     public VP_DivisionLine(Node[] nodes, int padLeft) {
         this.setAlignment(Pos.CENTER_LEFT);
         this.setSpacing(20);
@@ -57,23 +63,21 @@ public class VP_DivisionLine extends HBox {
         this.setPadding(new Insets(4, 0, 4, padLeft));
     }
     
-    /*------------------------------------------------------------------------*
-     * hide()
-     * - Hides this line and collapses it.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Hides the line and collapses it.
+     * 
+     * @since 1.0
+     */
     public void hide() {
         this.setVisible(false);
         this.setManaged(false);
     }
     
-    /*------------------------------------------------------------------------*
-     * show()
-     * - Shows this line and expands it.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Shows the line and expands it.
+     * 
+     * @since 1.0
+     */
     public void show() {
         this.setVisible(true);
         this.setManaged(true);
