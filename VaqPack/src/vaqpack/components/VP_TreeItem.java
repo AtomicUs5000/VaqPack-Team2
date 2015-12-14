@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * Custom tree item class. This extends TreeItem and consists of a an overloaded
+ * Custom tree item class. This extends TreeItem and consists of an overloaded
  * constructor.
  *
  * @author William Dewald (Project Manager, Team-02)
