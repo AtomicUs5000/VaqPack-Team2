@@ -297,7 +297,7 @@ public class VP_DatabaseManager {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE employer ("
                 + "  id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "  email varchar(254) DEFAULT NULL,"
+                + "  email varchar(254) NOT NULL,"
                 + "  first_name varchar(45) DEFAULT NULL,"
                 + "  middle_name varchar(45) DEFAULT NULL,"
                 + "  last_name varchar(45) DEFAULT NULL,"
