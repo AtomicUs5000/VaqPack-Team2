@@ -1,39 +1,43 @@
-/*-----------------------------------------------------------------------------*
- * VP_Button.java
- * - Custom button class
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 2000
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_Button.java - Custom button class. FILE ID 2000
+ */
 package vaqpack.components;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 
+/**
+ * Custom button class for GUI button nodes. This extends Button
+ * and consists of overloaded constructors.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_Button extends Button {
-
-    /*------------------------------------------------------------------------*
-     * VP_Button()
-     * - Default Constructor.
-     * - No Parameters
-     *------------------------------------------------------------------------*/
+    
+    /**
+     * Constructor.
+     *
+     * @since 1.0
+     */
     public VP_Button() {
         this.getStyleClass().add("genButton");
         this.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
         this.setMaxSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
     }
 
-    /*------------------------------------------------------------------------*
-     * VP_Button()
-     * - Constructor.
-     * - Parameter string label is the text label of the button.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     *
+     * @param label The string to set the text label of the button.
+     * @since 1.0
+     */
     public VP_Button(String label) {
         this.getStyleClass().add("genButton");
         this.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
@@ -41,13 +45,13 @@ public class VP_Button extends Button {
         this.setText(label);
     }
 
-    /*------------------------------------------------------------------------*
-     * VP_Button()
-     * - Constructor.
-     * - Parameter string label is the text label of the button.
-     * - Parameter event handler e is the action event associated with
-     *   the button.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor.
+     *
+     * @param label The string to set the text label of the button.
+     * @param e The EventHandler action event associated with the button.
+     * @since 1.0
+     */
     public VP_Button(String label, EventHandler<ActionEvent> e) {
         this.getStyleClass().add("genButton");
         this.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);

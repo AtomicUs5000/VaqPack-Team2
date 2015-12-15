@@ -1,15 +1,6 @@
-/*-----------------------------------------------------------------------------*
- * VP_TreeItem.java
- * - Custom Dialog Box
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 2950
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_Dialog.java - Custom dialog box. FILE ID 2950
+ */
 package vaqpack.components;
 
 import javafx.geometry.Pos;
@@ -17,15 +8,28 @@ import javafx.scene.control.Dialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * Custom dialog box class. This extends Dialog and consists of a constructor
+ * to set dialog box style and title.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_Dialog extends Dialog {
 
     private final GridPane dialogShell;
-    /*---------------------------------------------------------------------*
-     * VPDialog()
-     * - Constructor.
-     * - Parameter title is the string title of the window.
-     *---------------------------------------------------------------------*/
 
+    /**
+     * Constructor.
+     * 
+     * @param title The string to set the title text of the dialog box.
+     * @since 1.0
+     */
     public VP_Dialog(String title) {
         //-------- Initialization Start ----------\\
         VBox shellPad = new VBox();
@@ -43,6 +47,18 @@ public class VP_Dialog extends Dialog {
         this.getDialogPane().setContent(shellPad);
     }
 
+    /*##########################################################################
+     * SUBCLASSES
+     *########################################################################*/
+    /*##########################################################################
+     * SETTERS AND GETTERS
+     *########################################################################*/
+    /**
+     * Accessor method.
+     * 
+     * @return The constructed GridPane dialog box.
+     * @since 1.0
+     */
     public GridPane getDialogShell() {
         return dialogShell;
     }

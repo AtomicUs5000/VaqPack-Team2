@@ -1,15 +1,6 @@
-/*-----------------------------------------------------------------------------*
- * VP_DataToHtml.java
- * - Converts data nodes to HTML format
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 3300
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_DataToHtml.java - HTML convertor. FILE ID 3300
+ */
 package vaqpack.data;
 
 import java.io.File;
@@ -23,16 +14,39 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+/**
+ * Converts data nodes to HTML format. Consists of private constructor and
+ * static convert() method.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public final class VP_DataToHtml {
 
-    /*------------------------------------------------------------------------*
-     * VP_DataToHtml()
-     * - Private constructor. Cannot be instantiated
-     * No Parameters.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor. Private constructor. Cannot be instantiated.
+     * 
+     * @since 1.0
+     */
     private VP_DataToHtml() {
     }
     
+    /**
+     * Converts XML/XSL files to HTML.
+     * 
+     * @param xmlFile XML file to be converted.
+     * @param xslFile XSL file to be converted.
+     * @param htmlFile HTML file to store converted XML/XSL data.
+     * @throws FileNotFoundException
+     * @throws TransformerException
+     * @throws IOException 
+     * @since 1.0
+     */
     public static void convert(File xmlFile, File xslFile, File htmlFile) 
             throws FileNotFoundException, TransformerException, IOException {
         //-------- Initialization Start ----------\\

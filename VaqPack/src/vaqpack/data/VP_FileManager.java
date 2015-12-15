@@ -1,16 +1,6 @@
-/*-----------------------------------------------------------------------------*
- * VP_FileManager.java
- * - Manages anything related to files, such as saving or reading the html files
- *   and saving pdf files
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 3200
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_FileManager.java - Manages reading and writing of user files. FILE ID 3200
+ */
 package vaqpack.data;
 
 import vaqpack.user.VP_User;
@@ -49,6 +39,18 @@ import org.w3c.dom.Element;
 import vaqpack.user.VP_CoverLetter;
 import vaqpack.user.VP_Resume;
 
+/**
+ * Manages anything related to files, such as saving or reading the HTML files
+ * and saving PDF files.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_FileManager {
 
     private final String vector;
@@ -59,11 +61,12 @@ public class VP_FileManager {
     private DocumentBuilderFactory icFactory;
     private DocumentBuilder icBuilder;
 
-    /*------------------------------------------------------------------------*
-     * VP_FileManager()
-     * - Constructor. Initialiazes the keyPass and vector used in encryption.
-     * No Parameters.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor. Initializes the keyPass and vector used in encryption.
+     * 
+     * @param dataM 
+     * @since 1.0
+     */
     protected VP_FileManager(VP_DataManager dataM) {
         //-------- Initialization Start ----------\\
         this.dataM = dataM;
@@ -74,12 +77,14 @@ public class VP_FileManager {
         //-------- Initialization End ------------\\
     }
 
-    /*------------------------------------------------------------------------*
-     * retrieveUrlPort()
-     * - Retrieves the database url and port from the properties file.
-     * - No parameters.
-     * - Returns a string array of the database url and port.
-     *------------------------------------------------------------------------*/
+    /**
+     * Retrieves the database URL and port from the properties file.
+     * 
+     * @return String array of the database URL and port.
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected String[] retrieveUrlPort() throws FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
         String urlPort[] = new String[2];
@@ -93,12 +98,14 @@ public class VP_FileManager {
         return urlPort;
     }
 
-    /*------------------------------------------------------------------------*
-     * storeUrlPort()
-     * - Stores the database url and port in the properties file.
-     * - Parameter loc is a string array of the database url and port.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Stores the database URL and port in the properties file.
+     * 
+     * @param loc String array of the database URL and port.
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void storeUrlPort(String[] loc) throws FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
         Properties prop = new Properties();
@@ -110,16 +117,23 @@ public class VP_FileManager {
         prop.store(output, null);
     }
 
-    /*------------------------------------------------------------------------*
-     * retrieveAdminEncrypted()
-     * - Retrieves the encrypted database admin user and password from the
-     *   properties file and calls decrypt().
-     * - Parameter url is a string of the database url used as part of
-     *   encryption method.
-     * - Parameter port is a string of the database port used as part of
-     *   encryption method.
-     * - Returns a string array of decrypted database admin user credentials.
-     *------------------------------------------------------------------------*/
+    /**
+     * Retrieves the encrypted database administrator user and password from the
+     * properties file and calls decrypt().
+     * 
+     * @param url String of the database URL used as part of encryption method.
+     * @param port String of the database port used as part of encryption method.
+     * @return String array of decrypted database administrator user credentials.
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException 
+     * @since 1.0
+     */
     protected String[] retrieveAdminEncrypted(String url, String port) throws FileNotFoundException,
             IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
@@ -140,14 +154,22 @@ public class VP_FileManager {
         return cred;
     }
 
-    /*------------------------------------------------------------------------*
-     * storeAdminUserPass()
-     * - Stores the encrypted database admin user and password in the
-     *   properties file.
-     * - Parameter cred is a string array of the database admin user
-     *   and password.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Stores the encrypted database administrator user and password in the
+     * properties file.
+     * 
+     * @param cred String array of the database administrator user and password.
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws UnsupportedEncodingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException 
+     * @since 1.0
+     */
     protected void storeAdminUserPass(String[] cred) throws FileNotFoundException,
             IOException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, InvalidAlgorithmParameterException,
@@ -162,6 +184,17 @@ public class VP_FileManager {
         prop.store(output, null);
     }
     
+    /**
+     * Generates Business Card HTML and PDF documents.
+     * 
+     * @return File array of HTML and PDF documents.
+     * @throws FileNotFoundException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws DocumentException 
+     * @since 1.0
+     */
     protected File[] generateBCardHTMLandPDF() throws FileNotFoundException, 
             TransformerException, ParserConfigurationException, IOException, DocumentException {
         VP_User user = dataM.getController().getCurrentUser();
@@ -267,6 +300,17 @@ public class VP_FileManager {
         return new File[]{bchtml, bcpdf};
     }
     
+    /**
+     * Generates Cover Letter HTML and PDF documents.
+     * 
+     * @return File array of HTML and PDF documents.
+     * @throws FileNotFoundException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws DocumentException 
+     * @since 1.0
+     */
     protected File[] generateCovLetHTMLandPDF() throws FileNotFoundException, 
             TransformerException, ParserConfigurationException, IOException, DocumentException {
         VP_User user = dataM.getController().getCurrentUser();
@@ -437,6 +481,17 @@ public class VP_FileManager {
         return new File[]{clhtml, clpdf};
     }
     
+    /**
+     * Generates Resume HTML and PDF documents.
+     * 
+     * @return File array of HTML and PDF documents.
+     * @throws FileNotFoundException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws DocumentException 
+     * @since 1.0
+     */
     protected File[] generateResHTMLandPDF() throws FileNotFoundException, 
             TransformerException, ParserConfigurationException, IOException, DocumentException {
         VP_User user = dataM.getController().getCurrentUser();
@@ -655,12 +710,20 @@ public class VP_FileManager {
         return new File[]{reshtml, respdf};
     }
 
-    /*------------------------------------------------------------------------*
-     * encrypt()
-     * - Encrypts a string.
-     * - Parameter input is a string.
-     * - Returns an encrypted string.
-     *------------------------------------------------------------------------*/
+    /**
+     * Encrypts a string.
+     * 
+     * @param input String to be encrypted.
+     * @return The encrypted string.
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws UnsupportedEncodingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException 
+     * @since 1.0
+     */
     private String encrypt(String input) throws NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException,
@@ -679,12 +742,20 @@ public class VP_FileManager {
         return Arrays.toString(encryptedInputBytes);
     }
 
-    /*------------------------------------------------------------------------*
-     * decrypt()
-     * - Decrypts an encrypted string.
-     * - Parameter input is an encrypted string.
-     * - Returns a decrypted string.
-     *------------------------------------------------------------------------*/
+    /**
+     * Decrypts a string.
+     * 
+     * @param input An encrypted string.
+     * @return The decrypted string.
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     private String decrypt(String input) throws NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException,

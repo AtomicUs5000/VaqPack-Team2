@@ -1,15 +1,6 @@
-/*-----------------------------------------------------------------------------*
- * VP_DataManager.java
- * - Stores the data nodes (XML) as built or loaded by the user
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
- * FILE ID 3000
- *-----------------------------------------------------------------------------*/
+/**
+ * VP_DataManager.java - Manages user data nodes (XML). FILE ID 3000
+ */
 package vaqpack.data;
 
 import com.lowagie.text.DocumentException;
@@ -37,6 +28,17 @@ import vaqpack.VP_GUIController;
 import vaqpack.peripherals.VP_Mail;
 import vaqpack.user.VP_Employer;
 
+/**
+ * Stores the data nodes (XML) as built or loaded by the user.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_DataManager {
 
     private final VP_GUIController controller;
@@ -44,14 +46,13 @@ public class VP_DataManager {
     private final VP_FileManager fileM;
     private CountDownLatch dbBusy;
 
-    /*------------------------------------------------------------------------*
-     * VP_DataManager()
-     * - Constructor.
-     * - Parameter VP_GUIController stored to access events
-     * - Parameter VP_Loader stored to manipulate its progress
-     * - Creates a Database Manager, a File Manager, a data-to-html convertor,
-     *   and a html-to-pdf convertor.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor. Creates a Database Manager, a File Manager, a data-to-HTML
+     * convertor, and an HTML-to-PDF convertor.
+     * 
+     * @param controller Stored to access handler events
+     * @since 1.0
+     */
     public VP_DataManager(VP_GUIController controller) {
         //-------- Initialization Start ----------\\
         this.controller = controller;
@@ -61,23 +62,24 @@ public class VP_DataManager {
         //-------- Initialization End ------------\\
     }
 
-    /*------------------------------------------------------------------------*
-     * checkDBLocation()
-     * - Calls checkDBRunning() of the Database Manager.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls checkDBRunning() of the Database Manager.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void checkDBLocation() throws SQLException {
         dbManager.checkDBRunning();
     }
 
-    /*------------------------------------------------------------------------*
-     * retrieveDBLocation()
-     * - Gets the database server url and port from the properties file that is
-     *   accessible by the File Manager and sends the values to Database Manager.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Gets the database server URL and port from the properties file that is 
+     * accessible by the File Manager and sends the values to Database Manager.
+     * 
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     public void retrieveDBLocation() throws FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
         String[] loc = fileM.retrieveUrlPort();
@@ -87,37 +89,45 @@ public class VP_DataManager {
         dbManager.setPort(loc[1]);
     }
 
-    /*------------------------------------------------------------------------*
-     * storeDBLocation()
-     * - Sends the database url and port to the Database Manager and to the
-     *   File Manager for permanent storage in the properties file.
-     * - Paramter loc is a string array of the url and port provided by the user.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Sends the database URL and port to the Database Manager and to the File 
+     * Manager for permanent storage in the properties file.
+     * 
+     * @param loc String array storing the URL and port provided by the user.
+     * @throws IOException 
+     * @since 1.0
+     */
     public void storeDBLocation(String[] loc) throws IOException {
         dbManager.setUrl(loc[0]);
         dbManager.setPort(loc[1]);
         fileM.storeUrlPort(loc);
     }
 
-    /*------------------------------------------------------------------------*
-     * getCurrentLocation()
-     * - Gets the current database url and port from the Database Manager.
-     * - No parameters.
-     * - Return a string array of the database url and port.
-     *------------------------------------------------------------------------*/
+    /**
+     * Gets the current database URL and port from the Database Manager.
+     * 
+     * @return String array of the database URL and port.
+     * @since 1.0
+     */
     public String[] getCurrentLocation() {
         return new String[]{dbManager.getUrl(), dbManager.getPort()};
     }
 
-    /*------------------------------------------------------------------------*
-     * retrieveAdmin()
-     * - Gets the database admin credentials from the encrypted properties file
-     *   that is accessible by the File Mangager and sends the values to the 
-     *   Database Manager to be used by all queries.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Gets the database administrator credentials from the encrypted 
+     * properties file that is accessible by the File Manager. Sends the values 
+     * to the Database Manager to be used by all queries.
+     * 
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException 
+     * @since 1.0
+     */
     public void retrieveAdmin() throws IOException, FileNotFoundException,
             NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, InvalidAlgorithmParameterException,
@@ -130,14 +140,23 @@ public class VP_DataManager {
         dbManager.setAdminPassword(cred[1]);
     }
 
-    /*------------------------------------------------------------------------*
-     * storeAdminCred()
-     * - Sends the database admin credentials to the the File Mangager for
-     *   encryption and storing in the properties file, and sends the values to 
-     *   the Database Manager to be used by all queries.
-     * - Parameters cred is a string array of database admin credentials.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Sends the database administrator credentials to the the File Manager for
+     * encryption and storing in the properties file. Sends the values to the 
+     * Database Manager to be used by all queries.
+     * 
+     * @param cred String array storing the database administrator credentials.
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws UnsupportedEncodingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException 
+     * @since 1.0
+     */
     public void storeAdminCred(String[] cred) throws IOException,
             FileNotFoundException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidKeyException,
@@ -148,22 +167,23 @@ public class VP_DataManager {
         fileM.storeAdminUserPass(cred);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkDBSchemaExists()
-     * - Calls checkSchema() of the Database Manager.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls checkSchema() of the Database Manager.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void checkDBSchemaExists() throws SQLException {
         dbManager.checkSchema();
     }
 
-    /*------------------------------------------------------------------------*
-     * checkDBTable()
-     * - Calls a specific function of Database Manger to check a table.
-     * - Parameters tableNumb determines which database table to check.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls a specific function of Database Manger to check a table.
+     * 
+     * @param tableNumb Determines which database table to check.
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void checkDBTable(int tableNumb) throws SQLException {
         switch (tableNumb) {
             case 0:
@@ -220,37 +240,42 @@ public class VP_DataManager {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * contructUserAccess()
-     * - Calls buildAccessLevels() of the Database Manager.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls buildAccessLevels() of the Database Manager.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void contructUserAccess() throws SQLException {
         dbManager.buildAccessLevels();
     }
 
-    /*------------------------------------------------------------------------*
-     * searchForVPAdmin()
-     * - Calls findAdminUser() of the Database Manager.
-     * - No parameters.
-     * - Returns a boolean value indicating whether or not a VaqPack admin user
-     *   has been created and exists in the database user table. This is
-     *   necessary in case the user cancels or the program exists in the middle
-     *   of first-run initialization.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls findAdminUser() of the Database Manager.
+     * 
+     * @return Boolean value indicating whether or not a VaqPack administrator 
+     * user has been created and exists in the database user table. This is
+     * necessary in case the user cancels or the program exists in the middle
+     * of first-run initialization.
+     * @throws SQLException 
+     * @since 1.0
+     */
     public boolean searchForVPAdmin() throws SQLException {
         return dbManager.findAdminUser();
     }
 
-    /*------------------------------------------------------------------------*
-     * createVPAdmin()
-     * - Calls createVaqPackAdmin() of the Database Manager.
-     * - Parameters cred is a string array of the database admin user
-     *   credentials and the VaqPack admin user credentials.
-     * - Returns a boolean value indicating if the database admin user is
-     *   valid, allowing the creation of this VP admin user account.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls createVaqPackAdmin() of the Database Manager.
+     * 
+     * @param cred String array of the database administrator user
+     * credentials and the VaqPack administrator user credentials.
+     * @return Boolean value indicating if the database administrator user is
+     * valid, allowing the creation of this VP administrator user account.
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public boolean createVPAdmin(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         //-------- Initialization Start ----------\\
@@ -273,13 +298,17 @@ public class VP_DataManager {
         return adminChecked;
     }
 
-    /*------------------------------------------------------------------------*
-     * userLogin()
-     * - Calls hashPassword() and then sends it to the Database Manager
-     *   with attemptUserLogin(). If all is well, a new VP_User is created.
-     * - Parameter cred is a string array of user credentials.
-     * - Returns an integer that is returned from attemptUserLogin().
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls hashPassword() and then sends it to the Database Manager with 
+     * attemptUserLogin(). If all is well, a new VP_User is created.
+     * 
+     * @param cred String array of user credentials.
+     * @return An integer that is returned from attemptUserLogin().
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public int userLogin(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         //-------- Initialization Start ----------\\
@@ -293,13 +322,17 @@ public class VP_DataManager {
         return loginStatus;
     }
 
-    /*------------------------------------------------------------------------*
-     * verifyRegAccess()
-     * - Calls hashPassword() and then sends it to the Database Manager
-     *   with verifyUserAccessCode().
-     * - Parameter cred is a string array of user credentials.
-     * - Returns a boolean value that is returned from verifyUserAccessCode().
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls hashPassword() and then sends it to the Database Manager
+     * with verifyUserAccessCode().
+     * 
+     * @param cred String array of user credentials.
+     * @return Boolean value that is returned from verifyUserAccessCode().
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public boolean verifyRegAccess(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         //-------- Initialization Start ----------\\
@@ -310,16 +343,18 @@ public class VP_DataManager {
         return success;
     }
 
-    /*------------------------------------------------------------------------*
-     * resendAccess()
-     * - Calls hashPassword() and then sends it to the Database Manager
-     *   with resendUserAccessCode().
-     * - If the entered user email exists in the database, an email is sent
-     *   containing a new registration access code generated by 
-     *   generatAccessCode().
-     * - Parameter cred is a string array of user credentials.
-     * - No return..
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls hashPassword() and then sends it to the Database Manager with 
+     * resendUserAccessCode(). If the entered user email exists in the database, 
+     * an email is sent containing a new registration access code generated by 
+     * generatAccessCode().
+     * 
+     * @param cred String array of user credentials.
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public void resendAccess(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         //-------- Initialization Start ----------\\
@@ -343,16 +378,17 @@ public class VP_DataManager {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * findUserForReset()
-     * - Calls generatAccessCode() and then sends it to the Database Manager
-     *   along with the user email through findUserOrRegUserForReset().
-     * - If the enetered user email exists in the database, and if the user
-     *   has not reset their password in over 24 hours, an email is sent
-     *   containing the code.
-     * - Parameter email is a string email of the user.
-     * - Returns the integer returned by findUserOrRegUserForReset().
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls generatAccessCode() and then sends it to the Database Manager along 
+     * with the user email through findUserOrRegUserForReset(). If the entered 
+     * user email exists in the database, and if the user has not reset their 
+     * password in over 24 hours, an email is sent containing the code.
+     * 
+     * @param email String of the user email address.
+     * @return The integer returned by findUserOrRegUserForReset().
+     * @throws SQLException 
+     * @since 1.0
+     */
     public int findUserForReset(String email) throws SQLException {
         //-------- Initialization Start ----------\\
         String msg,
@@ -374,11 +410,33 @@ public class VP_DataManager {
         return userStatus;
     }
     
+    /**
+     * Calls checkPassword() and them sends it to the Database Manager. 
+     * Checks if user's password exists in the database.
+     * 
+     * @param password String of user password.
+     * @return Boolean from checkPassword() indicating if password string was 
+     * found in the database.
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public boolean checkCurrentPassword(String password) throws SQLException, 
             NoSuchAlgorithmException, UnsupportedEncodingException {
         return(dbManager.checkPassword(hashPassword(password)));
     }
     
+    /**
+     * Calls changePassword(). Sends user an email notifying them of password
+     * change.
+     * 
+     * @param password String of user password.
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public void changePass(String password) throws SQLException, 
             NoSuchAlgorithmException, UnsupportedEncodingException {
         //-------- Initialization Start ----------\\
@@ -398,27 +456,35 @@ public class VP_DataManager {
         changePassEmail.start();
     }
 
-    /*------------------------------------------------------------------------*
-     * resetPass()
-     * - Calls hashPassword() and then sends it to the Database Manager
-     *   with resetPassword().
-     * - Parameter cred is a string array of user credentials.
-     * - Returns an integer that is returned from resetPassword().
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls hashPassword() and then sends it to the Database Manager with 
+     * resetPassword().
+     * 
+     * @param cred String array of user credentials.
+     * @return An integer that is returned from resetPassword().
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public int resetPass(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         cred[1] = hashPassword(cred[1]);
         return dbManager.resetPassword(cred);
     }
 
-    /*------------------------------------------------------------------------*
-     * regUser()
-     * - Calls hashPassword() and generateCode() then sends these values to the 
-     *   Database Manager using registerUser() along with the user credentials.
-     *   If the user is new, an email is sent containing the access code.
-     * - Parameter cred is a string array of user credentials.
-     * - Returns an integer value that is returned from registerUser().
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls hashPassword() and generateCode() then sends these values to the 
+     * Database Manager using registerUser() along with the user credentials.
+     * If the user is new, an email is sent containing the access code.
+     * 
+     * @param cred String array of user credentials.
+     * @return An integer value that is returned from registerUser().
+     * @throws SQLException
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     public int regUser(String[] cred) throws SQLException,
             NoSuchAlgorithmException, UnsupportedEncodingException {
         //-------- Initialization Start ----------\\
@@ -445,14 +511,15 @@ public class VP_DataManager {
         return registerStatus;
     }
 
-    /*------------------------------------------------------------------------*
-     * checkEmail()
-     * - Compares the string parameter against a REGEX pattern to
-     *   determinine if an email address is well-formed.
-     * - Parameter email is a string of a potential email address.
-     * - Returns a boolean value indicating if the string parameter is a
-     *   well-formed address.
-     *------------------------------------------------------------------------*/
+    /**
+     * Compares the string parameter against a REGEX pattern to determine if an 
+     * email address is well-formed.
+     * 
+     * @param email String of email address to test.
+     * @return Boolean value indicating if the string parameter is a well-formed
+     * email address.
+     * @since 1.0
+     */
     public boolean checkEmail(String email) {
         //-------- Initialization Start ----------\\
         String regex;
@@ -472,22 +539,27 @@ public class VP_DataManager {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * saveUserData()
-     * - Calls storeUserData() in the database manager passing user data.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls storeUserData() in the database manager passing user data.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void saveUserData() throws SQLException {
         dbManager.storeUserData();
     }
 
-    /*------------------------------------------------------------------------*
-     * saveBCardData()
-     * - Calls generateBCardHTMLandPDF() in the file manager.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls generateBCardHTMLandPDF() in the file manager.
+     * 
+     * @throws SQLException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws DocumentException 
+     * @since 1.0
+     */
     public void saveBCardData() throws SQLException, TransformerException,
             ParserConfigurationException, IOException, FileNotFoundException,
             DocumentException {
@@ -502,12 +574,17 @@ public class VP_DataManager {
         }
     }
 
-    /*------------------------------------------------------------------------*
-     * saveCovLetData()
-     * - Calls generateCovLetHTMLandPDF() in the file manager.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls generateCovLetHTMLandPDF() in the file manager.
+     * 
+     * @throws SQLException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws DocumentException 
+     * @since 1.0
+     */
     public void saveCovLetData() throws SQLException, TransformerException,
             ParserConfigurationException, IOException, FileNotFoundException,
             DocumentException {
@@ -524,6 +601,20 @@ public class VP_DataManager {
         }
     }
 
+    /**
+     * Calls storeResumeData(). If the user has completed their resume, stores
+     * the resume in HTML and PDF formats.
+     * 
+     * @param section Integer indicating which section of the resume to update
+     * 
+     * @throws SQLException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws DocumentException 
+     * @since 1.0
+     */
     public void saveResume(int section) throws SQLException, TransformerException,
             ParserConfigurationException, IOException, FileNotFoundException,
             DocumentException {
@@ -542,14 +633,31 @@ public class VP_DataManager {
         }
     }
     
+    /**
+     * Calls addUserContact(). Adds a user contact via Database Manager.
+     * 
+     * @param email String of contact email address.
+     * @param name String of contact name.
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void addContact(String email, String name) throws SQLException {
         dbManager.addUserContact(email, name);
     }
     
+    /**
+     * Calls deleteUserContact(). Deletes a user contact via Database Manager.
+     * 
+     * @param email String of contact email address.
+     * @param name String of contact name.
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void deleteContact(String email, String name) throws SQLException {
         dbManager.deleteUserContact(email, name);
     }
     
+
     public void addEmployer(VP_Employer employer) throws SQLException {
         dbManager.addEmployer(employer);
     }
@@ -558,6 +666,20 @@ public class VP_DataManager {
         dbManager.deleteEmployer(employer);
     }
     
+    /**
+     * Determines which VaqPack documents to send as email attachments.
+     * 
+     * @param email String of recipient email address.
+     * @param sendResHTML Boolean to send Resume in HTML.
+     * @param sendResPDF Boolean to send Resume in PDF.
+     * @param sendBCHTML Boolean to send Business Card in HTML.
+     * @param sendBCPDF Boolean to send Business Card in PDF.
+     * @param sendCLHTML Boolean to send Cover Letter in HTML.
+     * @param sendCLPDF Boolean to send Cover Letter in PDF.
+     * @throws SQLException
+     * @throws IOException 
+     * @since 1.0
+     */
     public void sendAttachments(String email, boolean sendResHTML, boolean sendResPDF,
             boolean sendBCHTML, boolean sendBCPDF, boolean sendCLHTML, boolean sendCLPDF) 
             throws SQLException, IOException {
@@ -630,6 +752,15 @@ public class VP_DataManager {
         }
     }
     
+    /**
+     * Calls printFile().
+     * 
+     * @param type Integer indicating which document and format combination to 
+     * print.
+     * @throws SQLException
+     * @throws IOException 
+     * @since 1.0
+     */
     public void printDocument(int type) throws SQLException, IOException {
         dbManager.printFile(type, true);
     }
@@ -638,20 +769,24 @@ public class VP_DataManager {
         dbManager.deleteCoverLetter(id);
     }
 
-    /*------------------------------------------------------------------------*
-     * loadCovLetData()
-     * - 
-     *------------------------------------------------------------------------*/
+    /**
+     * Calls loadCovLetData().
+     * 
+     * @param clID Integer indicating which cover letter to load.
+     * @throws SQLException 
+     * @since 1.0
+     */
     public void loadCovLet(int clID) throws SQLException {
         dbManager.loadCovLetData(clID);
     }
 
-    /*------------------------------------------------------------------------*
-     * generatAccessCode()
-     * - Generates a 16-character string used an an access code for verifying
-     *   that a user has enetered a valid email address.
-     * - Returns a random string of 16 characters.
-     *------------------------------------------------------------------------*/
+    /**
+     * Generates a 16-character string used an an access code for verifying
+     * that a user has entered a valid email address.
+     * 
+     * @return Random string of 16 characters.
+     * @since 1.0
+     */
     private String generatAccessCode() {
         //-------- Initialization Start ----------\\
         String code = "";
@@ -669,12 +804,15 @@ public class VP_DataManager {
         return code;
     }
 
-    /*------------------------------------------------------------------------*
-     * hashPassword()
-     * - Hashes a password.
-     * - Parameter pass is the string to be hashed.
-     * - Returns a string of the hashed password.
-     *------------------------------------------------------------------------*/
+    /**
+     * Hashes a password.
+     * 
+     * @param pass String to be hashed.
+     * @return Hashed string.
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException 
+     * @since 1.0
+     */
     private String hashPassword(String pass) throws NoSuchAlgorithmException,
             UnsupportedEncodingException {
         //-------- Initialization Start ----------\\
@@ -691,14 +829,31 @@ public class VP_DataManager {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
+    /**
+     * Accessor method.
+     * 
+     * @return The stored VP_GUIController object.
+     * @since 1.0
+     */
     protected VP_GUIController getController() {
         return controller;
     }
 
+    /**
+     * Accessor method.
+     * 
+     * @return The CountDownLatch object indicating thread status.
+     * @since 1.0
+     */
     public CountDownLatch getDbBusy() {
         return dbBusy;
     }
 
+    /**
+     * Mutator method.
+     * 
+     * @param dbBusy Set the CountDownLatch object.
+     */
     public void setDbBusy(CountDownLatch dbBusy) {
         this.dbBusy = dbBusy;
     }

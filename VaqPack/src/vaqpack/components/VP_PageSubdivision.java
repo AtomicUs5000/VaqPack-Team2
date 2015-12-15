@@ -1,15 +1,7 @@
-/*-----------------------------------------------------------------------------*
- * VP_PageDivision.java
- * - Custom VBox page subsection with a caption title
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_PageSubdivision.java - Custom VBox page subsection with a caption title.
  * FILE ID 2400
- *-----------------------------------------------------------------------------*/
+ */
 package vaqpack.components;
 
 import javafx.geometry.Insets;
@@ -18,11 +10,26 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 /**
+ * The page subdivision defines page subsections. This extends VBox and consists
+ * of a constructor.
  *
- * @author atomi_000
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
  */
 public class VP_PageSubdivision extends VBox {
 
+    /**
+     * Constructor.
+     * 
+     * @param caption The string that sets the caption text of the subsection.
+     * @param isContainer Determines if component is a container or subdivision
+     * @since 1.0
+     */
     public VP_PageSubdivision(String caption, boolean isContainer) {
         this.setSpacing(6);
         this.setPadding(new Insets(6, 6, 6, 12));

@@ -1,15 +1,7 @@
-/*-----------------------------------------------------------------------------*
- * VP_DatabaseManager.java
- * - Handles connection and queries to a database
- * Authors:
- * - Team-02
- * -- William Dewald (Project Manager)
- * -- Fernando Bazan
- * -- Nathanael Carr
- * -- Erik Lopez
- * -- Raul Saavedra
+/**
+ * VP_DatabaseManager.java - Handles connections and queries to a database.
  * FILE ID 3100
- *-----------------------------------------------------------------------------*/
+ */
 package vaqpack.data;
 
 import com.lowagie.tools.Executable;
@@ -29,6 +21,17 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
+/**
+ * Manages connections and queries for the database.
+ *
+ * @author William Dewald (Project Manager, Team-02)
+ * @author Fernando Bazan
+ * @author Erik Lopez
+ * @author Raul Saavedra
+ * @author Nathanael Carr
+ * @version 1.0
+ * @since 1.0
+ */
 public class VP_DatabaseManager {
 
     private final VP_DataManager dataM;
@@ -42,11 +45,12 @@ public class VP_DatabaseManager {
             adminUserName,
             adminPassword;
 
-    /*------------------------------------------------------------------------*
-     * VP_DatabaseManager()
-     * - Constructor. Initialiazes the connection, statement, and result set.
-     * No Parameters.
-     *------------------------------------------------------------------------*/
+    /**
+     * Constructor. Initializes the connection, statement, and result set.
+     * 
+     * @param dataM Data Manager object.
+     * @since 1.0
+     */
     protected VP_DatabaseManager(VP_DataManager dataM) {
         //-------- Initialization Start ----------\\
         // url, port, dbadmin user and pass kept here just for refernce. These values
@@ -65,23 +69,23 @@ public class VP_DatabaseManager {
         //-------- Initialization End ------------\\
     }
 
-    /*------------------------------------------------------------------------*
-     * checkDBRunning()
-     * - Verifies that a MySQL database is running on the provided url and port.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Verifies that a MySQL database is running on the provided URL and port.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkDBRunning() throws SQLException {
         connect("");
         close();
     }
 
-    /*------------------------------------------------------------------------*
-     * checkSchema()
-     * - Creates the vaqpack_db schema if necessary.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Creates the vaqpack_db schema if necessary.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkSchema() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE DATABASE " + dbName;
@@ -92,13 +96,13 @@ public class VP_DatabaseManager {
         close();
     }
 
-    /*------------------------------------------------------------------------*
-     * checkUserTable()
-     * - Defines the SQL statement to create the 'user' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'user' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkUserTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE user ("
@@ -116,13 +120,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkAcessLevelTable()
-     * - Defines the SQL statement to create the 'access_level' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the access_level table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkAcessLevelTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE access_level ("
@@ -140,13 +144,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkRegisteringUserTable()
-     * - Defines the SQL statement to create the 'registering_user' table and 
-     *   then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the registering_user table and 
+     * then calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkRegisteringUserTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE registering_user ("
@@ -165,13 +169,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkResetCodeTable()
-     * - Defines the SQL statement to create the 'reset_code' table and 
-     *   then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the reset_code table and 
+     * then calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkResetCodeTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE reset_code ("
@@ -189,13 +193,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkBusinessCardTable()
-     * - Defines the SQL statement to create the 'business_card' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the business_card table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkBusinessCardTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card ("
@@ -217,13 +221,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkContactTable()
-     * - Defines the SQL statement to create the 'contact' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'contact' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkContactTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE contact ("
@@ -240,13 +244,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkCoverLetterTable()
-     * - Defines the SQL statement to create the 'cover_letter' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'cover_letter' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkCoverLetterTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE cover_letter ("
@@ -316,13 +320,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkResumeTable()
-     * - Defines the SQL statement to create the 'resume' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'resume' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkResumeTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume ("
@@ -377,13 +381,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkUserDataTable()
-     * - Defines the SQL statement to create the 'user_data' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'user_data' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkUserDataTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE user_data ("
@@ -409,13 +413,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkCustomThemeTable()
-     * - Defines the SQL statement to create the 'custom_theme' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'custom_theme' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkCustomThemeTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE custom_theme ("
@@ -433,13 +437,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkBusinessCardPDFTable()
-     * - Defines the SQL statement to create the 'business_card_pdf' table and 
-     *   then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'business_card_pdf' table and 
+     * then calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkBusinessCardPDFTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card_pdf ("
@@ -455,13 +459,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
     
-    /*------------------------------------------------------------------------*
-     * checkBusinessCardHTMLTable()
-     * - Defines the SQL statement to create the 'business_card_pdf' table and 
-     *   then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'business_card_pdf' table and 
+     * then calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkBusinessCardHTMLTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE business_card_html ("
@@ -477,13 +481,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkCoverLetterPDFTable()
-     * - Defines the SQL statement to create the 'cover_letter_pdf' table and
-     *   then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'cover_letter_pdf' table and
+     * then calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkCoverLetterPDFTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE cover_letter_pdf ("
@@ -501,13 +505,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
     
-    /*------------------------------------------------------------------------*
-     * checkCoverLetterHTMLTable()
-     * - Defines the SQL statement to create the 'cover_letter_html' table and
-     *   then calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'cover_letter_html' table and
+     * then calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkCoverLetterHTMLTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE cover_letter_html ("
@@ -524,15 +528,14 @@ public class VP_DatabaseManager {
 
         checkTable(sql);
     }
-    
 
-    /*------------------------------------------------------------------------*
-     * checkResPDFTable()
-     * - Defines the SQL statement to create the 'resume_pdf' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'resume_pdf' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkResPDFTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_pdf ("
@@ -548,13 +551,13 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * checkResHTMLTable()
-     * - Defines the SQL statement to create the 'resume_html' table and then
-     *   calls checkTable().
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Defines the SQL statement to create the 'resume_html' table and then
+     * calls checkTable().
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void checkResHTMLTable() throws SQLException {
         //-------- Initialization Start ----------\\
         String sql = "CREATE TABLE resume_html ("
@@ -570,17 +573,17 @@ public class VP_DatabaseManager {
         checkTable(sql);
     }
 
-    /*------------------------------------------------------------------------*
-     * findAdminUser()
-     * - Attempts to locate at least one VaqPack admin user account.
-     * - Also cleans the dead registration codes.
-     * - Also cleans the dead reset codes.
-     * - No parameters.
-     * - Returns a boolean value indicating whether or not a VaqPack admin user
-     *   has been created and exists in the database user table. This is
-     *   necessary in case the user cancels or the program exists in the middle
-     *   of first-run initialization.
-     *------------------------------------------------------------------------*/
+    /**
+     * Attempts to locate at least one VaqPack administrator user account. 
+     * Cleans the dead registration codes.Cleans the dead reset codes.
+     * 
+     * @return Boolean value indicating whether or not a VaqPack administrator 
+     * user has been created and exists in the database user table. This is
+     * necessary in case the user cancels or the program exists in the middle
+     * of first-run initialization.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected boolean findAdminUser() throws SQLException {
         //-------- Initialization Start ----------\\
         boolean adminExists = false;
@@ -648,14 +651,18 @@ public class VP_DatabaseManager {
         return adminExists;
     }
 
-    /*------------------------------------------------------------------------*
-     * createVaqPackAdmin()
-     * - Inserts an admin VaqPack user.
-     * - Parameters cred is a string array of the database admin user
-     *   credentials and the VaqPack admin user credentials.
-     * - Returns a boolean value indicating if that the database admin user is
-     *   valid, allowing the creation of this VP admin user account.
-     *------------------------------------------------------------------------*/
+    /**
+     * Inserts an administrator VaqPack user.
+     * 
+     * @param cred String array of the database administrator user credentials 
+     * and the VaqPack administrator user credentials.
+     * @param code String of user registration code.
+     * @param hashed String of hashed password.
+     * @return Boolean value indicating if that the database administrator user 
+     * is valid, allowing the creation of this VP administrator user account.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected boolean createVaqPackAdmin(String[] cred, String code, String hashed)
             throws SQLException {
         //-------- Initialization Start ----------\\
@@ -678,14 +685,14 @@ public class VP_DatabaseManager {
         return adminCredChecked;
     }
 
-    /*------------------------------------------------------------------------*
-     * buildAccessLevels()
-     * - Verifies the integrity of the 'access_level' table. If there are not
-     *   exactly 2 user levels in the table, the table gets truncated and the
-     *   user access levels are recreated.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Verifies the integrity of the 'access_level' table. If there are not
+     * exactly 2 user levels in the table, the table gets truncated and the
+     * user access levels are recreated.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void buildAccessLevels() throws SQLException {
         //-------- Initialization Start ----------\\
         int count;
@@ -716,6 +723,13 @@ public class VP_DatabaseManager {
         close();
     }
 
+    /**
+     * Loads a user cover letter from the database.
+     * 
+     * @param clID Integer indicating which cover letter to load.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void loadCovLetData(int clID) throws SQLException {
         VP_User thisUser = dataM.getController().getCurrentUser();
         int userID = thisUser.getUserID();
@@ -751,15 +765,17 @@ public class VP_DatabaseManager {
         close();
     }
 
-    /*------------------------------------------------------------------------*
-     * attemptUserLogin()
-     * - May or may not log in the user, depending on where the user is found in
-     *   the database.
-     * - Parameter cred is a string array of user credentials.
-     * - Returns -1 if user does not exist, returns the user's access level if
-     *   the user exists in the user table, and returns -2 if the user is found
-     *   in registering_user table.
-     *------------------------------------------------------------------------*/
+    /**
+     * May or may not log in the user, depending on where the user is found in
+     * the database.
+     * 
+     * @param cred String array of user credentials.
+     * @return -1 if user does not exist, returns the user's access level if
+     * the user exists in the user table, and returns -2 if the user is found
+     * in registering_user table.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected int attemptUserLogin(String[] cred) throws SQLException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1150,16 +1166,18 @@ public class VP_DatabaseManager {
         return loginStatus;
     }
 
-    /*------------------------------------------------------------------------*
-     * verifyUserAccessCode()
-     * - May or may not complete the registration of a user. This is determined 
-     *   by whether or not the access code and user credentials match up. If
-     *   everything matches, the user is moved from the registering_user table
-     *   to the user table.
-     * - Parameter cred is a string array of user credentials.
-     * - Returns a boolean value indicating whether or not the verification of 
-     *   user's registration was successful.
-     *------------------------------------------------------------------------*/
+    /**
+     * May or may not complete the registration of a user. This is determined 
+     * by whether or not the access code and user credentials match up. If
+     * everything matches, the user is moved from the registering_user table
+     * to the user table.
+     * 
+     * @param cred String array of user credentials.
+     * @return Boolean value indicating whether or not the verification of 
+     * user's registration was successful.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected boolean verifyUserAccessCode(String[] cred)
             throws SQLException {
         //-------- Initialization Start ----------\\
@@ -1196,19 +1214,21 @@ public class VP_DatabaseManager {
         return success;
     }
 
-    /*------------------------------------------------------------------------*
-     * resetPassword()
-     * - May or may not reset a user's password. This is determined by the
-     *   matching of credentials and acces code, and only occurs if the code has
-     *   not expired. Users cannot reset a password if they already have within
-     *   a 24-hour period, but this is determined in a separate function before
-     *   function can be called. However, if the reset can happen, the reset
-     *   time is stored to prevent resetting again within the next 24 hours.
-     * - Parameter cred is a string array of user credentials.
-     * - Returns a value of 0 if credentials do not match, returns a 1 if the
-     *   credentials match but the code has expired, and returns a 2 if the
-     *   password reset was a success.
-     *------------------------------------------------------------------------*/
+    /**
+     * May or may not reset a user's password. This is determined by the
+     * matching of credentials and access code, and only occurs if the code has
+     * not expired. Users cannot reset a password if they already have within
+     * a 24-hour period, but this is determined in a separate function before
+     * function can be called. However, if the reset can happen, the reset
+     * time is stored to prevent resetting again within the next 24 hours.
+     * 
+     * @param cred String array of user credentials.
+     * @return 0 if credentials do not match, returns a 1 if the
+     * credentials match but the code has expired, and returns a 2 if the
+     * password reset was a success.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected int resetPassword(String[] cred) throws SQLException {
         //-------- Initialization Start ----------\\
         int resetStatus = 0, remID;
@@ -1250,6 +1270,14 @@ public class VP_DatabaseManager {
         return resetStatus;
     }
     
+    /**
+     * Checks database for hashed password.
+     * 
+     * @param hashedPass Hashed string to be searched for in database.
+     * @return Boolean indicating if password was found.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected boolean checkPassword(String hashedPass) throws SQLException {
         //-------- Initialization Start ----------\\
         boolean success = false;
@@ -1269,6 +1297,13 @@ public class VP_DatabaseManager {
         return success;
     }
     
+    /**
+     * Updates user password.
+     * 
+     * @param hashedPass Hashed string to replace existing string.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void changePassword(String hashedPass) throws SQLException {
         connect(dbName);
         try (PreparedStatement ps = con.prepareStatement("UPDATE user SET "
@@ -1280,19 +1315,21 @@ public class VP_DatabaseManager {
         close();
     }
 
-    /*------------------------------------------------------------------------*
-     * findUserOrRegUserForReset()
-     * - This function is called when a user submits the email in the reset
-     *   password page. This first step verifies that the email exists in the
-     *   system. If it does, a check is done to see if the user has reset the 
-     *   password already within the past 24 hours.
-     * - Parameter email is the string user email.
-     * - Parameter code is the code that is stored in the database and sent to 
-     *   user via email.
-     * - Returns a value of 0 if the user does not exist, returns a 1 if the
-     *   user exists but has already reset within the past 24 hours, and returns
-     *   a 2 if resetting is allowed and a new code is stored.
-     *------------------------------------------------------------------------*/
+    /**
+     * This function is called when a user submits the email in the reset
+     * password page. This first step verifies that the email exists in the
+     * system. If it does, a check is done to see if the user has reset the 
+     * password already within the past 24 hours.
+     * 
+     * @param email String of the user email.
+     * @param code String of the registration code that is stored in the 
+     * database and sent to user via email.
+     * @return 0 if the user does not exist, returns a 1 if the
+     * user exists but has already reset within the past 24 hours, and returns
+     * a 2 if resetting is allowed and a new code is stored.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected int findUserOrRegUserForReset(String email, String code)
             throws SQLException {
         //-------- Initialization Start ----------\\
@@ -1355,16 +1392,18 @@ public class VP_DatabaseManager {
         return userStatus;
     }
 
-    /*------------------------------------------------------------------------*
-     * resendUserAccessCode()
-     * - This function stores a brand new registration code for a user if the 
-     *   credentials match. This is typically called for when a user does not 
-     *   receive the registration email or failed to enter in the code before
-     *   its expiration time.
-     * - Parameter cred is the string array of user credentials.
-     * - Parameter code is the registration code that the user has entered.
-     * - Returns a boolean value indicating whether the user exists.
-     *------------------------------------------------------------------------*/
+    /**
+     * This function stores a brand new registration code for a user if the 
+     * credentials match. This is typically called for when a user does not 
+     * receive the registration email or failed to enter in the code before
+     * its expiration time.
+     * 
+     * @param cred String array of user credentials.
+     * @param code String of the registration code that the user has entered.
+     * @return Boolean value indicating whether the user exists.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected boolean resendUserAccessCode(String[] cred, String code)
             throws SQLException {
         //-------- Initialization Start ----------\\
@@ -1396,13 +1435,15 @@ public class VP_DatabaseManager {
         return userExists;
     }
 
-    /*------------------------------------------------------------------------*
-     * registerUser()
-     * - This function stores a registration code for a new user.
-     * - Parameter cred is the string array of user credentials.
-     * - Parameter code is the registration code that the user has entered.
-     * - Returns an integer value indicating whether the user is new or not.
-     *------------------------------------------------------------------------*/
+    /**
+     * This function stores a registration code for a new user.
+     * 
+     * @param cred String array of user credentials.
+     * @param code String of the registration code that the user has entered.
+     * @return Integer value indicating whether the user is new or not.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected int registerUser(String[] cred, String code)
             throws SQLException {
         //-------- Initialization Start ----------\\
@@ -1442,12 +1483,12 @@ public class VP_DatabaseManager {
         return registerStatus;
     }
 
-    /*------------------------------------------------------------------------*
-     * storeUserData()
-     * - This function stores user personal information.
-     * - No parameters
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * This function stores user personal information.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void storeUserData() throws SQLException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1504,12 +1545,15 @@ public class VP_DatabaseManager {
         dataM.getDbBusy().countDown();
     }
 
-    /*------------------------------------------------------------------------*
-     * storeBCardPDF()
-     * - This function stores business card data and its pdf file.
-     * - 
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * This function stores business card data and its PDF file.
+     * 
+     * @param bcpdf File object to contain PDF data.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void storeBCardPDF(File bcpdf) throws SQLException,
             FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
@@ -1578,6 +1622,15 @@ public class VP_DatabaseManager {
         dataM.getDbBusy().countDown();
     }
     
+    /**
+     * This function stores business card data and its HTML file.
+     * 
+     * @param bchtml File object to contain the HTML data.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void storeBCardHTML(File bchtml) throws SQLException,
             FileNotFoundException, IOException {
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1608,11 +1661,15 @@ public class VP_DatabaseManager {
         close();
     }
 
-    /*------------------------------------------------------------------------*
-     * storeCovLetPDF()
-     * - This function stores cover letter data and its pdf file.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * This function stores cover letter data and its PDF file.
+     * 
+     * @param clpdf File object containing the PDF data.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void storeCovLetPDF(File clpdf) throws SQLException,
             FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
@@ -1730,6 +1787,15 @@ public class VP_DatabaseManager {
         dataM.getDbBusy().countDown();
     }
     
+    /**
+     * This function stores cover letter data and its HTML file.
+     * 
+     * @param clhtml File object containing the HTML data.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void storeCovLetHTML(File clhtml) throws SQLException,
             FileNotFoundException, IOException {
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1760,6 +1826,15 @@ public class VP_DatabaseManager {
         close();
     }
     
+    /**
+     * Stores Resume data and its HTML file.
+     * 
+     * @param reshtml File object containing HTML data.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void storeResHTML(File reshtml) throws SQLException,
             FileNotFoundException, IOException {
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1790,6 +1865,15 @@ public class VP_DatabaseManager {
         close();
     }
     
+    /**
+     * Stores Resume data and it's PDF file.
+     * 
+     * @param respdf File object containing the PDF data.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void storeResPDF(File respdf) throws SQLException,
             FileNotFoundException, IOException {
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1820,6 +1904,14 @@ public class VP_DatabaseManager {
         close();
     }
     
+    /**
+     * Adds user contact to the database.
+     * 
+     * @param email String of contact email to be added.
+     * @param name String of contact name to be added.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void addUserContact(String email, String name) throws SQLException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1863,6 +1955,14 @@ public class VP_DatabaseManager {
         close();
     }
     
+    /**
+     * Deletes a user contact from the database.
+     * 
+     * @param email String of contact email to be deleted.
+     * @param name String of contact name to be deleted.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void deleteUserContact(String email, String name) throws SQLException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -1908,6 +2008,14 @@ public class VP_DatabaseManager {
         close();
     }
     
+
+    /**
+     * Stores resume data to the database.
+     * 
+     * @param section Integer indicating which resume section data to store.
+     * @throws SQLException 
+     * @since 1.0
+     */
     protected void storeResumeData(int section) throws SQLException {
         //-------- Initialization Start ----------\\
         VP_User thisUser = dataM.getController().getCurrentUser();
@@ -2215,6 +2323,16 @@ public class VP_DatabaseManager {
         dataM.getDbBusy().countDown();
     }
     
+    /**
+     * Retrieves a VaqPack user file from the database.
+     * 
+     * @param type Integer indicating which document and file type to retrieve.
+     * @return File object containing the retrieved document.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected File retrieveFile(int type) throws SQLException,
             FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
@@ -2264,6 +2382,16 @@ public class VP_DatabaseManager {
         return thisFile;
     }
     
+    /**
+     * Prints the indicated VaqPack user file.
+     * 
+     * @param type Integer indicating file type and document to print.
+     * @param printThis Boolean indicating whether to print file or not.
+     * @throws SQLException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     * @since 1.0
+     */
     protected void printFile(int type, boolean printThis) throws SQLException,
             FileNotFoundException, IOException {
         //-------- Initialization Start ----------\\
@@ -2315,24 +2443,25 @@ public class VP_DatabaseManager {
         close();
     }
 
-    /*------------------------------------------------------------------------*
-     * connect()
-     * - Creates the connection and initializes the statement.
-     * - Parameter db is the database to append to the url for connect. This db
-     *   string is null when checking connection and creating trhe schema.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Creates the connection and initializes the statement.
+     * 
+     * @param db Database to append to the URL for connect. This db
+     * string is null when checking connection and creating the schema.
+     * @throws SQLException 
+     * @since 1.0
+     */
     private void connect(String db) throws SQLException {
         con = DriverManager.getConnection(fullURL + db, adminUserName, adminPassword);
         stm = con.createStatement();
     }
 
-    /*------------------------------------------------------------------------*
-     * close()
-     * - Closes the result set, the statement, and the connection.
-     * - No parameters.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Closes the result set, the statement, and the connection.
+     * 
+     * @throws SQLException 
+     * @since 1.0
+     */
     private void close() throws SQLException {
         if (rts != null) {
             rts.close();
@@ -2343,12 +2472,13 @@ public class VP_DatabaseManager {
         con.close();
     }
 
-    /*------------------------------------------------------------------------*
-     * checkTable()
-     * - Connects, executes the create table update, and closes.
-     * - Parameter sql is the string SQL statement.
-     * - No return.
-     *------------------------------------------------------------------------*/
+    /**
+     * Connects, executes the create table update, and closes.
+     * 
+     * @param sql The string SQL statement.
+     * @throws SQLException 
+     * @since 1.0
+     */
     private void checkTable(String sql) throws SQLException {
         connect(dbName);
         stm.executeUpdate(sql);
@@ -2361,28 +2491,64 @@ public class VP_DatabaseManager {
     /*##########################################################################
      * SETTERS AND GETTERS
      *########################################################################*/
+    /**
+     * Mutator method.
+     * 
+     * @param adminPassword String setting the administrator password.
+     * @since 1.0
+     */
     protected void setAdminPassword(String adminPassword) {
         this.adminPassword = adminPassword;
     }
 
+    /**
+     * Mutator method.
+     * 
+     * @param adminUserName String setting the administrator user name.
+     * @since 1.0
+     */
     protected void setAdminUserName(String adminUserName) {
         this.adminUserName = adminUserName;
     }
 
+    /**
+     * Mutator method.
+     * 
+     * @param port String setting the port of the database connection.
+     * @since 1.0
+     */
     protected void setPort(String port) {
         this.port = port;
         fullURL = "jdbc:mysql://" + url + ":" + port + "/";
     }
 
+    /**
+     * Mutator method.
+     * 
+     * @param url String setting the URL of the database connection.
+     * @since 1.0
+     */
     protected void setUrl(String url) {
         this.url = url;
         fullURL = "jdbc:mysql://" + this.url + ":" + port + "/";
     }
 
+    /**
+     * Accessor method.
+     * 
+     * @return String storing the port of the database connection.
+     * @since 1.0
+     */
     protected String getPort() {
         return port;
     }
 
+    /**
+     * Accessor method.
+     * 
+     * @return String storing the URL of the database connection.
+     * @since 1.0
+     */
     protected String getUrl() {
         return url;
     }
